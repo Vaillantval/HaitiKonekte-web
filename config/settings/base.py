@@ -128,6 +128,15 @@ MONCASH_CLIENT_ID   = config('MONCASH_CLIENT_ID',   default='')
 MONCASH_SECRET_KEY  = config('MONCASH_SECRET_KEY',  default='')
 MONCASH_ENVIRONMENT = config('MONCASH_ENVIRONMENT', default='sandbox')
 
+# ── Firebase / FCM ───────────────────────────────────────────────
+# JSON du service account Firebase (contenu brut en variable d'env)
+import json as _json
+_firebase_raw = config('FIREBASE_SERVICE_ACCOUNT_JSON', default='{}')
+try:
+    FIREBASE_CREDENTIALS_DICT = _json.loads(_firebase_raw) if _firebase_raw.strip() not in ('', '{}') else None
+except Exception:
+    FIREBASE_CREDENTIALS_DICT = None
+
 # ── SPECTACULAR (API Docs) ───────────────────────────────────────
 SPECTACULAR_SETTINGS = {
     'TITLE': 'Makèt Peyizan API',

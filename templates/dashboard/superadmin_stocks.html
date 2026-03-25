@@ -1,0 +1,407 @@
+{% extends 'dashboard/base.html' %}
+{% block title %}Stocks — Superadmin{% endblock %}
+{% block sidebar_nav %}{% include 'dashboard/superadmin_sidebar.html' with active='stocks' %}{% endblock %}
+{% block page_title %}Gestion des stocks{% endblock %}
+{% block page_subtitle %}Suivi des lots et alertes de stock{% endblock %}
+
+{% block extra_css %}
+<style>
+  .tabs { display:flex; gap:0; border-bottom:2px solid var(--border); margin-bottom:20px; }
+  .tab-btn { padding:10px 20px; font-size:13px; font-weight:700; border:none; background:none; cursor:pointer; font-family:inherit; color:var(--text-muted); border-bottom:3px solid transparent; margin-bottom:-2px; transition:all .18s; }
+  .tab-btn.active { color:var(--green-mid); border-bottom-color:var(--green-mid); }
+  .tab-btn:hover:not(.active) { color:var(--text); }
+  .tab-panel { display:none; }
+  .tab-panel.active { display:block; }
+
+  .toolbar { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:16px; align-items:center; }
+  .search-box { flex:1; min-width:200px; display:flex; align-items:center; gap:8px; background:var(--card); border:1.5px solid var(--border); border-radius:8px; padding:8px 14px; }
+  .search-box input { border:none; outline:none; background:transparent; font-family:inherit; font-size:13px; color:var(--text); width:100%; }
+  .filter-btn { padding:7px 14px; border-radius:20px; font-size:12px; font-weight:600; border:1.5px solid var(--border); background:var(--card); color:var(--text-muted); cursor:pointer; font-family:inherit; transition:all .18s; white-space:nowrap; }
+  .filter-btn.active { background:var(--green-mid); color:#fff; border-color:var(--green-mid); }
+  .filter-btn:hover:not(.active) { border-color:var(--green-mid); color:var(--green-mid); }
+  .btn-new { padding:8px 18px; border-radius:8px; font-size:13px; font-weight:700; border:none; cursor:pointer; background:var(--green-mid); color:#fff; font-family:inherit; white-space:nowrap; }
+  .btn-new:hover { opacity:.88; }
+
+  .table-wrap { background:var(--card); border-radius:var(--radius); box-shadow:var(--shadow); overflow:hidden; }
+  table { width:100%; border-collapse:collapse; }
+  thead th { background:var(--bg); padding:11px 14px; text-align:left; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.06em; color:var(--text-muted); border-bottom:1px solid var(--border); }
+  tbody td { padding:10px 14px; font-size:13px; border-bottom:1px solid var(--border); color:var(--text); vertical-align:middle; }
+  tbody tr:last-child td { border-bottom:none; }
+  tbody tr:hover { background:#fafafa; }
+  .empty-state { text-align:center; padding:48px; color:var(--text-muted); font-size:13px; }
+  .badge { display:inline-block; padding:2px 9px; border-radius:12px; font-size:11px; font-weight:700; }
+  .action-btn { padding:4px 10px; border-radius:6px; font-size:11px; font-weight:700; border:none; cursor:pointer; font-family:inherit; transition:opacity .18s; }
+  .action-btn:hover { opacity:.8; }
+  .progress-bar-wrap { width:80px; height:7px; background:var(--border); border-radius:4px; overflow:hidden; display:inline-block; vertical-align:middle; margin-right:6px; }
+  .progress-bar { height:100%; border-radius:4px; }
+
+  /* Modal */
+  .modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,.45); z-index:600; display:flex; align-items:center; justify-content:center; opacity:0; pointer-events:none; transition:opacity .22s; }
+  .modal-overlay.open { opacity:1; pointer-events:auto; }
+  .modal-box { background:var(--card); border-radius:14px; padding:28px 32px; width:480px; max-width:96vw; box-shadow:0 12px 48px rgba(0,0,0,.18); }
+  .modal-box h3 { font-size:16px; font-weight:700; margin-bottom:20px; }
+  .form-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+  .form-grid .full { grid-column:1/-1; }
+  .field { display:flex; flex-direction:column; gap:5px; }
+  .field label { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.05em; color:var(--text-muted); }
+  .field input, .field select, .field textarea { padding:9px 12px; border:1.5px solid var(--border); border-radius:8px; font-size:13px; font-family:inherit; background:var(--bg); color:var(--text); outline:none; }
+  .field input:focus, .field select:focus { border-color:var(--green-mid); }
+  .field textarea { height:70px; resize:vertical; }
+  .modal-actions { display:flex; gap:10px; justify-content:flex-end; margin-top:20px; }
+  .btn-cancel { padding:9px 18px; border-radius:8px; font-size:13px; font-weight:700; border:1.5px solid var(--border); background:var(--bg); color:var(--text-muted); cursor:pointer; font-family:inherit; }
+  .btn-save { padding:9px 22px; border-radius:8px; font-size:13px; font-weight:700; border:none; cursor:pointer; background:var(--green-mid); color:#fff; font-family:inherit; }
+  .btn-save:hover { opacity:.88; }
+
+  .alerte-card { background:var(--card); border-radius:var(--radius); box-shadow:var(--shadow); overflow:hidden; }
+  .alerte-row { display:flex; align-items:center; gap:16px; padding:14px 18px; border-bottom:1px solid var(--border); }
+  .alerte-row:last-child { border-bottom:none; }
+  .alerte-icon { width:38px; height:38px; border-radius:50%; display:flex; align-items:center; justify-content:center; flex-shrink:0; font-size:15px; }
+  .alerte-icon.critique { background:#fff4e6; color:#e67e22; }
+  .alerte-icon.epuise   { background:#fde8e8; color:#e74c3c; }
+
+  .toast-container { position:fixed; bottom:24px; right:24px; z-index:9999; display:flex; flex-direction:column; gap:8px; }
+  .toast { display:flex; align-items:center; gap:10px; padding:12px 16px; border-radius:10px; font-size:13px; font-weight:500; color:#fff; box-shadow:0 4px 20px rgba(0,0,0,.15); animation:slideUp .25s ease; }
+  .toast.success { background:#27ae60; } .toast.error { background:#e74c3c; }
+  @keyframes slideUp { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="toast-container" id="tc"></div>
+
+<!-- Modal Lot -->
+<div class="modal-overlay" id="lot-modal">
+  <div class="modal-box">
+    <h3 id="modal-title">Nouveau lot</h3>
+    <form id="lot-form" onsubmit="submitLot(event)">
+      <div class="form-grid">
+        <div class="field full">
+          <label>Produit *</label>
+          <select id="f-produit" required><option value="">Chargement...</option></select>
+        </div>
+        <div class="field">
+          <label>Quantité initiale *</label>
+          <input type="number" id="f-qte-init" required min="1" placeholder="Ex: 500">
+        </div>
+        <div class="field" id="f-qte-actuelle-wrap" style="display:none">
+          <label>Quantité actuelle</label>
+          <input type="number" id="f-qte-actuelle" min="0">
+        </div>
+        <div class="field">
+          <label>Date de récolte</label>
+          <input type="date" id="f-date-recolte">
+        </div>
+        <div class="field">
+          <label>Date d'expiration</label>
+          <input type="date" id="f-date-expiration">
+        </div>
+        <div class="field full">
+          <label>Lieu de stockage</label>
+          <input type="text" id="f-lieu" placeholder="Ex: Entrepôt central, Magasin...">
+        </div>
+        <div class="field">
+          <label>Statut</label>
+          <select id="f-lot-statut">
+            <option value="disponible">Disponible</option>
+            <option value="en_cours">En cours</option>
+            <option value="epuise">Épuisé</option>
+            <option value="expire">Expiré</option>
+            <option value="rappel">Rappelé</option>
+          </select>
+        </div>
+        <div class="field full">
+          <label>Notes</label>
+          <textarea id="f-lot-notes" placeholder="Notes internes..."></textarea>
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="btn-cancel" onclick="closeLotModal()">Annuler</button>
+        <button type="submit" class="btn-save" id="lot-submit-btn"><i class="fas fa-save"></i> Enregistrer</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="tabs">
+  <button class="tab-btn active" onclick="switchTab('lots', this)"><i class="fas fa-boxes"></i> Lots de stock</button>
+  <button class="tab-btn" onclick="switchTab('alertes', this)">
+    <i class="fas fa-exclamation-triangle"></i> Alertes
+    <span id="badge-alertes" style="background:#e74c3c;color:#fff;border-radius:10px;font-size:10px;padding:1px 6px;margin-left:4px;display:none"></span>
+  </button>
+</div>
+
+<!-- Tab Lots -->
+<div class="tab-panel active" id="tab-lots">
+  <div class="toolbar">
+    <div class="search-box">
+      <i class="fas fa-search" style="color:var(--text-muted)"></i>
+      <input type="text" id="lots-search" placeholder="N° lot, produit..." oninput="debouncedLots()">
+    </div>
+    <button class="filter-btn active" data-statut="" onclick="setLotsFilter(this)">Tous</button>
+    <button class="filter-btn" data-statut="disponible" onclick="setLotsFilter(this)">Disponibles</button>
+    <button class="filter-btn" data-statut="epuise" onclick="setLotsFilter(this)">Épuisés</button>
+    <button class="filter-btn" data-statut="expire" onclick="setLotsFilter(this)">Expirés</button>
+    <button class="filter-btn" data-statut="retire" onclick="setLotsFilter(this)">Retirés</button>
+    <button class="btn-new" onclick="openLotCreate()"><i class="fas fa-plus"></i> Nouveau lot</button>
+  </div>
+  <div class="table-wrap">
+    <div class="empty-state" id="lots-loading"><i class="fas fa-spinner fa-spin"></i> Chargement...</div>
+    <table id="lots-tbl" style="display:none">
+      <thead>
+        <tr>
+          <th>N° Lot</th>
+          <th>Produit</th>
+          <th>Producteur</th>
+          <th>Catégorie</th>
+          <th>Qté init.</th>
+          <th>Qté actuelle</th>
+          <th>Écoulement</th>
+          <th>Statut</th>
+          <th>Exp.</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody id="lots-tbody"></tbody>
+    </table>
+    <div class="empty-state" id="lots-empty" style="display:none">Aucun lot trouvé.</div>
+  </div>
+</div>
+
+<!-- Tab Alertes -->
+<div class="tab-panel" id="tab-alertes">
+  <div class="toolbar">
+    <button class="filter-btn active" data-niveau="" onclick="setAlertesFilter(this)">Toutes</button>
+    <button class="filter-btn" data-niveau="epuise" onclick="setAlertesFilter(this)"><i class="fas fa-times-circle"></i> Épuisés</button>
+    <button class="filter-btn" data-niveau="critique" onclick="setAlertesFilter(this)"><i class="fas fa-exclamation-triangle"></i> Critiques</button>
+    <button class="filter-btn" data-niveau="bas" onclick="setAlertesFilter(this)">Stock bas</button>
+  </div>
+  <div class="empty-state" id="alertes-loading" style="display:none"><i class="fas fa-spinner fa-spin"></i> Chargement...</div>
+  <div class="alerte-card" id="alertes-list" style="display:none"></div>
+  <div class="empty-state" id="alertes-empty" style="display:none"><i class="fas fa-check-circle" style="color:#27ae60;margin-right:6px"></i> Aucune alerte.</div>
+</div>
+{% endblock %}
+
+{% block page_script %}
+const H = { 'Authorization': 'Bearer ' + localStorage.getItem('mp_access'), 'Content-Type': 'application/json' };
+let _lotsFilter = '', _alertesFilter = '', _lotsDebounce, _editLotId = null;
+
+const LOT_STATUT = {
+  disponible: { bg:'#e8f8ee', color:'#1a6b2f' },
+  en_cours:   { bg:'#eaf4fb', color:'#2980b9' },
+  epuise:     { bg:'#fde8e8', color:'#e74c3c' },
+  expire:     { bg:'#f0f0f0', color:'#888' },
+  retire:     { bg:'#f0f0f0', color:'#888' },
+  rappel:     { bg:'#fde8e8', color:'#e74c3c' },
+};
+const ALERTE_NIVEAU = {
+  epuise:   { bg:'#fde8e8', color:'#e74c3c' },
+  critique: { bg:'#fff4e6', color:'#e67e22' },
+  bas:      { bg:'#fef9e7', color:'#c9a007' },
+};
+
+function sBadge(s, label, map) {
+  const st = (map||LOT_STATUT)[s] || { bg:'#eee', color:'#888' };
+  return `<span class="badge" style="background:${st.bg};color:${st.color}">${label}</span>`;
+}
+function fdate(iso) { return new Date(iso).toLocaleDateString('fr-FR', {day:'2-digit',month:'short',year:'numeric'}); }
+function showToast(msg, type='success') {
+  const t = document.createElement('div'); t.className = `toast ${type}`;
+  t.innerHTML = `<i class="fas fa-${type==='success'?'check-circle':'exclamation-circle'}"></i> ${msg}`;
+  document.getElementById('tc').appendChild(t); setTimeout(() => t.remove(), 3500);
+}
+function progressBar(taux) {
+  const pct = Math.min(100, Math.round(taux));
+  const color = pct >= 90 ? '#27ae60' : pct >= 50 ? '#e67e22' : '#e74c3c';
+  return `<div class="progress-bar-wrap"><div class="progress-bar" style="width:${pct}%;background:${color}"></div></div>${pct}%`;
+}
+
+function switchTab(tab, btn) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('tab-' + tab).classList.add('active');
+  if (tab === 'alertes') loadAlertes();
+}
+
+async function loadProduitOptions(selectedId) {
+  const r = await fetch('/api/admin/options/?type=produits', { headers: H });
+  const data = await r.json();
+  const sel = document.getElementById('f-produit');
+  sel.innerHTML = '<option value="">-- Choisir un produit --</option>' +
+    data.map(p => `<option value="${p.id}"${selectedId==p.id?' selected':''}>${p.label}</option>`).join('');
+}
+
+async function loadLots() {
+  const search = document.getElementById('lots-search').value.trim();
+  let url = `/api/admin/stocks/lots/?statut=${_lotsFilter}`;
+  if (search) url += '&search=' + encodeURIComponent(search);
+
+  document.getElementById('lots-loading').style.display = 'block';
+  document.getElementById('lots-tbl').style.display = 'none';
+  document.getElementById('lots-empty').style.display = 'none';
+
+  const r = await fetch(url, { headers: H });
+  document.getElementById('lots-loading').style.display = 'none';
+  if (!r.ok) { document.getElementById('lots-empty').style.display = 'block'; return; }
+  const data = await r.json();
+  if (!data.length) { document.getElementById('lots-empty').style.display = 'block'; return; }
+
+  const tbody = document.getElementById('lots-tbody');
+  tbody.innerHTML = '';
+  data.forEach(lot => {
+    const expired = lot.date_expiration && new Date(lot.date_expiration) < new Date();
+    tbody.innerHTML += `
+      <tr>
+        <td style="font-family:monospace;font-size:12px;color:var(--green-mid)">${lot.numero_lot}</td>
+        <td style="font-weight:600">${lot.produit_nom}</td>
+        <td><div style="font-weight:600">${lot.producteur_nom}</div><div style="font-size:11px;color:var(--text-muted)">${lot.producteur_code}</div></td>
+        <td style="color:var(--text-muted)">${lot.categorie}</td>
+        <td style="text-align:right">${lot.quantite_initiale}</td>
+        <td style="text-align:right;font-weight:600;color:${lot.quantite_actuelle<=0?'#e74c3c':lot.quantite_actuelle<=3?'#e67e22':'var(--text)'}">${lot.quantite_actuelle}</td>
+        <td>${progressBar(lot.taux_ecoulement)}</td>
+        <td>${sBadge(lot.statut, lot.statut_label)}</td>
+        <td style="font-size:12px;color:${expired?'#e74c3c':'var(--text-muted)'}">${lot.date_expiration||'—'}</td>
+        <td>
+          <button class="action-btn" style="background:var(--bg);color:var(--text-muted);border:1px solid var(--border)" onclick="openLotEdit(${lot.id})">
+            <i class="fas fa-edit"></i> Éditer
+          </button>
+        </td>
+      </tr>`;
+  });
+  document.getElementById('lots-tbl').style.display = 'table';
+}
+
+function setLotsFilter(btn) {
+  btn.closest('.toolbar').querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active'); _lotsFilter = btn.dataset.statut; loadLots();
+}
+function debouncedLots() { clearTimeout(_lotsDebounce); _lotsDebounce = setTimeout(loadLots, 350); }
+
+function openLotCreate() {
+  _editLotId = null;
+  document.getElementById('modal-title').textContent = 'Nouveau lot de stock';
+  document.getElementById('lot-submit-btn').innerHTML = '<i class="fas fa-plus"></i> Créer le lot';
+  ['f-qte-init','f-date-recolte','f-date-expiration','f-lieu','f-lot-notes'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('f-lot-statut').value = 'disponible';
+  document.getElementById('f-qte-actuelle-wrap').style.display = 'none';
+  document.getElementById('f-produit').disabled = false;
+  loadProduitOptions(null);
+  document.getElementById('lot-modal').classList.add('open');
+}
+
+async function openLotEdit(id) {
+  _editLotId = id;
+  document.getElementById('modal-title').textContent = 'Éditer le lot';
+  document.getElementById('lot-submit-btn').innerHTML = '<i class="fas fa-save"></i> Enregistrer';
+  document.getElementById('lot-modal').classList.add('open');
+
+  const r = await fetch(`/api/admin/stocks/lots/${id}/`, { headers: H });
+  if (!r.ok) { showToast('Erreur', 'error'); return; }
+  const lot = await r.json();
+
+  await loadProduitOptions(lot.produit_id);
+  document.getElementById('f-produit').value = lot.produit_id;
+  document.getElementById('f-produit').disabled = true;
+  document.getElementById('f-qte-init').value = lot.quantite_initiale;
+  document.getElementById('f-qte-init').disabled = true;
+
+  document.getElementById('f-qte-actuelle-wrap').style.display = 'flex';
+  document.getElementById('f-qte-actuelle').value = lot.quantite_actuelle;
+
+  document.getElementById('f-date-recolte').value    = lot.date_recolte || '';
+  document.getElementById('f-date-expiration').value = lot.date_expiration || '';
+  document.getElementById('f-lieu').value            = lot.lieu_stockage;
+  document.getElementById('f-lot-notes').value       = lot.notes;
+  document.getElementById('f-lot-statut').value      = lot.statut;
+}
+
+function closeLotModal() {
+  document.getElementById('lot-modal').classList.remove('open');
+  _editLotId = null;
+  document.getElementById('f-qte-init').disabled = false;
+  document.getElementById('f-produit').disabled = false;
+}
+
+async function submitLot(e) {
+  e.preventDefault();
+  const btn = document.getElementById('lot-submit-btn');
+  btn.disabled = true;
+
+  const body = {
+    produit_id:      document.getElementById('f-produit').value,
+    quantite_initiale: document.getElementById('f-qte-init').value,
+    date_recolte:    document.getElementById('f-date-recolte').value || null,
+    date_expiration: document.getElementById('f-date-expiration').value || null,
+    lieu_stockage:   document.getElementById('f-lieu').value,
+    notes:           document.getElementById('f-lot-notes').value,
+    statut:          document.getElementById('f-lot-statut').value,
+  };
+
+  let url, method;
+  if (_editLotId) {
+    url = `/api/admin/stocks/lots/${_editLotId}/`;
+    method = 'PATCH';
+    body.quantite_actuelle = document.getElementById('f-qte-actuelle').value;
+    delete body.produit_id;
+    delete body.quantite_initiale;
+  } else {
+    url = '/api/admin/stocks/lots/create/';
+    method = 'POST';
+  }
+
+  const r = await fetch(url, { method, headers: H, body: JSON.stringify(body) });
+  const data = await r.json();
+  btn.disabled = false;
+
+  if (r.ok) {
+    showToast(_editLotId ? 'Lot mis à jour !' : `Lot créé : ${data.numero_lot}`);
+    closeLotModal();
+    loadLots();
+  } else {
+    showToast(data.detail || 'Erreur', 'error');
+  }
+}
+
+async function loadAlertes() {
+  let url = `/api/admin/stocks/alertes/?niveau=${_alertesFilter}`;
+  document.getElementById('alertes-loading').style.display = 'block';
+  document.getElementById('alertes-list').style.display = 'none';
+  document.getElementById('alertes-empty').style.display = 'none';
+
+  const r = await fetch(url, { headers: H });
+  document.getElementById('alertes-loading').style.display = 'none';
+  if (!r.ok) { document.getElementById('alertes-empty').style.display = 'block'; return; }
+  const data = await r.json();
+
+  const badge = document.getElementById('badge-alertes');
+  const nb = data.filter(a => a.niveau === 'epuise' || a.niveau === 'critique').length;
+  if (nb > 0) { badge.textContent = nb; badge.style.display = 'inline'; }
+
+  if (!data.length) { document.getElementById('alertes-empty').style.display = 'block'; return; }
+
+  const list = document.getElementById('alertes-list');
+  list.innerHTML = data.map(a => {
+    const niv = ALERTE_NIVEAU[a.niveau] || { bg:'#eee', color:'#888' };
+    return `<div class="alerte-row">
+      <div class="alerte-icon ${a.niveau}"><i class="fas fa-${a.niveau==='epuise'?'times-circle':'exclamation-triangle'}"></i></div>
+      <div style="flex:1">
+        <div style="font-weight:600">${a.produit_nom}</div>
+        <div style="font-size:12px;color:var(--text-muted)">${a.producteur_nom} · ${a.producteur_tel||''}</div>
+      </div>
+      <div style="text-align:right">
+        <span class="badge" style="background:${niv.bg};color:${niv.color}">${a.niveau_label}</span>
+        <div style="font-size:12px;color:var(--text-muted);margin-top:3px">${a.quantite_actuelle} ${a.unite_vente} / seuil ${a.seuil_alerte}</div>
+      </div>
+      <div style="font-size:11px;color:var(--text-muted);min-width:60px;text-align:right">${fdate(a.created_at)}</div>
+    </div>`;
+  }).join('');
+  list.style.display = 'block';
+}
+
+function setAlertesFilter(btn) {
+  btn.closest('.toolbar').querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active'); _alertesFilter = btn.dataset.niveau; loadAlertes();
+}
+
+mpAuthCheck('superadmin').then(u => { if (u && u.is_superuser) loadLots(); });
+{% endblock %}

@@ -142,6 +142,9 @@ def dashboard_producteur(request):
 def dashboard_producteur_commandes(request):
     return render(request, 'dashboard/producteur_commandes.html')
 
+def dashboard_producteur_collectes(request):
+    return render(request, 'dashboard/producteur_collectes.html')
+
 def dashboard_producteur_catalogue(request):
     return render(request, 'dashboard/producteur_catalogue.html')
 
@@ -158,6 +161,27 @@ def dashboard_admin(request):
 
 def dashboard_superadmin(request):
     return render(request, 'dashboard/superadmin.html')
+
+def dashboard_superadmin_utilisateurs(request):
+    return render(request, 'dashboard/superadmin_utilisateurs.html')
+
+def dashboard_superadmin_producteurs(request):
+    return render(request, 'dashboard/superadmin_producteurs.html')
+
+def dashboard_superadmin_commandes(request):
+    return render(request, 'dashboard/superadmin_commandes.html')
+
+def dashboard_superadmin_paiements(request):
+    return render(request, 'dashboard/superadmin_paiements.html')
+
+def dashboard_superadmin_catalogue(request):
+    return render(request, 'dashboard/superadmin_catalogue.html')
+
+def dashboard_superadmin_stocks(request):
+    return render(request, 'dashboard/superadmin_stocks.html')
+
+def dashboard_superadmin_collectes(request):
+    return render(request, 'dashboard/superadmin_collectes.html')
 
 
 # ── Pages catalogue public ──────────────────────────────────────────────────

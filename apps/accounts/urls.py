@@ -4,6 +4,7 @@ from apps.accounts.views import (
     LoginView,
     LogoutView,
     MeView,
+    FcmTokenView,
     TokenRefreshView,
     AdresseListCreateView,
     AdresseDetailView,
@@ -26,6 +27,7 @@ urlpatterns = [
     path('logout/',         LogoutView.as_view(),        name='logout'),
     path('token/refresh/',  TokenRefreshView.as_view(),  name='token_refresh'),
     path('me/',             MeView.as_view(),             name='me'),
+    path('fcm-token/',      FcmTokenView.as_view(),       name='fcm_token'),
 
     # Adresses
     path('adresses/',                    AdresseListCreateView.as_view(), name='adresses'),

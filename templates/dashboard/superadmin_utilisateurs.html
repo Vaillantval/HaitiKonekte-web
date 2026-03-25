@@ -1,0 +1,383 @@
+{% extends 'dashboard/base.html' %}
+{% block title %}Utilisateurs — Superadmin{% endblock %}
+{% block sidebar_nav %}{% include 'dashboard/superadmin_sidebar.html' with active='users' %}{% endblock %}
+{% block page_title %}Utilisateurs{% endblock %}
+{% block page_subtitle %}Gestion de tous les comptes de la plateforme{% endblock %}
+
+{% block extra_css %}
+<style>
+  .toolbar { display:flex; gap:10px; flex-wrap:wrap; margin-bottom:18px; align-items:center; }
+  .search-box { flex:1; min-width:200px; display:flex; align-items:center; gap:8px; background:var(--card); border:1.5px solid var(--border); border-radius:8px; padding:8px 14px; }
+  .search-box input { border:none; outline:none; background:transparent; font-family:inherit; font-size:13px; color:var(--text); width:100%; }
+  .filter-btn { padding:7px 14px; border-radius:8px; font-size:12px; font-weight:600; border:1.5px solid var(--border); background:var(--card); color:var(--text-muted); cursor:pointer; font-family:inherit; transition:all .18s; }
+  .filter-btn.active, .filter-btn:hover { border-color:var(--green-mid); color:var(--green-mid); }
+  .filter-btn.active { background:var(--green-mid); color:#fff; }
+  .btn-new { padding:8px 18px; border-radius:8px; font-size:13px; font-weight:700; border:none; cursor:pointer; background:var(--green-mid); color:#fff; font-family:inherit; white-space:nowrap; }
+  .btn-new:hover { opacity:.88; }
+
+  .table-wrap { background:var(--card); border-radius:var(--radius); box-shadow:var(--shadow); overflow:hidden; }
+  table { width:100%; border-collapse:collapse; }
+  thead th { background:var(--bg); padding:11px 16px; text-align:left; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.06em; color:var(--text-muted); border-bottom:1px solid var(--border); }
+  tbody td { padding:12px 16px; font-size:13px; border-bottom:1px solid var(--border); color:var(--text); vertical-align:middle; }
+  tbody tr:last-child td { border-bottom:none; }
+  tbody tr:hover { background:#fafafa; }
+  .empty-state { text-align:center; padding:48px; color:var(--text-muted); font-size:13px; }
+  .role-badge { display:inline-block; padding:2px 9px; border-radius:12px; font-size:11px; font-weight:700; }
+  .role-superadmin { background:#f5e6ff; color:#8e44ad; }
+  .role-admin      { background:#eaf4fb; color:#2980b9; }
+  .role-producteur { background:#e8f8ee; color:#1a6b2f; }
+  .role-acheteur   { background:#f0f0f0; color:#555; }
+  .role-collecteur { background:#fff4e6; color:#e67e22; }
+  .status-dot { width:8px; height:8px; border-radius:50%; display:inline-block; margin-right:5px; }
+  .dot-green { background:#27ae60; } .dot-red { background:#e74c3c; }
+  .action-btn { padding:5px 12px; border-radius:6px; font-size:11px; font-weight:700; border:none; cursor:pointer; font-family:inherit; transition:opacity .18s; }
+  .action-btn:hover { opacity:.8; }
+  .toggle-active   { background:#fde8e8; color:#e74c3c; }
+  .toggle-inactive { background:#e8f8ee; color:#27ae60; }
+  .user-avatar { width:34px; height:34px; border-radius:50%; background:var(--green-mid); display:flex; align-items:center; justify-content:center; color:#fff; font-weight:700; font-size:14px; flex-shrink:0; overflow:hidden; }
+  .user-avatar img { width:100%; height:100%; object-fit:cover; }
+
+  /* Modal */
+  .modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,.45); z-index:600; display:flex; align-items:center; justify-content:center; opacity:0; pointer-events:none; transition:opacity .22s; }
+  .modal-overlay.open { opacity:1; pointer-events:auto; }
+  .modal-box { background:var(--card); border-radius:14px; padding:28px 32px; width:500px; max-width:96vw; box-shadow:0 12px 48px rgba(0,0,0,.18); max-height:90vh; overflow-y:auto; }
+  .modal-box h3 { font-size:16px; font-weight:700; margin-bottom:20px; }
+  .form-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+  .form-grid .full { grid-column:1/-1; }
+  .field { display:flex; flex-direction:column; gap:5px; }
+  .field label { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.05em; color:var(--text-muted); }
+  .field input, .field select { padding:9px 12px; border:1.5px solid var(--border); border-radius:8px; font-size:13px; font-family:inherit; background:var(--bg); color:var(--text); outline:none; }
+  .field input:focus, .field select:focus { border-color:var(--green-mid); }
+  .field small { font-size:11px; color:var(--text-muted); }
+  .checkbox-row { display:flex; align-items:center; gap:8px; font-size:13px; margin-top:6px; }
+  .checkbox-row input { width:16px; height:16px; cursor:pointer; }
+  .modal-actions { display:flex; gap:10px; justify-content:flex-end; margin-top:20px; }
+  .btn-cancel { padding:9px 18px; border-radius:8px; font-size:13px; font-weight:700; border:1.5px solid var(--border); background:var(--bg); color:var(--text-muted); cursor:pointer; font-family:inherit; }
+  .btn-save { padding:9px 22px; border-radius:8px; font-size:13px; font-weight:700; border:none; cursor:pointer; background:var(--green-mid); color:#fff; font-family:inherit; }
+  .btn-save:hover { opacity:.88; }
+  .field-error { color:#e74c3c; font-size:11px; }
+
+  /* Producteur fields */
+  #prod-fields { display:none; border-top:1px solid var(--border); margin-top:16px; padding-top:16px; }
+  #prod-fields h4 { font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:.05em; color:var(--text-muted); margin-bottom:12px; }
+
+  .toast-container { position:fixed; bottom:24px; right:24px; z-index:9999; display:flex; flex-direction:column; gap:8px; }
+  .toast { display:flex; align-items:center; gap:10px; padding:12px 16px; border-radius:10px; font-size:13px; font-weight:500; color:#fff; box-shadow:0 4px 20px rgba(0,0,0,.15); animation:slideUp .25s ease; }
+  .toast.success { background:#27ae60; } .toast.error { background:#e74c3c; }
+  @keyframes slideUp { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="toast-container" id="tc"></div>
+
+<!-- Modal Utilisateur -->
+<div class="modal-overlay" id="user-modal">
+  <div class="modal-box">
+    <h3 id="modal-title">Nouvel utilisateur</h3>
+    <form id="user-form" onsubmit="submitUser(event)">
+      <div class="form-grid">
+        <div class="field full" id="username-field">
+          <label>Nom d'utilisateur *</label>
+          <input type="text" id="f-username" required placeholder="Ex: jean.pierre">
+          <span class="field-error" id="err-username"></span>
+        </div>
+        <div class="field">
+          <label>Prénom</label>
+          <input type="text" id="f-first_name" placeholder="Prénom">
+        </div>
+        <div class="field">
+          <label>Nom</label>
+          <input type="text" id="f-last_name" placeholder="Nom">
+        </div>
+        <div class="field full">
+          <label>Email *</label>
+          <input type="email" id="f-email" required placeholder="email@exemple.com">
+          <span class="field-error" id="err-email"></span>
+        </div>
+        <div class="field">
+          <label>Téléphone</label>
+          <input type="text" id="f-telephone" placeholder="+509 ...">
+        </div>
+        <div class="field">
+          <label>Rôle *</label>
+          <select id="f-role" required onchange="toggleProdFields()">
+            <option value="acheteur">Acheteur</option>
+            <option value="producteur">Producteur</option>
+            <option value="collecteur">Agent de collecte</option>
+            <option value="admin">Administrateur</option>
+            <option value="superadmin">Super Admin</option>
+          </select>
+        </div>
+        <div class="field" id="password-field">
+          <label>Mot de passe *</label>
+          <input type="password" id="f-password" placeholder="Minimum 8 caractères">
+          <span class="field-error" id="err-password"></span>
+        </div>
+        <div class="field" id="password2-field">
+          <label>Confirmer MDP *</label>
+          <input type="password" id="f-password2" placeholder="Répéter le mot de passe">
+        </div>
+        <div class="field full">
+          <label class="checkbox-row"><input type="checkbox" id="f-is_active" checked> Compte actif</label>
+        </div>
+      </div>
+
+      <!-- Champs supplémentaires pour producteur -->
+      <div id="prod-fields">
+        <h4><i class="fas fa-tractor" style="margin-right:6px"></i>Profil Producteur</h4>
+        <div class="form-grid">
+          <div class="field">
+            <label>Département *</label>
+            <select id="f-departement">
+              <option value="">-- Choisir --</option>
+              <option value="ouest">Ouest</option>
+              <option value="artibonite">Artibonite</option>
+              <option value="nord">Nord</option>
+              <option value="nord_est">Nord-Est</option>
+              <option value="nord_ouest">Nord-Ouest</option>
+              <option value="sud">Sud</option>
+              <option value="sud_est">Sud-Est</option>
+              <option value="centre">Centre</option>
+              <option value="grand_anse">Grand-Anse</option>
+              <option value="nippes">Nippes</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Commune *</label>
+            <input type="text" id="f-commune" placeholder="Ex: Croix-des-Bouquets">
+          </div>
+          <div class="field">
+            <label>Localité</label>
+            <input type="text" id="f-localite" placeholder="Section, quartier...">
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-actions">
+        <button type="button" class="btn-cancel" onclick="closeUserModal()">Annuler</button>
+        <button type="submit" class="btn-save" id="user-submit-btn"><i class="fas fa-save"></i> Enregistrer</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="toolbar">
+  <div class="search-box">
+    <i class="fas fa-search" style="color:var(--text-muted)"></i>
+    <input type="text" id="search-input" placeholder="Nom, email, téléphone..." oninput="debouncedSearch()">
+  </div>
+  <select id="role-filter" class="filter-btn" style="appearance:none;padding-right:28px" onchange="load()">
+    <option value="">Tous les rôles</option>
+    <option value="superadmin">Superadmin</option>
+    <option value="admin">Admin</option>
+    <option value="producteur">Producteur</option>
+    <option value="acheteur">Acheteur</option>
+    <option value="collecteur">Collecteur</option>
+  </select>
+  <select id="active-filter" class="filter-btn" style="appearance:none;padding-right:28px" onchange="load()">
+    <option value="">Tous statuts</option>
+    <option value="true">Actifs</option>
+    <option value="false">Inactifs</option>
+  </select>
+  <button class="btn-new" onclick="openCreate()"><i class="fas fa-plus"></i> Nouvel utilisateur</button>
+</div>
+
+<div class="table-wrap">
+  <div class="empty-state" id="tbl-loading"><i class="fas fa-spinner fa-spin"></i> Chargement...</div>
+  <table id="tbl" style="display:none">
+    <thead>
+      <tr>
+        <th>Utilisateur</th>
+        <th>Rôle</th>
+        <th>Email</th>
+        <th>Téléphone</th>
+        <th>Statut</th>
+        <th>Inscription</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody id="tbody"></tbody>
+  </table>
+  <div class="empty-state" id="tbl-empty" style="display:none">Aucun utilisateur trouvé.</div>
+</div>
+{% endblock %}
+
+{% block page_script %}
+const H = { 'Authorization': 'Bearer ' + localStorage.getItem('mp_access'), 'Content-Type': 'application/json' };
+let _debounce, _editUserId = null;
+
+function roleBadge(role) {
+  const labels = { superadmin:'Superadmin', admin:'Admin', producteur:'Producteur', acheteur:'Acheteur', collecteur:'Collecteur' };
+  return `<span class="role-badge role-${role}">${labels[role]||role}</span>`;
+}
+function fdate(iso) { return new Date(iso).toLocaleDateString('fr-FR', {day:'2-digit',month:'short',year:'numeric'}); }
+function showToast(msg, type='success') {
+  const t = document.createElement('div'); t.className = `toast ${type}`;
+  t.innerHTML = `<i class="fas fa-${type==='success'?'check-circle':'exclamation-circle'}"></i> ${msg}`;
+  document.getElementById('tc').appendChild(t); setTimeout(() => t.remove(), 3500);
+}
+
+async function load() {
+  const search = document.getElementById('search-input').value.trim();
+  const role   = document.getElementById('role-filter').value;
+  const active = document.getElementById('active-filter').value;
+  let url = '/api/admin/users/?';
+  if (search) url += 'search=' + encodeURIComponent(search) + '&';
+  if (role)   url += 'role=' + role + '&';
+  if (active) url += 'is_active=' + active + '&';
+
+  document.getElementById('tbl-loading').style.display = 'block';
+  document.getElementById('tbl').style.display = 'none';
+  document.getElementById('tbl-empty').style.display = 'none';
+
+  const r = await fetch(url, { headers: H });
+  document.getElementById('tbl-loading').style.display = 'none';
+  if (!r.ok) { document.getElementById('tbl-empty').style.display = 'block'; return; }
+  const data = await r.json();
+  if (!data.length) { document.getElementById('tbl-empty').style.display = 'block'; return; }
+
+  const tbody = document.getElementById('tbody');
+  tbody.innerHTML = '';
+  data.forEach(u => {
+    const av = u.photo
+      ? `<div class="user-avatar"><img src="${u.photo}" alt=""></div>`
+      : `<div class="user-avatar">${(u.full_name||u.username).charAt(0).toUpperCase()}</div>`;
+    const canToggle = !u.is_superuser;
+    tbody.innerHTML += `
+      <tr id="row-${u.id}">
+        <td style="display:flex;align-items:center;gap:10px">
+          ${av}
+          <div><div style="font-weight:600">${u.full_name||u.username}</div><div style="font-size:11px;color:var(--text-muted)">@${u.username}</div></div>
+        </td>
+        <td>${roleBadge(u.role)}</td>
+        <td style="color:var(--text-muted)">${u.email}</td>
+        <td style="color:var(--text-muted)">${u.telephone||'—'}</td>
+        <td><span class="status-dot ${u.is_active?'dot-green':'dot-red'}"></span>${u.is_active?'Actif':'Inactif'}</td>
+        <td style="color:var(--text-muted);font-size:12px">${fdate(u.created_at)}</td>
+        <td style="display:flex;gap:6px">
+          <button class="action-btn" style="background:var(--bg);color:var(--text-muted);border:1px solid var(--border)" onclick="openEdit(${u.id})"><i class="fas fa-edit"></i></button>
+          ${canToggle?`<button class="action-btn ${u.is_active?'toggle-active':'toggle-inactive'}" onclick="toggleUser(${u.id},this)">${u.is_active?'Désactiver':'Activer'}</button>`:'<span style="font-size:11px;color:var(--text-muted)">—</span>'}
+        </td>
+      </tr>`;
+  });
+  document.getElementById('tbl').style.display = 'table';
+}
+
+function toggleProdFields() {
+  const role = document.getElementById('f-role').value;
+  document.getElementById('prod-fields').style.display = (role === 'producteur' && !_editUserId) ? 'block' : 'none';
+}
+
+function openCreate() {
+  _editUserId = null;
+  document.getElementById('modal-title').textContent = 'Nouvel utilisateur';
+  document.getElementById('user-submit-btn').innerHTML = '<i class="fas fa-plus"></i> Créer';
+  ['f-username','f-first_name','f-last_name','f-email','f-telephone','f-password','f-password2'].forEach(id => document.getElementById(id).value='');
+  document.getElementById('f-role').value = 'acheteur';
+  document.getElementById('f-is_active').checked = true;
+  document.getElementById('username-field').style.display = 'flex';
+  document.getElementById('password-field').style.display = 'flex';
+  document.getElementById('password2-field').style.display = 'flex';
+  document.getElementById('f-password').required = true;
+  document.getElementById('prod-fields').style.display = 'none';
+  document.getElementById('user-modal').classList.add('open');
+}
+
+async function openEdit(id) {
+  _editUserId = id;
+  document.getElementById('modal-title').textContent = 'Éditer l\'utilisateur';
+  document.getElementById('user-submit-btn').innerHTML = '<i class="fas fa-save"></i> Enregistrer';
+  document.getElementById('username-field').style.display = 'none';
+  document.getElementById('password-field').querySelector('label').textContent = 'Nouveau mot de passe';
+  document.getElementById('password-field').querySelector('input').required = false;
+  document.getElementById('password-field').querySelector('small')?.remove();
+  document.getElementById('prod-fields').style.display = 'none';
+  document.getElementById('user-modal').classList.add('open');
+
+  const r = await fetch(`/api/admin/users/${id}/detail/`, { headers: H });
+  if (!r.ok) { showToast('Erreur', 'error'); return; }
+  const u = await r.json();
+
+  document.getElementById('f-first_name').value = u.first_name;
+  document.getElementById('f-last_name').value  = u.last_name;
+  document.getElementById('f-email').value      = u.email;
+  document.getElementById('f-telephone').value  = u.telephone;
+  document.getElementById('f-role').value       = u.role;
+  document.getElementById('f-is_active').checked = u.is_active;
+  document.getElementById('f-password').value   = '';
+}
+
+function closeUserModal() {
+  document.getElementById('user-modal').classList.remove('open');
+  _editUserId = null;
+}
+
+async function submitUser(e) {
+  e.preventDefault();
+  ['err-username','err-email','err-password'].forEach(id => { document.getElementById(id).textContent=''; document.getElementById(id).style.display='none'; });
+
+  const btn = document.getElementById('user-submit-btn');
+  btn.disabled = true;
+
+  const pwd  = document.getElementById('f-password').value;
+  const pwd2 = document.getElementById('f-password2').value;
+  if (!_editUserId && pwd !== pwd2) {
+    document.getElementById('err-password').textContent = 'Les mots de passe ne correspondent pas.';
+    document.getElementById('err-password').style.display = 'block';
+    btn.disabled = false; return;
+  }
+
+  const body = {
+    email:      document.getElementById('f-email').value,
+    first_name: document.getElementById('f-first_name').value,
+    last_name:  document.getElementById('f-last_name').value,
+    telephone:  document.getElementById('f-telephone').value,
+    role:       document.getElementById('f-role').value,
+    is_active:  document.getElementById('f-is_active').checked,
+  };
+  if (pwd) body.password = pwd;
+
+  let url, method;
+  if (_editUserId) {
+    url = `/api/admin/users/${_editUserId}/detail/`;
+    method = 'PATCH';
+  } else {
+    body.username = document.getElementById('f-username').value;
+    const role = body.role;
+    if (role === 'producteur') {
+      body.departement = document.getElementById('f-departement').value;
+      body.commune     = document.getElementById('f-commune').value;
+      body.localite    = document.getElementById('f-localite').value;
+    }
+    url = '/api/admin/users/create/';
+    method = 'POST';
+  }
+
+  const r = await fetch(url, { method, headers: H, body: JSON.stringify(body) });
+  const data = await r.json();
+  btn.disabled = false;
+
+  if (r.ok) {
+    showToast(_editUserId ? 'Utilisateur mis à jour !' : 'Utilisateur créé !');
+    closeUserModal();
+    load();
+  } else {
+    if (data.username) { document.getElementById('err-username').textContent = data.username; document.getElementById('err-username').style.display = 'block'; }
+    if (data.email)    { document.getElementById('err-email').textContent    = data.email;    document.getElementById('err-email').style.display    = 'block'; }
+    showToast(data.detail || 'Erreur de validation', 'error');
+  }
+}
+
+async function toggleUser(id, btn) {
+  btn.disabled = true;
+  const r = await fetch(`/api/admin/users/${id}/toggle/`, { method:'PATCH', headers:H });
+  const data = await r.json();
+  if (r.ok) { showToast(`${data.username} : ${data.is_active?'activé':'désactivé'}`); load(); }
+  else { showToast(data.detail||'Erreur','error'); btn.disabled=false; }
+}
+
+function debouncedSearch() { clearTimeout(_debounce); _debounce = setTimeout(load, 350); }
+
+mpAuthCheck('superadmin').then(u => { if (u && u.is_superuser) load(); });
+{% endblock %}

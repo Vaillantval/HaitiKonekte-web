@@ -75,7 +75,7 @@ class LogoutView(APIView):
     """
     POST /api/auth/logout/
     Blackliste le refresh token (révoque la session).
-    Body: { "refresh": "<refresh_token>" }
+    Body: { "refresh": "<refresh_token>", "fcm_token": "<token>" (optionnel) }
     """
     permission_classes = [IsAuthenticated]
 
@@ -94,7 +94,59 @@ class LogoutView(APIView):
                 {'detail': "Token invalide ou déjà révoqué."},
                 status=status.HTTP_400_BAD_REQUEST,
             )
+
+        # Désabonner le token FCM à la déconnexion
+        fcm_token = request.data.get('fcm_token') or request.user.fcm_token
+        if fcm_token:
+            try:
+                from apps.emails.fcm_service import unsubscribe_from_all_topics
+                unsubscribe_from_all_topics(fcm_token)
+            except Exception:
+                pass
+            # Effacer le token FCM stocké
+            request.user.fcm_token = ''
+            request.user.save(update_fields=['fcm_token'])
+
         return Response({'message': "Déconnexion réussie."}, status=status.HTTP_200_OK)
+
+
+class FcmTokenView(APIView):
+    """
+    POST /api/auth/fcm-token/
+    Enregistre ou met à jour le token FCM de l'utilisateur connecté.
+    Abonne automatiquement au topic de son rôle.
+    Body: { "fcm_token": "<firebase_registration_token>" }
+    """
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        fcm_token = request.data.get('fcm_token', '').strip()
+        if not fcm_token:
+            return Response(
+                {'detail': "Le champ 'fcm_token' est requis."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        user = request.user
+
+        # Sauvegarder le token
+        user.fcm_token = fcm_token
+        user.save(update_fields=['fcm_token'])
+
+        # Abonner au topic du rôle
+        subscribed = False
+        try:
+            from apps.emails.fcm_service import subscribe_to_role_topic
+            role = 'superadmin' if user.is_superuser else user.role
+            subscribed = subscribe_to_role_topic(fcm_token, role)
+        except Exception:
+            pass
+
+        return Response({
+            'message': "Token FCM enregistré.",
+            'role':     user.role,
+            'topic_subscribed': subscribed,
+        }, status=status.HTTP_200_OK)
 
 
 class MeView(APIView):

@@ -1,0 +1,496 @@
+{% extends 'dashboard/base.html' %}
+{% block title %}Producteurs — Superadmin{% endblock %}
+{% block sidebar_nav %}{% include 'dashboard/superadmin_sidebar.html' with active='producteurs' %}{% endblock %}
+{% block page_title %}Producteurs{% endblock %}
+{% block page_subtitle %}Validation, suspension et suivi des producteurs{% endblock %}
+
+{% block extra_css %}
+<style>
+  .toolbar { display:flex; gap:10px; flex-wrap:wrap; margin-bottom:18px; align-items:center; }
+  .search-box { flex:1; min-width:200px; display:flex; align-items:center; gap:8px; background:var(--card); border:1.5px solid var(--border); border-radius:8px; padding:8px 14px; }
+  .search-box input { border:none; outline:none; background:transparent; font-family:inherit; font-size:13px; color:var(--text); width:100%; }
+  .filter-btn { padding:7px 16px; border-radius:20px; font-size:12px; font-weight:600; border:1.5px solid var(--border); background:var(--card); color:var(--text-muted); cursor:pointer; font-family:inherit; transition:all .18s; white-space:nowrap; }
+  .filter-btn.active { background:var(--green-mid); color:#fff; border-color:var(--green-mid); }
+  .filter-btn:hover:not(.active) { border-color:var(--green-mid); color:var(--green-mid); }
+
+  .table-wrap { background:var(--card); border-radius:var(--radius); box-shadow:var(--shadow); overflow:hidden; }
+  table { width:100%; border-collapse:collapse; }
+  thead th { background:var(--bg); padding:11px 16px; text-align:left; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.06em; color:var(--text-muted); border-bottom:1px solid var(--border); }
+  tbody td { padding:12px 16px; font-size:13px; border-bottom:1px solid var(--border); color:var(--text); vertical-align:middle; }
+  tbody tr:last-child td { border-bottom:none; }
+  tbody tr:hover { background:#fafafa; }
+  .empty-state { text-align:center; padding:48px; color:var(--text-muted); font-size:13px; }
+
+  .statut-badge { display:inline-block; padding:3px 10px; border-radius:12px; font-size:11px; font-weight:700; }
+  .s-en_attente { background:#fef9e7; color:#c9a007; }
+  .s-actif      { background:#e8f8ee; color:#1a6b2f; }
+  .s-suspendu   { background:#fde8e8; color:#e74c3c; }
+  .s-inactif    { background:#f0f0f0; color:#888; }
+
+  .action-btn { padding:5px 11px; border-radius:6px; font-size:11px; font-weight:700; border:none; cursor:pointer; font-family:inherit; transition:opacity .18s; white-space:nowrap; }
+  .action-btn:hover { opacity:.8; }
+  .btn-valider  { background:#e8f8ee; color:#1a6b2f; }
+  .btn-suspendre { background:#fde8e8; color:#e74c3c; }
+  .btn-rejeter  { background:#f0f0f0; color:#555; }
+  .btn-detail   { background:var(--bg); color:var(--text-muted); border:1px solid var(--border); }
+
+  /* Drawer */
+  .drawer-overlay { position:fixed; inset:0; background:rgba(0,0,0,.35); z-index:500; opacity:0; pointer-events:none; transition:opacity .25s; }
+  .drawer-overlay.open { opacity:1; pointer-events:auto; }
+  .drawer { position:fixed; top:0; right:0; width:480px; max-width:96vw; height:100vh; background:var(--card); z-index:501; transform:translateX(100%); transition:transform .28s cubic-bezier(.4,0,.2,1); display:flex; flex-direction:column; box-shadow:-6px 0 40px rgba(0,0,0,.12); }
+  .drawer.open { transform:translateX(0); }
+  .drawer-header { padding:18px 22px; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; flex-shrink:0; }
+  .drawer-header h3 { font-size:15px; font-weight:700; }
+  .drawer-close { width:30px; height:30px; border-radius:8px; border:1px solid var(--border); background:var(--bg); cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:14px; color:var(--text-muted); transition:background .18s; }
+  .drawer-close:hover { background:var(--border); }
+  .drawer-body { padding:22px; overflow-y:auto; flex:1; }
+  .drawer-actions { padding:16px 22px; border-top:1px solid var(--border); display:flex; gap:8px; flex-wrap:wrap; flex-shrink:0; }
+  .drawer-section { margin-bottom:20px; }
+  .drawer-section-title { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.07em; color:var(--text-muted); margin-bottom:10px; padding-bottom:6px; border-bottom:1px solid var(--border); }
+  .drawer-row { display:flex; justify-content:space-between; padding:5px 0; font-size:13px; }
+  .drawer-row .label { color:var(--text-muted); }
+
+  .note-input { width:100%; padding:8px 12px; border:1.5px solid var(--border); border-radius:8px; font-size:13px; font-family:inherit; background:var(--bg); color:var(--text); resize:vertical; height:70px; margin-top:8px; }
+  .note-input:focus { outline:none; border-color:var(--green-mid); }
+  .btn-new { padding:8px 18px; border-radius:8px; font-size:13px; font-weight:700; border:none; cursor:pointer; background:var(--green-mid); color:#fff; font-family:inherit; white-space:nowrap; }
+  .btn-new:hover { opacity:.88; }
+
+  /* Modal création/édition */
+  .modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,.45); z-index:600; display:flex; align-items:center; justify-content:center; opacity:0; pointer-events:none; transition:opacity .22s; }
+  .modal-overlay.open { opacity:1; pointer-events:auto; }
+  .modal-box { background:var(--card); border-radius:14px; padding:28px 32px; width:560px; max-width:97vw; box-shadow:0 12px 48px rgba(0,0,0,.18); max-height:92vh; overflow-y:auto; }
+  .modal-box h3 { font-size:16px; font-weight:700; margin-bottom:20px; }
+  .form-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+  .form-grid .full { grid-column:1/-1; }
+  .field { display:flex; flex-direction:column; gap:5px; }
+  .field label { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.05em; color:var(--text-muted); }
+  .field input, .field select, .field textarea { padding:9px 12px; border:1.5px solid var(--border); border-radius:8px; font-size:13px; font-family:inherit; background:var(--bg); color:var(--text); outline:none; }
+  .field input:focus, .field select:focus, .field textarea:focus { border-color:var(--green-mid); }
+  .field textarea { height:70px; resize:vertical; }
+  .section-sep { grid-column:1/-1; border:none; border-top:1px solid var(--border); margin:6px 0; }
+  .section-label { grid-column:1/-1; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.06em; color:var(--text-muted); padding-top:4px; }
+  .modal-actions { display:flex; gap:10px; justify-content:flex-end; margin-top:20px; }
+  .btn-cancel { padding:9px 18px; border-radius:8px; font-size:13px; font-weight:700; border:1.5px solid var(--border); background:var(--bg); color:var(--text-muted); cursor:pointer; font-family:inherit; }
+  .btn-save { padding:9px 22px; border-radius:8px; font-size:13px; font-weight:700; border:none; cursor:pointer; background:var(--green-mid); color:#fff; font-family:inherit; }
+  .btn-save:hover { opacity:.88; }
+  .field-error { color:#e74c3c; font-size:11px; }
+
+  .toast-container { position:fixed; bottom:24px; right:24px; z-index:9999; display:flex; flex-direction:column; gap:8px; }
+  .toast { display:flex; align-items:center; gap:10px; padding:12px 16px; border-radius:10px; font-size:13px; font-weight:500; color:#fff; box-shadow:0 4px 20px rgba(0,0,0,.15); animation:slideUp .25s ease; }
+  .toast.success { background:#27ae60; } .toast.error { background:#e74c3c; }
+  @keyframes slideUp { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="toast-container" id="tc"></div>
+
+<!-- Modal Producteur -->
+<div class="modal-overlay" id="prod-modal">
+  <div class="modal-box">
+    <h3 id="modal-title">Nouveau producteur</h3>
+    <form id="prod-form" onsubmit="submitProd(event)">
+      <div class="form-grid">
+        <div class="section-label">Compte utilisateur</div>
+        <div class="field" id="username-wrap">
+          <label>Nom d'utilisateur *</label>
+          <input type="text" id="f-username" placeholder="Ex: jean.pierre">
+          <span class="field-error" id="err-username"></span>
+        </div>
+        <div class="field">
+          <label>Téléphone</label>
+          <input type="text" id="f-telephone" placeholder="+509 ...">
+        </div>
+        <div class="field">
+          <label>Prénom *</label>
+          <input type="text" id="f-first_name" placeholder="Prénom">
+        </div>
+        <div class="field">
+          <label>Nom *</label>
+          <input type="text" id="f-last_name" placeholder="Nom de famille">
+        </div>
+        <div class="field full">
+          <label>Email *</label>
+          <input type="email" id="f-email" placeholder="email@exemple.com">
+          <span class="field-error" id="err-email"></span>
+        </div>
+        <div class="field" id="password-wrap">
+          <label>Mot de passe *</label>
+          <input type="password" id="f-password" placeholder="Minimum 8 caractères">
+        </div>
+        <div class="field" id="password2-wrap">
+          <label>Confirmer MDP *</label>
+          <input type="password" id="f-password2">
+        </div>
+
+        <hr class="section-sep">
+        <div class="section-label"><i class="fas fa-tractor" style="margin-right:5px"></i>Profil Producteur</div>
+        <div class="field">
+          <label>Département *</label>
+          <select id="f-departement">
+            <option value="">-- Choisir --</option>
+            <option value="ouest">Ouest</option>
+            <option value="artibonite">Artibonite</option>
+            <option value="nord">Nord</option>
+            <option value="nord_est">Nord-Est</option>
+            <option value="nord_ouest">Nord-Ouest</option>
+            <option value="sud">Sud</option>
+            <option value="sud_est">Sud-Est</option>
+            <option value="centre">Centre</option>
+            <option value="grand_anse">Grand-Anse</option>
+            <option value="nippes">Nippes</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Commune *</label>
+          <input type="text" id="f-commune" placeholder="Ex: Croix-des-Bouquets">
+        </div>
+        <div class="field">
+          <label>Localité</label>
+          <input type="text" id="f-localite" placeholder="Section, quartier...">
+        </div>
+        <div class="field">
+          <label>Superficie (ha)</label>
+          <input type="number" id="f-superficie" min="0" step="0.01" placeholder="Ex: 2.5">
+        </div>
+        <div class="field full">
+          <label>Adresse complète</label>
+          <textarea id="f-adresse"></textarea>
+        </div>
+        <div class="field full">
+          <label>Description / Activité</label>
+          <textarea id="f-description" placeholder="Cultures pratiquées, méthodes..."></textarea>
+        </div>
+        <div class="field">
+          <label>N° Identification</label>
+          <input type="text" id="f-num_id" placeholder="NIF ou autre">
+        </div>
+        <div class="field">
+          <label>Statut initial</label>
+          <select id="f-statut">
+            <option value="en_attente">En attente</option>
+            <option value="actif">Actif (validé)</option>
+          </select>
+        </div>
+        <div class="field full">
+          <label>Note admin</label>
+          <textarea id="f-note_admin" placeholder="Notes internes..."></textarea>
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="btn-cancel" onclick="closeProdModal()">Annuler</button>
+        <button type="submit" class="btn-save" id="prod-submit-btn"><i class="fas fa-save"></i> Enregistrer</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="drawer-overlay" id="overlay" onclick="closeDrawer()"></div>
+<div class="drawer" id="drawer">
+  <div class="drawer-header">
+    <h3 id="drawer-title">Producteur</h3>
+    <button class="drawer-close" onclick="closeDrawer()"><i class="fas fa-times"></i></button>
+  </div>
+  <div class="drawer-body" id="drawer-body"></div>
+  <div class="drawer-actions" id="drawer-actions"></div>
+</div>
+
+<div class="toolbar">
+  <div class="search-box">
+    <i class="fas fa-search" style="color:var(--text-muted)"></i>
+    <input type="text" id="search-input" placeholder="Nom, code, commune..." oninput="debouncedSearch()">
+  </div>
+  <button class="filter-btn active" data-statut="" onclick="setFilter(this)">Tous</button>
+  <button class="filter-btn" data-statut="en_attente" onclick="setFilter(this)"><i class="fas fa-clock"></i> En attente</button>
+  <button class="filter-btn" data-statut="actif" onclick="setFilter(this)"><i class="fas fa-check"></i> Actifs</button>
+  <button class="filter-btn" data-statut="suspendu" onclick="setFilter(this)"><i class="fas fa-ban"></i> Suspendus</button>
+  <button class="filter-btn" data-statut="inactif" onclick="setFilter(this)"><i class="fas fa-times"></i> Inactifs</button>
+  <button class="btn-new" onclick="openCreate()"><i class="fas fa-plus"></i> Nouveau producteur</button>
+</div>
+
+<div class="table-wrap">
+  <div class="empty-state" id="tbl-loading"><i class="fas fa-spinner fa-spin"></i> Chargement...</div>
+  <table id="tbl" style="display:none">
+    <thead>
+      <tr>
+        <th>Producteur</th>
+        <th>Code</th>
+        <th>Localisation</th>
+        <th>Produits</th>
+        <th>Statut</th>
+        <th>Inscription</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody id="tbody"></tbody>
+  </table>
+  <div class="empty-state" id="tbl-empty" style="display:none">Aucun producteur trouvé.</div>
+</div>
+{% endblock %}
+
+{% block page_script %}
+const H = { 'Authorization': 'Bearer ' + localStorage.getItem('mp_access'), 'Content-Type': 'application/json' };
+let _filter = '', _debounce, _allData = [], _currentId = null;
+
+function showToast(msg, type='success') {
+  const t = document.createElement('div'); t.className = `toast ${type}`;
+  t.innerHTML = `<i class="fas fa-${type==='success'?'check-circle':'exclamation-circle'}"></i> ${msg}`;
+  document.getElementById('tc').appendChild(t); setTimeout(() => t.remove(), 3500);
+}
+function fdate(iso) { return new Date(iso).toLocaleDateString('fr-FR', {day:'2-digit',month:'short',year:'numeric'}); }
+
+function statutBadge(s, label) {
+  return `<span class="statut-badge s-${s}">${label}</span>`;
+}
+
+function rowActions(p) {
+  const btns = [];
+  if (p.statut === 'en_attente' || p.statut === 'suspendu' || p.statut === 'inactif')
+    btns.push(`<button class="action-btn btn-valider" onclick="doAction(${p.id},'actif')">Valider</button>`);
+  if (p.statut === 'actif')
+    btns.push(`<button class="action-btn btn-suspendre" onclick="doAction(${p.id},'suspendu')">Suspendre</button>`);
+  if (p.statut === 'en_attente')
+    btns.push(`<button class="action-btn btn-rejeter" onclick="doAction(${p.id},'inactif')">Rejeter</button>`);
+  btns.push(`<button class="action-btn btn-detail" onclick="openDrawer(${p.id})"><i class="fas fa-eye"></i></button>`);
+  btns.push(`<button class="action-btn" style="background:var(--bg);color:var(--text-muted);border:1px solid var(--border)" onclick="openEdit(${p.id})"><i class="fas fa-edit"></i></button>`);
+  return btns.join(' ');
+}
+
+async function load() {
+  const search = document.getElementById('search-input').value.trim();
+  let url = `/api/admin/producteurs/?statut=${_filter}`;
+  if (search) url += '&search=' + encodeURIComponent(search);
+
+  document.getElementById('tbl-loading').style.display = 'block';
+  document.getElementById('tbl').style.display = 'none';
+  document.getElementById('tbl-empty').style.display = 'none';
+
+  const r = await fetch(url, { headers: H });
+  document.getElementById('tbl-loading').style.display = 'none';
+  if (!r.ok) { document.getElementById('tbl-empty').style.display = 'block'; return; }
+  _allData = await r.json();
+
+  // Badge sidebar
+  const pendingCount = _allData.filter(p => p.statut === 'en_attente').length;
+  const sb = document.getElementById('sb-badge-prod');
+  if (sb && pendingCount > 0) { sb.textContent = pendingCount; sb.style.display = 'inline'; }
+
+  if (!_allData.length) { document.getElementById('tbl-empty').style.display = 'block'; return; }
+
+  const tbody = document.getElementById('tbody');
+  tbody.innerHTML = '';
+  _allData.forEach(p => {
+    tbody.innerHTML += `
+      <tr id="row-${p.id}">
+        <td><div style="font-weight:600">${p.nom}</div><div style="font-size:11px;color:var(--text-muted)">${p.email}</div></td>
+        <td style="font-family:monospace;color:var(--green-mid)">${p.code_producteur}</td>
+        <td>${p.commune}<br><span style="font-size:11px;color:var(--text-muted)">${p.departement}</span></td>
+        <td style="text-align:center">${p.nb_produits}</td>
+        <td>${statutBadge(p.statut, p.statut_label)}</td>
+        <td style="color:var(--text-muted);font-size:12px">${fdate(p.created_at)}</td>
+        <td><div style="display:flex;gap:4px;flex-wrap:wrap">${rowActions(p)}</div></td>
+      </tr>`;
+  });
+  document.getElementById('tbl').style.display = 'table';
+}
+
+function setFilter(btn) {
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  _filter = btn.dataset.statut;
+  load();
+}
+function debouncedSearch() { clearTimeout(_debounce); _debounce = setTimeout(load, 350); }
+
+// Drawer
+function openDrawer(id) {
+  _currentId = id;
+  const p = _allData.find(x => x.id === id);
+  if (!p) return;
+  document.getElementById('drawer-title').textContent = p.nom;
+  document.getElementById('overlay').classList.add('open');
+  document.getElementById('drawer').classList.add('open');
+
+  document.getElementById('drawer-body').innerHTML = `
+    <div class="drawer-section">
+      <div class="drawer-section-title">Statut</div>
+      ${statutBadge(p.statut, p.statut_label)}
+    </div>
+    <div class="drawer-section">
+      <div class="drawer-section-title">Informations</div>
+      <div class="drawer-row"><span class="label">Code</span><span style="font-family:monospace;color:var(--green-mid)">${p.code_producteur}</span></div>
+      <div class="drawer-row"><span class="label">Nom</span><span>${p.nom}</span></div>
+      <div class="drawer-row"><span class="label">Email</span><span>${p.email}</span></div>
+      <div class="drawer-row"><span class="label">Téléphone</span><span>${p.telephone || '—'}</span></div>
+      <div class="drawer-row"><span class="label">Commune</span><span>${p.commune}</span></div>
+      <div class="drawer-row"><span class="label">Département</span><span>${p.departement}</span></div>
+      ${p.localite ? `<div class="drawer-row"><span class="label">Localité</span><span>${p.localite}</span></div>` : ''}
+      ${p.superficie_ha ? `<div class="drawer-row"><span class="label">Superficie</span><span>${p.superficie_ha} ha</span></div>` : ''}
+      <div class="drawer-row"><span class="label">Produits</span><span>${p.nb_produits} produits</span></div>
+      <div class="drawer-row"><span class="label">Inscription</span><span>${fdate(p.created_at)}</span></div>
+      ${p.date_validation ? `<div class="drawer-row"><span class="label">Validé le</span><span>${fdate(p.date_validation)}</span></div>` : ''}
+    </div>
+    ${p.note_admin ? `<div class="drawer-section"><div class="drawer-section-title">Note admin</div><p style="font-size:13px;background:var(--bg);padding:10px;border-radius:8px">${p.note_admin}</p></div>` : ''}
+    <div class="drawer-section">
+      <div class="drawer-section-title">Note / Motif</div>
+      <textarea class="note-input" id="note-input" placeholder="Motif de validation ou refus (optionnel)...">${p.note_admin || ''}</textarea>
+    </div>
+  `;
+
+  const aa = document.getElementById('drawer-actions');
+  aa.innerHTML = '';
+  if (p.statut !== 'actif')
+    aa.innerHTML += `<button class="action-btn btn-valider" onclick="doAction(${p.id},'actif',true)"><i class="fas fa-check"></i> Valider</button>`;
+  if (p.statut === 'actif')
+    aa.innerHTML += `<button class="action-btn btn-suspendre" onclick="doAction(${p.id},'suspendu',true)"><i class="fas fa-ban"></i> Suspendre</button>`;
+  if (p.statut === 'en_attente')
+    aa.innerHTML += `<button class="action-btn btn-rejeter" onclick="doAction(${p.id},'inactif',true)"><i class="fas fa-times"></i> Rejeter</button>`;
+}
+
+function closeDrawer() {
+  document.getElementById('overlay').classList.remove('open');
+  document.getElementById('drawer').classList.remove('open');
+}
+
+async function doAction(id, statut, fromDrawer = false) {
+  const note = fromDrawer ? (document.getElementById('note-input')?.value || '') : '';
+  const r = await fetch(`/api/admin/producteurs/${id}/statut/`, {
+    method: 'PATCH', headers: H,
+    body: JSON.stringify({ statut, note }),
+  });
+  const data = await r.json();
+  if (r.ok) {
+    showToast(`Statut mis à jour : ${data.statut_label}`);
+    closeDrawer();
+    load();
+  } else {
+    showToast(data.detail || 'Erreur', 'error');
+  }
+}
+
+// ── Création / Édition Producteur ─────────────────────────────────────────
+let _editProdId = null;
+
+function openCreate() {
+  _editProdId = null;
+  document.getElementById('modal-title').textContent = 'Nouveau producteur';
+  document.getElementById('prod-submit-btn').innerHTML = '<i class="fas fa-plus"></i> Créer';
+  ['f-username','f-first_name','f-last_name','f-email','f-telephone','f-password','f-password2',
+   'f-departement','f-commune','f-localite','f-superficie','f-adresse','f-description','f-num_id','f-note_admin'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = '';
+  });
+  document.getElementById('f-statut').value = 'en_attente';
+  document.getElementById('username-wrap').style.display = 'flex';
+  document.getElementById('password-wrap').style.display = 'flex';
+  document.getElementById('password2-wrap').style.display = 'flex';
+  document.getElementById('f-username').required = true;
+  document.getElementById('f-password').required = true;
+  document.getElementById('prod-modal').classList.add('open');
+}
+
+async function openEdit(id) {
+  _editProdId = id;
+  document.getElementById('modal-title').textContent = 'Éditer le producteur';
+  document.getElementById('prod-submit-btn').innerHTML = '<i class="fas fa-save"></i> Enregistrer';
+  document.getElementById('username-wrap').style.display = 'none';
+  document.getElementById('password-wrap').querySelector('label').textContent = 'Nouveau mot de passe (laisser vide = inchangé)';
+  document.getElementById('f-username').required = false;
+  document.getElementById('f-password').required = false;
+  document.getElementById('prod-modal').classList.add('open');
+
+  const r = await fetch(`/api/admin/producteurs/${id}/detail/`, { headers: H });
+  if (!r.ok) { showToast('Erreur de chargement', 'error'); return; }
+  const p = await r.json();
+
+  document.getElementById('f-first_name').value   = p.first_name;
+  document.getElementById('f-last_name').value    = p.last_name;
+  document.getElementById('f-email').value        = p.email;
+  document.getElementById('f-telephone').value    = p.telephone;
+  document.getElementById('f-departement').value  = p.departement;
+  document.getElementById('f-commune').value      = p.commune;
+  document.getElementById('f-localite').value     = p.localite;
+  document.getElementById('f-superficie').value   = p.superficie_ha || '';
+  document.getElementById('f-adresse').value      = p.adresse_complete;
+  document.getElementById('f-description').value  = p.description;
+  document.getElementById('f-num_id').value       = p.num_identification;
+  document.getElementById('f-statut').value       = p.statut;
+  document.getElementById('f-note_admin').value   = p.note_admin;
+  document.getElementById('f-password').value     = '';
+}
+
+function closeProdModal() {
+  document.getElementById('prod-modal').classList.remove('open');
+  _editProdId = null;
+}
+
+async function submitProd(e) {
+  e.preventDefault();
+  ['err-username','err-email'].forEach(id => { document.getElementById(id).textContent=''; });
+  const btn = document.getElementById('prod-submit-btn');
+  btn.disabled = true;
+
+  const pwd  = document.getElementById('f-password').value;
+  const pwd2 = document.getElementById('f-password2').value;
+  if (!_editProdId && pwd && pwd !== pwd2) {
+    showToast('Les mots de passe ne correspondent pas.', 'error');
+    btn.disabled = false; return;
+  }
+
+  let url, method, body;
+  if (_editProdId) {
+    body = {
+      first_name:       document.getElementById('f-first_name').value,
+      last_name:        document.getElementById('f-last_name').value,
+      email:            document.getElementById('f-email').value,
+      telephone:        document.getElementById('f-telephone').value,
+      departement:      document.getElementById('f-departement').value,
+      commune:          document.getElementById('f-commune').value,
+      localite:         document.getElementById('f-localite').value,
+      superficie_ha:    document.getElementById('f-superficie').value || null,
+      adresse_complete: document.getElementById('f-adresse').value,
+      description:      document.getElementById('f-description').value,
+      num_identification: document.getElementById('f-num_id').value,
+      note_admin:       document.getElementById('f-note_admin').value,
+    };
+    if (pwd) body.password = pwd;
+    url = `/api/admin/producteurs/${_editProdId}/detail/`;
+    method = 'PATCH';
+  } else {
+    body = {
+      username:         document.getElementById('f-username').value,
+      first_name:       document.getElementById('f-first_name').value,
+      last_name:        document.getElementById('f-last_name').value,
+      email:            document.getElementById('f-email').value,
+      telephone:        document.getElementById('f-telephone').value,
+      password:         pwd,
+      departement:      document.getElementById('f-departement').value,
+      commune:          document.getElementById('f-commune').value,
+      localite:         document.getElementById('f-localite').value,
+      superficie_ha:    document.getElementById('f-superficie').value || null,
+      adresse_complete: document.getElementById('f-adresse').value,
+      description:      document.getElementById('f-description').value,
+      num_identification: document.getElementById('f-num_id').value,
+      statut:           document.getElementById('f-statut').value,
+    };
+    url = '/api/admin/producteurs/create/';
+    method = 'POST';
+  }
+
+  const r = await fetch(url, { method, headers: H, body: JSON.stringify(body) });
+  const data = await r.json();
+  btn.disabled = false;
+
+  if (r.ok) {
+    showToast(_editProdId ? 'Producteur mis à jour !' : `Producteur créé : ${data.code_producteur}`);
+    closeProdModal();
+    load();
+  } else {
+    if (data.username) { document.getElementById('err-username').textContent = data.username; }
+    if (data.email)    { document.getElementById('err-email').textContent    = data.email; }
+    showToast(data.detail || 'Erreur', 'error');
+  }
+}
+
+mpAuthCheck('superadmin').then(u => { if (u && u.is_superuser) load(); });
+{% endblock %}

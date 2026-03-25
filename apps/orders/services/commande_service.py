@@ -31,12 +31,16 @@ class CommandeService:
         if commande.statut != Commande.Statut.EN_ATTENTE:
             raise ValueError("Seules les commandes en attente peuvent etre confirmees.")
         statut_avant = commande.statut
-        for detail in commande.details.all():
+        for detail in commande.details.select_related('produit', 'lot').all():
             lot = detail.lot or detail.produit.lots.filter(statut='disponible', quantite_actuelle__gte=detail.quantite).first()
             if not lot:
                 raise ValueError(f"Aucun lot disponible pour '{detail.produit.nom}'")
             StockService.sortie_stock(lot=lot, quantite=detail.quantite, type_mouvement=MouvementStock.TypeMouvement.SORTIE_VENTE, commande=commande, effectue_par=effectue_par)
-            detail.produit.stock_reserve -= detail.quantite
+            # Sauvegarder le lot utilisé pour traçabilité (utile si annulation ultérieure)
+            if not detail.lot:
+                detail.lot = lot
+                detail.save(update_fields=['lot'])
+            detail.produit.stock_reserve = max(0, detail.produit.stock_reserve - detail.quantite)
             detail.produit.save(update_fields=['stock_reserve'])
         commande.statut            = Commande.Statut.CONFIRMEE
         commande.date_confirmation = timezone.now()
@@ -61,9 +65,28 @@ class CommandeService:
         if not commande.est_annulable:
             raise ValueError("Cette commande ne peut plus etre annulee.")
         statut_avant = commande.statut
-        for detail in commande.details.all():
-            detail.produit.stock_reserve = max(0, detail.produit.stock_reserve - detail.quantite)
-            detail.produit.save(update_fields=['stock_reserve'])
+
+        if statut_avant == Commande.Statut.EN_ATTENTE:
+            # Stock jamais débité du lot — libérer uniquement la réserve
+            for detail in commande.details.select_related('produit').all():
+                detail.produit.stock_reserve = max(0, detail.produit.stock_reserve - detail.quantite)
+                detail.produit.save(update_fields=['stock_reserve'])
+        else:
+            # Stock déjà débité du lot via confirmer_commande — restaurer chaque lot
+            # On retrouve les mouvements SORTIE_VENTE liés à cette commande
+            mouvements = MouvementStock.objects.filter(
+                commande=commande,
+                type_mouvement=MouvementStock.TypeMouvement.SORTIE_VENTE,
+            ).select_related('lot')
+            for mvt in mouvements:
+                StockService.retour_stock(
+                    lot=mvt.lot,
+                    quantite=mvt.quantite,
+                    commande=commande,
+                    effectue_par=effectue_par,
+                    motif=motif or f"Annulation commande {commande.numero_commande}",
+                )
+
         commande.statut = Commande.Statut.ANNULEE
         commande.save()
         HistoriqueStatutCommande.objects.create(commande=commande, statut_avant=statut_avant, statut_apres=Commande.Statut.ANNULEE, effectue_par=effectue_par, commentaire=motif or "Commande annulee.")

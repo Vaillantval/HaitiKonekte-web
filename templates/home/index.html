@@ -1253,6 +1253,81 @@
       .hero-title       { font-size: 32px; }
       .section-title    { font-size: 28px; }
     }
+
+    /* ── Modale producteur déjà inscrit ──────────────────────── */
+    .mp-overlay {
+      position: fixed; inset: 0; background: rgba(0,0,0,.55);
+      z-index: 9999; display: none; align-items: center; justify-content: center; padding: 20px;
+    }
+    .mp-overlay.open { display: flex; }
+    .mp-modal {
+      background: #fff; border-radius: 20px; padding: 0;
+      max-width: 440px; width: 100%;
+      box-shadow: 0 20px 60px rgba(0,0,0,.25);
+      animation: mpZoom .25s ease; overflow: hidden;
+    }
+    @keyframes mpZoom { from{opacity:0;transform:scale(.93)} to{opacity:1;transform:none} }
+
+    .mp-modal-header {
+      background: linear-gradient(135deg, var(--vert-fonce), var(--vert-vif));
+      padding: 28px 28px 20px; text-align: center; position: relative;
+    }
+    .mp-modal-close {
+      position: absolute; top: 12px; right: 14px;
+      background: rgba(255,255,255,.2); border: none; color: #fff;
+      width: 28px; height: 28px; border-radius: 50%; cursor: pointer;
+      font-size: 13px; display: flex; align-items: center; justify-content: center;
+    }
+    .mp-modal-close:hover { background: rgba(255,255,255,.35); }
+    .mp-avatar {
+      width: 72px; height: 72px; border-radius: 50%; border: 3px solid rgba(255,255,255,.5);
+      margin: 0 auto 10px; overflow: hidden; display: flex; align-items: center; justify-content: center;
+      font-size: 28px; font-weight: 700; color: #1a1a1a; background: var(--jaune);
+    }
+    .mp-avatar img { width: 100%; height: 100%; object-fit: cover; }
+    .mp-modal-name { font-size: 18px; font-weight: 800; color: #fff; margin-bottom: 4px; }
+    .mp-modal-username { font-size: 12px; color: rgba(255,255,255,.75); }
+
+    .mp-modal-body { padding: 20px 24px; }
+    .mp-info-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 18px;
+    }
+    .mp-info-item {
+      background: #f8fff9; border: 1px solid #d4edda; border-radius: 10px;
+      padding: 10px 12px;
+    }
+    .mp-info-label { font-size: 10px; font-weight: 700; color: #888; text-transform: uppercase; letter-spacing: .06em; margin-bottom: 2px; }
+    .mp-info-value { font-size: 13px; font-weight: 700; color: var(--vert-fonce); }
+    .mp-info-item.full { grid-column: 1 / -1; }
+    .mp-statut-badge {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 700;
+    }
+    .mp-notice {
+      background: #fff8e1; border: 1px solid #fde68a; border-radius: 10px;
+      padding: 10px 14px; font-size: 12px; color: #92400e; margin-bottom: 16px;
+      display: flex; align-items: flex-start; gap: 8px; line-height: 1.5;
+    }
+    .mp-notice i { flex-shrink: 0; margin-top: 1px; }
+    .mp-modal-footer { display: flex; gap: 10px; }
+    .mp-btn-dash {
+      flex: 1; padding: 12px; background: var(--vert-fonce); color: #fff; border: none;
+      border-radius: 10px; font-size: 13px; font-weight: 700; cursor: pointer;
+      font-family: inherit; display: flex; align-items: center; justify-content: center; gap: 7px;
+      text-decoration: none; transition: background .2s;
+    }
+    .mp-btn-dash:hover { background: #145a26; }
+    .mp-btn-close {
+      padding: 12px 18px; background: transparent; color: var(--gris-texte);
+      border: 1.5px solid var(--gris-bord); border-radius: 10px; font-size: 13px;
+      font-weight: 600; cursor: pointer; font-family: inherit; transition: all .2s;
+    }
+    .mp-btn-close:hover { border-color: var(--vert-vif); color: var(--vert-vif); }
+
+    /* skeleton loader dans la modale */
+    .mp-skel { background: linear-gradient(90deg,#f0f0f0 25%,#e8e8e8 50%,#f0f0f0 75%);
+      background-size: 200% 100%; animation: shimmer 1.2s infinite; border-radius: 6px; height: 14px; }
+    @keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
   </style>
 </head>
 
@@ -1374,10 +1449,10 @@
               <i class="fas fa-store"></i>
               Voir le catalogue
             </a>
-            <a href="/inscription/?role=producteur" class="btn-hero-outline">
+            <button onclick="clickProducteur()" class="btn-hero-outline" style="background:transparent;cursor:pointer;font-family:inherit">
               <i class="fas fa-tractor"></i>
               Je suis producteur
-            </a>
+            </button>
           </div>
         </div>
 
@@ -1751,10 +1826,10 @@
         directement aux consommateurs haïtiens.
       </p>
       <div class="cta-actions">
-        <a href="/inscription/?role=producteur" class="btn-hero-primary">
+        <button onclick="clickProducteur()" class="btn-hero-primary" style="background:var(--vert-fonce);border:none;cursor:pointer;font-family:inherit">
           <i class="fas fa-tractor"></i>
           Rejoindre comme producteur
-        </a>
+        </button>
         <a href="mailto:{{ site_settings.email_contact|default:'info@maketpeyizan.ht' }}" class="btn-hero-outline">
           <i class="fas fa-envelope"></i>
           Nous contacter
@@ -1960,6 +2035,110 @@
       dashLabel.textContent = getDashboardLabel(user);
     })();
 
+    // ── Bouton « Je suis producteur » ────────────────────────
+    function clickProducteur() {
+      const raw = localStorage.getItem('mp_user');
+      if (!raw) { window.location.href = '/inscription/?role=producteur'; return; }
+      let user;
+      try { user = JSON.parse(raw); } catch { window.location.href = '/inscription/?role=producteur'; return; }
+
+      if (user.role !== 'producteur') {
+        // Acheteur ou admin connecté → inscription producteur normale
+        window.location.href = '/inscription/?role=producteur';
+        return;
+      }
+      // Producteur connecté → ouvrir la modale
+      openProdModal(user);
+    }
+
+    function openProdModal(user) {
+      const overlay = document.getElementById('mp-prod-overlay');
+      overlay.classList.add('open');
+      document.body.style.overflow = 'hidden';
+
+      // Remplir l'en-tête avec ce qu'on a dans localStorage
+      const name = user.full_name || user.username || '?';
+      const avatarEl = document.getElementById('mp-avatar');
+      if (user.photo) {
+        avatarEl.innerHTML = `<img src="${user.photo}" alt="avatar">`;
+        avatarEl.style.background = 'transparent';
+        avatarEl.style.padding = '0';
+      } else {
+        avatarEl.textContent = name.charAt(0).toUpperCase();
+      }
+      document.getElementById('mp-name').textContent     = name;
+      document.getElementById('mp-username').textContent = '@' + (user.username || '');
+
+      // Charger les détails du profil producteur depuis l'API
+      loadProdModalDetails();
+    }
+
+    async function loadProdModalDetails() {
+      const access = localStorage.getItem('mp_access');
+      const grid   = document.getElementById('mp-info-grid');
+      if (!access) { renderProdModalGrid(null, null); return; }
+      try {
+        const [meRes, profilRes] = await Promise.all([
+          fetch('/api/auth/me/',                  { headers: { 'Authorization': 'Bearer ' + access } }),
+          fetch('/api/auth/producteur/profil/',   { headers: { 'Authorization': 'Bearer ' + access } }),
+        ]);
+        const me     = meRes.ok     ? await meRes.json()     : null;
+        const profil = profilRes.ok ? await profilRes.json() : null;
+        renderProdModalGrid(me, profil);
+      } catch { renderProdModalGrid(null, null); }
+    }
+
+    function renderProdModalGrid(me, profil) {
+      const STATUT_MAP = {
+        actif:      { label: 'Actif',      bg: '#e8f8ee', color: '#27ae60' },
+        en_attente: { label: 'En attente', bg: '#fef9e7', color: '#c9a007' },
+        suspendu:   { label: 'Suspendu',   bg: '#fde8e8', color: '#e74c3c' },
+        inactif:    { label: 'Inactif',    bg: '#f0f0f0', color: '#888'    },
+      };
+      const statut   = profil?.statut || 'en_attente';
+      const sc       = STATUT_MAP[statut] || STATUT_MAP.inactif;
+      const commune  = profil?.commune    || '—';
+      const dept     = profil?.departement_label || '—';
+      const code     = profil?.code_producteur   || '—';
+      const nbProd   = profil?.nb_produits_actifs ?? '—';
+      const email    = me?.email || '—';
+
+      document.getElementById('mp-info-grid').innerHTML = `
+        <div class="mp-info-item">
+          <div class="mp-info-label">Statut</div>
+          <div class="mp-info-value">
+            <span class="mp-statut-badge" style="background:${sc.bg};color:${sc.color}">
+              <i class="fas fa-circle" style="font-size:8px"></i> ${sc.label}
+            </span>
+          </div>
+        </div>
+        <div class="mp-info-item">
+          <div class="mp-info-label">Code producteur</div>
+          <div class="mp-info-value" style="font-family:monospace;font-size:12px">${code}</div>
+        </div>
+        <div class="mp-info-item">
+          <div class="mp-info-label">Commune</div>
+          <div class="mp-info-value">${commune}</div>
+        </div>
+        <div class="mp-info-item">
+          <div class="mp-info-label">Département</div>
+          <div class="mp-info-value">${dept}</div>
+        </div>
+        <div class="mp-info-item">
+          <div class="mp-info-label">Produits actifs</div>
+          <div class="mp-info-value">${nbProd}</div>
+        </div>
+        <div class="mp-info-item">
+          <div class="mp-info-label">Email</div>
+          <div class="mp-info-value" style="font-size:12px;word-break:break-all">${email}</div>
+        </div>`;
+    }
+
+    function closeProdModal() {
+      document.getElementById('mp-prod-overlay').classList.remove('open');
+      document.body.style.overflow = '';
+    }
+
     // ── Cart dropdown hover ───────────────────────────────────
     (function() {
       const wrap = document.getElementById('cart-dd-wrap');
@@ -2043,6 +2222,43 @@
       window.location.reload();
     }
   </script>
+
+  <!-- ══ MODALE : producteur déjà inscrit ════════════════════ -->
+  <div class="mp-overlay" id="mp-prod-overlay" onclick="if(event.target===this)closeProdModal()">
+    <div class="mp-modal">
+
+      <div class="mp-modal-header">
+        <button class="mp-modal-close" onclick="closeProdModal()"><i class="fas fa-times"></i></button>
+        <div class="mp-avatar" id="mp-avatar">?</div>
+        <div class="mp-modal-name" id="mp-name">—</div>
+        <div class="mp-modal-username" id="mp-username">@—</div>
+      </div>
+
+      <div class="mp-modal-body">
+
+        <div class="mp-notice">
+          <i class="fas fa-info-circle"></i>
+          <span>Vous êtes déjà inscrit sur Makèt Peyizan en tant que producteur. Accédez à votre espace pour gérer votre catalogue et vos commandes.</span>
+        </div>
+
+        <div class="mp-info-grid" id="mp-info-grid">
+          <!-- Skeleton par défaut -->
+          <div class="mp-info-item"><div class="mp-skel" style="width:60%;margin-bottom:6px"></div><div class="mp-skel"></div></div>
+          <div class="mp-info-item"><div class="mp-skel" style="width:60%;margin-bottom:6px"></div><div class="mp-skel"></div></div>
+          <div class="mp-info-item"><div class="mp-skel" style="width:60%;margin-bottom:6px"></div><div class="mp-skel"></div></div>
+          <div class="mp-info-item"><div class="mp-skel" style="width:60%;margin-bottom:6px"></div><div class="mp-skel"></div></div>
+        </div>
+
+        <div class="mp-modal-footer">
+          <a href="/dashboard/producteur/" class="mp-btn-dash">
+            <i class="fas fa-th-large"></i> Mon espace producteur
+          </a>
+          <button class="mp-btn-close" onclick="closeProdModal()">Fermer</button>
+        </div>
+
+      </div>
+    </div>
+  </div>
 
 </body>
 </html>

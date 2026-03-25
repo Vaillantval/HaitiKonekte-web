@@ -1,0 +1,587 @@
+{% extends 'dashboard/base.html' %}
+
+{% block title %}Mes collectes — Producteur{% endblock %}
+
+{% block sidebar_nav %}
+  <div class="nav-section-label">Navigation</div>
+  <a href="/dashboard/producteur/" class="nav-item">
+    <i class="fas fa-th-large"></i> Vue d'ensemble
+  </a>
+  <a href="/dashboard/producteur/collectes/" class="nav-item active">
+    <i class="fas fa-truck"></i> Mes collectes
+    <span class="nav-badge" id="sb-badge-collectes" style="display:none"></span>
+  </a>
+  <a href="/dashboard/producteur/catalogue/" class="nav-item">
+    <i class="fas fa-seedling"></i> Mon catalogue
+  </a>
+  <a href="/" class="nav-item">
+    <i class="fas fa-store"></i> Catalogue public
+  </a>
+
+  <div class="nav-section-label">Compte</div>
+  <a href="/dashboard/producteur/profil/" class="nav-item">
+    <i class="fas fa-user-edit"></i> Mon profil
+  </a>
+{% endblock %}
+
+{% block page_title %}Mes collectes{% endblock %}
+{% block page_subtitle %}Gérez vos invitations de collecte et confirmez votre participation{% endblock %}
+
+{% block extra_css %}
+<style>
+  .filters-bar {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+  }
+  .filter-btn {
+    padding: 7px 16px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    border: 1.5px solid var(--border);
+    background: var(--card);
+    color: var(--text-muted);
+    cursor: pointer;
+    font-family: inherit;
+    transition: all .18s;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .filter-btn:hover  { border-color: var(--green-mid); color: var(--green-mid); }
+  .filter-btn.active { background: var(--green-mid); color: #fff; border-color: var(--green-mid); }
+
+  .cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 16px;
+  }
+
+  .collecte-card {
+    background: var(--card);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    border: 1.5px solid var(--border);
+    overflow: hidden;
+    transition: box-shadow .18s;
+  }
+  .collecte-card:hover { box-shadow: 0 4px 20px rgba(0,0,0,.10); }
+
+  .card-header {
+    padding: 14px 18px 10px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+  }
+  .card-ref {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--green-mid);
+  }
+  .card-body { padding: 14px 18px; }
+  .card-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 5px 0;
+    font-size: 13px;
+    border-bottom: 1px solid var(--border);
+  }
+  .card-row:last-child { border-bottom: none; }
+  .card-label { color: var(--text-muted); }
+  .card-val   { font-weight: 600; color: var(--text); }
+
+  .card-footer {
+    padding: 12px 18px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  .statut-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 700;
+  }
+
+  .action-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 6px 14px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 700;
+    border: none;
+    cursor: pointer;
+    font-family: inherit;
+    transition: opacity .18s;
+    white-space: nowrap;
+  }
+  .action-btn:hover { opacity: .82; }
+  .action-btn.confirm { background: #e8f2ff; color: #2980b9; }
+  .action-btn.detail  { background: var(--bg); color: var(--text-muted); border: 1px solid var(--border); }
+
+  .empty-state {
+    text-align: center;
+    padding: 60px 24px;
+    color: var(--text-muted);
+  }
+  .empty-state i { font-size: 40px; opacity: .18; display: block; margin-bottom: 12px; }
+  .empty-state p { font-size: 14px; }
+
+  /* Drawer */
+  .drawer-overlay {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,.35);
+    z-index: 500;
+    opacity: 0; pointer-events: none;
+    transition: opacity .25s;
+  }
+  .drawer-overlay.open { opacity: 1; pointer-events: auto; }
+
+  .drawer {
+    position: fixed; top: 0; right: 0;
+    width: 460px; max-width: 96vw; height: 100vh;
+    background: var(--card);
+    z-index: 501;
+    transform: translateX(100%);
+    transition: transform .28s cubic-bezier(.4,0,.2,1);
+    display: flex; flex-direction: column;
+    box-shadow: -6px 0 40px rgba(0,0,0,.12);
+  }
+  .drawer.open { transform: translateX(0); }
+
+  .drawer-header {
+    padding: 18px 22px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-shrink: 0;
+  }
+  .drawer-header h3 { font-size: 15px; font-weight: 700; color: var(--text); }
+  .drawer-close {
+    width: 30px; height: 30px; border-radius: 8px;
+    border: 1px solid var(--border); background: var(--bg);
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+    font-size: 14px; color: var(--text-muted); transition: background .18s;
+  }
+  .drawer-close:hover { background: var(--border); }
+  .drawer-body { padding: 22px; overflow-y: auto; flex: 1; }
+  .drawer-actions {
+    padding: 16px 22px;
+    border-top: 1px solid var(--border);
+    display: flex; gap: 8px; flex-wrap: wrap;
+    flex-shrink: 0;
+  }
+
+  .drawer-section { margin-bottom: 20px; }
+  .drawer-section-title {
+    font-size: 11px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: .07em; color: var(--text-muted);
+    margin-bottom: 10px; padding-bottom: 6px;
+    border-bottom: 1px solid var(--border);
+  }
+  .drawer-row {
+    display: flex; justify-content: space-between;
+    padding: 5px 0; font-size: 13px; color: var(--text);
+  }
+  .drawer-row .label { color: var(--text-muted); }
+
+  /* Modal confirmation */
+  .modal-overlay {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,.45);
+    z-index: 600;
+    display: flex; align-items: center; justify-content: center;
+    opacity: 0; pointer-events: none;
+    transition: opacity .22s;
+  }
+  .modal-overlay.open { opacity: 1; pointer-events: auto; }
+  .modal-box {
+    background: var(--card);
+    border-radius: 14px;
+    padding: 28px 32px;
+    width: 400px; max-width: 95vw;
+    box-shadow: 0 12px 48px rgba(0,0,0,.18);
+    transform: translateY(12px);
+    transition: transform .22s;
+  }
+  .modal-overlay.open .modal-box { transform: translateY(0); }
+  .modal-box h3 { font-size: 16px; font-weight: 700; margin-bottom: 12px; }
+  .modal-box p  { font-size: 13px; color: var(--text-muted); margin-bottom: 18px; line-height: 1.6; }
+  .modal-field  { margin-bottom: 14px; }
+  .modal-field label { display: block; font-size: 12px; font-weight: 600; margin-bottom: 5px; color: var(--text-muted); }
+  .modal-field input, .modal-field textarea {
+    width: 100%; padding: 9px 12px;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    font-size: 13px;
+    font-family: inherit;
+    background: var(--bg);
+    color: var(--text);
+    outline: none;
+    transition: border-color .18s;
+  }
+  .modal-field input:focus, .modal-field textarea:focus { border-color: var(--green-mid); }
+  .modal-field textarea { resize: vertical; height: 80px; }
+  .modal-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 18px; }
+
+  .toast-container {
+    position: fixed; bottom: 24px; right: 24px; z-index: 9999;
+    display: flex; flex-direction: column; gap: 8px;
+  }
+  .toast {
+    display: flex; align-items: center; gap: 10px;
+    padding: 12px 16px; border-radius: 10px;
+    font-size: 13px; font-weight: 500; color: #fff;
+    box-shadow: 0 4px 20px rgba(0,0,0,.15);
+    animation: slideUp .25s ease; max-width: 320px;
+  }
+  .toast.success { background: #27ae60; }
+  .toast.error   { background: #e74c3c; }
+  @keyframes slideUp {
+    from { opacity: 0; transform: translateY(12px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="toast-container" id="toast-container"></div>
+
+<!-- Drawer overlay -->
+<div class="drawer-overlay" id="drawer-overlay" onclick="closeDrawer()"></div>
+
+<!-- Drawer détail -->
+<div class="drawer" id="detail-drawer">
+  <div class="drawer-header">
+    <h3 id="drawer-title">Collecte</h3>
+    <button class="drawer-close" onclick="closeDrawer()"><i class="fas fa-times"></i></button>
+  </div>
+  <div class="drawer-body" id="drawer-body">
+    <div style="text-align:center;padding:40px;color:var(--text-muted)">
+      <i class="fas fa-spinner fa-spin" style="font-size:24px"></i>
+    </div>
+  </div>
+  <div class="drawer-actions" id="drawer-actions"></div>
+</div>
+
+<!-- Modal confirmation -->
+<div class="modal-overlay" id="confirm-modal-overlay">
+  <div class="modal-box">
+    <h3><i class="fas fa-check-circle" style="color:var(--green-mid);margin-right:6px"></i> Confirmer ma participation</h3>
+    <p>En confirmant, vous indiquez aux administrateurs que vous êtes prêt pour la collecte. Un email leur sera envoyé automatiquement.</p>
+    <div class="modal-field">
+      <label>Quantité que vous pouvez apporter (kg ou unités)</label>
+      <input type="number" id="modal-quantite" min="0" placeholder="ex: 50">
+    </div>
+    <div class="modal-field">
+      <label>Notes / informations complémentaires (optionnel)</label>
+      <textarea id="modal-notes" placeholder="Produits disponibles, contraintes logistiques..."></textarea>
+    </div>
+    <div class="modal-actions">
+      <button class="action-btn detail" onclick="closeConfirmModal()">Annuler</button>
+      <button class="action-btn confirm" id="modal-confirm-btn" onclick="submitConfirmation()">
+        <i class="fas fa-check"></i> Confirmer
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Filtres -->
+<div class="filters-bar">
+  <button class="filter-btn active" data-statut="" onclick="setFilter(this)">
+    <i class="fas fa-list"></i> Toutes
+  </button>
+  <button class="filter-btn" data-statut="inscrit" onclick="setFilter(this)">
+    <i class="fas fa-clock"></i> En attente
+  </button>
+  <button class="filter-btn" data-statut="confirme" onclick="setFilter(this)">
+    <i class="fas fa-check"></i> Confirmées
+  </button>
+  <button class="filter-btn" data-statut="present" onclick="setFilter(this)">
+    <i class="fas fa-user-check"></i> Présent
+  </button>
+</div>
+
+<!-- Grille de cartes -->
+<div id="grid-loading" class="empty-state">
+  <i class="fas fa-spinner fa-spin"></i>
+  <p>Chargement des collectes...</p>
+</div>
+<div class="cards-grid" id="cards-grid" style="display:none"></div>
+<div class="empty-state" id="grid-empty" style="display:none">
+  <i class="fas fa-truck"></i>
+  <p>Aucune collecte pour ce filtre.</p>
+</div>
+
+{% endblock %}
+
+{% block page_script %}
+  let _filter     = '';
+  let _allData    = [];
+  let _confirmId  = null;
+
+  const STATUT_C = {
+    inscrit:  { bg: '#fef9e7', color: '#c9a007', icon: 'fa-clock',       label: 'En attente' },
+    confirme: { bg: '#e8f2ff', color: '#2980b9', icon: 'fa-check',       label: 'Confirmé' },
+    present:  { bg: '#e8f8ee', color: '#27ae60', icon: 'fa-user-check',  label: 'Présent' },
+    absent:   { bg: '#fde8e8', color: '#e74c3c', icon: 'fa-user-times',  label: 'Absent' },
+    annule:   { bg: '#f0f0f0', color: '#888',    icon: 'fa-times-circle',label: 'Annulée' },
+  };
+
+  const STATUT_COL = {
+    planifiee: { bg: '#e8f8ee', color: '#27ae60' },
+    en_cours:  { bg: '#e8f2ff', color: '#2980b9' },
+    terminee:  { bg: '#f0f0f0', color: '#888' },
+    annulee:   { bg: '#fde8e8', color: '#e74c3c' },
+    reportee:  { bg: '#fef9e7', color: '#c9a007' },
+  };
+
+  function showToast(msg, type = 'success') {
+    const c = document.getElementById('toast-container');
+    const t = document.createElement('div');
+    t.className = `toast ${type}`;
+    t.innerHTML = `<i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'}"></i> ${msg}`;
+    c.appendChild(t);
+    setTimeout(() => t.remove(), 3500);
+  }
+
+  function statutBadge(statut) {
+    const s = STATUT_C[statut] || { bg:'#eee', color:'#888', icon:'fa-circle', label: statut };
+    return `<span class="statut-badge" style="background:${s.bg};color:${s.color}">
+      <i class="fas ${s.icon}" style="font-size:9px"></i> ${s.label}
+    </span>`;
+  }
+
+  function collecteStatutBadge(statut, label) {
+    const s = STATUT_COL[statut] || { bg:'#eee', color:'#888' };
+    return `<span class="statut-badge" style="background:${s.bg};color:${s.color};font-size:10px">${label}</span>`;
+  }
+
+  function formatDate(iso) {
+    return new Date(iso + 'T00:00:00').toLocaleDateString('fr-FR', { weekday:'long', day:'2-digit', month:'long', year:'numeric' });
+  }
+
+  function renderCards(data) {
+    const grid = document.getElementById('cards-grid');
+    grid.innerHTML = '';
+    if (!data.length) {
+      grid.style.display = 'none';
+      document.getElementById('grid-empty').style.display = 'block';
+      return;
+    }
+    grid.style.display = 'grid';
+    document.getElementById('grid-empty').style.display = 'none';
+
+    data.forEach(p => {
+      const c = p.collecte;
+      const canConfirm = p.statut === 'inscrit' && c.statut === 'planifiee';
+      grid.innerHTML += `
+        <div class="collecte-card" id="card-${p.id}">
+          <div class="card-header">
+            <span class="card-ref"><i class="fas fa-truck" style="margin-right:5px;opacity:.6"></i>${c.reference}</span>
+            <div style="display:flex;gap:6px;align-items:center">
+              ${collecteStatutBadge(c.statut, c.statut_label)}
+              ${statutBadge(p.statut)}
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="card-row">
+              <span class="card-label"><i class="fas fa-calendar-alt" style="margin-right:4px;opacity:.5"></i>Date</span>
+              <span class="card-val">${formatDate(c.date_planifiee)}</span>
+            </div>
+            ${c.heure_debut ? `<div class="card-row">
+              <span class="card-label"><i class="fas fa-clock" style="margin-right:4px;opacity:.5"></i>Heure</span>
+              <span class="card-val">${c.heure_debut.substring(0,5)}</span>
+            </div>` : ''}
+            <div class="card-row">
+              <span class="card-label"><i class="fas fa-map-marker-alt" style="margin-right:4px;opacity:.5"></i>Zone</span>
+              <span class="card-val">${c.zone} — ${c.departement}</span>
+            </div>
+            ${c.point ? `<div class="card-row">
+              <span class="card-label"><i class="fas fa-flag" style="margin-right:4px;opacity:.5"></i>Point</span>
+              <span class="card-val">${c.point}${c.commune ? ', ' + c.commune : ''}</span>
+            </div>` : ''}
+            ${p.quantite_prevue ? `<div class="card-row">
+              <span class="card-label"><i class="fas fa-weight" style="margin-right:4px;opacity:.5"></i>Qté prévue</span>
+              <span class="card-val">${p.quantite_prevue} unités</span>
+            </div>` : ''}
+          </div>
+          <div class="card-footer">
+            ${canConfirm ? `<button class="action-btn confirm" onclick="openConfirmModal(${p.id})">
+              <i class="fas fa-check"></i> Confirmer ma participation
+            </button>` : ''}
+            <button class="action-btn detail" onclick="openDrawer(${p.id})">
+              <i class="fas fa-eye"></i> Détails
+            </button>
+          </div>
+        </div>`;
+    });
+  }
+
+  async function loadCollectes() {
+    document.getElementById('grid-loading').style.display = 'block';
+    document.getElementById('cards-grid').style.display   = 'none';
+    document.getElementById('grid-empty').style.display   = 'none';
+
+    try {
+      const r = await fetch('/api/collectes/mes-participations/', {
+        headers: { 'Authorization': 'Bearer ' + localStorage.getItem('mp_access') }
+      });
+      document.getElementById('grid-loading').style.display = 'none';
+
+      if (r.ok) {
+        _allData = await r.json();
+
+        // Badge sidebar
+        const pending = _allData.filter(p => p.statut === 'inscrit').length;
+        const badge = document.getElementById('sb-badge-collectes');
+        if (pending > 0) { badge.textContent = pending; badge.style.display = 'inline'; }
+        else badge.style.display = 'none';
+
+        applyFilter();
+      } else {
+        document.getElementById('grid-empty').style.display = 'block';
+      }
+    } catch(_) {
+      document.getElementById('grid-loading').style.display = 'none';
+      document.getElementById('grid-empty').style.display   = 'block';
+    }
+  }
+
+  function applyFilter() {
+    const filtered = _filter ? _allData.filter(p => p.statut === _filter) : _allData;
+    renderCards(filtered);
+  }
+
+  function setFilter(btn) {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    _filter = btn.dataset.statut;
+    applyFilter();
+  }
+
+  // ── Drawer ──────────────────────────────────────────────────────────────────
+  function openDrawer(id) {
+    const p = _allData.find(x => x.id === id);
+    if (!p) return;
+    const c = p.collecte;
+
+    document.getElementById('drawer-title').textContent = 'Collecte ' + c.reference;
+    document.getElementById('detail-drawer').classList.add('open');
+    document.getElementById('drawer-overlay').classList.add('open');
+
+    document.getElementById('drawer-body').innerHTML = `
+      <div class="drawer-section">
+        <div class="drawer-section-title">Statut de participation</div>
+        <div style="display:flex;gap:10px;align-items:center">
+          ${statutBadge(p.statut)}
+          ${collecteStatutBadge(c.statut, c.statut_label)}
+        </div>
+      </div>
+
+      <div class="drawer-section">
+        <div class="drawer-section-title">Détails de la collecte</div>
+        <div class="drawer-row"><span class="label">Référence</span><span>${c.reference}</span></div>
+        <div class="drawer-row"><span class="label">Zone</span><span>${c.zone} — ${c.departement}</span></div>
+        <div class="drawer-row"><span class="label">Date</span><span>${formatDate(c.date_planifiee)}</span></div>
+        ${c.heure_debut ? `<div class="drawer-row"><span class="label">Heure</span><span>${c.heure_debut.substring(0,5)}</span></div>` : ''}
+        ${c.point ? `<div class="drawer-row"><span class="label">Point de collecte</span><span>${c.point}${c.commune ? ', '+c.commune : ''}</span></div>` : ''}
+        ${c.notes ? `<div class="drawer-row" style="flex-direction:column;gap:4px"><span class="label">Notes organisateur</span><span style="font-size:12px;background:var(--bg);padding:8px;border-radius:6px;margin-top:4px">${c.notes}</span></div>` : ''}
+      </div>
+
+      <div class="drawer-section">
+        <div class="drawer-section-title">Ma participation</div>
+        <div class="drawer-row"><span class="label">Quantité prévue</span><span>${p.quantite_prevue || '—'}</span></div>
+        <div class="drawer-row"><span class="label">Quantité collectée</span><span>${p.quantite_collectee || '—'}</span></div>
+        ${p.notes ? `<div class="drawer-row" style="flex-direction:column;gap:4px"><span class="label">Mes notes</span><span style="font-size:12px;background:var(--bg);padding:8px;border-radius:6px;margin-top:4px">${p.notes}</span></div>` : ''}
+      </div>
+    `;
+
+    const actions = document.getElementById('drawer-actions');
+    actions.innerHTML = '';
+    if (p.statut === 'inscrit' && c.statut === 'planifiee') {
+      actions.innerHTML = `<button class="action-btn confirm" onclick="closeDrawer(); openConfirmModal(${p.id})">
+        <i class="fas fa-check"></i> Confirmer ma participation
+      </button>`;
+    }
+  }
+
+  function closeDrawer() {
+    document.getElementById('detail-drawer').classList.remove('open');
+    document.getElementById('drawer-overlay').classList.remove('open');
+  }
+
+  // ── Modal confirmation ───────────────────────────────────────────────────────
+  function openConfirmModal(id) {
+    _confirmId = id;
+    document.getElementById('modal-quantite').value = '';
+    document.getElementById('modal-notes').value    = '';
+    document.getElementById('confirm-modal-overlay').classList.add('open');
+  }
+
+  function closeConfirmModal() {
+    document.getElementById('confirm-modal-overlay').classList.remove('open');
+    _confirmId = null;
+  }
+
+  async function submitConfirmation() {
+    if (!_confirmId) return;
+    const btn = document.getElementById('modal-confirm-btn');
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Envoi...';
+
+    const body = {
+      quantite_prevue: parseInt(document.getElementById('modal-quantite').value) || 0,
+      notes: document.getElementById('modal-notes').value.trim(),
+    };
+
+    try {
+      const r = await fetch(`/api/collectes/participations/${_confirmId}/confirmer/`, {
+        method: 'PATCH',
+        headers: {
+          'Authorization':  'Bearer ' + localStorage.getItem('mp_access'),
+          'Content-Type':   'application/json',
+        },
+        body: JSON.stringify(body),
+      });
+      const data = await r.json();
+
+      if (r.ok) {
+        closeConfirmModal();
+        showToast('Participation confirmée ! Les admins ont été notifiés.');
+        // Mettre à jour localement
+        const idx = _allData.findIndex(x => x.id === _confirmId);
+        if (idx !== -1) {
+          _allData[idx].statut       = data.statut;
+          _allData[idx].quantite_prevue = body.quantite_prevue;
+          _allData[idx].notes        = body.notes;
+        }
+        applyFilter();
+      } else {
+        showToast(data.detail || 'Erreur lors de la confirmation.', 'error');
+      }
+    } catch(_) {
+      showToast('Erreur réseau.', 'error');
+    } finally {
+      btn.disabled = false;
+      btn.innerHTML = '<i class="fas fa-check"></i> Confirmer';
+    }
+  }
+
+  mpAuthCheck('producteur').then(user => {
+    if (user && mpProducteurGuard(user)) loadCollectes();
+  });
+{% endblock %}

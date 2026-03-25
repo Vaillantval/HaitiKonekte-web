@@ -7,9 +7,9 @@
   <a href="/dashboard/producteur/" class="nav-item active">
     <i class="fas fa-th-large"></i> Vue d'ensemble
   </a>
-  <a href="/dashboard/producteur/commandes/" class="nav-item">
-    <i class="fas fa-inbox"></i> Commandes reçues
-    <span class="nav-badge" id="sb-badge-commandes" style="display:none"></span>
+  <a href="/dashboard/producteur/collectes/" class="nav-item">
+    <i class="fas fa-truck"></i> Mes collectes
+    <span class="nav-badge" id="sb-badge-collectes" style="display:none"></span>
   </a>
   <a href="/dashboard/producteur/catalogue/" class="nav-item">
     <i class="fas fa-seedling"></i> Mon catalogue
@@ -212,10 +212,10 @@
     </div>
   </div>
 
-  <!-- Dernières commandes -->
+  <!-- Collectes récentes -->
   <div class="section-title">
-    Dernières commandes reçues
-    <a href="/dashboard/producteur/commandes/">Voir toutes <i class="fas fa-arrow-right"></i></a>
+    Mes collectes récentes
+    <a href="/dashboard/producteur/collectes/">Voir toutes <i class="fas fa-arrow-right"></i></a>
   </div>
 
   <div class="table-wrap">
@@ -226,45 +226,53 @@
     <table id="orders-table" style="display:none">
       <thead>
         <tr>
-          <th>N° Commande</th>
-          <th>Acheteur</th>
-          <th>Articles</th>
-          <th>Total</th>
-          <th>Statut</th>
-          <th>Date</th>
+          <th>Référence</th>
+          <th>Zone</th>
+          <th>Date planifiée</th>
+          <th>Point de collecte</th>
+          <th>Ma participation</th>
+          <th>Statut collecte</th>
         </tr>
       </thead>
       <tbody id="orders-tbody"></tbody>
     </table>
     <div class="empty-state" id="orders-empty" style="display:none">
-      <i class="fas fa-inbox"></i>
-      <p>Aucune commande reçue pour l'instant.</p>
+      <i class="fas fa-truck"></i>
+      <p>Aucune collecte planifiée pour l'instant.</p>
     </div>
   </div>
 
 {% endblock %}
 
 {% block page_script %}
-  const STATUT_STYLES = {
-    en_attente:     { bg: '#fef9e7', color: '#c9a007', icon: 'fa-clock' },
-    confirmee:      { bg: '#e8f2ff', color: '#2980b9', icon: 'fa-check' },
-    en_preparation: { bg: '#e8f2ff', color: '#2980b9', icon: 'fa-cog' },
-    prete:          { bg: '#e8f8ee', color: '#27ae60', icon: 'fa-box' },
-    en_collecte:    { bg: '#fff4e6', color: '#e67e22', icon: 'fa-truck' },
-    livree:         { bg: '#e8f8ee', color: '#1a6b2f', icon: 'fa-check-circle' },
-    annulee:        { bg: '#fde8e8', color: '#e74c3c', icon: 'fa-times-circle' },
-    litige:         { bg: '#f5e6ff', color: '#8e44ad', icon: 'fa-exclamation-triangle' },
+  const PART_STATUT = {
+    inscrit:  { bg: '#fef9e7', color: '#c9a007', label: 'En attente' },
+    confirme: { bg: '#e8f2ff', color: '#2980b9', label: 'Confirmé' },
+    present:  { bg: '#e8f8ee', color: '#27ae60', label: 'Présent' },
+    absent:   { bg: '#fde8e8', color: '#e74c3c', label: 'Absent' },
+    annule:   { bg: '#f0f0f0', color: '#888',    label: 'Annulée' },
   };
 
-  function statutBadge(statut, label) {
-    const s = STATUT_STYLES[statut] || { bg: '#eee', color: '#888', icon: 'fa-circle' };
-    return `<span class="statut-badge" style="background:${s.bg};color:${s.color}">
-      <i class="fas ${s.icon}" style="font-size:9px"></i> ${label}
-    </span>`;
+  const COL_STATUT = {
+    planifiee: { bg: '#e8f8ee', color: '#27ae60' },
+    en_cours:  { bg: '#e8f2ff', color: '#2980b9' },
+    terminee:  { bg: '#f0f0f0', color: '#888' },
+    annulee:   { bg: '#fde8e8', color: '#e74c3c' },
+    reportee:  { bg: '#fef9e7', color: '#c9a007' },
+  };
+
+  function partBadge(statut) {
+    const s = PART_STATUT[statut] || { bg:'#eee', color:'#888', label: statut };
+    return `<span style="display:inline-block;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;background:${s.bg};color:${s.color}">${s.label}</span>`;
+  }
+
+  function colBadge(statut, label) {
+    const s = COL_STATUT[statut] || { bg:'#eee', color:'#888' };
+    return `<span style="display:inline-block;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;background:${s.bg};color:${s.color}">${label}</span>`;
   }
 
   function formatDate(iso) {
-    return new Date(iso).toLocaleDateString('fr-FR', { day:'2-digit', month:'short', year:'numeric' });
+    return new Date(iso + 'T00:00:00').toLocaleDateString('fr-FR', { day:'2-digit', month:'short', year:'numeric' });
   }
 
   async function loadDashboard(user) {
@@ -295,33 +303,35 @@
           document.getElementById('stock-alert').style.display = 'block';
           document.getElementById('stock-faible-nb').textContent = s.stock_faible;
         }
-        if (s.en_attente > 0) {
-          const b = document.getElementById('sb-badge-commandes');
-          b.textContent = s.en_attente;
-          b.style.display = 'inline';
-        }
       }
     } catch (_) {}
 
-    // Commandes récentes
+    // Collectes récentes
     try {
-      const r = await fetch('/api/auth/producteur/commandes/', { headers });
+      const r = await fetch('/api/collectes/mes-participations/', { headers });
       document.getElementById('orders-loading').style.display = 'none';
       if (r.ok) {
-        const commandes = await r.json();
-        if (!commandes.length) {
+        const participations = await r.json();
+
+        // Badge sidebar
+        const pending = participations.filter(p => p.statut === 'inscrit').length;
+        const sbBadge = document.getElementById('sb-badge-collectes');
+        if (sbBadge && pending > 0) { sbBadge.textContent = pending; sbBadge.style.display = 'inline'; }
+
+        if (!participations.length) {
           document.getElementById('orders-empty').style.display = 'block';
         } else {
           const tbody = document.getElementById('orders-tbody');
-          commandes.slice(0, 5).forEach(c => {
+          participations.slice(0, 5).forEach(p => {
+            const c = p.collecte;
             tbody.innerHTML += `
               <tr>
-                <td><a href="/dashboard/producteur/commandes/" style="color:var(--green-mid);font-weight:600">${c.numero}</a></td>
-                <td>${c.acheteur_nom}<br><small style="color:var(--text-muted)">${c.acheteur_tel}</small></td>
-                <td style="text-align:center">${c.nb_articles}</td>
-                <td style="font-weight:600">${Number(c.total).toLocaleString('fr-FR')} HTG</td>
-                <td>${statutBadge(c.statut, c.statut_label)}</td>
-                <td style="color:var(--text-muted)">${formatDate(c.created_at)}</td>
+                <td><a href="/dashboard/producteur/collectes/" style="color:var(--green-mid);font-weight:600">${c.reference}</a></td>
+                <td>${c.zone}<br><small style="color:var(--text-muted)">${c.departement}</small></td>
+                <td style="color:var(--text-muted)">${formatDate(c.date_planifiee)}</td>
+                <td>${c.point ? c.point + (c.commune ? ', ' + c.commune : '') : '<span style="color:var(--text-muted)">—</span>'}</td>
+                <td>${partBadge(p.statut)}</td>
+                <td>${colBadge(c.statut, c.statut_label)}</td>
               </tr>`;
           });
           document.getElementById('orders-table').style.display = 'table';

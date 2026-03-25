@@ -1,0 +1,77 @@
+{% extends 'emails/base.html' %}
+{% block titre %}Producteur prêt — {{ collecte.reference }}{% endblock %}
+
+{% block content %}
+<p class="greeting">Bonjour,</p>
+<p class="message">
+  Un producteur a confirmé sa participation à une collecte terrain.
+  Il est prêt à remettre ses produits.
+</p>
+
+<div class="success-box">
+  <strong>{{ producteur.user.get_full_name|default:producteur.user.username }}</strong>
+  a confirmé sa participation à la collecte <strong>{{ collecte.reference }}</strong>.
+</div>
+
+<div class="card">
+  <div class="card-row">
+    <span class="card-label">Référence collecte</span>
+    <span class="card-value">{{ collecte.reference }}</span>
+  </div>
+  <div class="card-row">
+    <span class="card-label">Zone</span>
+    <span class="card-value">{{ collecte.zone.nom }}</span>
+  </div>
+  <div class="card-row">
+    <span class="card-label">Date planifiée</span>
+    <span class="card-value">{{ collecte.date_planifiee|date:"d/m/Y" }}</span>
+  </div>
+  {% if collecte.heure_debut %}
+  <div class="card-row">
+    <span class="card-label">Heure début</span>
+    <span class="card-value">{{ collecte.heure_debut|time:"H\hi" }}</span>
+  </div>
+  {% endif %}
+  {% if collecte.point_collecte %}
+  <div class="card-row">
+    <span class="card-label">Point de collecte</span>
+    <span class="card-value">{{ collecte.point_collecte.nom }} — {{ collecte.point_collecte.commune }}</span>
+  </div>
+  {% endif %}
+</div>
+
+<p style="font-size:14px;font-weight:700;color:#2c3e50;margin:20px 0 8px">Détails du producteur</p>
+<div class="card">
+  <div class="card-row">
+    <span class="card-label">Nom</span>
+    <span class="card-value">{{ producteur.user.get_full_name|default:producteur.user.username }}</span>
+  </div>
+  <div class="card-row">
+    <span class="card-label">Code producteur</span>
+    <span class="card-value">{{ producteur.code_producteur }}</span>
+  </div>
+  <div class="card-row">
+    <span class="card-label">Téléphone</span>
+    <span class="card-value">{{ producteur.user.telephone|default:"—" }}</span>
+  </div>
+  <div class="card-row">
+    <span class="card-label">Commune</span>
+    <span class="card-value">{{ producteur.commune }} — {{ producteur.get_departement_display }}</span>
+  </div>
+  <div class="card-row">
+    <span class="card-label">Quantité prévue</span>
+    <span class="card-value">{{ participation.quantite_prevue }} unités/kg</span>
+  </div>
+</div>
+
+<div style="text-align:center">
+  <a href="{{ site_url }}/admin/collectes/participationcollecte/{{ participation.pk }}/change/" class="btn">
+    Voir dans l'admin
+  </a>
+</div>
+
+<hr class="divider">
+<p style="font-size:13px;color:#888;text-align:center">
+  Confirmation reçue le {% now "d/m/Y à H\hi" %}
+</p>
+{% endblock %}

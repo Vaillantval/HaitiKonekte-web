@@ -170,3 +170,4 @@ class MeSerializer(serializers.ModelSerializer):
             'date_joined', 'created_at',
         ]
         read_only_fields = ['id', 'role', 'is_superuser', 'is_verified', 'date_joined', 'created_at']
+        # fcm_token intentionnellement absent : utiliser POST /api/auth/fcm-token/

@@ -31,6 +31,28 @@ class StockService:
 
     @staticmethod
     @transaction.atomic
+    def retour_stock(lot, quantite, commande=None, effectue_par=None, motif=''):
+        """Restaure du stock dans un lot suite à une annulation de commande."""
+        stock_avant = lot.quantite_actuelle
+        lot.quantite_actuelle += quantite
+        if lot.statut == Lot.Statut.EPUISE and lot.quantite_actuelle > 0:
+            lot.statut = Lot.Statut.DISPONIBLE
+        lot.save()
+        MouvementStock.objects.create(
+            lot=lot, produit=lot.produit,
+            type_mouvement=MouvementStock.TypeMouvement.RETOUR,
+            quantite=quantite,
+            stock_avant=stock_avant,
+            stock_apres=lot.quantite_actuelle,
+            commande=commande,
+            effectue_par=effectue_par,
+            motif=motif,
+        )
+        AlerteStock.verifier_et_creer(lot.produit)
+        return lot
+
+    @staticmethod
+    @transaction.atomic
     def ajustement_stock(lot, nouvelle_quantite, motif, effectue_par=None):
         stock_avant = lot.quantite_actuelle
         difference  = nouvelle_quantite - stock_avant

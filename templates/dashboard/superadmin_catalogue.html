@@ -1,0 +1,448 @@
+{% extends 'dashboard/base.html' %}
+{% block title %}Catalogue — Superadmin{% endblock %}
+{% block sidebar_nav %}{% include 'dashboard/superadmin_sidebar.html' with active='catalogue' %}{% endblock %}
+{% block page_title %}Catalogue produits{% endblock %}
+{% block page_subtitle %}Gestion de tous les produits de la plateforme{% endblock %}
+
+{% block extra_css %}
+<style>
+  .toolbar { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:18px; align-items:center; }
+  .search-box { flex:1; min-width:200px; display:flex; align-items:center; gap:8px; background:var(--card); border:1.5px solid var(--border); border-radius:8px; padding:8px 14px; }
+  .search-box input { border:none; outline:none; background:transparent; font-family:inherit; font-size:13px; color:var(--text); width:100%; }
+  .filter-btn { padding:7px 14px; border-radius:20px; font-size:12px; font-weight:600; border:1.5px solid var(--border); background:var(--card); color:var(--text-muted); cursor:pointer; font-family:inherit; transition:all .18s; white-space:nowrap; }
+  .filter-btn.active { background:var(--green-mid); color:#fff; border-color:var(--green-mid); }
+  .filter-btn:hover:not(.active) { border-color:var(--green-mid); color:var(--green-mid); }
+  .btn-new { padding:8px 18px; border-radius:8px; font-size:13px; font-weight:700; border:none; cursor:pointer; background:var(--green-mid); color:#fff; font-family:inherit; white-space:nowrap; }
+  .btn-new:hover { opacity:.88; }
+
+  .table-wrap { background:var(--card); border-radius:var(--radius); box-shadow:var(--shadow); overflow:hidden; }
+  table { width:100%; border-collapse:collapse; }
+  thead th { background:var(--bg); padding:11px 14px; text-align:left; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.06em; color:var(--text-muted); border-bottom:1px solid var(--border); }
+  tbody td { padding:10px 14px; font-size:13px; border-bottom:1px solid var(--border); color:var(--text); vertical-align:middle; }
+  tbody tr:last-child td { border-bottom:none; }
+  tbody tr:hover { background:#fafafa; }
+  .empty-state { text-align:center; padding:48px; color:var(--text-muted); font-size:13px; }
+  .badge { display:inline-block; padding:2px 9px; border-radius:12px; font-size:11px; font-weight:700; }
+  .prod-img { width:36px; height:36px; border-radius:6px; object-fit:cover; }
+  .prod-img-placeholder { width:36px; height:36px; border-radius:6px; background:var(--border); display:inline-flex; align-items:center; justify-content:center; }
+  .action-btn { padding:4px 10px; border-radius:6px; font-size:11px; font-weight:700; border:none; cursor:pointer; font-family:inherit; transition:opacity .18s; }
+  .action-btn:hover { opacity:.8; }
+  .btn-toggle-on  { background:#fde8e8; color:#e74c3c; }
+  .btn-toggle-off { background:#e8f8ee; color:#1a6b2f; }
+  .btn-feat-on    { background:#fff9e6; color:#c9a007; }
+  .btn-feat-off   { background:#f0f0f0; color:#888; }
+
+  /* Drawer */
+  .drawer-overlay { position:fixed; inset:0; background:rgba(0,0,0,.35); z-index:500; opacity:0; pointer-events:none; transition:opacity .22s; }
+  .drawer-overlay.open { opacity:1; pointer-events:auto; }
+  .drawer { position:fixed; right:0; top:0; bottom:0; width:540px; max-width:97vw; background:var(--card); box-shadow:-4px 0 32px rgba(0,0,0,.14); z-index:501; transform:translateX(100%); transition:transform .25s cubic-bezier(.4,0,.2,1); overflow-y:auto; padding:28px 32px 48px; }
+  .drawer.open { transform:translateX(0); }
+  .drawer-close { position:absolute; top:18px; right:18px; background:none; border:none; font-size:18px; cursor:pointer; color:var(--text-muted); }
+  .drawer h3 { font-size:16px; font-weight:700; margin-bottom:20px; padding-right:28px; }
+  .form-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+  .form-grid .full { grid-column:1/-1; }
+  .field { display:flex; flex-direction:column; gap:5px; }
+  .field label { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.05em; color:var(--text-muted); }
+  .field input, .field select, .field textarea {
+    padding:9px 12px; border:1.5px solid var(--border); border-radius:8px;
+    font-size:13px; font-family:inherit; background:var(--bg); color:var(--text); outline:none;
+  }
+  .field input:focus, .field select:focus, .field textarea:focus { border-color:var(--green-mid); }
+  .field textarea { height:80px; resize:vertical; }
+  .field input[type=file] { padding:6px 12px; }
+  .checkbox-row { display:flex; align-items:center; gap:8px; font-size:13px; }
+  .checkbox-row input[type=checkbox] { width:16px; height:16px; cursor:pointer; }
+  .drawer-actions { display:flex; gap:10px; justify-content:flex-end; margin-top:24px; border-top:1px solid var(--border); padding-top:20px; }
+  .btn-cancel { padding:9px 18px; border-radius:8px; font-size:13px; font-weight:700; border:1.5px solid var(--border); background:var(--bg); color:var(--text-muted); cursor:pointer; font-family:inherit; }
+  .btn-save { padding:9px 22px; border-radius:8px; font-size:13px; font-weight:700; border:none; cursor:pointer; background:var(--green-mid); color:#fff; font-family:inherit; }
+  .btn-save:hover { opacity:.88; } .btn-cancel:hover { border-color:var(--text-muted); }
+  .drawer-section { border-top:1px solid var(--border); margin-top:22px; padding-top:18px; }
+  .drawer-section h4 { font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:.05em; color:var(--text-muted); margin-bottom:14px; }
+  .current-img { max-width:120px; border-radius:8px; margin-top:6px; display:block; }
+  .img-preview { max-width:120px; border-radius:8px; margin-top:6px; display:none; }
+  .field-error { color:#e74c3c; font-size:11px; margin-top:3px; display:none; }
+
+  .toast-container { position:fixed; bottom:24px; right:24px; z-index:9999; display:flex; flex-direction:column; gap:8px; }
+  .toast { display:flex; align-items:center; gap:10px; padding:12px 16px; border-radius:10px; font-size:13px; font-weight:500; color:#fff; box-shadow:0 4px 20px rgba(0,0,0,.15); animation:slideUp .25s ease; }
+  .toast.success { background:#27ae60; } .toast.error { background:#e74c3c; }
+  @keyframes slideUp { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="toast-container" id="tc"></div>
+
+<!-- Drawer Créer / Éditer produit -->
+<div class="drawer-overlay" id="drawer-overlay" onclick="closeDrawer()"></div>
+<div class="drawer" id="drawer">
+  <button class="drawer-close" onclick="closeDrawer()"><i class="fas fa-times"></i></button>
+  <h3 id="drawer-title">Nouveau produit</h3>
+
+  <form id="prod-form" onsubmit="submitForm(event)">
+    <div class="form-grid">
+      <div class="field full">
+        <label>Producteur *</label>
+        <select id="f-producteur" required><option value="">Chargement...</option></select>
+        <span class="field-error" id="err-producteur"></span>
+      </div>
+      <div class="field full">
+        <label>Catégorie *</label>
+        <select id="f-categorie" required><option value="">Chargement...</option></select>
+        <span class="field-error" id="err-categorie"></span>
+      </div>
+      <div class="field full">
+        <label>Nom du produit *</label>
+        <input type="text" id="f-nom" required placeholder="Ex: Riz local variété...">
+        <span class="field-error" id="err-nom"></span>
+      </div>
+      <div class="field full">
+        <label>Description</label>
+        <textarea id="f-description" placeholder="Description détaillée..."></textarea>
+      </div>
+      <div class="field">
+        <label>Variété</label>
+        <input type="text" id="f-variete" placeholder="Ex: Jasmin, Caraïbe...">
+      </div>
+      <div class="field">
+        <label>Unité de vente *</label>
+        <select id="f-unite_vente" required>
+          <option value="kg">Kilogramme (kg)</option>
+          <option value="tonne">Tonne</option>
+          <option value="sac_50">Sac 50 kg</option>
+          <option value="sac_25">Sac 25 kg</option>
+          <option value="botte">Botte</option>
+          <option value="piece">Pièce</option>
+          <option value="litre">Litre</option>
+          <option value="carton">Carton</option>
+          <option value="douz">Douzaine</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Prix unitaire (HTG) *</label>
+        <input type="number" id="f-prix_unitaire" required min="0" step="0.01">
+        <span class="field-error" id="err-prix_unitaire"></span>
+      </div>
+      <div class="field">
+        <label>Prix en gros (HTG)</label>
+        <input type="number" id="f-prix_gros" min="0" step="0.01" placeholder="Optionnel">
+      </div>
+      <div class="field">
+        <label>Qté min. commande</label>
+        <input type="number" id="f-quantite_min_commande" min="1" value="1">
+      </div>
+      <div class="field">
+        <label>Seuil d'alerte stock</label>
+        <input type="number" id="f-seuil_alerte" min="0" value="10">
+      </div>
+      <div class="field">
+        <label>Origine / Région</label>
+        <input type="text" id="f-origine" placeholder="Ex: Artibonite">
+      </div>
+      <div class="field">
+        <label>Saison</label>
+        <input type="text" id="f-saison" placeholder="Ex: Hivernal 2024">
+      </div>
+      <div class="field full">
+        <label>Certifications</label>
+        <input type="text" id="f-certifications" placeholder="Ex: Bio, Label vert...">
+      </div>
+      <div class="field">
+        <label>Statut</label>
+        <select id="f-statut">
+          <option value="en_attente">En attente de validation</option>
+          <option value="actif">Actif</option>
+          <option value="brouillon">Brouillon</option>
+          <option value="suspendu">Suspendu</option>
+          <option value="inactif">Inactif</option>
+        </select>
+      </div>
+      <div class="field" style="justify-content:flex-end;gap:10px">
+        <label style="margin-bottom:0"> </label>
+        <label class="checkbox-row"><input type="checkbox" id="f-is_active"> Actif (visible)</label>
+        <label class="checkbox-row"><input type="checkbox" id="f-is_featured"> Mis en vedette</label>
+      </div>
+      <div class="field full">
+        <label>Image principale</label>
+        <img id="current-img" class="current-img" src="" alt="" style="display:none">
+        <input type="file" id="f-image" accept="image/*" onchange="previewImg(this)">
+        <img id="img-preview" class="img-preview">
+      </div>
+    </div>
+    <div class="drawer-actions">
+      <button type="button" class="btn-cancel" onclick="closeDrawer()">Annuler</button>
+      <button type="submit" class="btn-save" id="btn-submit"><i class="fas fa-save"></i> Enregistrer</button>
+    </div>
+  </form>
+</div>
+
+<div class="toolbar">
+  <div class="search-box">
+    <i class="fas fa-search" style="color:var(--text-muted)"></i>
+    <input type="text" id="search-input" placeholder="Nom, catégorie..." oninput="debouncedSearch()">
+  </div>
+  <button class="filter-btn active" data-statut="" onclick="setFilter(this)">Tous</button>
+  <button class="filter-btn" data-statut="actif" onclick="setFilter(this)">Actifs</button>
+  <button class="filter-btn" data-statut="en_attente" onclick="setFilter(this)">En attente</button>
+  <button class="filter-btn" data-statut="suspendu" onclick="setFilter(this)">Suspendus</button>
+  <button class="filter-btn" data-statut="brouillon" onclick="setFilter(this)">Brouillons</button>
+  <button class="filter-btn" data-statut="inactif" onclick="setFilter(this)">Inactifs</button>
+  <button class="btn-new" onclick="openCreate()"><i class="fas fa-plus"></i> Nouveau produit</button>
+</div>
+
+<div class="table-wrap">
+  <div class="empty-state" id="tbl-loading"><i class="fas fa-spinner fa-spin"></i> Chargement...</div>
+  <table id="tbl" style="display:none">
+    <thead>
+      <tr>
+        <th>Produit</th>
+        <th>Producteur</th>
+        <th>Catégorie</th>
+        <th>Prix</th>
+        <th>Stock réel</th>
+        <th>Statut</th>
+        <th>Actif</th>
+        <th>Vedette</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody id="tbody"></tbody>
+  </table>
+  <div class="empty-state" id="tbl-empty" style="display:none">Aucun produit trouvé.</div>
+</div>
+{% endblock %}
+
+{% block page_script %}
+const H = { 'Authorization': 'Bearer ' + localStorage.getItem('mp_access') };
+let _filter = '', _debounce, _editId = null;
+
+const STATUT_COLORS = {
+  actif:      { bg:'#e8f8ee', color:'#1a6b2f' },
+  en_attente: { bg:'#fff4e6', color:'#e67e22' },
+  suspendu:   { bg:'#fde8e8', color:'#e74c3c' },
+  brouillon:  { bg:'#f0f0f0', color:'#888' },
+  epuise:     { bg:'#fde8e8', color:'#e74c3c' },
+  inactif:    { bg:'#f0f0f0', color:'#888' },
+};
+
+function sBadge(s, label) {
+  const st = STATUT_COLORS[s] || { bg:'#eee', color:'#888' };
+  return `<span class="badge" style="background:${st.bg};color:${st.color}">${label}</span>`;
+}
+function fmt(n) { return Number(n).toLocaleString('fr-FR'); }
+function showToast(msg, type='success') {
+  const t = document.createElement('div'); t.className = `toast ${type}`;
+  t.innerHTML = `<i class="fas fa-${type==='success'?'check-circle':'exclamation-circle'}"></i> ${msg}`;
+  document.getElementById('tc').appendChild(t); setTimeout(() => t.remove(), 3500);
+}
+
+async function loadOptions() {
+  const [cats, prods] = await Promise.all([
+    fetch('/api/admin/options/?type=categories', { headers: H }).then(r => r.json()),
+    fetch('/api/admin/options/?type=producteurs_all', { headers: H }).then(r => r.json()),
+  ]);
+  const catSel  = document.getElementById('f-categorie');
+  const prodSel = document.getElementById('f-producteur');
+  catSel.innerHTML  = '<option value="">-- Choisir une catégorie --</option>' + cats.map(c => `<option value="${c.id}">${c.label}</option>`).join('');
+  prodSel.innerHTML = '<option value="">-- Choisir un producteur --</option>' + prods.map(p => `<option value="${p.id}">${p.label}</option>`).join('');
+}
+
+async function load() {
+  const search = document.getElementById('search-input').value.trim();
+  let url = `/api/admin/catalogue/?statut=${_filter}`;
+  if (search) url += '&search=' + encodeURIComponent(search);
+
+  document.getElementById('tbl-loading').style.display = 'block';
+  document.getElementById('tbl').style.display = 'none';
+  document.getElementById('tbl-empty').style.display = 'none';
+
+  const r = await fetch(url, { headers: H });
+  document.getElementById('tbl-loading').style.display = 'none';
+  if (!r.ok) { document.getElementById('tbl-empty').style.display = 'block'; return; }
+  const data = await r.json();
+  if (!data.length) { document.getElementById('tbl-empty').style.display = 'block'; return; }
+
+  const tbody = document.getElementById('tbody');
+  tbody.innerHTML = '';
+  data.forEach(p => {
+    const img = p.image
+      ? `<img src="${p.image}" class="prod-img">`
+      : `<div class="prod-img-placeholder"><i class="fas fa-box" style="color:var(--text-muted);font-size:14px"></i></div>`;
+    tbody.innerHTML += `
+      <tr id="row-${p.id}">
+        <td style="display:flex;align-items:center;gap:10px">
+          ${img}
+          <div><div style="font-weight:600">${p.nom}</div><div style="font-size:11px;color:var(--text-muted)">${p.unite_vente}</div></div>
+        </td>
+        <td><div style="font-weight:600">${p.producteur_nom}</div><div style="font-size:11px;color:var(--text-muted)">${p.producteur_code}</div></td>
+        <td style="color:var(--text-muted)">${p.categorie}</td>
+        <td style="font-weight:600">${fmt(p.prix_unitaire)} HTG</td>
+        <td><span style="font-weight:600;color:${p.stock_reel<=0?'#e74c3c':p.stock_reel<=5?'#e67e22':'var(--text)'}">${p.stock_reel}</span><span style="color:var(--text-muted);font-size:11px"> / ${p.stock_disponible}</span></td>
+        <td>${sBadge(p.statut, p.statut_label)}</td>
+        <td style="text-align:center">
+          <button class="action-btn ${p.is_active?'btn-toggle-on':'btn-toggle-off'}" onclick="toggleChamp(${p.id},'is_active',this)">${p.is_active?'Désactiver':'Activer'}</button>
+        </td>
+        <td style="text-align:center">
+          <button class="action-btn ${p.is_featured?'btn-feat-on':'btn-feat-off'}" onclick="toggleChamp(${p.id},'is_featured',this)"><i class="fas fa-star"></i> ${p.is_featured?'Retirer':'Mettre'}</button>
+        </td>
+        <td>
+          <button class="action-btn" style="background:var(--bg);color:var(--text-muted);border:1px solid var(--border)" onclick="openEdit(${p.id})"><i class="fas fa-edit"></i> Éditer</button>
+        </td>
+      </tr>`;
+  });
+  document.getElementById('tbl').style.display = 'table';
+}
+
+function setFilter(btn) {
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active'); _filter = btn.dataset.statut; load();
+}
+function debouncedSearch() { clearTimeout(_debounce); _debounce = setTimeout(load, 350); }
+
+function resetForm() {
+  ['f-nom','f-description','f-variete','f-prix_unitaire','f-prix_gros','f-quantite_min_commande',
+   'f-seuil_alerte','f-origine','f-saison','f-certifications','f-image'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = el.type === 'number' && id === 'f-quantite_min_commande' ? '1'
+                      : el.type === 'number' && id === 'f-seuil_alerte' ? '10' : '';
+  });
+  document.getElementById('f-unite_vente').value = 'kg';
+  document.getElementById('f-statut').value = 'en_attente';
+  document.getElementById('f-is_active').checked = false;
+  document.getElementById('f-is_featured').checked = false;
+  document.getElementById('f-producteur').disabled = false;
+  document.getElementById('current-img').style.display = 'none';
+  document.getElementById('img-preview').style.display = 'none';
+}
+
+async function openCreate() {
+  _editId = null;
+  resetForm();
+  document.getElementById('drawer-title').textContent = 'Nouveau produit';
+  document.getElementById('btn-submit').innerHTML = '<i class="fas fa-plus"></i> Créer le produit';
+  document.getElementById('drawer-overlay').classList.add('open');
+  document.getElementById('drawer').classList.add('open');
+}
+
+async function openEdit(id) {
+  _editId = id;
+  document.getElementById('drawer-title').textContent = 'Éditer le produit';
+  document.getElementById('btn-submit').innerHTML = '<i class="fas fa-save"></i> Enregistrer';
+  document.getElementById('drawer-overlay').classList.add('open');
+  document.getElementById('drawer').classList.add('open');
+
+  const r = await fetch(`/api/admin/catalogue/${id}/detail/`, { headers: H });
+  if (!r.ok) { showToast('Erreur de chargement', 'error'); return; }
+  const p = await r.json();
+
+  document.getElementById('f-nom').value = p.nom;
+  document.getElementById('f-description').value = p.description;
+  document.getElementById('f-variete').value = p.variete;
+  document.getElementById('f-prix_unitaire').value = p.prix_unitaire;
+  document.getElementById('f-prix_gros').value = p.prix_gros || '';
+  document.getElementById('f-unite_vente').value = p.unite_vente;
+  document.getElementById('f-quantite_min_commande').value = p.quantite_min_commande;
+  document.getElementById('f-seuil_alerte').value = p.seuil_alerte;
+  document.getElementById('f-origine').value = p.origine;
+  document.getElementById('f-saison').value = p.saison;
+  document.getElementById('f-certifications').value = p.certifications;
+  document.getElementById('f-statut').value = p.statut;
+  document.getElementById('f-is_active').checked = p.is_active;
+  document.getElementById('f-is_featured').checked = p.is_featured;
+  document.getElementById('f-categorie').value = p.categorie_id;
+  document.getElementById('f-producteur').value = p.producteur_id;
+  document.getElementById('f-producteur').disabled = true; // ne pas changer le producteur en édition
+
+  if (p.image) {
+    const ci = document.getElementById('current-img');
+    ci.src = p.image; ci.style.display = 'block';
+  }
+}
+
+function closeDrawer() {
+  document.getElementById('drawer-overlay').classList.remove('open');
+  document.getElementById('drawer').classList.remove('open');
+  _editId = null;
+}
+
+function previewImg(input) {
+  const preview = document.getElementById('img-preview');
+  if (input.files && input.files[0]) {
+    const reader = new FileReader();
+    reader.onload = e => { preview.src = e.target.result; preview.style.display = 'block'; };
+    reader.readAsDataURL(input.files[0]);
+    document.getElementById('current-img').style.display = 'none';
+  }
+}
+
+async function submitForm(e) {
+  e.preventDefault();
+  const btn = document.getElementById('btn-submit');
+  btn.disabled = true;
+
+  const fd = new FormData();
+  fd.append('nom',                  document.getElementById('f-nom').value);
+  fd.append('description',          document.getElementById('f-description').value);
+  fd.append('variete',              document.getElementById('f-variete').value);
+  fd.append('prix_unitaire',        document.getElementById('f-prix_unitaire').value);
+  fd.append('prix_gros',            document.getElementById('f-prix_gros').value);
+  fd.append('unite_vente',          document.getElementById('f-unite_vente').value);
+  fd.append('quantite_min_commande',document.getElementById('f-quantite_min_commande').value);
+  fd.append('seuil_alerte',         document.getElementById('f-seuil_alerte').value);
+  fd.append('origine',              document.getElementById('f-origine').value);
+  fd.append('saison',               document.getElementById('f-saison').value);
+  fd.append('certifications',       document.getElementById('f-certifications').value);
+  fd.append('statut',               document.getElementById('f-statut').value);
+  fd.append('is_active',            document.getElementById('f-is_active').checked ? 'true' : 'false');
+  fd.append('is_featured',          document.getElementById('f-is_featured').checked ? 'true' : 'false');
+
+  const imgFile = document.getElementById('f-image').files[0];
+  if (imgFile) fd.append('image_principale', imgFile);
+
+  let url, method;
+  if (_editId) {
+    url = `/api/admin/catalogue/${_editId}/detail/`;
+    method = 'PATCH';
+  } else {
+    fd.append('producteur_id', document.getElementById('f-producteur').value);
+    fd.append('categorie_id',  document.getElementById('f-categorie').value);
+    url = '/api/admin/catalogue/create/';
+    method = 'POST';
+  }
+  if (_editId) {
+    fd.append('categorie_id', document.getElementById('f-categorie').value);
+  }
+
+  const authH = { 'Authorization': 'Bearer ' + localStorage.getItem('mp_access') };
+  const r = await fetch(url, { method, headers: authH, body: fd });
+  const data = await r.json();
+  btn.disabled = false;
+
+  if (r.ok) {
+    showToast(_editId ? 'Produit mis à jour !' : 'Produit créé !');
+    closeDrawer();
+    load();
+  } else {
+    const msg = data.detail || data.nom || data.producteur_id || data.categorie_id || 'Erreur';
+    showToast(msg, 'error');
+  }
+}
+
+async function toggleChamp(id, champ, btn) {
+  btn.disabled = true;
+  const r = await fetch(`/api/admin/catalogue/${id}/toggle/`, {
+    method: 'PATCH',
+    headers: { 'Authorization': 'Bearer ' + localStorage.getItem('mp_access'), 'Content-Type': 'application/json' },
+    body: JSON.stringify({ champ })
+  });
+  btn.disabled = false;
+  if (r.ok) { showToast('Mis à jour'); load(); }
+  else { const d = await r.json(); showToast(d.detail || 'Erreur', 'error'); }
+}
+
+mpAuthCheck('superadmin').then(u => {
+  if (u && u.is_superuser) {
+    loadOptions();
+    load();
+  }
+});
+{% endblock %}

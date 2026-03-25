@@ -52,10 +52,12 @@ def on_commande_creee(sender, instance, created, **kwargs):
     if created:
         from apps.emails.utils import (
             email_nouvelle_commande_acheteur,
-            email_nouvelle_commande_producteur
+            email_nouvelle_commande_admin,
         )
+        from apps.emails.fcm_notifications import push_nouvelle_commande_admin
         email_nouvelle_commande_acheteur(instance)
-        email_nouvelle_commande_producteur(instance)
+        email_nouvelle_commande_admin(instance)
+        push_nouvelle_commande_admin(instance)
 
 
 # ── Signal : Statut commande changé ────────────────────────────
@@ -107,8 +109,12 @@ def on_alerte_stock_creee(sender, instance, created, **kwargs):
         AlerteStock.Niveau.CRITIQUE,
         AlerteStock.Niveau.EPUISE
     ]:
-        from apps.emails.utils import email_alerte_stock
-        email_alerte_stock(instance)
+        from apps.emails.utils import email_alerte_stock, email_alerte_stock_admin
+        from apps.emails.fcm_notifications import push_alerte_stock_admin, push_alerte_stock_producteur
+        email_alerte_stock(instance)        # email producteur
+        email_alerte_stock_admin(instance)  # email admin
+        push_alerte_stock_producteur(instance)
+        push_alerte_stock_admin(instance)
 
 
 # ── Signal : Invitation collecte ───────────────────────────────
@@ -116,4 +122,6 @@ def on_alerte_stock_creee(sender, instance, created, **kwargs):
 def on_participation_creee(sender, instance, created, **kwargs):
     if created:
         from apps.emails.utils import email_invitation_collecte
+        from apps.emails.fcm_notifications import push_invitation_collecte_producteur
         email_invitation_collecte(instance)
+        push_invitation_collecte_producteur(instance)

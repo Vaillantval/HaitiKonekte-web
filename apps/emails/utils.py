@@ -204,6 +204,46 @@ def email_alerte_stock(alerte):
     )
 
 
+# ── Emails Admins (commandes / collectes / stock) ────────────────────────
+
+def email_nouvelle_commande_admin(commande):
+    return envoyer_email_admin(
+        sujet=f"Nouvelle commande — {commande.numero_commande}",
+        template="admin_nouvelle_commande.html",
+        contexte={
+            "commande": commande,
+            "details":  commande.details.select_related('produit').all(),
+            "site_url": settings.SITE_URL,
+        }
+    )
+
+
+def email_collecte_confirme_admin(participation):
+    return envoyer_email_admin(
+        sujet=f"Producteur prêt — {participation.collecte.reference}",
+        template="collecte_confirme_admin.html",
+        contexte={
+            "participation": participation,
+            "collecte":      participation.collecte,
+            "producteur":    participation.producteur,
+            "site_url":      settings.SITE_URL,
+        }
+    )
+
+
+def email_alerte_stock_admin(alerte):
+    return envoyer_email_admin(
+        sujet=f"Alerte stock {alerte.get_niveau_display()} — {alerte.produit.nom}",
+        template="alerte_stock_admin.html",
+        contexte={
+            "alerte":     alerte,
+            "produit":    alerte.produit,
+            "producteur": alerte.produit.producteur,
+            "site_url":   settings.SITE_URL,
+        }
+    )
+
+
 # ── Emails Collectes ────────────────────────────────────────────
 
 def email_invitation_collecte(participation):
