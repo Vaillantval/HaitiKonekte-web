@@ -2,7 +2,7 @@
 CartService — Panier hybride pour Makèt Peyizan
 
 Backend selon le contexte :
-  - Utilisateur authentifié (JWT) → base de données (PanierItem)
+  - Utilisateur authentifié (JWT) → base de données (Panier / LignePanier)
   - Visiteur anonyme (web)        → session Django (comportement inchangé)
 
 Structure session (inchangée, rétrocompatible) :
@@ -51,9 +51,14 @@ class CartService:
     # ── DB backend helpers ────────────────────────────────────────────────────
 
     @staticmethod
-    def _db_qs(request):
-        from apps.orders.models.panier import PanierItem
-        return PanierItem.objects.filter(user=request.user).select_related(
+    def _db_get_panier(request):
+        from apps.orders.models.panier import Panier
+        panier, _ = Panier.objects.get_or_create(user=request.user)
+        return panier
+
+    @staticmethod
+    def _db_items_qs(panier):
+        return panier.items.select_related(
             'produit__producteur__user', 'produit__categorie'
         ).prefetch_related('produit__images')
 
@@ -73,8 +78,8 @@ class CartService:
         producteurs = {}
 
         for slug, item in cart.items():
-            prix      = float(item['prix_unitaire'])
-            qte       = item['quantite']
+            prix       = float(item['prix_unitaire'])
+            qte        = item['quantite']
             sous_total = round(prix * qte, 2)
             total     += sous_total
 
@@ -94,15 +99,16 @@ class CartService:
 
     @classmethod
     def _db_resume(cls, request) -> dict:
-        items = []
-        total = Decimal('0')
+        panier = cls._db_get_panier(request)
+        items  = []
+        total  = Decimal('0')
         producteurs = {}
 
-        for pi in cls._db_qs(request):
-            p          = pi.produit
+        for ligne in cls._db_items_qs(panier):
+            p          = ligne.produit
             prix       = p.prix_unitaire
-            qte        = pi.quantite
-            sous_total = qte * prix
+            qte        = ligne.quantite
+            sous_total = prix * qte
             total     += sous_total
 
             image = None
@@ -112,13 +118,13 @@ class CartService:
                 except Exception:
                     image = p.image_principale.url
 
-            pid = p.producteur_id
+            pid            = p.producteur_id
             producteur_nom = p.producteur.user.get_full_name()
 
             items.append({
                 'slug':              p.slug,
                 'nom':               p.nom,
-                'quantite':          float(qte),
+                'quantite':          qte,
                 'prix_unitaire':     str(prix),
                 'unite_vente':       p.unite_vente,
                 'unite_vente_label': p.get_unite_vente_display(),
@@ -176,16 +182,16 @@ class CartService:
 
     @classmethod
     def _db_ajouter(cls, request, produit, quantite) -> dict:
-        from apps.orders.models.panier import PanierItem
-        quantite = Decimal(str(quantite))
-        pi, created = PanierItem.objects.get_or_create(
-            user=request.user,
+        from apps.orders.models.panier import Panier, LignePanier
+        panier = cls._db_get_panier(request)
+        ligne, created = LignePanier.objects.get_or_create(
+            panier=panier,
             produit=produit,
             defaults={'quantite': quantite},
         )
         if not created:
-            pi.quantite += quantite
-            pi.save(update_fields=['quantite', 'updated_at'])
+            ligne.quantite += quantite
+            ligne.save(update_fields=['quantite', 'updated_at'])
         return cls._db_resume(request)
 
     # ── retirer ───────────────────────────────────────────────────────────────
@@ -193,8 +199,11 @@ class CartService:
     @classmethod
     def retirer(cls, request, slug: str) -> dict:
         if cls._use_db(request):
-            from apps.orders.models.panier import PanierItem
-            PanierItem.objects.filter(user=request.user, produit__slug=slug).delete()
+            from apps.orders.models.panier import Panier, LignePanier
+            panier = cls._db_get_panier(request)
+            LignePanier.objects.filter(
+                panier=panier, produit__slug=slug
+            ).delete()
             return cls._db_resume(request)
 
         cart = cls._session_get(request)
@@ -207,13 +216,15 @@ class CartService:
     @classmethod
     def modifier_quantite(cls, request, slug: str, quantite) -> dict:
         if cls._use_db(request):
-            from apps.orders.models.panier import PanierItem
-            quantite = Decimal(str(quantite))
+            from apps.orders.models.panier import Panier, LignePanier
+            panier = cls._db_get_panier(request)
             if quantite <= 0:
-                PanierItem.objects.filter(user=request.user, produit__slug=slug).delete()
+                LignePanier.objects.filter(
+                    panier=panier, produit__slug=slug
+                ).delete()
             else:
-                PanierItem.objects.filter(
-                    user=request.user, produit__slug=slug
+                LignePanier.objects.filter(
+                    panier=panier, produit__slug=slug
                 ).update(quantite=quantite)
             return cls._db_resume(request)
 
@@ -231,8 +242,12 @@ class CartService:
     @classmethod
     def vider(cls, request) -> None:
         if cls._use_db(request):
-            from apps.orders.models.panier import PanierItem
-            PanierItem.objects.filter(user=request.user).delete()
+            from apps.orders.models.panier import Panier
+            try:
+                panier = Panier.objects.get(user=request.user)
+                panier.items.all().delete()
+            except Panier.DoesNotExist:
+                pass
         else:
             request.session.pop(CART_SESSION_KEY, None)
             request.session.modified = True
@@ -242,16 +257,26 @@ class CartService:
     @classmethod
     def nb_articles(cls, request) -> int:
         if cls._use_db(request):
-            from apps.orders.models.panier import PanierItem
-            from django.db.models import Sum
-            result = PanierItem.objects.filter(user=request.user).aggregate(total=Sum('quantite'))
-            return float(result['total'] or 0)
+            from apps.orders.models.panier import Panier
+            try:
+                panier = Panier.objects.get(user=request.user)
+                return sum(
+                    ligne.quantite for ligne in panier.items.all()
+                )
+            except Panier.DoesNotExist:
+                return 0
         cart = cls._session_get(request)
         return sum(i['quantite'] for i in cart.values())
 
     @classmethod
     def contient(cls, request, slug: str) -> bool:
         if cls._use_db(request):
-            from apps.orders.models.panier import PanierItem
-            return PanierItem.objects.filter(user=request.user, produit__slug=slug).exists()
+            from apps.orders.models.panier import Panier, LignePanier
+            try:
+                panier = Panier.objects.get(user=request.user)
+                return LignePanier.objects.filter(
+                    panier=panier, produit__slug=slug
+                ).exists()
+            except Panier.DoesNotExist:
+                return False
         return slug in cls._session_get(request)

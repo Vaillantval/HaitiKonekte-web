@@ -247,15 +247,15 @@
     list.forEach(c => {
       tbody.innerHTML += `
         <tr>
-          <td><strong style="color:var(--green-mid)">${c.numero}</strong></td>
-          <td>${c.producteur_nom}<br><small style="color:var(--text-muted)">${c.producteur_commune}</small></td>
-          <td style="text-align:center">${c.nb_articles}</td>
+          <td><strong style="color:var(--green-mid)">${c.numero_commande}</strong></td>
+          <td>${c.producteur_nom || '—'}<br><small style="color:var(--text-muted)">${c.producteur_commune || ''}</small></td>
+          <td style="text-align:center">${c.details.length}</td>
           <td style="font-weight:700">${Number(c.total).toLocaleString('fr-FR')} HTG</td>
-          <td>${paiementBadge(c.statut_paiement, c.statut_paiement_label)}</td>
+          <td>${paiementBadge(c.statut_paiement, c.paiement_label)}</td>
           <td>${statutBadge(c.statut, c.statut_label)}</td>
           <td style="color:var(--text-muted);white-space:nowrap">${formatDate(c.created_at)}</td>
           <td>
-            <button onclick="openDrawer('${c.numero}')"
+            <button onclick="openDrawer('${c.numero_commande}')"
               style="background:none;border:1.5px solid var(--border);border-radius:6px;
                      padding:5px 10px;cursor:pointer;font-size:12px;color:var(--text-muted);
                      transition:all .2s;font-family:inherit"
@@ -281,12 +281,12 @@
         headers: { 'Authorization': 'Bearer ' + token },
       });
       if (!r.ok) throw new Error();
-      const c = await r.json();
+      const c = (await r.json()).data;
       document.getElementById('drawer-body').innerHTML = `
         <div class="detail-section">Résumé</div>
         <div class="detail-row"><span class="lbl">Statut</span><span class="val">${statutBadge(c.statut, c.statut_label)}</span></div>
-        <div class="detail-row"><span class="lbl">Paiement</span><span class="val">${paiementBadge(c.statut_paiement, c.statut_paiement_label)}</span></div>
-        <div class="detail-row"><span class="lbl">Méthode</span><span class="val">${c.methode_paiement_label}</span></div>
+        <div class="detail-row"><span class="lbl">Paiement</span><span class="val">${paiementBadge(c.statut_paiement, c.paiement_label)}</span></div>
+        <div class="detail-row"><span class="lbl">Méthode</span><span class="val">${c.methode_paiement_label || c.methode_paiement}</span></div>
         <div class="detail-row"><span class="lbl">Mode de livraison</span><span class="val">${c.mode_livraison}</span></div>
         <div class="detail-row"><span class="lbl">Date</span><span class="val">${formatDate(c.created_at)}</span></div>
         ${c.date_livraison_prevue ? `<div class="detail-row"><span class="lbl">Livraison prévue</span><span class="val">${new Date(c.date_livraison_prevue).toLocaleDateString('fr-FR')}</span></div>` : ''}
@@ -296,15 +296,15 @@
         <div class="detail-row"><span class="lbl">Ville / Commune</span><span class="val">${c.ville_livraison || c.departement_livraison || '—'}</span></div>
         ` : ''}
         <div class="detail-section">Producteur</div>
-        <div class="detail-row"><span class="lbl">Nom</span><span class="val">${c.producteur_nom}</span></div>
-        <div class="detail-row"><span class="lbl">Commune</span><span class="val">${c.producteur_commune}</span></div>
+        <div class="detail-row"><span class="lbl">Nom</span><span class="val">${c.producteur_nom || '—'}</span></div>
+        <div class="detail-row"><span class="lbl">Commune</span><span class="val">${c.producteur_commune || '—'}</span></div>
         <div class="detail-section">Articles</div>
         <table class="items-table">
           <thead><tr><th>Produit</th><th>Qté</th><th style="text-align:right">Prix unit.</th><th style="text-align:right">Sous-total</th></tr></thead>
           <tbody>
             ${c.details.map(d => `
               <tr>
-                <td>${d.produit_nom}</td>
+                <td>${d.produit}</td>
                 <td>${d.quantite} ${d.unite_vente}</td>
                 <td style="text-align:right">${Number(d.prix_unitaire).toLocaleString('fr-FR')}</td>
                 <td style="text-align:right;font-weight:600">${Number(d.sous_total).toLocaleString('fr-FR')}</td>
@@ -342,7 +342,7 @@
         headers: { 'Authorization': 'Bearer ' + token },
       });
       if (r.ok) {
-        allCommandes = await r.json();
+        allCommandes = (await r.json()).data || [];
         if (allCommandes.length === 0) {
           document.querySelector('.table-wrap').style.display = 'none';
           document.getElementById('cmd-empty').style.display = 'block';

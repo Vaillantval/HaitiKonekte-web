@@ -305,7 +305,7 @@
         headers: { 'Authorization': 'Bearer ' + token },
       });
       if (!r.ok) throw new Error();
-      const list = await r.json();
+      const list = (await r.json()).data || [];
       renderAdresses(list);
     } catch (_) {
       document.getElementById('addr-loading').style.display = 'none';
@@ -417,7 +417,8 @@
         // Tenter de lire le message d'erreur de l'API
         let msg = 'Une erreur est survenue. Vérifiez les champs.';
         try {
-          const err = await r.json();
+          const errJson = await r.json();
+          const err = errJson.error || errJson;
           const msgs = Object.entries(err).map(([k, v]) => {
             const label = { departement: 'Département', commune: 'Commune', libelle: 'Libellé',
                             nom_complet: 'Destinataire', rue: 'Rue', type_adresse: 'Type' }[k] || k;

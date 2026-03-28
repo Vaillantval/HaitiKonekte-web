@@ -232,7 +232,7 @@ async function load() {
   const r = await fetch(url, { headers: H });
   document.getElementById('tbl-loading').style.display = 'none';
   if (!r.ok) { document.getElementById('tbl-empty').style.display = 'block'; return; }
-  const data = await r.json();
+  const data = (await r.json()).data || [];
   if (!data.length) { document.getElementById('tbl-empty').style.display = 'block'; return; }
 
   const tbody = document.getElementById('tbody');
@@ -295,7 +295,7 @@ async function openEdit(id) {
 
   const r = await fetch(`/api/admin/users/${id}/detail/`, { headers: H });
   if (!r.ok) { showToast('Erreur', 'error'); return; }
-  const u = await r.json();
+  const u = (await r.json()).data;
 
   document.getElementById('f-first_name').value = u.first_name;
   document.getElementById('f-last_name').value  = u.last_name;
@@ -361,9 +361,10 @@ async function submitUser(e) {
     closeUserModal();
     load();
   } else {
-    if (data.username) { document.getElementById('err-username').textContent = data.username; document.getElementById('err-username').style.display = 'block'; }
-    if (data.email)    { document.getElementById('err-email').textContent    = data.email;    document.getElementById('err-email').style.display    = 'block'; }
-    showToast(data.detail || 'Erreur de validation', 'error');
+    const err = data.error || {};
+    if (err.username) { document.getElementById('err-username').textContent = Array.isArray(err.username)?err.username[0]:err.username; document.getElementById('err-username').style.display = 'block'; }
+    if (err.email)    { document.getElementById('err-email').textContent    = Array.isArray(err.email)?err.email[0]:err.email;          document.getElementById('err-email').style.display    = 'block'; }
+    showToast(typeof err === 'string' ? err : 'Erreur de validation', 'error');
   }
 }
 
@@ -371,8 +372,8 @@ async function toggleUser(id, btn) {
   btn.disabled = true;
   const r = await fetch(`/api/admin/users/${id}/toggle/`, { method:'PATCH', headers:H });
   const data = await r.json();
-  if (r.ok) { showToast(`${data.username} : ${data.is_active?'activé':'désactivé'}`); load(); }
-  else { showToast(data.detail||'Erreur','error'); btn.disabled=false; }
+  if (r.ok) { showToast(`${data.data?.username||''} : ${data.data?.is_active?'activé':'désactivé'}`); load(); }
+  else { showToast(data.error||'Erreur','error'); btn.disabled=false; }
 }
 
 function debouncedSearch() { clearTimeout(_debounce); _debounce = setTimeout(load, 350); }

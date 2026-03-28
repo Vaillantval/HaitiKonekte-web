@@ -285,7 +285,7 @@ async function loadMouvements() {
   const r = await fetch(url, { headers: H });
   document.getElementById('mvt-loading').style.display = 'none';
   if (!r.ok) { document.getElementById('mvt-empty').style.display = 'block'; return; }
-  const data = await r.json();
+  const data = (await r.json()).data || [];
   if (!data.length) { document.getElementById('mvt-empty').style.display = 'block'; return; }
 
   function fdatetime(iso) { return new Date(iso).toLocaleDateString('fr-FR',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'}); }
@@ -310,7 +310,7 @@ async function loadMouvements() {
 
 async function loadProduitOptions(selectedId) {
   const r = await fetch('/api/admin/options/?type=produits', { headers: H });
-  const data = await r.json();
+  const data = (await r.json()).data || [];
   const sel = document.getElementById('f-produit');
   sel.innerHTML = '<option value="">-- Choisir un produit --</option>' +
     data.map(p => `<option value="${p.id}"${selectedId==p.id?' selected':''}>${p.label}</option>`).join('');
@@ -328,7 +328,7 @@ async function loadLots() {
   const r = await fetch(url, { headers: H });
   document.getElementById('lots-loading').style.display = 'none';
   if (!r.ok) { document.getElementById('lots-empty').style.display = 'block'; return; }
-  const data = await r.json();
+  const data = (await r.json()).data || [];
   if (!data.length) { document.getElementById('lots-empty').style.display = 'block'; return; }
 
   const tbody = document.getElementById('lots-tbody');
@@ -382,7 +382,7 @@ async function openLotEdit(id) {
 
   const r = await fetch(`/api/admin/stocks/lots/${id}/`, { headers: H });
   if (!r.ok) { showToast('Erreur', 'error'); return; }
-  const lot = await r.json();
+  const lot = (await r.json()).data;
 
   await loadProduitOptions(lot.produit_id);
   document.getElementById('f-produit').value = lot.produit_id;
@@ -439,11 +439,11 @@ async function submitLot(e) {
   btn.disabled = false;
 
   if (r.ok) {
-    showToast(_editLotId ? 'Lot mis à jour !' : `Lot créé : ${data.numero_lot}`);
+    showToast(_editLotId ? 'Lot mis à jour !' : `Lot créé : ${data.data?.numero_lot || ''}`);
     closeLotModal();
     loadLots();
   } else {
-    showToast(data.detail || 'Erreur', 'error');
+    showToast(data.error || 'Erreur', 'error');
   }
 }
 
@@ -456,7 +456,7 @@ async function loadAlertes() {
   const r = await fetch(url, { headers: H });
   document.getElementById('alertes-loading').style.display = 'none';
   if (!r.ok) { document.getElementById('alertes-empty').style.display = 'block'; return; }
-  const data = await r.json();
+  const data = (await r.json()).data || [];
 
   const badge = document.getElementById('badge-alertes');
   const nb = data.filter(a => a.niveau === 'epuise' || a.niveau === 'critique').length;

@@ -1,50 +1,33 @@
 from django.urls import path
-from apps.accounts.views import (
-    RegisterView,
-    LoginView,
-    LogoutView,
-    MeView,
-    FcmTokenView,
-    TokenRefreshView,
-    AdresseListCreateView,
-    AdresseDetailView,
-    AdresseSetDefaultView,
-    MesCommandesView,
-    CommandeDetailView,
-    ChangePasswordView,
-    ProducteurStatsView,
-    ProducteurCommandesView,
-    ProducteurCommandeDetailView,
-    ProducteurCommandeStatutView,
-    ProducteurProfilUpdateView,
-)
+from rest_framework_simplejwt.views import TokenRefreshView
+from apps.accounts import views
 
 app_name = 'accounts'
 
 urlpatterns = [
-    path('register/',       RegisterView.as_view(),     name='register'),
-    path('login/',          LoginView.as_view(),         name='login'),
-    path('logout/',         LogoutView.as_view(),        name='logout'),
-    path('token/refresh/',  TokenRefreshView.as_view(),  name='token_refresh'),
-    path('me/',             MeView.as_view(),             name='me'),
-    path('fcm-token/',      FcmTokenView.as_view(),       name='fcm_token'),
 
-    # Adresses
-    path('adresses/',                    AdresseListCreateView.as_view(), name='adresses'),
-    path('adresses/<int:pk>/',           AdresseDetailView.as_view(),     name='adresse_detail'),
-    path('adresses/<int:pk>/default/',   AdresseSetDefaultView.as_view(), name='adresse_default'),
+    # ── Auth ─────────────────────────────────────────────────────────────────
+    path('register/',        views.register,        name='register'),
+    path('login/',           views.login,           name='login'),
+    path('logout/',          views.logout,          name='logout'),
+    path('token/refresh/',   TokenRefreshView.as_view(), name='token_refresh'),
+    path('me/',              views.me,              name='me'),
+    path('change-password/', views.change_password, name='change_password'),
+    path('fcm-token/',       views.fcm_token,       name='fcm_token'),
 
-    # Commandes acheteur
-    path('commandes/',                   MesCommandesView.as_view(),   name='mes_commandes'),
-    path('commandes/<str:numero>/',      CommandeDetailView.as_view(), name='commande_detail'),
+    # ── Adresses ─────────────────────────────────────────────────────────────
+    path('adresses/',                    views.adresses_list,      name='adresses'),
+    path('adresses/<int:pk>/',           views.adresse_detail,     name='adresse_detail'),
+    path('adresses/<int:pk>/default/',   views.adresse_set_default, name='adresse_default'),
 
-    # Changement de mot de passe
-    path('change-password/',             ChangePasswordView.as_view(), name='change_password'),
+    # ── Commandes acheteur ───────────────────────────────────────────────────
+    path('commandes/',                views.acheteur_commandes,       name='acheteur_commandes'),
+    path('commandes/<str:numero>/',   views.acheteur_commande_detail, name='acheteur_commande_detail'),
 
-    # Dashboard Producteur
-    path('producteur/stats/',                              ProducteurStatsView.as_view(),           name='producteur_stats'),
-    path('producteur/profil/',                             ProducteurProfilUpdateView.as_view(),     name='producteur_profil'),
-    path('producteur/commandes/',                          ProducteurCommandesView.as_view(),        name='producteur_commandes'),
-    path('producteur/commandes/<str:numero>/',             ProducteurCommandeDetailView.as_view(),   name='producteur_commande_detail'),
-    path('producteur/commandes/<str:numero>/statut/',      ProducteurCommandeStatutView.as_view(),   name='producteur_commande_statut'),
+    # ── Dashboard Producteur ─────────────────────────────────────────────────
+    path('producteur/stats/',                             views.producteur_stats,            name='producteur_stats'),
+    path('producteur/profil/',                            views.producteur_profil,           name='producteur_profil'),
+    path('producteur/commandes/',                         views.producteur_commandes,        name='producteur_commandes'),
+    path('producteur/commandes/<str:numero>/',            views.producteur_commande_detail,  name='producteur_commande_detail'),
+    path('producteur/commandes/<str:numero>/statut/',     views.producteur_commande_statut,  name='producteur_commande_statut'),
 ]

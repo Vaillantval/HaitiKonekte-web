@@ -128,7 +128,7 @@ async function load() {
   const r = await fetch('/api/admin/categories/', { headers: H });
   document.getElementById('tbl-loading').style.display = 'none';
   if (!r.ok) { document.getElementById('tbl-empty').style.display = 'block'; return; }
-  _allCats = await r.json();
+  _allCats = (await r.json()).data || [];
   if (!_allCats.length) { document.getElementById('tbl-empty').style.display = 'block'; return; }
 
   // Mettre à jour le select parent dans le modal
@@ -178,7 +178,7 @@ async function openEdit(id) {
   _editId = id;
   const r = await fetch(`/api/admin/categories/${id}/`, { headers: H });
   if (!r.ok) { showToast('Erreur', 'error'); return; }
-  const c = await r.json();
+  const c = (await r.json()).data;
   document.getElementById('modal-title').textContent = 'Modifier catégorie';
   document.getElementById('submit-btn').innerHTML = '<i class="fas fa-save"></i> Enregistrer';
   document.getElementById('f-nom').value    = c.nom;
@@ -222,7 +222,7 @@ async function deleteCat(id, nom) {
   if (!confirm(`Supprimer la catégorie "${nom}" ?`)) return;
   const r = await fetch(`/api/admin/categories/${id}/`, { method:'DELETE', headers:H });
   if (r.ok) { showToast('Catégorie supprimée'); load(); }
-  else { const d = await r.json(); showToast(d.detail||'Erreur', 'error'); }
+  else { const d = await r.json(); showToast(d.error||'Erreur', 'error'); }
 }
 
 mpAuthCheck('superadmin').then(u => { if (u && u.is_superuser) load(); });

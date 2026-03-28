@@ -226,7 +226,7 @@ async function loadZones() {
   const r = await fetch('/api/admin/zones/', { headers: H });
   document.getElementById('z-loading').style.display = 'none';
   if (!r.ok) return;
-  _zones = await r.json();
+  _zones = (await r.json()).data || [];
   if (!_zones.length) { document.getElementById('z-empty').style.display = 'block'; return; }
 
   // Mettre à jour les selects zones
@@ -276,7 +276,7 @@ async function openZoneEdit(id) {
   _zEditId = id;
   const r = await fetch(`/api/admin/zones/${id}/`, { headers: H });
   if (!r.ok) return;
-  const z = await r.json();
+  const z = (await r.json()).data;
   document.getElementById('zone-modal-title').textContent = 'Modifier zone';
   document.getElementById('z-submit').innerHTML = '<i class="fas fa-save"></i> Enregistrer';
   document.getElementById('z-nom').value         = z.nom;
@@ -315,7 +315,7 @@ async function deleteZone(id, nom) {
   if (!confirm(`Supprimer la zone "${nom}" ?`)) return;
   const r = await fetch(`/api/admin/zones/${id}/`, { method:'DELETE', headers:H });
   if (r.ok) { showToast('Zone supprimée'); loadZones(); }
-  else { const d = await r.json(); showToast(d.detail||'Erreur', 'error'); }
+  else { const d = await r.json(); showToast(d.error||'Erreur', 'error'); }
 }
 
 // ── Points ────────────────────────────────────────────────────────────────
@@ -329,7 +329,7 @@ async function loadPoints() {
   const r = await fetch(url, { headers: H });
   document.getElementById('pt-loading').style.display = 'none';
   if (!r.ok) return;
-  const data = await r.json();
+  const data = (await r.json()).data || [];
   if (!data.length) { document.getElementById('pt-empty').style.display = 'block'; return; }
 
   const tbody = document.getElementById('pt-tbody');
@@ -365,11 +365,9 @@ function openPointCreate() {
 
 async function openPointEdit(id) {
   _ptEditId = id;
-  const r = await fetch('/api/admin/points/?', { headers:H }); // load all then filter
-  // Direct approach: get from loaded data if available
   const rp = await fetch(`/api/admin/points/?`, { headers:H });
   if (!rp.ok) return;
-  const pts = await rp.json();
+  const pts = (await rp.json()).data || [];
   const p = pts.find(x => x.id === id);
   if (!p) return;
   document.getElementById('point-modal-title').textContent = 'Modifier point';

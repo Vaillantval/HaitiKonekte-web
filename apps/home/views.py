@@ -1,5 +1,8 @@
+import json
+
 from django.shortcuts import render, get_object_or_404, redirect
 from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
 from django.db.models import Count, Q
 from apps.catalog.models import Produit, Categorie
 from apps.accounts.models import Producteur
@@ -7,7 +10,64 @@ from apps.accounts.models import Producteur
 
 def health_check(request):
     """GET /health/ — utilisé par Railway pour vérifier que l'app est vivante."""
-    return JsonResponse({'status': 'ok'})
+    return JsonResponse({'status': 'ok', 'service': 'Makèt Peyizan'})
+
+
+def faq_publique(request):
+    """FAQ publique accessible sans authentification."""
+    from apps.home.models import FAQCategorie
+    cats = FAQCategorie.objects.filter(is_active=True).prefetch_related(
+        'items'
+    ).order_by('ordre')
+    data = [
+        {
+            'categorie': c.titre,
+            'items': [
+                {'question': i.question, 'reponse': i.reponse}
+                for i in c.items.filter(is_active=True)
+            ]
+        }
+        for c in cats
+    ]
+    return JsonResponse({'success': True, 'data': data})
+
+
+@csrf_exempt
+def contact_public(request):
+    """Formulaire de contact public."""
+    if request.method != 'POST':
+        return JsonResponse(
+            {'success': False, 'error': 'Méthode POST requise.'},
+            status=405
+        )
+
+    try:
+        data = json.loads(request.body)
+    except Exception:
+        data = request.POST
+
+    nom     = data.get('nom', '').strip()
+    email   = data.get('email', '').strip()
+    message = data.get('message', '').strip()
+
+    if not nom or not email or not message:
+        return JsonResponse(
+            {'success': False, 'error': 'Nom, email et message sont requis.'},
+            status=400
+        )
+
+    from apps.home.models import ContactMessage
+    ContactMessage.objects.create(
+        nom=nom,
+        email=email,
+        sujet=data.get('sujet', ''),
+        message=message,
+    )
+
+    return JsonResponse({
+        'success': True,
+        'data': {'message': 'Message envoyé. Nous vous répondrons bientôt.'}
+    }, status=201)
 
 
 def home(request):

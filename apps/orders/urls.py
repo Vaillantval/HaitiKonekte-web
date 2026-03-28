@@ -1,20 +1,16 @@
 from django.urls import path
-from apps.orders.views import (
-    PanierView,
-    PanierAjouterView,
-    PanierRetirerView,
-    PanierModifierView,
-    PanierViderView,
-    CommanderView,
-)
+from apps.orders import views
 
 app_name = 'orders'
 
 urlpatterns = [
-    path('panier/',                       PanierView.as_view(),        name='panier'),
-    path('panier/ajouter/',               PanierAjouterView.as_view(), name='panier_ajouter'),
-    path('panier/retirer/<slug:slug>/',   PanierRetirerView.as_view(), name='panier_retirer'),
-    path('panier/modifier/<slug:slug>/',  PanierModifierView.as_view(),name='panier_modifier'),
-    path('panier/vider/',                 PanierViderView.as_view(),   name='panier_vider'),
-    path('commander/',                    CommanderView.as_view(),      name='commander'),
+    # Panier
+    path('panier/',                         views.panier_resume,  name='panier_resume'),
+    path('panier/ajouter/',                 views.panier_ajouter, name='panier_ajouter'),
+    path('panier/modifier/<slug:slug>/',    views.panier_modifier, name='panier_modifier'),
+    path('panier/retirer/<slug:slug>/',     views.panier_retirer, name='panier_retirer'),
+    path('panier/vider/',                   views.panier_vider,   name='panier_vider'),
+
+    # Commander
+    path('commander/',                      views.commander,      name='commander'),
 ]

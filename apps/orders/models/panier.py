@@ -2,35 +2,81 @@ from django.db import models
 from django.conf import settings
 
 
-class PanierItem(models.Model):
+class Panier(models.Model):
     """
-    Article dans le panier persistant (lié à un utilisateur authentifié).
-    Remplace le panier session pour les clients mobiles (Flutter/JWT).
-    Le panier session reste utilisé pour les visiteurs anonymes du site web.
+    Panier persistant en base de données.
+    Un panier par utilisateur connecté.
     """
-    user    = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
-        on_delete=models.CASCADE,
-        related_name='panier_items',
-    )
-    produit = models.ForeignKey(
-        'catalog.Produit',
-        on_delete=models.CASCADE,
-        related_name='panier_items',
-    )
-    quantite   = models.DecimalField(max_digits=10, decimal_places=3)
+    user       = models.OneToOneField(
+                   settings.AUTH_USER_MODEL,
+                   on_delete=models.CASCADE,
+                   related_name='panier'
+                 )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        unique_together  = ('user', 'produit')
-        verbose_name     = 'Article panier'
-        verbose_name_plural = 'Articles panier'
-        ordering         = ['created_at']
+        verbose_name        = 'Panier'
+        verbose_name_plural = 'Paniers'
 
     def __str__(self):
-        return f"{self.user} — {self.produit} × {self.quantite}"
+        return f"Panier de {self.user.get_full_name()}"
+
+    @property
+    def nb_articles(self):
+        """Nombre total d'articles (somme des quantités)."""
+        return sum(item.quantite for item in self.items.all())
+
+    @property
+    def nb_items(self):
+        """Nombre de lignes distinctes."""
+        return self.items.count()
+
+    @property
+    def total(self):
+        """Total du panier en HTG."""
+        return sum(item.sous_total for item in self.items.all())
+
+    @property
+    def producteurs(self):
+        """Liste des producteurs distincts dans le panier."""
+        return list(
+            self.items.select_related('produit__producteur__user')
+            .values(
+                'produit__producteur__id',
+                'produit__producteur__user__first_name',
+                'produit__producteur__user__last_name',
+            )
+            .distinct()
+        )
+
+
+class LignePanier(models.Model):
+    """
+    Ligne d'un panier — un produit avec sa quantité.
+    """
+    panier     = models.ForeignKey(
+                   Panier,
+                   on_delete=models.CASCADE,
+                   related_name='items'
+                 )
+    produit    = models.ForeignKey(
+                   'catalog.Produit',
+                   on_delete=models.CASCADE,
+                   related_name='lignes_panier'
+                 )
+    quantite   = models.PositiveIntegerField(default=1)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name        = 'Ligne panier'
+        verbose_name_plural = 'Lignes panier'
+        unique_together     = ('panier', 'produit')
+
+    def __str__(self):
+        return f"{self.produit.nom} x{self.quantite}"
 
     @property
     def sous_total(self):
-        return self.quantite * self.produit.prix_unitaire
+        return self.produit.prix_unitaire * self.quantite

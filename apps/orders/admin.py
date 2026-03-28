@@ -1,15 +1,22 @@
 from django.contrib import admin
 from django.utils.html import format_html
-from .models import Commande, CommandeDetail, HistoriqueStatutCommande, PanierItem
+from .models import Commande, CommandeDetail, HistoriqueStatutCommande, Panier, LignePanier
 
 
-@admin.register(PanierItem)
-class PanierItemAdmin(admin.ModelAdmin):
-    list_display  = ('user', 'produit', 'quantite', 'sous_total', 'updated_at')
-    list_filter   = ('produit__categorie',)
-    search_fields = ('user__email', 'user__first_name', 'produit__nom')
+class LignePanierInline(admin.TabularInline):
+    model         = LignePanier
+    extra         = 0
+    readonly_fields = ('produit', 'quantite', 'sous_total', 'created_at')
+    can_delete    = True
+
+
+@admin.register(Panier)
+class PanierAdmin(admin.ModelAdmin):
+    list_display    = ('user', 'nb_items', 'total', 'updated_at')
+    search_fields   = ('user__email', 'user__first_name')
     readonly_fields = ('created_at', 'updated_at')
-    ordering      = ('-updated_at',)
+    inlines         = [LignePanierInline]
+    ordering        = ('-updated_at',)
 
 
 class CommandeDetailInline(admin.TabularInline):

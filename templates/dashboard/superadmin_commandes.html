@@ -167,7 +167,7 @@ async function load() {
   const r = await fetch(url, { headers: H });
   document.getElementById('tbl-loading').style.display = 'none';
   if (!r.ok) { document.getElementById('tbl-empty').style.display = 'block'; return; }
-  const data = await r.json();
+  const data = (await r.json()).data || [];
 
   const nb = data.filter(c => c.statut === 'en_attente').length;
   const sb = document.getElementById('sb-badge-cmds');
@@ -179,20 +179,20 @@ async function load() {
   tbody.innerHTML = '';
   data.forEach(c => {
     const actions = (ACTIONS_MAP[c.statut] || []).map(a =>
-      `<button class="action-btn ${ACTION_CLASSES[a]}" onclick="doAction('${c.numero}','${a}')">${ACTION_LABELS[a]}</button>`
+      `<button class="action-btn ${ACTION_CLASSES[a]}" onclick="doAction('${c.numero_commande}','${a}')">${ACTION_LABELS[a]}</button>`
     ).join(' ');
     tbody.innerHTML += `
-      <tr id="row-${c.numero}">
-        <td><strong style="color:var(--green-mid)">${c.numero}</strong></td>
+      <tr id="row-${c.numero_commande}">
+        <td><strong style="color:var(--green-mid)">${c.numero_commande}</strong></td>
         <td>${c.acheteur_nom}<br><small style="color:var(--text-muted)">${c.acheteur_tel || ''}</small></td>
-        <td style="color:var(--text-muted)">${c.producteur_nom}</td>
+        <td style="color:var(--text-muted)">${c.producteur_nom || '—'}</td>
         <td style="font-weight:600">${fmt(c.total)} HTG</td>
-        <td>${pBadge(c.statut_paiement, c.statut_paiement_label)}</td>
+        <td>${pBadge(c.statut_paiement, c.paiement_label)}</td>
         <td>${sBadge(c.statut, c.statut_label)}</td>
         <td style="color:var(--text-muted);font-size:12px">${fdate(c.created_at)}</td>
         <td><div style="display:flex;gap:4px;flex-wrap:wrap">
           ${actions}
-          <button class="action-btn btn-detail" onclick="openDrawer('${c.numero}')"><i class="fas fa-eye"></i></button>
+          <button class="action-btn btn-detail" onclick="openDrawer('${c.numero_commande}')"><i class="fas fa-eye"></i></button>
         </div></td>
       </tr>`;
   });
@@ -214,15 +214,15 @@ async function openDrawer(numero) {
 
   const r = await fetch(`/api/admin/commandes/${numero}/`, { headers: H });
   if (!r.ok) { document.getElementById('drawer-body').innerHTML = '<p style="color:var(--red);padding:20px">Erreur.</p>'; return; }
-  const c = await r.json();
+  const c = (await r.json()).data;
 
-  const items = c.details.map(d => `<tr><td>${d.produit_nom}</td><td style="text-align:center">${d.quantite} ${d.unite_vente}</td><td style="text-align:right">${fmt(d.prix_unitaire)} HTG</td><td style="text-align:right;font-weight:600">${fmt(d.sous_total)} HTG</td></tr>`).join('');
-  const hist  = c.historique.map(h => `<div class="hist-item"><strong>${h.statut_avant} → ${h.statut_apres}</strong> · ${h.effectue_par} · ${new Date(h.created_at).toLocaleDateString('fr-FR')}<br><span style="color:var(--text-muted)">${h.commentaire || ''}</span></div>`).join('');
+  const items = c.details.map(d => `<tr><td>${d.produit}</td><td style="text-align:center">${d.quantite} ${d.unite_vente}</td><td style="text-align:right">${fmt(d.prix_unitaire)} HTG</td><td style="text-align:right;font-weight:600">${fmt(d.sous_total)} HTG</td></tr>`).join('');
+  const hist  = (c.historique || []).map(h => `<div class="hist-item"><strong>${h.statut_avant} → ${h.statut_apres}</strong> · ${h.effectue_par} · ${new Date(h.created_at).toLocaleDateString('fr-FR')}<br><span style="color:var(--text-muted)">${h.commentaire || ''}</span></div>`).join('');
 
   document.getElementById('drawer-body').innerHTML = `
     <div class="drawer-section">
       <div class="drawer-section-title">Statut</div>
-      <div style="display:flex;gap:8px;flex-wrap:wrap">${sBadge(c.statut, c.statut_label)} ${pBadge(c.statut_paiement, c.statut_paiement_label)}</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">${sBadge(c.statut, c.statut_label)} ${pBadge(c.statut_paiement, c.paiement_label)}</div>
     </div>
     <div class="drawer-section">
       <div class="drawer-section-title">Acheteur</div>
@@ -232,8 +232,8 @@ async function openDrawer(numero) {
     </div>
     <div class="drawer-section">
       <div class="drawer-section-title">Producteur</div>
-      <div class="drawer-row"><span class="label">Nom</span><span>${c.producteur_nom}</span></div>
-      <div class="drawer-row"><span class="label">Code</span><span>${c.producteur_code}</span></div>
+      <div class="drawer-row"><span class="label">Nom</span><span>${c.producteur_nom || '—'}</span></div>
+      <div class="drawer-row"><span class="label">Commune</span><span>${c.producteur_commune || '—'}</span></div>
     </div>
     <div class="drawer-section">
       <div class="drawer-section-title">Articles</div>
@@ -259,7 +259,7 @@ async function openDrawer(numero) {
   const aa = document.getElementById('drawer-actions');
   aa.innerHTML = '';
   (ACTIONS_MAP[c.statut] || []).forEach(a => {
-    aa.innerHTML += `<button class="action-btn ${ACTION_CLASSES[a]}" onclick="doAction('${c.numero}','${a}')">${ACTION_LABELS[a]}</button>`;
+    aa.innerHTML += `<button class="action-btn ${ACTION_CLASSES[a]}" onclick="doAction('${c.numero_commande}','${a}')">${ACTION_LABELS[a]}</button>`;
   });
 }
 
@@ -268,13 +268,24 @@ function closeDrawer() {
   document.getElementById('drawer').classList.remove('open');
 }
 
+const ACTION_TO_STATUT = {
+  confirmer:  'confirmee',
+  preparer:   'en_preparation',
+  prete:      'prete',
+  en_collecte:'en_collecte',
+  livrer:     'livree',
+  litige:     'litige',
+  annuler:    'annulee',
+};
+
 async function doAction(numero, action) {
+  const statut = ACTION_TO_STATUT[action] || action;
   const r = await fetch(`/api/admin/commandes/${numero}/statut/`, {
-    method:'PATCH', headers:H, body:JSON.stringify({action}),
+    method:'PATCH', headers:H, body:JSON.stringify({statut}),
   });
   const data = await r.json();
-  if (r.ok) { showToast(`${numero} : ${data.statut_label}`); closeDrawer(); load(); }
-  else showToast(data.detail || 'Erreur', 'error');
+  if (r.ok) { showToast(`${numero} : ${data.data?.statut_label || 'mis à jour'}`); closeDrawer(); load(); }
+  else showToast(data.error || 'Erreur', 'error');
 }
 
 mpAuthCheck('superadmin').then(u => { if (u && u.is_superuser) load(); });

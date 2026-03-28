@@ -264,7 +264,7 @@ async function load() {
   const r = await fetch(url, { headers: H });
   document.getElementById('tbl-loading').style.display = 'none';
   if (!r.ok) { document.getElementById('tbl-empty').style.display = 'block'; return; }
-  _allData = await r.json();
+  _allData = (await r.json()).data || [];
 
   // Badge sidebar
   const pendingCount = _allData.filter(p => p.statut === 'en_attente').length;
@@ -356,11 +356,11 @@ async function doAction(id, statut, fromDrawer = false) {
   });
   const data = await r.json();
   if (r.ok) {
-    showToast(`Statut mis à jour : ${data.statut_label}`);
+    showToast(`Statut mis à jour : ${data.data?.statut_label || ''}`);
     closeDrawer();
     load();
   } else {
-    showToast(data.detail || 'Erreur', 'error');
+    showToast(data.error || 'Erreur', 'error');
   }
 }
 
@@ -398,7 +398,7 @@ async function openEdit(id) {
 
   const r = await fetch(`/api/admin/producteurs/${id}/detail/`, { headers: H });
   if (!r.ok) { showToast('Erreur de chargement', 'error'); return; }
-  const p = await r.json();
+  const p = (await r.json()).data;
 
   document.getElementById('f-first_name').value   = p.first_name;
   document.getElementById('f-last_name').value    = p.last_name;
@@ -479,13 +479,14 @@ async function submitProd(e) {
   btn.disabled = false;
 
   if (r.ok) {
-    showToast(_editProdId ? 'Producteur mis à jour !' : `Producteur créé : ${data.code_producteur}`);
+    showToast(_editProdId ? 'Producteur mis à jour !' : `Producteur créé : ${data.data?.code_producteur || ''}`);
     closeProdModal();
     load();
   } else {
-    if (data.username) { document.getElementById('err-username').textContent = data.username; }
-    if (data.email)    { document.getElementById('err-email').textContent    = data.email; }
-    showToast(data.detail || 'Erreur', 'error');
+    const err = data.error || {};
+    if (err.username) { document.getElementById('err-username').textContent = Array.isArray(err.username) ? err.username[0] : err.username; }
+    if (err.email)    { document.getElementById('err-email').textContent    = Array.isArray(err.email)    ? err.email[0]    : err.email; }
+    showToast(typeof err === 'string' ? err : 'Erreur de validation', 'error');
   }
 }
 

@@ -391,6 +391,10 @@
     data.forEach(p => {
       const c = p.collecte;
       const canConfirm = p.statut === 'inscrit' && c.statut === 'planifiee';
+      const zoneNom  = c.zone?.nom        || '—';
+      const zoneDept = c.zone?.departement || '';
+      const ptNom    = c.point_collecte?.nom     || null;
+      const ptComm   = c.point_collecte?.commune || '';
       grid.innerHTML += `
         <div class="collecte-card" id="card-${p.id}">
           <div class="card-header">
@@ -411,11 +415,11 @@
             </div>` : ''}
             <div class="card-row">
               <span class="card-label"><i class="fas fa-map-marker-alt" style="margin-right:4px;opacity:.5"></i>Zone</span>
-              <span class="card-val">${c.zone} — ${c.departement}</span>
+              <span class="card-val">${zoneNom}${zoneDept ? ' — ' + zoneDept : ''}</span>
             </div>
-            ${c.point ? `<div class="card-row">
+            ${ptNom ? `<div class="card-row">
               <span class="card-label"><i class="fas fa-flag" style="margin-right:4px;opacity:.5"></i>Point</span>
-              <span class="card-val">${c.point}${c.commune ? ', ' + c.commune : ''}</span>
+              <span class="card-val">${ptNom}${ptComm ? ', ' + ptComm : ''}</span>
             </div>` : ''}
             ${p.quantite_prevue ? `<div class="card-row">
               <span class="card-label"><i class="fas fa-weight" style="margin-right:4px;opacity:.5"></i>Qté prévue</span>
@@ -446,7 +450,7 @@
       document.getElementById('grid-loading').style.display = 'none';
 
       if (r.ok) {
-        _allData = await r.json();
+        _allData = (await r.json()).data || [];
 
         // Badge sidebar
         const pending = _allData.filter(p => p.statut === 'inscrit').length;
@@ -486,6 +490,11 @@
     document.getElementById('detail-drawer').classList.add('open');
     document.getElementById('drawer-overlay').classList.add('open');
 
+    const dZoneNom  = c.zone?.nom        || '—';
+    const dZoneDept = c.zone?.departement || '';
+    const dPtNom    = c.point_collecte?.nom     || null;
+    const dPtComm   = c.point_collecte?.commune || '';
+
     document.getElementById('drawer-body').innerHTML = `
       <div class="drawer-section">
         <div class="drawer-section-title">Statut de participation</div>
@@ -498,10 +507,10 @@
       <div class="drawer-section">
         <div class="drawer-section-title">Détails de la collecte</div>
         <div class="drawer-row"><span class="label">Référence</span><span>${c.reference}</span></div>
-        <div class="drawer-row"><span class="label">Zone</span><span>${c.zone} — ${c.departement}</span></div>
+        <div class="drawer-row"><span class="label">Zone</span><span>${dZoneNom}${dZoneDept ? ' — ' + dZoneDept : ''}</span></div>
         <div class="drawer-row"><span class="label">Date</span><span>${formatDate(c.date_planifiee)}</span></div>
         ${c.heure_debut ? `<div class="drawer-row"><span class="label">Heure</span><span>${c.heure_debut.substring(0,5)}</span></div>` : ''}
-        ${c.point ? `<div class="drawer-row"><span class="label">Point de collecte</span><span>${c.point}${c.commune ? ', '+c.commune : ''}</span></div>` : ''}
+        ${dPtNom ? `<div class="drawer-row"><span class="label">Point de collecte</span><span>${dPtNom}${dPtComm ? ', '+dPtComm : ''}</span></div>` : ''}
         ${c.notes ? `<div class="drawer-row" style="flex-direction:column;gap:4px"><span class="label">Notes organisateur</span><span style="font-size:12px;background:var(--bg);padding:8px;border-radius:6px;margin-top:4px">${c.notes}</span></div>` : ''}
       </div>
 
@@ -568,13 +577,13 @@
         // Mettre à jour localement
         const idx = _allData.findIndex(x => x.id === _confirmId);
         if (idx !== -1) {
-          _allData[idx].statut       = data.statut;
+          _allData[idx].statut          = data.data?.statut || 'confirme';
           _allData[idx].quantite_prevue = body.quantite_prevue;
-          _allData[idx].notes        = body.notes;
+          _allData[idx].notes           = body.notes;
         }
         applyFilter();
       } else {
-        showToast(data.detail || 'Erreur lors de la confirmation.', 'error');
+        showToast(data.error || 'Erreur lors de la confirmation.', 'error');
       }
     } catch(_) {
       showToast('Erreur réseau.', 'error');

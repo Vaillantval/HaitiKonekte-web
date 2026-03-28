@@ -657,9 +657,11 @@ function fillSidebarUser(user) {
     const notifBtn = document.getElementById('notif-btn');
     if (notifBtn) notifBtn.style.display = 'flex';
     // Charger les messages non lus
-    fetch('/api/admin/config/contact/?est_lu=false', {
+    fetch('/api/admin/config/contact/', {
       headers: { 'Authorization': 'Bearer ' + localStorage.getItem('mp_access') }
-    }).then(r => r.ok ? r.json() : []).then(msgs => {
+    }).then(r => r.ok ? r.json() : null).then(json => {
+      if (!json) return;
+      const msgs = (json.data || []).filter(m => m.statut === 'nouveau');
       const dot = document.getElementById('notif-dot');
       if (dot && msgs.length > 0) dot.style.display = 'block';
     }).catch(() => {});
@@ -683,11 +685,11 @@ async function mpAuthCheck(allowedRole) {
         headers: { 'Authorization': 'Bearer ' + localStorage.getItem('mp_access') },
       });
       if (!resp2.ok) { mpClearAndRedirect(); return null; }
-      user = await resp2.json();
+      user = (await resp2.json()).data;
     } else if (!resp.ok) {
       mpClearAndRedirect(); return null;
     } else {
-      user = await resp.json();
+      user = (await resp.json()).data;
     }
   } catch {
     mpClearAndRedirect(); return null;
@@ -738,12 +740,14 @@ async function tryTokenRefresh() {
     if (!resp.ok) return false;
     const data = await resp.json();
     localStorage.setItem('mp_access', data.access);
+    document.cookie = 'mp_jwt=' + data.access + '; path=/; SameSite=Lax';
     return true;
   } catch { return false; }
 }
 
 function mpClearAndRedirect() {
   ['mp_access','mp_refresh','mp_user'].forEach(k => localStorage.removeItem(k));
+  document.cookie = 'mp_jwt=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; SameSite=Lax';
   window.location.href = '/connexion/';
 }
 

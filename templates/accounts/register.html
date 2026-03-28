@@ -817,22 +817,25 @@
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
       });
-      const data = await resp.json();
+      const json = await resp.json();
 
       if (resp.ok) {
-        localStorage.setItem('mp_access',  data.access);
-        localStorage.setItem('mp_refresh', data.refresh);
-        localStorage.setItem('mp_user',    JSON.stringify(data.user));
+        const payload = json.data;
+        localStorage.setItem('mp_access',  payload.access);
+        localStorage.setItem('mp_refresh', payload.refresh);
+        localStorage.setItem('mp_user',    JSON.stringify(payload.user));
+        document.cookie = 'mp_jwt=' + payload.access + '; path=/; SameSite=Lax';
         document.getElementById('alertSuccess').classList.add('show');
-        const role = data.user.role;
+        const role = payload.user.role;
         let redirect = '/'; // acheteur → accueil
-        if (role === 'producteur')                              redirect = '/inscription/en-attente/';
-        else if (data.user.is_superuser || role === 'superadmin') redirect = '/dashboard/superadmin/';
+        if (role === 'producteur')                                    redirect = '/inscription/en-attente/';
+        else if (payload.user.is_superuser || role === 'superadmin') redirect = '/dashboard/superadmin/';
         setTimeout(() => { window.location.href = redirect; }, 1200);
       } else {
         let msg = 'Une erreur est survenue.';
-        for (const key of Object.keys(data)) {
-          const val = data[key];
+        const errors = json.error || json;
+        for (const key of Object.keys(errors)) {
+          const val = errors[key];
           const prefix = key === 'non_field_errors' ? '' : key + ' : ';
           if (Array.isArray(val) && val.length) { msg = prefix + val[0]; break; }
           if (typeof val === 'string')           { msg = val; break; }

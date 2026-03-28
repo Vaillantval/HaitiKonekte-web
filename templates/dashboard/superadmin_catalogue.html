@@ -237,8 +237,8 @@ function showToast(msg, type='success') {
 
 async function loadOptions() {
   const [cats, prods] = await Promise.all([
-    fetch('/api/admin/options/?type=categories', { headers: H }).then(r => r.json()),
-    fetch('/api/admin/options/?type=producteurs_all', { headers: H }).then(r => r.json()),
+    fetch('/api/admin/options/?type=categories', { headers: H }).then(r => r.json()).then(j => j.data || []),
+    fetch('/api/admin/options/?type=producteurs_all', { headers: H }).then(r => r.json()).then(j => j.data || []),
   ]);
   const catSel  = document.getElementById('f-categorie');
   const prodSel = document.getElementById('f-producteur');
@@ -258,14 +258,14 @@ async function load() {
   const r = await fetch(url, { headers: H });
   document.getElementById('tbl-loading').style.display = 'none';
   if (!r.ok) { document.getElementById('tbl-empty').style.display = 'block'; return; }
-  const data = await r.json();
+  const data = (await r.json()).data || [];
   if (!data.length) { document.getElementById('tbl-empty').style.display = 'block'; return; }
 
   const tbody = document.getElementById('tbody');
   tbody.innerHTML = '';
   data.forEach(p => {
-    const img = p.image
-      ? `<img src="${p.image}" class="prod-img">`
+    const img = p.image_principale
+      ? `<img src="${p.image_principale}" class="prod-img">`
       : `<div class="prod-img-placeholder"><i class="fas fa-box" style="color:var(--text-muted);font-size:14px"></i></div>`;
     tbody.innerHTML += `
       <tr id="row-${p.id}">
@@ -273,8 +273,8 @@ async function load() {
           ${img}
           <div><div style="font-weight:600">${p.nom}</div><div style="font-size:11px;color:var(--text-muted)">${p.unite_vente}</div></div>
         </td>
-        <td><div style="font-weight:600">${p.producteur_nom}</div><div style="font-size:11px;color:var(--text-muted)">${p.producteur_code}</div></td>
-        <td style="color:var(--text-muted)">${p.categorie}</td>
+        <td><div style="font-weight:600">${p.producteur?.nom||'—'}</div><div style="font-size:11px;color:var(--text-muted)">${p.producteur?.code_producteur||''}</div></td>
+        <td style="color:var(--text-muted)">${p.categorie?.nom||'—'}</td>
         <td style="font-weight:600">${fmt(p.prix_unitaire)} HTG</td>
         <td><span style="font-weight:600;color:${p.stock_reel<=0?'#e74c3c':p.stock_reel<=5?'#e67e22':'var(--text)'}">${p.stock_reel}</span><span style="color:var(--text-muted);font-size:11px"> / ${p.stock_disponible}</span></td>
         <td>${sBadge(p.statut, p.statut_label)}</td>
@@ -332,7 +332,7 @@ async function openEdit(id) {
 
   const r = await fetch(`/api/admin/catalogue/${id}/detail/`, { headers: H });
   if (!r.ok) { showToast('Erreur de chargement', 'error'); return; }
-  const p = await r.json();
+  const p = (await r.json()).data;
 
   document.getElementById('f-nom').value = p.nom;
   document.getElementById('f-description').value = p.description;
@@ -348,13 +348,13 @@ async function openEdit(id) {
   document.getElementById('f-statut').value = p.statut;
   document.getElementById('f-is_active').checked = p.is_active;
   document.getElementById('f-is_featured').checked = p.is_featured;
-  document.getElementById('f-categorie').value = p.categorie_id;
-  document.getElementById('f-producteur').value = p.producteur_id;
+  document.getElementById('f-categorie').value = p.categorie?.id || '';
+  document.getElementById('f-producteur').value = p.producteur?.id || '';
   document.getElementById('f-producteur').disabled = true; // ne pas changer le producteur en édition
 
-  if (p.image) {
+  if (p.image_principale) {
     const ci = document.getElementById('current-img');
-    ci.src = p.image; ci.style.display = 'block';
+    ci.src = p.image_principale; ci.style.display = 'block';
   }
 }
 
@@ -422,7 +422,8 @@ async function submitForm(e) {
     closeDrawer();
     load();
   } else {
-    const msg = data.detail || data.nom || data.producteur_id || data.categorie_id || 'Erreur';
+    const err = data.error || {};
+    const msg = typeof err === 'string' ? err : (err.nom || err.producteur_id || err.categorie_id || 'Erreur de validation');
     showToast(msg, 'error');
   }
 }
@@ -436,7 +437,7 @@ async function toggleChamp(id, champ, btn) {
   });
   btn.disabled = false;
   if (r.ok) { showToast('Mis à jour'); load(); }
-  else { const d = await r.json(); showToast(d.detail || 'Erreur', 'error'); }
+  else { const d = await r.json(); showToast(d.error || 'Erreur', 'error'); }
 }
 
 mpAuthCheck('superadmin').then(u => {

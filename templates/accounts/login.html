@@ -464,11 +464,11 @@
       <form id="loginForm" novalidate>
 
         <div class="form-group">
-          <label for="username">Nom d'utilisateur</label>
+          <label for="email">Adresse email</label>
           <div class="input-wrap">
-            <i class="fas fa-user ico"></i>
-            <input type="text" id="username" placeholder="Votre nom d'utilisateur"
-                   autocomplete="username" required>
+            <i class="fas fa-envelope ico"></i>
+            <input type="email" id="email" placeholder="votre@email.com"
+                   autocomplete="email" required>
           </div>
         </div>
 
@@ -528,10 +528,10 @@
 
   document.getElementById('loginForm').addEventListener('submit', async e => {
     e.preventDefault();
-    const username = document.getElementById('username').value.trim();
+    const email    = document.getElementById('email').value.trim();
     const password = document.getElementById('password').value;
 
-    if (!username || !password) { showError('Veuillez remplir tous les champs.'); return; }
+    if (!email || !password) { showError('Veuillez remplir tous les champs.'); return; }
 
     setLoading(true);
     document.getElementById('alertError').classList.remove('show');
@@ -540,24 +540,27 @@
       const resp = await fetch('/api/auth/login/', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password }),
+        body: JSON.stringify({ email, password }),
       });
-      const data = await resp.json();
+      const json = await resp.json();
 
       if (resp.ok) {
-        localStorage.setItem('mp_access',  data.access);
-        localStorage.setItem('mp_refresh', data.refresh);
-        localStorage.setItem('mp_user',    JSON.stringify(data.user));
+        const payload = json.data;
+        localStorage.setItem('mp_access',  payload.access);
+        localStorage.setItem('mp_refresh', payload.refresh);
+        localStorage.setItem('mp_user',    JSON.stringify(payload.user));
+        document.cookie = 'mp_jwt=' + payload.access + '; path=/; SameSite=Lax';
         document.getElementById('alertSuccess').classList.add('show');
         document.getElementById('alertError').classList.remove('show');
-        const role = data.user.role;
+        const role = payload.user.role;
         let dest = '/';
-        if (data.user.is_superuser || role === 'superadmin') dest = '/dashboard/superadmin/';
+        if (payload.user.is_superuser || role === 'superadmin') dest = '/dashboard/superadmin/';
         else if (role === 'producteur') dest = '/dashboard/producteur/';
         // acheteur → reste sur l'accueil, son but est d'acheter
         setTimeout(() => { window.location.href = dest; }, 900);
       } else {
-        const msg = data.non_field_errors?.[0] || data.detail || 'Identifiants incorrects.';
+        const err = json.error || {};
+        const msg = err.non_field_errors?.[0] || json.detail || 'Identifiants incorrects.';
         showError(msg);
         setLoading(false);
       }

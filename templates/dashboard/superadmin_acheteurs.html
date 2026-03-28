@@ -143,7 +143,7 @@ async function load() {
   const r = await fetch(url, { headers: H });
   document.getElementById('tbl-loading').style.display = 'none';
   if (!r.ok) { document.getElementById('tbl-empty').style.display = 'block'; return; }
-  const data = await r.json();
+  const data = (await r.json()).data || [];
   if (!data.length) { document.getElementById('tbl-empty').style.display = 'block'; return; }
 
   const tbody = document.getElementById('tbody');
@@ -178,7 +178,7 @@ async function openDetail(id) {
   _editId = id;
   const r = await fetch(`/api/admin/acheteurs/${id}/`, { headers: H });
   if (!r.ok) { showToast('Erreur', 'error'); return; }
-  const a = await r.json();
+  const a = (await r.json()).data;
   _currentActif = a.is_active;
 
   document.getElementById('modal-detail').innerHTML = `

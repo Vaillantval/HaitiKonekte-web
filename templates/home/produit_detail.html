@@ -699,6 +699,14 @@
 
 <!-- ══ Scripts ══ -->
 <script>
+  // Sync cookie mp_jwt depuis localStorage (pour les sessions existantes)
+  (function() {
+    const acc = localStorage.getItem('mp_access');
+    if (acc && !document.cookie.split(';').some(c => c.trim().startsWith('mp_jwt='))) {
+      document.cookie = 'mp_jwt=' + acc + '; path=/; SameSite=Lax';
+    }
+  })();
+
   const PRODUIT_SLUG    = '{{ produit.slug }}';
   const STOCK_REEL      = {{ produit.stock_reel }};
   const QTY_MIN         = {{ produit.quantite_min_commande }};
@@ -771,22 +779,23 @@
   async function ajouterAuPanier() {
     const qty     = parseInt(document.getElementById('qty-input')?.value || QTY_MIN);
     const btnAdd  = document.getElementById('btn-ajouter');
+    const access  = localStorage.getItem('mp_access');
     btnAdd.disabled = true;
 
     try {
       const r = await fetch('/api/orders/panier/ajouter/', {
         method:  'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + access },
         body:    JSON.stringify({ slug: PRODUIT_SLUG, quantite: qty }),
       });
-      const data = await r.json();
+      const json = await r.json();
       if (r.ok) {
         btnAdd.innerHTML  = '<i class="fas fa-check"></i> Dans le panier';
         btnAdd.classList.add('dans-panier');
-        updateBadgePanier(data.panier.nb_articles);
+        updateBadgePanier(json.data?.nb_articles);
         showToast(`${qty} × ajouté(s) au panier !`);
       } else {
-        showToast(data.detail || 'Impossible d\'ajouter au panier.', 'error');
+        showToast(json.error || 'Impossible d\'ajouter au panier.', 'error');
       }
     } catch (_) {
       showToast('Erreur réseau. Réessayez.', 'error');
@@ -799,22 +808,23 @@
   async function commanderMaintenant() {
     const qty     = parseInt(document.getElementById('qty-input')?.value || QTY_MIN);
     const btnCmd  = document.getElementById('btn-commander');
+    const access  = localStorage.getItem('mp_access');
     btnCmd.disabled = true;
     btnCmd.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Chargement…';
 
     try {
       const r = await fetch('/api/orders/panier/ajouter/', {
         method:  'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + access },
         body:    JSON.stringify({ slug: PRODUIT_SLUG, quantite: qty }),
       });
-      const data = await r.json();
+      const json = await r.json();
       if (r.ok) {
-        updateBadgePanier(data.panier.nb_articles);
+        updateBadgePanier(json.data?.nb_articles);
         // Rediriger vers le panier
         window.location.href = '/panier/';
       } else {
-        showToast(data.detail || 'Impossible de lancer la commande.', 'error');
+        showToast(json.error || 'Impossible de lancer la commande.', 'error');
         btnCmd.disabled = false;
         btnCmd.innerHTML = '<i class="fas fa-bolt"></i> Commander maintenant';
       }
@@ -877,6 +887,7 @@
     localStorage.removeItem('mp_access');
     localStorage.removeItem('mp_refresh');
     localStorage.removeItem('mp_user');
+    document.cookie = 'mp_jwt=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; SameSite=Lax';
     window.location.href = '/';
   }
 
@@ -929,8 +940,9 @@
       if (!fetched) {
         fetched = true;
         try {
-          const r = await fetch('/api/orders/panier/');
-          renderDD(await r.json());
+          const _acc = localStorage.getItem('mp_access');
+          const r = await fetch('/api/orders/panier/', { headers: {'Authorization': 'Bearer ' + _acc} });
+          renderDD((await r.json()).data || {});
         } catch {
           dd.innerHTML = '<div class="cart-dd-empty">Erreur de chargement.</div>';
         }

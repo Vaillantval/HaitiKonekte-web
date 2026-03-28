@@ -213,72 +213,24 @@
 
   <div class="panier-grid">
 
-    <!-- Liste articles -->
+    <!-- Liste articles (rendu JS) -->
     <div id="cart-items-container">
-      {% if resume.items %}
-        <div class="cart-items">
-          <div class="cart-header">
-            <span>{{ resume.nb_articles }} article{{ resume.nb_articles|pluralize }}</span>
-            <span style="font-size:12px;color:#aaa;font-weight:400;">{{ resume.nb_items }} produit{{ resume.nb_items|pluralize }}</span>
-          </div>
-          {% for item in resume.items %}
-          <div class="cart-item" id="item-{{ item.slug }}">
-            <a href="/produits/{{ item.slug }}/" class="item-img">
-              {% if item.image %}
-                <img src="{{ item.image }}" alt="{{ item.nom }}">
-              {% else %}
-                <div class="no-img">🌱</div>
-              {% endif %}
-            </a>
-            <div class="item-body">
-              <div class="item-nom">
-                <a href="/produits/{{ item.slug }}/">{{ item.nom }}</a>
-              </div>
-              <div class="item-producteur"><i class="fas fa-map-marker-alt" style="color:var(--vert-vif);font-size:10px"></i> {{ item.producteur_nom }}</div>
-              <div class="item-prix">HTG {{ item.prix_unitaire }} / {{ item.unite_vente_label }}</div>
-            </div>
-            <div class="item-actions">
-              <div class="item-total" id="total-{{ item.slug }}">HTG {{ item.sous_total }}</div>
-              <div class="qty-mini">
-                <button onclick="modifierQty('{{ item.slug }}', {{ item.quantite }} - 1)">−</button>
-                <span id="qty-{{ item.slug }}">{{ item.quantite }}</span>
-                <button onclick="modifierQty('{{ item.slug }}', {{ item.quantite }} + 1)">+</button>
-              </div>
-              <button class="btn-retirer" onclick="retirerItem('{{ item.slug }}')">
-                <i class="fas fa-trash"></i> Supprimer
-              </button>
-            </div>
-          </div>
-          {% endfor %}
+      <div class="cart-items">
+        <div class="empty-cart" id="cart-loading">
+          <i class="fas fa-spinner fa-spin" style="font-size:32px;opacity:.3;display:block;margin-bottom:12px;"></i>
+          <p>Chargement du panier…</p>
         </div>
-      {% else %}
-        <div class="cart-items">
-          <div class="empty-cart">
-            <i class="fas fa-shopping-basket"></i>
-            <p>Votre panier est vide.</p>
-            <a href="/" style="display:inline-flex;align-items:center;gap:7px;padding:11px 22px;background:var(--vert-fonce);color:#fff;border-radius:50px;font-weight:600;font-size:14px;">
-              <i class="fas fa-store"></i> Découvrir le catalogue
-            </a>
-          </div>
-        </div>
-      {% endif %}
+      </div>
     </div>
 
-    <!-- Récapitulatif -->
+    <!-- Récapitulatif (rendu JS) -->
     <div>
       <div class="recap" id="recap-bloc">
         <div class="recap-title">Récapitulatif</div>
-
-        {% if resume.producteurs|length > 1 %}
-        <div class="multi-producteur-warn">
-          <i class="fas fa-info-circle"></i>
-          Votre panier contient des produits de {{ resume.producteurs|length }} producteurs différents. Une commande sera créée par producteur.
-        </div>
-        {% endif %}
-
+        <div id="multi-warn" style="display:none"></div>
         <div class="recap-line">
           <span>Sous-total</span>
-          <span id="recap-total">HTG {{ resume.total }}</span>
+          <span id="recap-total">HTG 0.00</span>
         </div>
         <div class="recap-line">
           <span>Livraison</span>
@@ -286,18 +238,14 @@
         </div>
         <div class="recap-total">
           <span>Total estimé</span>
-          <span id="recap-total-final">HTG {{ resume.total }}</span>
+          <span id="recap-total-final">HTG 0.00</span>
         </div>
-
-        <button class="btn-checkout" {% if not resume.items %}disabled{% endif %} onclick="procederCommande()">
+        <button class="btn-checkout" id="btn-checkout" disabled onclick="procederCommande()">
           <i class="fas fa-lock"></i> Passer la commande
         </button>
-        {% if resume.items %}
-        <button class="btn-vider" onclick="viderPanier()">
+        <button class="btn-vider" id="btn-vider" style="display:none" onclick="viderPanier()">
           <i class="fas fa-trash"></i> Vider le panier
         </button>
-        {% endif %}
-
         <p class="checkout-note">
           <i class="fas fa-shield-alt" style="color:var(--vert-vif)"></i>
           Paiement sécurisé — MonCash, NatCash ou espèces
@@ -311,6 +259,14 @@
 <div class="toast-container" id="toast-container"></div>
 
 <script>
+  // Sync cookie mp_jwt depuis localStorage (pour les sessions existantes)
+  (function() {
+    const acc = localStorage.getItem('mp_access');
+    if (acc && !document.cookie.split(';').some(c => c.trim().startsWith('mp_jwt='))) {
+      document.cookie = 'mp_jwt=' + acc + '; path=/; SameSite=Lax';
+    }
+  })();
+
   function showToast(msg, type='success') {
     const c = document.getElementById('toast-container');
     const t = document.createElement('div');
@@ -320,11 +276,16 @@
     setTimeout(() => t.remove(), 3500);
   }
 
+  function authH(extra = {}) {
+    const access = localStorage.getItem('mp_access');
+    return { 'Authorization': 'Bearer ' + access, ...extra };
+  }
+
   async function modifierQty(slug, nouvelleQty) {
     if (nouvelleQty < 1) { retirerItem(slug); return; }
     try {
       const r = await fetch(`/api/orders/panier/modifier/${slug}/`, {
-        method: 'PATCH', headers: {'Content-Type':'application/json'},
+        method: 'PATCH', headers: authH({'Content-Type':'application/json'}),
         body: JSON.stringify({ quantite: nouvelleQty }),
       });
       const data = await r.json();
@@ -332,14 +293,14 @@
         // Recharger la page pour afficher les nouveaux totaux
         window.location.reload();
       } else {
-        showToast(data.detail || 'Erreur.', 'error');
+        showToast(data.error || 'Erreur.', 'error');
       }
     } catch (_) { showToast('Erreur réseau.', 'error'); }
   }
 
   async function retirerItem(slug) {
     try {
-      const r = await fetch(`/api/orders/panier/retirer/${slug}/`, { method: 'DELETE' });
+      const r = await fetch(`/api/orders/panier/retirer/${slug}/`, { method: 'DELETE', headers: authH() });
       if (r.ok) { window.location.reload(); }
       else showToast('Erreur lors de la suppression.', 'error');
     } catch (_) { showToast('Erreur réseau.', 'error'); }
@@ -348,7 +309,7 @@
   async function viderPanier() {
     if (!confirm('Vider tout le panier ?')) return;
     try {
-      const r = await fetch('/api/orders/panier/vider/', { method: 'DELETE' });
+      const r = await fetch('/api/orders/panier/vider/', { method: 'DELETE', headers: authH() });
       if (r.ok) { window.location.reload(); }
     } catch (_) { showToast('Erreur réseau.', 'error'); }
   }
@@ -398,6 +359,7 @@
       try { await fetch('/api/auth/logout/', { method:'POST', headers:{'Content-Type':'application/json','Authorization':'Bearer '+access}, body:JSON.stringify({refresh}) }); } catch {}
     }
     localStorage.removeItem('mp_access'); localStorage.removeItem('mp_refresh'); localStorage.removeItem('mp_user');
+    document.cookie = 'mp_jwt=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; SameSite=Lax';
     window.location.href = '/';
   }
 
@@ -450,8 +412,8 @@
       if (!fetched) {
         fetched = true;
         try {
-          const r = await fetch('/api/orders/panier/');
-          renderDD(await r.json());
+          const r = await fetch('/api/orders/panier/', { headers: authH() });
+          renderDD((await r.json()).data || {});
         } catch {
           dd.innerHTML = '<div class="cart-dd-empty">Erreur de chargement.</div>';
         }
@@ -461,6 +423,97 @@
       hideTimer = setTimeout(() => dd.classList.remove('open'), 200);
     });
   })();
+
+  // ── Rendu principal du panier ─────────────────────────────────────────────
+  function _esc(s) {
+    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  function renderCart(data) {
+    const items = data.items || [];
+    const total = data.total || '0.00';
+    const container = document.getElementById('cart-items-container');
+
+    if (!items.length) {
+      container.innerHTML = `
+        <div class="cart-items">
+          <div class="empty-cart">
+            <i class="fas fa-shopping-basket"></i>
+            <p>Votre panier est vide.</p>
+            <a href="/" style="display:inline-flex;align-items:center;gap:7px;padding:11px 22px;background:var(--vert-fonce);color:#fff;border-radius:50px;font-weight:600;font-size:14px;">
+              <i class="fas fa-store"></i> Découvrir le catalogue
+            </a>
+          </div>
+        </div>`;
+      document.getElementById('btn-checkout').disabled = true;
+      document.getElementById('btn-vider').style.display = 'none';
+      document.getElementById('recap-total').textContent = 'HTG 0.00';
+      document.getElementById('recap-total-final').textContent = 'HTG 0.00';
+      return;
+    }
+
+    const nb_articles = data.nb_articles || items.reduce((s, i) => s + i.quantite, 0);
+    const nb_items = items.length;
+    const rows = items.map(it => `
+      <div class="cart-item" id="item-${_esc(it.slug)}">
+        <a href="/produits/${_esc(it.slug)}/" class="item-img">
+          ${it.image ? `<img src="${_esc(it.image)}" alt="${_esc(it.nom)}">` : '<div class="no-img">🌱</div>'}
+        </a>
+        <div class="item-body">
+          <div class="item-nom"><a href="/produits/${_esc(it.slug)}/">${_esc(it.nom)}</a></div>
+          <div class="item-producteur"><i class="fas fa-map-marker-alt" style="color:var(--vert-vif);font-size:10px"></i> ${_esc(it.producteur_nom)}</div>
+          <div class="item-prix">HTG ${it.prix_unitaire} / ${_esc(it.unite_vente_label)}</div>
+        </div>
+        <div class="item-actions">
+          <div class="item-total" id="total-${_esc(it.slug)}">HTG ${it.sous_total}</div>
+          <div class="qty-mini">
+            <button onclick="modifierQty('${_esc(it.slug)}', ${it.quantite - 1})">−</button>
+            <span id="qty-${_esc(it.slug)}">${it.quantite}</span>
+            <button onclick="modifierQty('${_esc(it.slug)}', ${it.quantite + 1})">+</button>
+          </div>
+          <button class="btn-retirer" onclick="retirerItem('${_esc(it.slug)}')">
+            <i class="fas fa-trash"></i> Supprimer
+          </button>
+        </div>
+      </div>`).join('');
+
+    container.innerHTML = `
+      <div class="cart-items">
+        <div class="cart-header">
+          <span>${nb_articles} article${nb_articles > 1 ? 's' : ''}</span>
+          <span style="font-size:12px;color:#aaa;font-weight:400;">${nb_items} produit${nb_items > 1 ? 's' : ''}</span>
+        </div>
+        ${rows}
+      </div>`;
+
+    document.getElementById('recap-total').textContent = 'HTG ' + total;
+    document.getElementById('recap-total-final').textContent = 'HTG ' + total;
+    document.getElementById('btn-checkout').disabled = false;
+    document.getElementById('btn-vider').style.display = '';
+
+    // Avertissement multi-producteurs
+    const warn = document.getElementById('multi-warn');
+    const prods = data.producteurs || [];
+    if (prods.length > 1) {
+      warn.style.display = '';
+      warn.innerHTML = `<div class="multi-producteur-warn"><i class="fas fa-info-circle"></i> Votre panier contient des produits de ${prods.length} producteurs différents. Une commande sera créée par producteur.</div>`;
+    } else {
+      warn.style.display = 'none';
+    }
+  }
+
+  async function loadPanier() {
+    try {
+      const r = await fetch('/api/orders/panier/', { headers: authH() });
+      const json = await r.json();
+      renderCart(json.data || {});
+    } catch {
+      document.getElementById('cart-items-container').innerHTML = `
+        <div class="cart-items"><div class="empty-cart"><p>Erreur de chargement du panier.</p></div></div>`;
+    }
+  }
+
+  loadPanier();
 </script>
 </body>
 </html>

@@ -249,7 +249,7 @@ async function loadProgrammes() {
   const r = await fetch('/api/admin/vouchers/programmes/', { headers: H });
   document.getElementById('prog-loading').style.display = 'none';
   if (!r.ok) return;
-  _programmes = await r.json();
+  _programmes = (await r.json()).data || [];
   if (!_programmes.length) { document.getElementById('prog-empty').style.display = 'block'; return; }
   const list = document.getElementById('prog-list');
   list.innerHTML = '';
@@ -296,7 +296,7 @@ async function openProgEdit(id) {
   _progEditId = id;
   const r = await fetch(`/api/admin/vouchers/programmes/${id}/`, { headers: H });
   if (!r.ok) return;
-  const p = await r.json();
+  const p = (await r.json()).data;
   document.getElementById('prog-modal-title').textContent = 'Modifier programme';
   document.getElementById('prog-submit-btn').innerHTML = '<i class="fas fa-save"></i> Enregistrer';
   document.getElementById('p-nom').value          = p.nom;
@@ -334,7 +334,7 @@ async function submitProg(e) {
   const r = await fetch(url, { method, headers: H, body: JSON.stringify(body) });
   btn.disabled = false;
   if (r.ok) { showToast(_progEditId?'Programme mis à jour !':'Programme créé !'); closeProgModal(); loadProgrammes(); }
-  else showToast('Erreur', 'error');
+  else { const d = await r.json(); showToast(typeof d.error === 'string' ? d.error : 'Erreur', 'error'); }
 }
 
 async function toggleProg(id, isActive) {
@@ -360,7 +360,7 @@ async function loadVouchers() {
   const r = await fetch(url, { headers: H });
   document.getElementById('v-loading').style.display = 'none';
   if (!r.ok) return;
-  const data = await r.json();
+  const data = (await r.json()).data || [];
   if (!data.length) { document.getElementById('v-empty').style.display = 'block'; return; }
 
   const tbody = document.getElementById('v-tbody');
@@ -402,10 +402,13 @@ async function submitVoucher(e) {
   const r = await fetch('/api/admin/vouchers/', { method:'POST', headers:H, body:JSON.stringify(body) });
   if (r.ok) {
     const d = await r.json();
-    showToast(`Voucher créé : ${d.code}`);
+    showToast(`Voucher créé : ${d.data?.code || ''}`);
     closeVoucherModal();
     loadVouchers();
-  } else showToast('Erreur', 'error');
+  } else {
+    const d = await r.json();
+    showToast(typeof d.error === 'string' ? d.error : 'Erreur', 'error');
+  }
 }
 
 function debouncedVoucher() { clearTimeout(_vDebounce); _vDebounce = setTimeout(loadVouchers, 350); }

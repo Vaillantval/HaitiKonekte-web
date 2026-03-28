@@ -288,10 +288,10 @@
     try {
       const r = await fetch('/api/auth/producteur/stats/', { headers });
       if (r.ok) {
-        const s = await r.json();
-        document.getElementById('stat-en-attente').textContent = s.en_attente;
-        document.getElementById('stat-en-cours').textContent   = s.en_cours;
-        document.getElementById('stat-produits').textContent   = s.produits_actifs;
+        const s = (await r.json()).data;
+        document.getElementById('stat-en-attente').textContent = s.commandes_en_attente;
+        document.getElementById('stat-en-cours').textContent   = s.commandes_en_cours;
+        document.getElementById('stat-produits').textContent   = s.nb_produits_actifs;
         document.getElementById('stat-revenus').textContent    = Number(s.revenus_mois).toLocaleString('fr-FR');
 
         const badge = document.getElementById('statut-badge');
@@ -314,7 +314,7 @@
       const r = await fetch('/api/collectes/mes-participations/', { headers });
       document.getElementById('orders-loading').style.display = 'none';
       if (r.ok) {
-        const participations = await r.json();
+        const participations = (await r.json()).data || [];
 
         // Badge sidebar
         const pending = participations.filter(p => p.statut === 'inscrit').length;
@@ -327,12 +327,16 @@
           const tbody = document.getElementById('orders-tbody');
           participations.slice(0, 5).forEach(p => {
             const c = p.collecte;
+            const zonNom  = c.zone?.nom        || '—';
+            const zonDept = c.zone?.departement || '';
+            const ptNom   = c.point_collecte?.nom     || null;
+            const ptComm  = c.point_collecte?.commune || '';
             tbody.innerHTML += `
               <tr>
                 <td><a href="/dashboard/producteur/collectes/" style="color:var(--green-mid);font-weight:600">${c.reference}</a></td>
-                <td>${c.zone}<br><small style="color:var(--text-muted)">${c.departement}</small></td>
+                <td>${zonNom}<br><small style="color:var(--text-muted)">${zonDept}</small></td>
                 <td style="color:var(--text-muted)">${formatDate(c.date_planifiee)}</td>
-                <td>${c.point ? c.point + (c.commune ? ', ' + c.commune : '') : '<span style="color:var(--text-muted)">—</span>'}</td>
+                <td>${ptNom ? ptNom + (ptComm ? ', ' + ptComm : '') : '<span style="color:var(--text-muted)">—</span>'}</td>
                 <td>${partBadge(p.statut)}</td>
                 <td>${colBadge(c.statut, c.statut_label)}</td>
               </tr>`;

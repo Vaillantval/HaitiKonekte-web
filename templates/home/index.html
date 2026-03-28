@@ -1970,6 +1970,14 @@
 
   <!-- ══ Auth state ══════════════════════════════════════════ -->
   <script>
+    // Sync cookie mp_jwt depuis localStorage (pour les sessions existantes)
+    (function() {
+      const acc = localStorage.getItem('mp_access');
+      if (acc && !document.cookie.split(';').some(c => c.trim().startsWith('mp_jwt='))) {
+        document.cookie = 'mp_jwt=' + acc + '; path=/; SameSite=Lax';
+      }
+    })();
+
     // ── Helpers ──────────────────────────────────────────────
     const ROLE_LABELS = {
       superadmin: 'Super Admin',
@@ -2186,8 +2194,9 @@
         if (!fetched) {
           fetched = true;
           try {
-            const r = await fetch('/api/orders/panier/');
-            renderDD(await r.json());
+            const _acc = localStorage.getItem('mp_access');
+            const r = await fetch('/api/orders/panier/', { headers: {'Authorization': 'Bearer ' + _acc} });
+            renderDD((await r.json()).data || {});
           } catch {
             dd.innerHTML = '<div class="cart-dd-empty">Erreur de chargement.</div>';
           }
@@ -2217,6 +2226,7 @@
       localStorage.removeItem('mp_access');
       localStorage.removeItem('mp_refresh');
       localStorage.removeItem('mp_user');
+      document.cookie = 'mp_jwt=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; SameSite=Lax';
       window.location.reload();
     }
   </script>

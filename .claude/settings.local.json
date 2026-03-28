@@ -16,7 +16,15 @@
       "Bash(grep -E \"\\\\.\\(py|html\\)$\")",
       "Bash(grep:*)",
       "Bash(ls:*)",
-      "Bash(python:*)"
+      "Bash(python:*)",
+      "Bash(rm apps/catalog/views.py)",
+      "Bash(rm apps/orders/views.py)",
+      "Bash(DJANGO_SETTINGS_MODULE=config.settings.development python -c \":*)",
+      "Bash(head -20 grep -n \"await r.json\\(\\)\\\\|\\\\.json\\(\\)\\\\.\\\\|json\\(\\)\\\\.data\\\\|\\\\.forEach\\\\|\\\\.map\\(\" templates/dashboard/superadmin_adresses.html)",
+      "Bash(head -20 grep -n \"await r.json\\(\\)\\\\|\\\\.json\\(\\)\\\\.\\\\|json\\(\\)\\\\.data\\\\|\\\\.forEach\\\\|\\\\.map\\(\" templates/dashboard/superadmin_categories.html)",
+      "Bash(head -20 grep -n \"await r.json\\(\\)\\\\|\\\\.json\\(\\)\\\\.\\\\|json\\(\\)\\\\.data\\\\|\\\\.forEach\\\\|\\\\.map\\(\" templates/dashboard/superadmin_producteurs.html)",
+      "Bash(head -20 grep -n \"await r.json\\(\\)\\\\|\\\\.json\\(\\)\\\\.\\\\|json\\(\\)\\\\.data\\\\|\\\\.forEach\\\\|\\\\.map\\(\" templates/dashboard/superadmin_stocks.html)",
+      "Bash(head -20 grep -n \"await r.json\\(\\)\\\\|\\\\.json\\(\\)\\\\.\\\\|json\\(\\)\\\\.data\\\\|\\\\.forEach\\\\|\\\\.map\\(\" templates/dashboard/superadmin_catalogue.html)"
     ]
   }
 }

@@ -649,18 +649,18 @@
 
       // Fetch cart + addresses en parallèle
       const [cartRes, addrRes] = await Promise.all([
-        fetch('/api/orders/panier/'),
+        fetch('/api/orders/panier/', { headers: {'Authorization': 'Bearer ' + access} }),
         fetch('/api/auth/adresses/', { headers: {'Authorization': 'Bearer ' + access} }),
       ]);
 
-      cartData = await cartRes.json();
+      cartData = (await cartRes.json()).data || {};
 
       if (!cartData.items || cartData.items.length === 0) {
         window.location.href = '/panier/';
         return;
       }
 
-      if (addrRes.ok) addresses = await addrRes.json();
+      if (addrRes.ok) addresses = (await addrRes.json()).data || [];
 
     } catch {
       showToast('Erreur de chargement. Veuillez actualiser la page.', 'error');
@@ -922,8 +922,8 @@
             }),
           });
           if (saveRes.ok) {
-            const saved = await saveRes.json();
-            adresse_livraison_id = saved.id;
+            const saved = (await saveRes.json()).data;
+            adresse_livraison_id = saved?.id;
           }
         } catch {}
       }
@@ -963,11 +963,11 @@
           headers: {'Authorization': 'Bearer ' + access},  // pas de Content-Type — le navigateur le gère
           body:    fd,
         });
-        const data = await r.json();
+        const json = await r.json();
         if (r.ok) {
-          showConfirmation(data);
+          showConfirmation(json.data);
         } else {
-          showToast(data.detail || 'Erreur lors de la commande.', 'error');
+          showToast(json.error || 'Erreur lors de la commande.', 'error');
           btns.forEach(b => { b.disabled = false; b.innerHTML = '<i class="fas fa-lock"></i> Passer la commande'; });
         }
       } catch {
@@ -993,8 +993,9 @@
         headers: {'Content-Type':'application/json','Authorization':'Bearer '+access},
         body:    JSON.stringify(payload),
       });
-      const data = await r.json();
+      const json = await r.json();
       if (r.ok) {
+        const data = json.data;
         if (selectedPM === 'moncash' && data.redirect_url) {
           // Rediriger vers la passerelle MonCash
           window.location.href = data.redirect_url;
@@ -1002,7 +1003,7 @@
           showConfirmation(data);
         }
       } else {
-        showToast(data.detail || 'Erreur lors de la commande.', 'error');
+        showToast(json.error || 'Erreur lors de la commande.', 'error');
         btns.forEach(b => { b.disabled = false; b.innerHTML = '<i class="fas fa-lock"></i> Passer la commande'; });
       }
     } catch {
@@ -1068,6 +1069,7 @@
       try { await fetch('/api/auth/logout/', {method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+access},body:JSON.stringify({refresh})}); } catch {}
     }
     localStorage.removeItem('mp_access'); localStorage.removeItem('mp_refresh'); localStorage.removeItem('mp_user');
+    document.cookie = 'mp_jwt=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; SameSite=Lax';
     window.location.href = '/';
   }
 </script>

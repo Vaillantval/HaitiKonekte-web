@@ -1,0 +1,145 @@
+from rest_framework import status
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.response import Response
+from django.shortcuts import get_object_or_404
+from django.utils import timezone
+from django.db.models import Q
+
+from apps.accounts.permissions import IsSuperAdmin
+from apps.accounts.models import Producteur
+from apps.accounts.serializers import ProducteurProfilSerializer
+from apps.accounts.serializers.auth_serializers import RegisterSerializer
+
+
+# ── GET /api/admin/producteurs/ ─────────────────────────────────
+@api_view(['GET'])
+@permission_classes([IsSuperAdmin])
+def producteurs_list(request):
+    """Liste des producteurs avec filtres."""
+    statut = request.query_params.get('statut', '')
+    search = request.query_params.get('search', '')
+
+    qs = Producteur.objects.select_related('user').order_by('-created_at')
+
+    if statut:
+        qs = qs.filter(statut=statut)
+    if search:
+        qs = qs.filter(
+            Q(user__first_name__icontains=search) |
+            Q(user__last_name__icontains=search)  |
+            Q(code_producteur__icontains=search)  |
+            Q(commune__icontains=search)
+        )
+
+    data = ProducteurProfilSerializer(
+        qs, many=True, context={'request': request}
+    ).data
+    return Response({'success': True, 'data': data})
+
+
+# ── POST /api/admin/producteurs/create/ ─────────────────────────
+@api_view(['POST'])
+@permission_classes([IsSuperAdmin])
+def producteur_create(request):
+    """Créer un producteur directement validé."""
+    data = request.data.copy()
+    data['role'] = 'producteur'
+
+    serializer = RegisterSerializer(data=data)
+    if not serializer.is_valid():
+        return Response(
+            {'success': False, 'error': serializer.errors},
+            status=status.HTTP_400_BAD_REQUEST
+        )
+
+    user       = serializer.save()
+    producteur = user.profil_producteur
+    producteur.statut          = 'actif'
+    producteur.valide_par      = request.user
+    producteur.date_validation = timezone.now()
+    producteur.save()
+
+    return Response(
+        {
+            'success': True,
+            'data': ProducteurProfilSerializer(
+                producteur, context={'request': request}
+            ).data
+        },
+        status=status.HTTP_201_CREATED
+    )
+
+
+# ── GET/PATCH /api/admin/producteurs/<id>/detail/ ───────────────
+@api_view(['GET', 'PATCH'])
+@permission_classes([IsSuperAdmin])
+def producteur_detail(request, pk):
+    """Détail ou mise à jour d'un producteur."""
+    producteur = get_object_or_404(Producteur, pk=pk)
+
+    if request.method == 'GET':
+        return Response({
+            'success': True,
+            'data': ProducteurProfilSerializer(
+                producteur, context={'request': request}
+            ).data
+        })
+
+    serializer = ProducteurProfilSerializer(
+        producteur, data=request.data,
+        partial=True,
+        context={'request': request}
+    )
+    if not serializer.is_valid():
+        return Response(
+            {'success': False, 'error': serializer.errors},
+            status=status.HTTP_400_BAD_REQUEST
+        )
+    serializer.save()
+    return Response({'success': True, 'data': serializer.data})
+
+
+# ── PATCH /api/admin/producteurs/<id>/statut/ ───────────────────
+@api_view(['PATCH'])
+@permission_classes([IsSuperAdmin])
+def producteur_statut(request, pk):
+    """
+    Changer le statut d'un producteur.
+    Body : { "statut": "actif" | "suspendu" | "en_attente" | "inactif",
+             "note": "..." }
+    """
+    producteur     = get_object_or_404(Producteur, pk=pk)
+    nouveau_statut = request.data.get('statut')
+    note           = request.data.get('note', '')
+
+    STATUTS_VALIDES = ['actif', 'suspendu', 'en_attente', 'inactif']
+    if nouveau_statut not in STATUTS_VALIDES:
+        return Response(
+            {
+                'success': False,
+                'error': f"Statut invalide. Valeurs : {STATUTS_VALIDES}"
+            },
+            status=status.HTTP_400_BAD_REQUEST
+        )
+
+    ancien_statut     = producteur.statut
+    producteur.statut = nouveau_statut
+
+    if note:
+        producteur.note_admin = note
+
+    if nouveau_statut == 'actif' and ancien_statut != 'actif':
+        producteur.valide_par      = request.user
+        producteur.date_validation = timezone.now()
+
+    producteur.save()
+
+    return Response({
+        'success': True,
+        'data': {
+            'id':              producteur.pk,
+            'code_producteur': producteur.code_producteur,
+            'statut':          producteur.statut,
+            'message':         f"Statut mis à jour : {nouveau_statut}."
+        }
+    })

@@ -563,8 +563,9 @@
         body: JSON.stringify(payload),
       });
 
-      const data = await r.json();
+      const json = await r.json();
       if (r.ok) {
+        const data = json.data;
         _user = data;
         // Mettre à jour localStorage
         const stored = JSON.parse(localStorage.getItem('mp_user') || '{}');
@@ -572,8 +573,9 @@
         loadProfil(data);
         showToast('Profil mis à jour avec succès.');
       } else {
-        const msg = Object.values(data).flat().join(' ');
-        showToast(msg || 'Erreur lors de la mise à jour.', 'error');
+        const errors = json.error || {};
+        const msg = Object.values(errors).flat().join(' ') || 'Erreur lors de la mise à jour.';
+        showToast(msg, 'error');
       }
     } catch {
       showToast('Erreur réseau.', 'error');
@@ -607,14 +609,17 @@
         body: JSON.stringify({ current_password: current, new_password: newPwd }),
       });
 
-      const data = await r.json();
+      const json = await r.json();
       if (r.ok) {
         showToast('Mot de passe mis à jour. Reconnectez-vous.');
         resetPwdForm();
         // Déconnecter après 2s (token invalide après changement de mdp)
         setTimeout(() => mpLogout(), 2500);
       } else {
-        showToast(data.detail || 'Erreur lors du changement.', 'error');
+        const errors = json.error || {};
+        const msg = errors.current_password?.[0] || errors.new_password?.[0]
+                 || errors.non_field_errors?.[0] || json.detail || 'Erreur lors du changement.';
+        showToast(msg, 'error');
       }
     } catch {
       showToast('Erreur réseau.', 'error');
@@ -637,11 +642,12 @@
         headers: { 'Authorization': 'Bearer ' + localStorage.getItem('mp_access') },
         body: formData,
       });
-      const data = await r.json();
+      const json = await r.json();
       if (r.ok) {
+        const data = json.data;
         _user = data;
         const stored = JSON.parse(localStorage.getItem('mp_user') || '{}');
-        const updated = { ...stored, photo: data.photo || null };
+        const updated = { ...stored, photo: data.photo_url || data.photo || null };
         localStorage.setItem('mp_user', JSON.stringify(updated));
         renderAvatar(data);
         fillSidebarUser(updated);

@@ -3,12 +3,16 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView, SpectacularRedocView
+from apps.home.views import health_check, faq_publique, contact_public
 
 urlpatterns = [
+    path('health/',  health_check,   name='health'),
+    path('faq/',     faq_publique,   name='faq'),
+    path('contact/', contact_public, name='contact'),
     path('',            include('apps.home.urls')),
     path('admin/',                   admin.site.urls),
     path('api/auth/',                include('apps.accounts.urls')),
-    path('api/admin/',               include('apps.accounts.urls_admin')),
+    path('api/admin/',               include('apps.api_admin.urls')),
     path('api/products/',            include('apps.catalog.urls')),
     path('api/stock/',               include('apps.stock.urls')),
     path('api/orders/',              include('apps.orders.urls')),

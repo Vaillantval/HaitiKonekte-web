@@ -259,7 +259,7 @@
     try {
       const r = await fetch('/api/auth/adresses/', { headers });
       if (r.ok) {
-        const adresses = await r.json();
+        const adresses = (await r.json()).data || [];
         document.getElementById('stat-adresses').textContent = adresses.length;
       }
     } catch (_) {}
@@ -270,7 +270,7 @@
       document.getElementById('orders-loading').style.display = 'none';
 
       if (r.ok) {
-        const commandes = await r.json();
+        const commandes = (await r.json()).data || [];
 
         // En cours
         const EN_COURS = ['en_attente','confirmee','en_preparation','prete','en_collecte'];
@@ -284,9 +284,9 @@
           commandes.slice(0, 5).forEach(c => {
             tbody.innerHTML += `
               <tr>
-                <td><a href="/dashboard/acheteur/commandes/" style="color:var(--green-mid);font-weight:600">${c.numero}</a></td>
-                <td>${c.producteur_nom}<br><small style="color:var(--text-muted)">${c.producteur_commune}</small></td>
-                <td style="text-align:center">${c.nb_articles}</td>
+                <td><a href="/dashboard/acheteur/commandes/" style="color:var(--green-mid);font-weight:600">${c.numero_commande}</a></td>
+                <td>${c.producteur_nom || '—'}<br><small style="color:var(--text-muted)">${c.producteur_commune || ''}</small></td>
+                <td style="text-align:center">${c.details.length}</td>
                 <td style="font-weight:600">${Number(c.total).toLocaleString('fr-FR')} HTG</td>
                 <td>${statutBadge(c.statut, c.statut_label)}</td>
                 <td style="color:var(--text-muted)">${formatDate(c.created_at)}</td>

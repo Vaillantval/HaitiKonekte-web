@@ -497,14 +497,16 @@
         headers: { 'Authorization': 'Bearer ' + localStorage.getItem('mp_access'), 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
       });
-      const data = await r.json();
+      const json = await r.json();
       if (r.ok) {
+        const data = json.data;
         _user = data;
         localStorage.setItem('mp_user', JSON.stringify({ ...JSON.parse(localStorage.getItem('mp_user') || '{}'), ...data }));
         fillCard(data, _profil);
         showToast('Informations mises à jour.');
       } else {
-        showToast(Object.values(data).flat().join(' ') || 'Erreur.', 'error');
+        const err = json.error;
+        showToast((typeof err === 'object' ? Object.values(err).flat().join(' ') : err) || 'Erreur.', 'error');
       }
     } catch { showToast('Erreur réseau.', 'error'); }
     btn.disabled = false; btn.innerHTML = '<i class="fas fa-save"></i> Enregistrer';
@@ -527,13 +529,15 @@
         headers: { 'Authorization': 'Bearer ' + localStorage.getItem('mp_access'), 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
       });
-      const data = await r.json();
+      const json = await r.json();
       if (r.ok) {
+        const data = json.data;
         _profil = data;
         fillCard(_user, data);
         showToast('Exploitation mise à jour.');
       } else {
-        showToast(data.detail || 'Erreur.', 'error');
+        const err = json.error;
+        showToast((typeof err === 'object' ? Object.values(err).flat().join(' ') : err) || 'Erreur.', 'error');
       }
     } catch { showToast('Erreur réseau.', 'error'); }
     btn.disabled = false; btn.innerHTML = '<i class="fas fa-save"></i> Enregistrer';
@@ -554,13 +558,14 @@
         headers: { 'Authorization': 'Bearer ' + localStorage.getItem('mp_access'), 'Content-Type': 'application/json' },
         body: JSON.stringify({ current_password: current, new_password: newPwd }),
       });
-      const data = await r.json();
+      const json = await r.json();
       if (r.ok) {
         showToast('Mot de passe mis à jour. Reconnectez-vous.');
         resetPwdForm();
         setTimeout(() => mpLogout(), 2500);
       } else {
-        showToast(data.detail || 'Erreur.', 'error');
+        const err = json.error;
+        showToast((typeof err === 'object' ? Object.values(err).flat().join(' ') : err) || 'Erreur.', 'error');
       }
     } catch { showToast('Erreur réseau.', 'error'); }
     btn.disabled = false; btn.innerHTML = '<i class="fas fa-key"></i> Changer le mot de passe';
@@ -576,13 +581,15 @@
         headers: { 'Authorization': 'Bearer ' + localStorage.getItem('mp_access') },
         body: formData,
       });
-      const data = await r.json();
+      const json = await r.json();
       if (r.ok) {
+        const data = json.data;
         _user = data;
         const stored = JSON.parse(localStorage.getItem('mp_user') || '{}');
-        localStorage.setItem('mp_user', JSON.stringify({ ...stored, photo: data.photo || null }));
-        renderAvatar(data);
-        fillSidebarUser({ ...stored, photo: data.photo || null });
+        const photoUrl = data.photo_url || data.photo || null;
+        localStorage.setItem('mp_user', JSON.stringify({ ...stored, photo: photoUrl }));
+        renderAvatar({ ...data, photo: photoUrl });
+        fillSidebarUser({ ...stored, photo: photoUrl });
         showToast('Photo de profil mise à jour.');
       } else showToast('Erreur lors du chargement de la photo.', 'error');
     } catch { showToast('Erreur réseau.', 'error'); }
@@ -594,7 +601,7 @@
     const headers = { 'Authorization': 'Bearer ' + localStorage.getItem('mp_access') };
     try {
       const r = await fetch('/api/auth/producteur/profil/', { headers });
-      if (r.ok) { _profil = await r.json(); }
+      if (r.ok) { _profil = (await r.json()).data; }
     } catch (_) {}
     fillCard(user, _profil);
     loadForms(user, _profil);

@@ -334,15 +334,16 @@
 
   function rowActions(c) {
     const btns = [];
-    if (c.actions_possibles.includes('confirmer'))
-      btns.push(`<button class="action-btn confirm" onclick="doAction('${c.numero}','confirmer')"><i class="fas fa-check"></i> Confirmer</button>`);
-    if (c.actions_possibles.includes('preparer'))
-      btns.push(`<button class="action-btn prepare" onclick="doAction('${c.numero}','preparer')"><i class="fas fa-cog"></i> Préparer</button>`);
-    if (c.actions_possibles.includes('prete'))
-      btns.push(`<button class="action-btn ready" onclick="doAction('${c.numero}','prete')"><i class="fas fa-box"></i> Prête</button>`);
-    if (c.actions_possibles.includes('annuler'))
-      btns.push(`<button class="action-btn cancel" onclick="doAction('${c.numero}','annuler')"><i class="fas fa-times"></i> Annuler</button>`);
-    btns.push(`<button class="action-btn detail" onclick="openDrawer('${c.numero}')"><i class="fas fa-eye"></i></button>`);
+    const actions = c.actions_possibles || [];
+    if (actions.includes('confirmer'))
+      btns.push(`<button class="action-btn confirm" onclick="doAction('${c.numero_commande}','confirmer')"><i class="fas fa-check"></i> Confirmer</button>`);
+    if (actions.includes('preparer'))
+      btns.push(`<button class="action-btn prepare" onclick="doAction('${c.numero_commande}','preparer')"><i class="fas fa-cog"></i> Préparer</button>`);
+    if (actions.includes('prete'))
+      btns.push(`<button class="action-btn ready" onclick="doAction('${c.numero_commande}','prete')"><i class="fas fa-box"></i> Prête</button>`);
+    if (actions.includes('annuler'))
+      btns.push(`<button class="action-btn cancel" onclick="doAction('${c.numero_commande}','annuler')"><i class="fas fa-times"></i> Annuler</button>`);
+    btns.push(`<button class="action-btn detail" onclick="openDrawer('${c.numero_commande}')"><i class="fas fa-eye"></i></button>`);
     return btns.join(' ');
   }
 
@@ -358,7 +359,7 @@
       const r = await fetch(url, { headers });
       document.getElementById('tbl-loading').style.display = 'none';
       if (r.ok) {
-        const commandes = await r.json();
+        const commandes = (await r.json()).data || [];
 
         // Badge sidebar (en attente total)
         const enAttente = commandes.filter(c => c.statut === 'en_attente').length;
@@ -374,10 +375,10 @@
         tbody.innerHTML = '';
         commandes.forEach(c => {
           tbody.innerHTML += `
-            <tr id="row-${c.numero}">
-              <td><strong style="color:var(--green-mid)">${c.numero}</strong></td>
+            <tr id="row-${c.numero_commande}">
+              <td><strong style="color:var(--green-mid)">${c.numero_commande}</strong></td>
               <td>${c.acheteur_nom}<br><small style="color:var(--text-muted)">${c.acheteur_tel}</small></td>
-              <td style="text-align:center">${c.nb_articles}</td>
+              <td style="text-align:center">${c.details.length}</td>
               <td style="font-weight:600">${Number(c.total).toLocaleString('fr-FR')} HTG</td>
               <td>${statutBadge(c.statut, c.statut_label)}</td>
               <td style="color:var(--text-muted);font-size:12px">${formatDate(c.created_at)}</td>
@@ -426,7 +427,7 @@
         document.getElementById('drawer-body').innerHTML = '<p style="color:#e74c3c;padding:20px">Erreur chargement.</p>';
         return;
       }
-      const c = await r.json();
+      const c = (await r.json()).data;
       renderDrawer(c);
     } catch (_) {
       document.getElementById('drawer-body').innerHTML = '<p style="color:#e74c3c;padding:20px">Erreur réseau.</p>';
@@ -438,7 +439,7 @@
 
     const items = c.details.map(d => `
       <tr>
-        <td>${d.produit_nom}</td>
+        <td>${d.produit}</td>
         <td style="text-align:center">${d.quantite} ${d.unite_vente}</td>
         <td style="text-align:right">${Number(d.prix_unitaire).toLocaleString('fr-FR')} HTG</td>
         <td style="text-align:right;font-weight:600">${Number(d.sous_total).toLocaleString('fr-FR')} HTG</td>
@@ -482,8 +483,8 @@
         <div class="drawer-section-title">Livraison & Paiement</div>
         <div class="drawer-row"><span class="label">Mode livraison</span><span>${c.mode_livraison}</span></div>
         ${c.adresse_livraison ? `<div class="drawer-row"><span class="label">Adresse</span><span>${c.adresse_livraison}${c.ville_livraison ? ', ' + c.ville_livraison : ''}</span></div>` : ''}
-        <div class="drawer-row"><span class="label">Paiement</span><span>${c.statut_paiement_label}</span></div>
-        <div class="drawer-row"><span class="label">Méthode</span><span>${c.methode_paiement_label}</span></div>
+        <div class="drawer-row"><span class="label">Paiement</span><span>${c.paiement_label}</span></div>
+        <div class="drawer-row"><span class="label">Méthode</span><span>${c.methode_paiement_label || c.methode_paiement}</span></div>
       </div>
 
       ${c.notes_acheteur ? `
@@ -496,17 +497,18 @@
     // Boutons d'action
     const actionArea = document.getElementById('drawer-actions');
     actionArea.innerHTML = '';
-    if (c.actions_possibles.includes('confirmer')) {
-      actionArea.innerHTML += `<button class="action-btn confirm" onclick="doAction('${c.numero}','confirmer')"><i class="fas fa-check"></i> Confirmer</button>`;
+    const actions = c.actions_possibles || [];
+    if (actions.includes('confirmer')) {
+      actionArea.innerHTML += `<button class="action-btn confirm" onclick="doAction('${c.numero_commande}','confirmer')"><i class="fas fa-check"></i> Confirmer</button>`;
     }
-    if (c.actions_possibles.includes('preparer')) {
-      actionArea.innerHTML += `<button class="action-btn prepare" onclick="doAction('${c.numero}','preparer')"><i class="fas fa-cog"></i> Mettre en préparation</button>`;
+    if (actions.includes('preparer')) {
+      actionArea.innerHTML += `<button class="action-btn prepare" onclick="doAction('${c.numero_commande}','preparer')"><i class="fas fa-cog"></i> Mettre en préparation</button>`;
     }
-    if (c.actions_possibles.includes('prete')) {
-      actionArea.innerHTML += `<button class="action-btn ready" onclick="doAction('${c.numero}','prete')"><i class="fas fa-box"></i> Marquer prête</button>`;
+    if (actions.includes('prete')) {
+      actionArea.innerHTML += `<button class="action-btn ready" onclick="doAction('${c.numero_commande}','prete')"><i class="fas fa-box"></i> Marquer prête</button>`;
     }
-    if (c.actions_possibles.includes('annuler')) {
-      actionArea.innerHTML += `<button class="action-btn cancel" onclick="doAction('${c.numero}','annuler')"><i class="fas fa-times"></i> Annuler</button>`;
+    if (actions.includes('annuler')) {
+      actionArea.innerHTML += `<button class="action-btn cancel" onclick="doAction('${c.numero_commande}','annuler')"><i class="fas fa-times"></i> Annuler</button>`;
     }
   }
 
@@ -524,11 +526,11 @@
       });
       const data = await r.json();
       if (r.ok) {
-        showToast(`Commande ${numero} : ${data.statut_label}`);
+        showToast(`Commande ${numero} : ${data.data?.statut_label || 'mise à jour'}`);
         closeDrawer();
         loadCommandes();
       } else {
-        showToast(data.detail || 'Erreur.', 'error');
+        showToast(data.error || 'Erreur.', 'error');
       }
     } catch (_) {
       showToast('Erreur réseau.', 'error');
