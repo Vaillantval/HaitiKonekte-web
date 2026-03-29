@@ -91,6 +91,7 @@ class CommandeProducteurSerializer(serializers.ModelSerializer):
     methode_paiement_label = serializers.CharField(source='get_methode_paiement_display', read_only=True)
     actions_possibles      = serializers.SerializerMethodField()
     details                = serializers.SerializerMethodField()
+    preuve_paiement        = serializers.SerializerMethodField()
 
     class Meta:
         model  = Commande
@@ -106,7 +107,7 @@ class CommandeProducteurSerializer(serializers.ModelSerializer):
             'ville_livraison', 'departement_livraison',
             'notes_acheteur', 'date_confirmation',
             'date_livraison_prevue', 'created_at',
-            'actions_possibles', 'details',
+            'actions_possibles', 'details', 'preuve_paiement',
         ]
 
     def get_acheteur_nom(self, obj):
@@ -146,3 +147,22 @@ class CommandeProducteurSerializer(serializers.ModelSerializer):
             }
             for d in obj.details.select_related('produit').all()
         ]
+
+    def get_preuve_paiement(self, obj):
+        request = self.context.get('request')
+
+        def build_url(field):
+            if request:
+                return request.build_absolute_uri(field.url)
+            return field.url
+
+        # Priorité 1 : Commande.preuve_paiement
+        if obj.preuve_paiement:
+            return build_url(obj.preuve_paiement)
+
+        # Priorité 2 : Paiement.preuve_image lié à la commande
+        paiement = obj.paiements.filter(preuve_image__isnull=False).first()
+        if paiement and paiement.preuve_image:
+            return build_url(paiement.preuve_image)
+
+        return None

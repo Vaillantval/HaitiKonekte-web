@@ -46,7 +46,7 @@ def commandes_list(request):
 def commande_detail(request, numero):
     """Détail complet d'une commande."""
     commande   = get_object_or_404(Commande, numero_commande=numero)
-    serializer = CommandeProducteurSerializer(commande)
+    serializer = CommandeProducteurSerializer(commande, context={'request': request})
     return Response({'success': True, 'data': serializer.data})
 
 

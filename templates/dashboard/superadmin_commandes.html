@@ -44,6 +44,15 @@
   .drawer-section { margin-bottom:20px; }
   .drawer-section-title { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.07em; color:var(--text-muted); margin-bottom:10px; padding-bottom:6px; border-bottom:1px solid var(--border); }
   .drawer-row { display:flex; justify-content:space-between; padding:5px 0; font-size:13px; }
+  .preuve-section { border:1.5px solid var(--border); border-radius:10px; padding:14px 16px; }
+  .preuve-section--absent { background:var(--bg-secondary,#f8f8f8); border-style:dashed; }
+  .preuve-hint { font-size:12px; color:var(--text-muted); margin:0 0 10px; }
+  .preuve-thumb-link { display:block; position:relative; border-radius:8px; overflow:hidden; cursor:pointer; }
+  .preuve-thumb { display:block; width:100%; max-height:260px; object-fit:contain; background:#000; border-radius:8px; }
+  .preuve-overlay { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; gap:8px; background:rgba(0,0,0,.45); color:#fff; font-size:14px; font-weight:600; opacity:0; transition:opacity .2s; border-radius:8px; }
+  .preuve-thumb-link:hover .preuve-overlay { opacity:1; }
+  .preuve-absent { display:flex; flex-direction:column; align-items:center; padding:18px 0 6px; color:var(--text-muted); font-size:13px; text-align:center; }
+  .preuve-absent p { margin:0; }
   .drawer-row .label { color:var(--text-muted); }
   .detail-table { width:100%; border-collapse:collapse; }
   .detail-table th { font-size:11px; font-weight:700; text-transform:uppercase; color:var(--text-muted); padding:6px 8px; border-bottom:1px solid var(--border); text-align:left; }
@@ -259,7 +268,21 @@ async function openDrawer(numero) {
       <div class="drawer-row"><span class="label">Remise</span><span>${fmt(c.remise)} HTG</span></div>
       <div class="drawer-row" style="font-weight:700;border-top:1px solid var(--border);padding-top:8px;margin-top:4px"><span>Total</span><span>${fmt(c.total)} HTG</span></div>
     </div>
-    ${c.preuve_paiement ? `<div class="drawer-section"><div class="drawer-section-title">Preuve de paiement</div><a href="${c.preuve_paiement}" target="_blank"><img src="${c.preuve_paiement}" style="max-width:100%;border-radius:8px;margin-top:6px"></a></div>` : ''}
+    <div class="drawer-section preuve-section ${c.preuve_paiement ? '' : 'preuve-section--absent'}">
+      <div class="drawer-section-title"><i class="fas fa-receipt" style="margin-right:6px"></i>Preuve de paiement</div>
+      ${c.preuve_paiement ? `
+        <p class="preuve-hint">L'acheteur a soumis une preuve de paiement. Cliquez pour l'agrandir.</p>
+        <a href="${c.preuve_paiement}" target="_blank" class="preuve-thumb-link" title="Voir la preuve en plein écran">
+          <img src="${c.preuve_paiement}" class="preuve-thumb" alt="Preuve de paiement">
+          <span class="preuve-overlay"><i class="fas fa-expand-alt"></i> Voir la preuve</span>
+        </a>
+      ` : `
+        <div class="preuve-absent">
+          <i class="fas fa-image" style="font-size:28px;color:var(--text-muted);margin-bottom:8px"></i>
+          <p>Aucune preuve de paiement soumise pour cette commande.</p>
+        </div>
+      `}
+    </div>
     <div class="drawer-section">
       <div class="drawer-section-title">Paiement & Livraison</div>
       <div class="drawer-row"><span class="label">Méthode</span><span>${c.methode_paiement_label}</span></div>
