@@ -96,7 +96,21 @@ def producteur_detail(request, pk):
             status=status.HTTP_400_BAD_REQUEST
         )
     serializer.save()
-    return Response({'success': True, 'data': serializer.data})
+
+    # Mettre à jour les champs du compte utilisateur
+    user = producteur.user
+    user_updated = False
+    for field in ('first_name', 'last_name', 'email', 'telephone'):
+        if field in request.data:
+            setattr(user, field, request.data[field])
+            user_updated = True
+    if user_updated:
+        user.save()
+
+    return Response({
+        'success': True,
+        'data': ProducteurProfilSerializer(producteur, context={'request': request}).data,
+    })
 
 
 # ── PATCH /api/admin/producteurs/<id>/statut/ ───────────────────

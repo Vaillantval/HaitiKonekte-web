@@ -26,7 +26,11 @@
   /* Modal */
   .modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,.45); z-index:600; display:flex; align-items:center; justify-content:center; opacity:0; pointer-events:none; transition:opacity .22s; }
   .modal-overlay.open { opacity:1; pointer-events:auto; }
-  .modal-box { background:var(--card); border-radius:14px; padding:28px 32px; width:460px; max-width:96vw; box-shadow:0 12px 48px rgba(0,0,0,.18); }
+  .modal-box { background:var(--card); border-radius:14px; padding:28px 32px; width:460px; max-width:96vw; box-shadow:0 12px 48px rgba(0,0,0,.18); max-height:90vh; overflow-y:auto; }
+  .img-upload-zone { border:2px dashed var(--border); border-radius:10px; padding:14px; text-align:center; cursor:pointer; transition:border-color .18s; }
+  .img-upload-zone:hover { border-color:var(--green-mid); }
+  .img-upload-zone input { display:none; }
+  .img-preview { max-height:80px; border-radius:8px; margin-top:8px; display:none; }
   .modal-box h3 { font-size:16px; font-weight:700; margin-bottom:20px; }
   .form-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
   .form-grid .full { grid-column:1/-1; }
@@ -86,6 +90,16 @@
           </select>
         </div>
         <div class="field full">
+          <label>Image de la catégorie</label>
+          <div class="img-upload-zone" onclick="document.getElementById('f-image').click()">
+            <input type="file" id="f-image" accept="image/*" onchange="previewCatImage(this)">
+            <i class="fas fa-image" style="font-size:22px;color:var(--text-muted)"></i>
+            <div style="font-size:12px;color:var(--text-muted);margin-top:4px">Cliquer pour choisir une image</div>
+            <img id="f-image-preview" class="img-preview">
+          </div>
+          <span id="f-image-current" style="font-size:11px;color:var(--text-muted);margin-top:4px;display:none">Image actuelle conservée si vide</span>
+        </div>
+        <div class="field full">
           <label style="display:flex;align-items:center;gap:8px;cursor:pointer">
             <input type="checkbox" id="f-is-active" checked> Active (visible dans le catalogue)
           </label>
@@ -124,8 +138,20 @@
 {% endblock %}
 
 {% block page_script %}
-const H = { 'Authorization': 'Bearer ' + localStorage.getItem('mp_access'), 'Content-Type': 'application/json' };
+const H     = { 'Authorization': 'Bearer ' + localStorage.getItem('mp_access'), 'Content-Type': 'application/json' };
+const H_auth = { 'Authorization': 'Bearer ' + localStorage.getItem('mp_access') };
 let _editId = null, _allCats = [];
+
+function previewCatImage(input) {
+  const preview = document.getElementById('f-image-preview');
+  if (input.files && input.files[0]) {
+    const reader = new FileReader();
+    reader.onload = e => { preview.src = e.target.result; preview.style.display = 'block'; };
+    reader.readAsDataURL(input.files[0]);
+  } else {
+    preview.style.display = 'none';
+  }
+}
 
 function showToast(msg, type='success') {
   const t = document.createElement('div'); t.className = `toast ${type}`;
@@ -159,7 +185,7 @@ async function load() {
     const isSubCat = !!c.parent_id;
     tbody.innerHTML += `
       <tr id="row-${c.id}">
-        <td><div class="cat-icon"><i class="${c.icone||'fas fa-leaf'}"></i></div></td>
+        <td>${c.image ? `<img src="${c.image}" style="width:36px;height:36px;border-radius:8px;object-fit:cover">` : `<div class="cat-icon"><i class="${c.icone||'fas fa-leaf'}"></i></div>`}</td>
         <td class="${isSubCat?'sub-cat':''}"><strong>${isSubCat?'↳ ':''}</strong>${c.nom}</td>
         <td style="color:var(--text-muted)">${c.parent_nom||'—'}</td>
         <td><strong>${c.nb_produits}</strong></td>
@@ -184,6 +210,9 @@ function openCreate() {
   document.getElementById('f-ordre').value = '0';
   document.getElementById('f-parent').value = '';
   document.getElementById('f-is-active').checked = true;
+  document.getElementById('f-image').value = '';
+  document.getElementById('f-image-preview').style.display = 'none';
+  document.getElementById('f-image-current').style.display = 'none';
   document.getElementById('cat-modal').classList.add('open');
 }
 
@@ -199,6 +228,15 @@ async function openEdit(id) {
   document.getElementById('f-ordre').value  = c.ordre;
   document.getElementById('f-parent').value = c.parent_id||'';
   document.getElementById('f-is-active').checked = c.is_active;
+  document.getElementById('f-image').value  = '';
+  const preview = document.getElementById('f-image-preview');
+  const currentNote = document.getElementById('f-image-current');
+  if (c.image) {
+    preview.src = c.image; preview.style.display = 'block';
+    currentNote.style.display = 'block';
+  } else {
+    preview.style.display = 'none'; currentNote.style.display = 'none';
+  }
   document.getElementById('cat-modal').classList.add('open');
 }
 
@@ -208,19 +246,37 @@ async function submitCat(e) {
   e.preventDefault();
   const btn = document.getElementById('submit-btn');
   btn.disabled = true;
-  const body = {
-    nom:       document.getElementById('f-nom').value,
-    icone:     document.getElementById('f-icone').value,
-    ordre:     document.getElementById('f-ordre').value,
-    parent_id: document.getElementById('f-parent').value || null,
-    is_active: document.getElementById('f-is-active').checked,
-  };
+
+  const imageFile = document.getElementById('f-image').files[0];
   let url = '/api/admin/categories/', method = 'POST';
   if (_editId) { url = `/api/admin/categories/${_editId}/`; method = 'PATCH'; }
-  const r = await fetch(url, { method, headers: H, body: JSON.stringify(body) });
+
+  let fetchOpts;
+  if (imageFile) {
+    const fd = new FormData();
+    fd.append('nom',       document.getElementById('f-nom').value);
+    fd.append('icone',     document.getElementById('f-icone').value);
+    fd.append('ordre',     document.getElementById('f-ordre').value);
+    fd.append('is_active', document.getElementById('f-is-active').checked);
+    const parentVal = document.getElementById('f-parent').value;
+    if (parentVal) fd.append('parent_id', parentVal);
+    fd.append('image', imageFile);
+    fetchOpts = { method, headers: H_auth, body: fd };
+  } else {
+    const body = {
+      nom:       document.getElementById('f-nom').value,
+      icone:     document.getElementById('f-icone').value,
+      ordre:     document.getElementById('f-ordre').value,
+      parent_id: document.getElementById('f-parent').value || null,
+      is_active: document.getElementById('f-is-active').checked,
+    };
+    fetchOpts = { method, headers: H, body: JSON.stringify(body) };
+  }
+
+  const r = await fetch(url, fetchOpts);
   btn.disabled = false;
   if (r.ok) { showToast(_editId ? 'Catégorie mise à jour !' : 'Catégorie créée !'); closeModal(); load(); }
-  else { showToast('Erreur', 'error'); }
+  else { const d = await r.json(); showToast(d.error ? JSON.stringify(d.error) : 'Erreur', 'error'); }
 }
 
 async function toggleActive(id, isActive) {

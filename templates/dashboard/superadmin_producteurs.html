@@ -291,7 +291,7 @@ async function load() {
   _allData.forEach(p => {
     tbody.innerHTML += `
       <tr id="row-${p.id}">
-        <td><div style="font-weight:600">${p.nom}</div><div style="font-size:11px;color:var(--text-muted)">${p.email}</div></td>
+        <td><div style="font-weight:600">${p.nom_complet}</div><div style="font-size:11px;color:var(--text-muted)">${p.email}</div></td>
         <td style="font-family:monospace;color:var(--green-mid)">${p.code_producteur}</td>
         <td>${p.commune}<br><span style="font-size:11px;color:var(--text-muted)">${p.departement}</span></td>
         <td style="text-align:center">${p.nb_produits}</td>
@@ -394,6 +394,7 @@ function openCreate() {
   document.getElementById('username-wrap').style.display = 'flex';
   document.getElementById('password-wrap').style.display = 'flex';
   document.getElementById('password2-wrap').style.display = 'flex';
+  document.getElementById('password-wrap').querySelector('label').textContent = 'Mot de passe *';
   document.getElementById('f-username').required = true;
   document.getElementById('f-password').required = true;
   document.getElementById('prod-modal').classList.add('open');
@@ -413,17 +414,18 @@ async function openEdit(id) {
   if (!r.ok) { showToast('Erreur de chargement', 'error'); return; }
   const p = (await r.json()).data;
 
-  document.getElementById('f-first_name').value   = p.first_name;
-  document.getElementById('f-last_name').value    = p.last_name;
-  document.getElementById('f-email').value        = p.email;
-  document.getElementById('f-telephone').value    = p.telephone;
+  document.getElementById('f-first_name').value   = p.first_name  || '';
+  document.getElementById('f-last_name').value    = p.last_name   || '';
+  document.getElementById('f-email').value        = p.email       || '';
+  document.getElementById('f-telephone').value    = p.telephone   || '';
   document.getElementById('f-superficie').value   = p.superficie_ha || '';
-  document.getElementById('f-adresse').value      = p.adresse_complete;
-  document.getElementById('f-description').value  = p.description;
-  document.getElementById('f-num_id').value       = p.num_identification;
+  document.getElementById('f-adresse').value      = p.adresse_complete || '';
+  document.getElementById('f-description').value  = p.description || '';
+  document.getElementById('f-num_id').value       = p.num_identification || '';
   document.getElementById('f-statut').value       = p.statut;
-  document.getElementById('f-note_admin').value   = p.note_admin;
+  document.getElementById('f-note_admin').value   = p.note_admin  || '';
   document.getElementById('f-password').value     = '';
+  document.getElementById('password2-wrap').style.display = 'none';
   await _geoProd.prefill({ deptSlug: p.departement, communeNom: p.commune, sectionNom: p.localite });
 }
 

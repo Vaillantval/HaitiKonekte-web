@@ -579,7 +579,11 @@ async function loadFaqCats() {
     list.innerHTML += `
       <div class="faq-cat-item ${_faqCatId===c.id?'active':''}" onclick="selectFaqCat(${c.id},'${c.titre.replace(/'/g,"\\'")}')">
         <span><i class="${c.icone||'fas fa-folder'}" style="margin-right:6px;color:var(--green-mid)"></i>${c.titre}</span>
-        <span class="cat-cnt">${c.nb_items}</span>
+        <span style="display:flex;align-items:center;gap:4px">
+          <span class="cat-cnt">${c.nb_items}</span>
+          <button class="btn-xs" style="background:var(--bg);border:1px solid var(--border);color:var(--text-muted);padding:2px 7px" onclick="event.stopPropagation();openFaqCatEdit(${c.id})"><i class="fas fa-edit"></i></button>
+          <button class="btn-xs" style="background:#fde8e8;color:#e74c3c;padding:2px 7px" onclick="event.stopPropagation();deleteFaqCat(${c.id})"><i class="fas fa-trash"></i></button>
+        </span>
       </div>`;
   });
 }
@@ -640,6 +644,21 @@ async function openFaqCatEdit(id) {
 }
 
 function closeFaqCatModal() { document.getElementById('faqcat-modal').classList.remove('open'); _faqCatEditId = null; }
+
+async function deleteFaqCat(id) {
+  const cat = _faqCats.find(c => c.id === id);
+  const nb = cat ? cat.nb_items : 0;
+  const msg = nb > 0
+    ? `Supprimer la catégorie "${cat.titre}" et ses ${nb} question(s) ?`
+    : `Supprimer la catégorie "${cat ? cat.titre : ''}" ?`;
+  if (!confirm(msg)) return;
+  const r = await fetch(`/api/admin/config/faq/categories/${id}/`, { method:'DELETE', headers:H });
+  if (r.ok) {
+    showToast('Catégorie supprimée');
+    if (_faqCatId === id) { _faqCatId = null; document.getElementById('faq-items-list').innerHTML = '<div class="empty-panel">Sélectionnez une catégorie pour voir ses questions</div>'; document.getElementById('faq-items-title').textContent = 'Sélectionner une catégorie'; document.getElementById('btn-add-item').style.display = 'none'; }
+    loadFaqCats();
+  } else showToast('Erreur lors de la suppression', 'error');
+}
 
 async function submitFaqCat(e) {
   e.preventDefault();

@@ -6,6 +6,8 @@ from apps.orders.models import Commande
 class ProducteurProfilSerializer(serializers.ModelSerializer):
     """Profil boutique d'un producteur (lecture + mise à jour partielle)."""
     nom_complet       = serializers.SerializerMethodField()
+    first_name        = serializers.SerializerMethodField()
+    last_name         = serializers.SerializerMethodField()
     email             = serializers.SerializerMethodField()
     telephone         = serializers.SerializerMethodField()
     photo             = serializers.SerializerMethodField()
@@ -17,19 +19,26 @@ class ProducteurProfilSerializer(serializers.ModelSerializer):
     class Meta:
         model  = Producteur
         fields = [
-            'id', 'code_producteur', 'nom_complet', 'email',
-            'telephone', 'photo', 'departement', 'departement_label',
+            'id', 'code_producteur', 'nom_complet', 'first_name', 'last_name',
+            'email', 'telephone', 'photo',
+            'departement', 'departement_label',
             'commune', 'localite', 'adresse_complete', 'superficie_ha',
             'description', 'num_identification',
-            'statut', 'statut_label',
+            'statut', 'statut_label', 'note_admin', 'date_validation',
             'nb_produits', 'nb_commandes', 'created_at',
         ]
         read_only_fields = [
-            'id', 'code_producteur', 'statut', 'created_at',
+            'id', 'code_producteur', 'statut', 'created_at', 'date_validation',
         ]
 
     def get_nom_complet(self, obj):
         return obj.user.get_full_name()
+
+    def get_first_name(self, obj):
+        return obj.user.first_name
+
+    def get_last_name(self, obj):
+        return obj.user.last_name
 
     def get_email(self, obj):
         return obj.user.email

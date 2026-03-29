@@ -192,9 +192,9 @@ def categories_admin(request):
     )
 
 
-# ── GET/PATCH /api/admin/categories/<id>/ ───────────────────────
+# ── GET/PATCH/DELETE /api/admin/categories/<id>/ ────────────────
 @extend_schema(operation_id='admin_categorie_detail', tags=['Admin — Catalogue'])
-@api_view(['GET', 'PATCH'])
+@api_view(['GET', 'PATCH', 'DELETE'])
 @permission_classes([IsSuperAdmin])
 def categorie_detail(request, pk):
     cat = get_object_or_404(Categorie, pk=pk)
@@ -204,6 +204,16 @@ def categorie_detail(request, pk):
             'success': True,
             'data': CategorieSerializer(cat).data
         })
+
+    if request.method == 'DELETE':
+        nb = cat.produits.count()
+        if nb > 0:
+            return Response(
+                {'success': False, 'error': f'Impossible de supprimer : {nb} produit(s) lié(s).'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        cat.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
     serializer = CategorieSerializer(cat, data=request.data, partial=True)
     if not serializer.is_valid():
