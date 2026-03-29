@@ -67,6 +67,8 @@ urlpatterns = [
     path('config/faq/items/<int:pk>/',      views.faq_item_detail,        name='faq_item_detail'),
     path('config/contact/',                 views.contact_messages,       name='contact_messages'),
     path('config/contact/<int:pk>/',        views.contact_message_detail, name='contact_detail'),
+    path('config/slider/',                  views.slider_list,            name='slider_list'),
+    path('config/slider/<int:pk>/',         views.slider_detail,          name='slider_detail'),
 
     # ── Acheteurs, Vouchers, Adresses ───────────────────────────
     path('acheteurs/',                  views.acheteurs_list,    name='acheteurs_list'),

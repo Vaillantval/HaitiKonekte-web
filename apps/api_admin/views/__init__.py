@@ -26,6 +26,7 @@ from .config_views     import (
     faq_categories, faq_categorie_detail,
     faq_items, faq_item_detail,
     contact_messages, contact_message_detail,
+    slider_list, slider_detail,
 )
 from .acheteur_views   import (
     acheteurs_list, acheteur_detail,

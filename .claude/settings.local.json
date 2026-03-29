@@ -24,7 +24,9 @@
       "Bash(head -20 grep -n \"await r.json\\(\\)\\\\|\\\\.json\\(\\)\\\\.\\\\|json\\(\\)\\\\.data\\\\|\\\\.forEach\\\\|\\\\.map\\(\" templates/dashboard/superadmin_categories.html)",
       "Bash(head -20 grep -n \"await r.json\\(\\)\\\\|\\\\.json\\(\\)\\\\.\\\\|json\\(\\)\\\\.data\\\\|\\\\.forEach\\\\|\\\\.map\\(\" templates/dashboard/superadmin_producteurs.html)",
       "Bash(head -20 grep -n \"await r.json\\(\\)\\\\|\\\\.json\\(\\)\\\\.\\\\|json\\(\\)\\\\.data\\\\|\\\\.forEach\\\\|\\\\.map\\(\" templates/dashboard/superadmin_stocks.html)",
-      "Bash(head -20 grep -n \"await r.json\\(\\)\\\\|\\\\.json\\(\\)\\\\.\\\\|json\\(\\)\\\\.data\\\\|\\\\.forEach\\\\|\\\\.map\\(\" templates/dashboard/superadmin_catalogue.html)"
+      "Bash(head -20 grep -n \"await r.json\\(\\)\\\\|\\\\.json\\(\\)\\\\.\\\\|json\\(\\)\\\\.data\\\\|\\\\.forEach\\\\|\\\\.map\\(\" templates/dashboard/superadmin_catalogue.html)",
+      "Bash(BASE=\"C:/Users/wind/Desktop/TRANSVERSAL/MAKET-PEYIZAN-026/MP_web_2026/maket_peyizan/templates/dashboard\" for f in superadmin_commandes.html superadmin_paiements.html superadmin_producteurs.html superadmin_collectes.html superadmin_stocks.html superadmin_acheteurs.html superadmin_adresses.html superadmin_zones.html superadmin_vouchers.html superadmin_categories.html superadmin_slider.html)",
+      "Bash(do echo:*)"
     ]
   }
 }

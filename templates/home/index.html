@@ -907,6 +907,158 @@
       line-height: 1.6;
     }
 
+    /* ── Slider ─────────────────────────────────────────────── */
+    .slider-section {
+      position: relative;
+      width: 100%;
+      height: 360px;
+      overflow: hidden;
+      background: #0d1a0f;
+    }
+    .slider-track {
+      display: flex;
+      height: 100%;
+      transition: transform .7s cubic-bezier(.4,0,.2,1);
+    }
+    .slider-slide {
+      min-width: 100%;
+      height: 100%;
+      background-size: cover;
+      background-position: center;
+      position: relative;
+      flex-shrink: 0;
+    }
+    .slider-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        to bottom,
+        rgba(0,0,0,.18) 0%,
+        rgba(5,30,10,.65) 55%,
+        rgba(5,30,10,.82) 100%
+      );
+    }
+    .slider-content {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-end;
+      text-align: center;
+      padding: 0 24px 44px;
+      gap: 10px;
+    }
+    .slider-eyebrow {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      color: var(--jaune, #e8d800);
+      background: rgba(0,0,0,.28);
+      padding: 4px 14px;
+      border-radius: 100px;
+      animation: sliderFadeUp .5s ease both;
+    }
+    .slider-titre {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(22px, 3.4vw, 44px);
+      font-weight: 900;
+      color: #fff;
+      text-shadow: 0 2px 18px rgba(0,0,0,.6), 0 0 40px rgba(0,0,0,.3);
+      max-width: 700px;
+      line-height: 1.18;
+      letter-spacing: -.01em;
+      animation: sliderFadeUp .6s .08s ease both;
+    }
+    .slider-sous {
+      font-size: clamp(13px, 1.5vw, 16px);
+      color: rgba(255,255,255,.82);
+      text-shadow: 0 1px 8px rgba(0,0,0,.5);
+      max-width: 520px;
+      line-height: 1.55;
+      animation: sliderFadeUp .65s .16s ease both;
+    }
+    .slider-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 4px;
+      padding: 11px 28px;
+      background: transparent;
+      color: #fff;
+      border: 2px solid rgba(255,255,255,.7);
+      border-radius: 50px;
+      font-weight: 700;
+      font-size: 13px;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      text-decoration: none;
+      transition: background .25s, border-color .25s, transform .2s;
+      animation: sliderFadeUp .7s .24s ease both;
+    }
+    .slider-btn:hover {
+      background: rgba(255,255,255,.15);
+      border-color: #fff;
+      transform: translateY(-2px);
+    }
+    @keyframes sliderFadeUp {
+      from { opacity:0; transform: translateY(18px); }
+      to   { opacity:1; transform: translateY(0); }
+    }
+    .slider-arrow {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      border: 1.5px solid rgba(255,255,255,.3);
+      background: rgba(0,0,0,.25);
+      backdrop-filter: blur(6px);
+      color: #fff;
+      font-size: 12px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background .2s, border-color .2s;
+      z-index: 10;
+    }
+    .slider-arrow:hover { background: rgba(0,0,0,.5); border-color: rgba(255,255,255,.7); }
+    .slider-prev { left: 16px; }
+    .slider-next { right: 16px; }
+    .slider-dots {
+      position: absolute;
+      bottom: 14px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 6px;
+      z-index: 10;
+    }
+    .slider-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      border: none;
+      background: rgba(255,255,255,.35);
+      cursor: pointer;
+      padding: 0;
+      transition: background .3s, width .3s, border-radius .3s;
+    }
+    .slider-dot.active {
+      background: #fff;
+      width: 20px;
+      border-radius: 3px;
+    }
+    @media (max-width: 768px) {
+      .slider-section { height: 260px; }
+      .slider-content { padding: 0 16px 30px; }
+      .slider-arrow   { width:32px; height:32px; font-size:10px; }
+    }
+
     /* ── CTA Banner ────────────────────────────────────────── */
     .cta-banner {
       background: linear-gradient(
@@ -1243,6 +1395,7 @@
       .steps-grid         { grid-template-columns: repeat(2, 1fr); }
       .steps-grid::before { display: none; }
       .navbar-search      { display: none; }
+      .navbar-actions { gap: 8px; }
       .footer-grid        { grid-template-columns: 1fr; }
       .modal-produit-grid { grid-template-columns: 1fr; }
     }
@@ -1252,6 +1405,22 @@
       .categories-grid  { grid-template-columns: repeat(2, 1fr); }
       .hero-title       { font-size: 32px; }
       .section-title    { font-size: 28px; }
+      /* Navbar: hide content nav links, keep cart + auth */
+      .navbar-actions > a.btn-nav-outline { display: none !important; }
+      .btn-nav { padding: 7px 12px; font-size: 12px; }
+      .user-name, .user-role-badge { display: none; }
+      /* Cart dropdown: constrain width */
+      .cart-dd { width: calc(100vw - 20px); right: -10px; left: auto; }
+    }
+    @media (max-width: 360px) {
+      /* Icon-only buttons on very small screens */
+      .btn-nav { font-size: 0 !important; padding: 9px 11px; }
+      .btn-nav i { font-size: 14px; }
+      .btn-panier { font-size: 0 !important; padding: 9px 11px; }
+      .btn-panier i { font-size: 14px; }
+      .navbar-actions { gap: 6px; }
+      /* Steps: 1 column */
+      .steps-grid { grid-template-columns: 1fr; }
     }
 
     /* ── Modale producteur déjà inscrit ──────────────────────── */
@@ -1485,6 +1654,40 @@
     </div>
   </section>
 
+
+  <!-- ══ SLIDER ══════════════════════════════════════════════ -->
+  {% if slider_images %}
+  <section class="slider-section" id="slider-section" aria-label="Bannière principale">
+    <div class="slider-track" id="slider-track">
+      {% for slide in slider_images %}
+      <div class="slider-slide" style="background-image:url('{{ slide.image.url }}')">
+        <div class="slider-overlay"></div>
+        <div class="slider-content">
+          {% if slide.titre %}<h2 class="slider-titre">{{ slide.titre }}</h2>{% endif %}
+          {% if slide.sous_titre %}<p class="slider-sous">{{ slide.sous_titre }}</p>{% endif %}
+          {% if slide.lien and slide.texte_bouton %}
+          <a href="{{ slide.lien }}" class="slider-btn">{{ slide.texte_bouton }}</a>
+          {% endif %}
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    <!-- Flèches -->
+    <button class="slider-arrow slider-prev" onclick="sliderPrev()" aria-label="Précédent">
+      <i class="fas fa-chevron-left"></i>
+    </button>
+    <button class="slider-arrow slider-next" onclick="sliderNext()" aria-label="Suivant">
+      <i class="fas fa-chevron-right"></i>
+    </button>
+    <!-- Points -->
+    <div class="slider-dots" id="slider-dots">
+      {% for slide in slider_images %}
+      <button class="slider-dot {% if forloop.first %}active{% endif %}"
+              onclick="sliderGoTo({{ forloop.counter0 }})" aria-label="Slide {{ forloop.counter }}"></button>
+      {% endfor %}
+    </div>
+  </section>
+  {% endif %}
 
   <!-- ══ CATÉGORIES ══════════════════════════════════════════ -->
   <section class="section section-alt">
@@ -1788,10 +1991,10 @@
         </div>
         <div class="step-card">
           <div class="step-num">2</div>
-          <div class="step-title">Choisissez un producteur</div>
+          <div class="step-title">Choisissez votre adresse</div>
           <div class="step-desc">
-            Contactez directement le producteur
-            ou passez votre commande en ligne.
+            Renseignez votre adresse de livraison
+            et/ou de facturation à la commande.
           </div>
         </div>
         <div class="step-card">
@@ -2229,6 +2432,67 @@
       window.location.reload();
     }
   </script>
+
+  {% if slider_images %}
+  <script>
+    // ── Slider JS ───────────────────────────────────────────────
+    (function() {
+      const track  = document.getElementById('slider-track');
+      const dots   = document.querySelectorAll('.slider-dot');
+      const total  = {{ slider_images|length }};
+      let cur = 0, timer = null;
+
+      function goTo(idx) {
+        cur = (idx + total) % total;
+        track.style.transform = `translateX(-${cur * 100}%)`;
+        // reset animation sur le contenu du slide actif
+        const slides = track.querySelectorAll('.slider-slide');
+        slides.forEach((s, i) => {
+          const content = s.querySelector('.slider-content');
+          if (i === cur) {
+            content.style.animation = 'none';
+            void content.offsetWidth; // reflow
+            content.style.animation = '';
+            // re-trigger animations sur enfants
+            content.querySelectorAll('.slider-eyebrow,.slider-titre,.slider-sous,.slider-btn').forEach(el => {
+              el.style.animationPlayState = 'running';
+            });
+          }
+        });
+        dots.forEach((d, i) => d.classList.toggle('active', i === cur));
+        restartTimer();
+      }
+
+      function restartTimer() {
+        clearInterval(timer);
+        if (total > 1) timer = setInterval(() => goTo(cur + 1), 5000);
+      }
+
+      window.sliderGoTo = goTo;
+      window.sliderNext = () => goTo(cur + 1);
+      window.sliderPrev = () => goTo(cur - 1);
+
+      // Pause on hover
+      const section = document.getElementById('slider-section');
+      if (section) {
+        section.addEventListener('mouseenter', () => clearInterval(timer));
+        section.addEventListener('mouseleave', restartTimer);
+      }
+
+      // Touch swipe
+      let touchStartX = 0;
+      if (track) {
+        track.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; }, { passive:true });
+        track.addEventListener('touchend',   e => {
+          const diff = touchStartX - e.changedTouches[0].clientX;
+          if (Math.abs(diff) > 50) diff > 0 ? sliderNext() : sliderPrev();
+        }, { passive:true });
+      }
+
+      restartTimer();
+    })();
+  </script>
+  {% endif %}
 
   <!-- ══ MODALE : producteur déjà inscrit ════════════════════ -->
   <div class="mp-overlay" id="mp-prod-overlay" onclick="if(event.target===this)closeProdModal()">

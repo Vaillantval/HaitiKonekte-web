@@ -210,9 +210,18 @@
       .footer-grid { grid-template-columns:1fr; }
       .page-title { font-size:32px; }
       .apropos-img { height:280px; }
+      .navbar-actions > a.btn-nav-outline { display:none; }
     }
     @media (max-width:480px) {
       .stats-grid, .valeurs-grid { grid-template-columns:1fr; }
+      .page-title { font-size:26px; }
+      .btn-nav { padding:7px 12px; font-size:12px; }
+      .navbar-inner { gap:8px; }
+    }
+    @media (max-width:360px) {
+      .btn-nav { font-size:0 !important; padding:9px 11px; }
+      .btn-nav i { font-size:14px; }
+      .navbar-actions { gap:6px; }
     }
   </style>
 </head>
@@ -242,7 +251,6 @@
         <div class="navbar-actions">
           <a href="/" class="btn-nav btn-nav-outline"><i class="fas fa-store"></i> Catalogue</a>
           <a href="{% url 'core:contact' %}" class="btn-nav btn-nav-outline"><i class="fas fa-envelope"></i> Contact</a>
-          <a href="/admin/" class="btn-nav btn-nav-primary"><i class="fas fa-lock"></i> Admin</a>
         </div>
       </div>
     </div>

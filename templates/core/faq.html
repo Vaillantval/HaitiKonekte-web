@@ -142,6 +142,14 @@
       .faq-nav{display:none;}
       .page-title{font-size:32px;}
       .footer-grid{grid-template-columns:1fr;}
+      .navbar-actions > a.btn-nav-outline { display:none; }
+    }
+    @media(max-width:480px){
+      .page-title{font-size:26px;}
+      .faq-content{padding:20px 16px;}
+      .page-header{padding:40px 16px 24px;}
+      .btn-nav{padding:7px 12px;font-size:12px;}
+      .navbar-inner{gap:8px;}
     }
   </style>
 </head>
@@ -166,7 +174,6 @@
           <a href="/" class="btn-nav btn-nav-outline"><i class="fas fa-store"></i> Catalogue</a>
           <a href="{% url 'core:apropos' %}" class="btn-nav btn-nav-outline"><i class="fas fa-info-circle"></i> À propos</a>
           <a href="{% url 'core:contact' %}" class="btn-nav btn-nav-outline"><i class="fas fa-envelope"></i> Contact</a>
-          <a href="/admin/" class="btn-nav btn-nav-primary"><i class="fas fa-lock"></i> Admin</a>
         </div>
       </div>
     </div>

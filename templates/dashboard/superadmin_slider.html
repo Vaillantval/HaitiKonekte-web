@@ -1,0 +1,365 @@
+{% extends 'dashboard/base.html' %}
+{% block title %}Slider accueil — Superadmin{% endblock %}
+{% block sidebar_nav %}{% include 'dashboard/superadmin_sidebar.html' with active='slider' %}{% endblock %}
+{% block page_title %}Slider de la page d'accueil{% endblock %}
+{% block page_subtitle %}Gérez les images et textes du carrousel principal{% endblock %}
+
+{% block extra_css %}
+<style>
+  .toolbar { display:flex; gap:10px; align-items:center; margin-bottom:20px; }
+  .btn-new { padding:9px 20px; border-radius:8px; font-size:13px; font-weight:700; border:none; cursor:pointer; background:var(--green-mid); color:#fff; font-family:inherit; display:flex; align-items:center; gap:8px; }
+  .btn-new:hover { opacity:.88; }
+
+  .slides-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(320px,1fr)); gap:18px; }
+
+  .slide-card { background:var(--card); border-radius:var(--radius); box-shadow:var(--shadow); overflow:hidden; position:relative; }
+  .slide-card.inactive { opacity:.55; }
+  .slide-img { width:100%; height:180px; object-fit:cover; display:block; background:var(--border); }
+  .slide-img-placeholder { width:100%; height:180px; background:var(--border); display:flex; align-items:center; justify-content:center; color:var(--text-muted); font-size:32px; }
+  .slide-body { padding:14px 16px; }
+  .slide-titre { font-weight:700; font-size:14px; margin-bottom:4px; }
+  .slide-sous { font-size:12px; color:var(--text-muted); margin-bottom:8px; min-height:18px; }
+  .slide-meta { display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
+  .slide-ordre { font-size:11px; background:var(--bg); border:1px solid var(--border); border-radius:6px; padding:2px 8px; color:var(--text-muted); }
+  .slide-lien { font-size:11px; color:var(--green-mid); max-width:140px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .slide-actions { display:flex; gap:6px; margin-top:10px; }
+  .action-btn { padding:5px 12px; border-radius:6px; font-size:11px; font-weight:700; border:none; cursor:pointer; font-family:inherit; }
+  .btn-edit   { background:var(--bg); border:1px solid var(--border); color:var(--text-muted); }
+  .btn-toggle-on  { background:#fde8e8; color:#e74c3c; }
+  .btn-toggle-off { background:#e8f8ee; color:#27ae60; }
+  .btn-del    { background:#fde8e8; color:#e74c3c; }
+  .badge-active   { display:inline-block; padding:2px 8px; border-radius:12px; font-size:10px; font-weight:700; background:#e8f8ee; color:#1a6b2f; }
+  .badge-inactive { display:inline-block; padding:2px 8px; border-radius:12px; font-size:10px; font-weight:700; background:#f0f0f0; color:#888; }
+  .drag-handle { position:absolute; top:8px; right:8px; background:rgba(0,0,0,.45); color:#fff; border-radius:6px; width:28px; height:28px; display:flex; align-items:center; justify-content:center; cursor:grab; font-size:13px; }
+
+  /* Preview aperçu */
+  .preview-wrap { background:var(--card); border-radius:var(--radius); box-shadow:var(--shadow); overflow:hidden; margin-bottom:24px; }
+  .preview-header { padding:12px 18px; border-bottom:1px solid var(--border); font-size:12px; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:.06em; display:flex; align-items:center; gap:8px; }
+  .preview-slider { position:relative; height:220px; background:#1a1a2e; overflow:hidden; }
+  .preview-slide { position:absolute; inset:0; background-size:cover; background-position:center; display:flex; align-items:center; justify-content:center; opacity:0; transition:opacity .6s; }
+  .preview-slide.active { opacity:1; }
+  .preview-slide::before { content:''; position:absolute; inset:0; background:linear-gradient(135deg,rgba(0,0,0,.55) 0%,rgba(0,0,0,.2) 100%); }
+  .preview-content { position:relative; text-align:center; color:#fff; padding:20px; }
+  .preview-titre { font-size:22px; font-weight:800; text-shadow:0 2px 8px rgba(0,0,0,.5); margin-bottom:6px; }
+  .preview-sous  { font-size:13px; opacity:.88; text-shadow:0 1px 4px rgba(0,0,0,.4); margin-bottom:12px; }
+  .preview-btn   { display:inline-block; padding:6px 18px; background:var(--green-mid); border-radius:20px; font-size:12px; font-weight:700; color:#fff; }
+  .preview-dots  { position:absolute; bottom:10px; left:50%; transform:translateX(-50%); display:flex; gap:6px; }
+  .preview-dot   { width:7px; height:7px; border-radius:50%; background:rgba(255,255,255,.4); transition:background .3s; cursor:pointer; }
+  .preview-dot.active { background:#fff; }
+  .preview-arrows { position:absolute; top:50%; transform:translateY(-50%); width:100%; display:flex; justify-content:space-between; padding:0 10px; }
+  .preview-arrow { background:rgba(255,255,255,.2); border:none; color:#fff; width:30px; height:30px; border-radius:50%; cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:12px; }
+  .preview-arrow:hover { background:rgba(255,255,255,.4); }
+
+  /* Modal */
+  .modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,.45); z-index:600; display:flex; align-items:center; justify-content:center; opacity:0; pointer-events:none; transition:opacity .22s; }
+  .modal-overlay.open { opacity:1; pointer-events:auto; }
+  .modal-box { background:var(--card); border-radius:14px; padding:28px 32px; width:520px; max-width:96vw; max-height:90vh; overflow-y:auto; box-shadow:0 12px 48px rgba(0,0,0,.18); }
+  .modal-box h3 { font-size:16px; font-weight:700; margin-bottom:20px; }
+  .form-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+  .form-grid .full { grid-column:1/-1; }
+  .field { display:flex; flex-direction:column; gap:5px; }
+  .field label { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.05em; color:var(--text-muted); }
+  .field input, .field textarea { padding:9px 12px; border:1.5px solid var(--border); border-radius:8px; font-size:13px; font-family:inherit; background:var(--bg); color:var(--text); outline:none; }
+  .field input:focus, .field textarea:focus { border-color:var(--green-mid); }
+  .field textarea { resize:vertical; min-height:60px; }
+  .modal-actions { display:flex; gap:10px; justify-content:flex-end; margin-top:20px; }
+  .btn-cancel-modal { padding:9px 18px; border-radius:8px; font-size:13px; font-weight:700; border:1.5px solid var(--border); background:var(--bg); color:var(--text-muted); cursor:pointer; font-family:inherit; }
+  .btn-save { padding:9px 22px; border-radius:8px; font-size:13px; font-weight:700; border:none; cursor:pointer; background:var(--green-mid); color:#fff; font-family:inherit; }
+  .img-preview-wrap { margin-top:8px; }
+  .img-preview-wrap img { max-width:100%; max-height:120px; border-radius:8px; object-fit:cover; }
+  .current-img-label { font-size:11px; color:var(--text-muted); margin-bottom:4px; }
+  .checkbox-row { display:flex; align-items:center; gap:8px; font-size:13px; font-weight:500; cursor:pointer; }
+  .checkbox-row input { width:15px; height:15px; }
+
+  .empty-state { text-align:center; padding:60px; color:var(--text-muted); }
+  .toast-container { position:fixed; bottom:24px; right:24px; z-index:9999; display:flex; flex-direction:column; gap:8px; }
+  .toast { display:flex; align-items:center; gap:10px; padding:12px 16px; border-radius:10px; font-size:13px; font-weight:500; color:#fff; box-shadow:0 4px 20px rgba(0,0,0,.15); animation:slideUp .25s ease; }
+  .toast.success { background:#27ae60; } .toast.error { background:#e74c3c; }
+  @keyframes slideUp { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+  @media (max-width: 700px) {
+    .toolbar { gap: 6px; }
+    .search-box { min-width: 100%; }
+    .filter-btn { padding: 6px 10px; font-size: 11px; }
+  }
+  @media (max-width: 500px) {
+    .modal-box { padding: 20px 16px; border-radius: 16px 16px 0 0; }
+    .modal-overlay { align-items: flex-end; }
+    .drawer { width: 100vw !important; max-width: 100vw !important; border-radius: 16px 0 0 16px; }
+    .form-grid { grid-template-columns: 1fr; }
+    .drawer-actions { flex-direction: column; }
+    .drawer-actions button, .drawer-actions a { width: 100%; justify-content: center; }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="toast-container" id="tc"></div>
+
+<!-- Modal -->
+<div class="modal-overlay" id="modal">
+  <div class="modal-box">
+    <h3 id="modal-title">Nouveau slide</h3>
+    <form id="slide-form" onsubmit="submitSlide(event)" enctype="multipart/form-data">
+      <div class="form-grid">
+        <div class="field full">
+          <label>Image <span style="color:#e74c3c">*</span></label>
+          <input type="file" id="f-image" accept="image/*" onchange="previewImg(this)">
+          <div class="current-img-label" id="current-img-label" style="display:none">Image actuelle :</div>
+          <div class="img-preview-wrap"><img id="img-preview" style="display:none"></div>
+          <div style="font-size:11px;color:var(--text-muted);margin-top:4px">Résolution recommandée : 1600 × 700 px — JPG/PNG/WEBP</div>
+        </div>
+        <div class="field full">
+          <label>Titre</label>
+          <input type="text" id="f-titre" placeholder="Ex : Produits frais directement du jardin">
+        </div>
+        <div class="field full">
+          <label>Sous-titre</label>
+          <textarea id="f-sous_titre" placeholder="Courte description affichée sous le titre"></textarea>
+        </div>
+        <div class="field">
+          <label>Texte du bouton</label>
+          <input type="text" id="f-texte_bouton" placeholder="Ex : Découvrir" value="Découvrir">
+        </div>
+        <div class="field">
+          <label>Lien (URL ou ancre)</label>
+          <input type="text" id="f-lien" placeholder="#catalogue ou /produits/...">
+        </div>
+        <div class="field">
+          <label>Ordre d'affichage</label>
+          <input type="number" id="f-ordre" value="0" min="0">
+        </div>
+        <div class="field" style="justify-content:flex-end">
+          <label class="checkbox-row" style="margin-top:20px">
+            <input type="checkbox" id="f-is_active" checked> Activer ce slide
+          </label>
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="btn-cancel-modal" onclick="closeModal()">Annuler</button>
+        <button type="submit" class="btn-save" id="btn-save"><i class="fas fa-save"></i> Enregistrer</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Aperçu live -->
+<div class="preview-wrap" id="preview-wrap" style="display:none">
+  <div class="preview-header"><i class="fas fa-eye"></i> Aperçu du slider</div>
+  <div class="preview-slider" id="preview-slider">
+    <div class="preview-arrows">
+      <button class="preview-arrow" onclick="prevSlide()"><i class="fas fa-chevron-left"></i></button>
+      <button class="preview-arrow" onclick="nextSlide()"><i class="fas fa-chevron-right"></i></button>
+    </div>
+    <div class="preview-dots" id="preview-dots"></div>
+  </div>
+</div>
+
+<div class="toolbar">
+  <button class="btn-new" onclick="openCreate()"><i class="fas fa-plus"></i> Nouveau slide</button>
+  <span style="font-size:12px;color:var(--text-muted)" id="count-label"></span>
+</div>
+
+<div id="slides-grid" class="slides-grid"></div>
+<div class="empty-state" id="empty" style="display:none">
+  <i class="fas fa-images" style="font-size:36px;margin-bottom:12px;display:block"></i>
+  Aucun slide. Cliquez sur « Nouveau slide » pour commencer.
+</div>
+{% endblock %}
+
+{% block page_script %}
+const H     = { 'Authorization': 'Bearer ' + localStorage.getItem('mp_access') };
+let _slides = [], _editId = null, _currentSlide = 0, _autoTimer = null;
+
+function showToast(msg, type='success') {
+  const t = document.createElement('div'); t.className = `toast ${type}`;
+  t.innerHTML = `<i class="fas fa-${type==='success'?'check-circle':'exclamation-circle'}"></i> ${msg}`;
+  document.getElementById('tc').appendChild(t); setTimeout(() => t.remove(), 3500);
+}
+
+// ── Chargement ───────────────────────────────────────────────────
+async function load() {
+  const r = await fetch('/api/admin/config/slider/', { headers: H });
+  if (!r.ok) return;
+  _slides = (await r.json()).data || [];
+  render();
+  renderPreview();
+}
+
+// ── Rendu liste ──────────────────────────────────────────────────
+function render() {
+  const grid = document.getElementById('slides-grid');
+  document.getElementById('empty').style.display     = _slides.length ? 'none' : 'block';
+  document.getElementById('preview-wrap').style.display = _slides.length ? 'block' : 'none';
+  document.getElementById('count-label').textContent = _slides.length ? `${_slides.length} slide(s)` : '';
+  if (!_slides.length) { grid.innerHTML = ''; return; }
+
+  grid.innerHTML = _slides.map(s => `
+    <div class="slide-card ${s.is_active?'':'inactive'}" id="card-${s.id}">
+      <div class="drag-handle"><i class="fas fa-grip-vertical"></i></div>
+      ${s.image
+        ? `<img src="${s.image}" class="slide-img" alt="${s.titre}">`
+        : `<div class="slide-img-placeholder"><i class="fas fa-image"></i></div>`}
+      <div class="slide-body">
+        <div class="slide-titre">${s.titre || '<em style="color:var(--text-muted)">Sans titre</em>'}</div>
+        <div class="slide-sous">${s.sous_titre || ''}</div>
+        <div class="slide-meta">
+          <span class="slide-ordre">Ordre : ${s.ordre}</span>
+          ${s.lien ? `<span class="slide-lien"><i class="fas fa-link" style="font-size:9px"></i> ${s.lien}</span>` : ''}
+          <span class="${s.is_active?'badge-active':'badge-inactive'}">${s.is_active?'Actif':'Inactif'}</span>
+        </div>
+        <div class="slide-actions">
+          <button class="action-btn btn-edit" onclick="openEdit(${s.id})"><i class="fas fa-edit"></i> Modifier</button>
+          <button class="action-btn ${s.is_active?'btn-toggle-on':'btn-toggle-off'}" onclick="toggleSlide(${s.id},${s.is_active})">${s.is_active?'Désactiver':'Activer'}</button>
+          <button class="action-btn btn-del" onclick="deleteSlide(${s.id})"><i class="fas fa-trash"></i></button>
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+// ── Preview ──────────────────────────────────────────────────────
+function renderPreview() {
+  const container = document.getElementById('preview-slider');
+  const dots      = document.getElementById('preview-dots');
+  // Remove old slides (keep arrows + dots divs)
+  container.querySelectorAll('.preview-slide').forEach(el => el.remove());
+  dots.innerHTML = '';
+
+  const actives = _slides.filter(s => s.is_active);
+  if (!actives.length) return;
+
+  actives.forEach((s, i) => {
+    const el = document.createElement('div');
+    el.className = 'preview-slide' + (i === 0 ? ' active' : '');
+    el.style.backgroundImage = s.image ? `url(${s.image})` : 'linear-gradient(135deg,#1a6b2f,#27ae60)';
+    el.innerHTML = `<div class="preview-content">
+      ${s.titre    ? `<div class="preview-titre">${s.titre}</div>` : ''}
+      ${s.sous_titre ? `<div class="preview-sous">${s.sous_titre}</div>` : ''}
+      ${s.texte_bouton ? `<div class="preview-btn">${s.texte_bouton}</div>` : ''}
+    </div>`;
+    container.insertBefore(el, container.querySelector('.preview-arrows'));
+
+    const dot = document.createElement('div');
+    dot.className = 'preview-dot' + (i === 0 ? ' active' : '');
+    dot.onclick = () => goToSlide(i);
+    dots.appendChild(dot);
+  });
+
+  _currentSlide = 0;
+  startAuto();
+}
+
+function goToSlide(idx) {
+  const slides = document.querySelectorAll('.preview-slide');
+  const dots   = document.querySelectorAll('.preview-dot');
+  if (!slides.length) return;
+  slides.forEach(s => s.classList.remove('active'));
+  dots.forEach(d => d.classList.remove('active'));
+  _currentSlide = (idx + slides.length) % slides.length;
+  slides[_currentSlide].classList.add('active');
+  dots[_currentSlide]?.classList.add('active');
+}
+function nextSlide() { goToSlide(_currentSlide + 1); }
+function prevSlide() { goToSlide(_currentSlide - 1); }
+function startAuto() {
+  clearInterval(_autoTimer);
+  _autoTimer = setInterval(() => nextSlide(), 4000);
+}
+
+// ── Modal ────────────────────────────────────────────────────────
+function openCreate() {
+  _editId = null;
+  document.getElementById('modal-title').textContent = 'Nouveau slide';
+  document.getElementById('btn-save').innerHTML = '<i class="fas fa-plus"></i> Créer';
+  document.getElementById('f-titre').value        = '';
+  document.getElementById('f-sous_titre').value   = '';
+  document.getElementById('f-texte_bouton').value = 'Découvrir';
+  document.getElementById('f-lien').value         = '';
+  document.getElementById('f-ordre').value        = _slides.length;
+  document.getElementById('f-is_active').checked  = true;
+  document.getElementById('f-image').value        = '';
+  document.getElementById('img-preview').style.display   = 'none';
+  document.getElementById('current-img-label').style.display = 'none';
+  document.getElementById('modal').classList.add('open');
+}
+
+function openEdit(id) {
+  const s = _slides.find(x => x.id === id);
+  if (!s) return;
+  _editId = id;
+  document.getElementById('modal-title').textContent = 'Modifier le slide';
+  document.getElementById('btn-save').innerHTML = '<i class="fas fa-save"></i> Enregistrer';
+  document.getElementById('f-titre').value        = s.titre;
+  document.getElementById('f-sous_titre').value   = s.sous_titre;
+  document.getElementById('f-texte_bouton').value = s.texte_bouton;
+  document.getElementById('f-lien').value         = s.lien;
+  document.getElementById('f-ordre').value        = s.ordre;
+  document.getElementById('f-is_active').checked  = s.is_active;
+  document.getElementById('f-image').value        = '';
+  if (s.image) {
+    const pi = document.getElementById('img-preview');
+    pi.src = s.image; pi.style.display = 'block';
+    document.getElementById('current-img-label').style.display = 'block';
+  } else {
+    document.getElementById('img-preview').style.display   = 'none';
+    document.getElementById('current-img-label').style.display = 'none';
+  }
+  document.getElementById('modal').classList.add('open');
+}
+
+function closeModal() { document.getElementById('modal').classList.remove('open'); _editId = null; }
+
+function previewImg(input) {
+  const f = input.files[0];
+  if (!f) return;
+  const pi = document.getElementById('img-preview');
+  pi.src = URL.createObjectURL(f); pi.style.display = 'block';
+  document.getElementById('current-img-label').style.display = 'block';
+}
+
+// ── Submit ───────────────────────────────────────────────────────
+async function submitSlide(e) {
+  e.preventDefault();
+  const btn = document.getElementById('btn-save'); btn.disabled = true;
+
+  const fd = new FormData();
+  fd.append('titre',        document.getElementById('f-titre').value);
+  fd.append('sous_titre',   document.getElementById('f-sous_titre').value);
+  fd.append('texte_bouton', document.getElementById('f-texte_bouton').value);
+  fd.append('lien',         document.getElementById('f-lien').value);
+  fd.append('ordre',        document.getElementById('f-ordre').value);
+  fd.append('is_active',    document.getElementById('f-is_active').checked ? 'true' : 'false');
+  const imgFile = document.getElementById('f-image').files[0];
+  if (imgFile) fd.append('image', imgFile);
+
+  const url    = _editId ? `/api/admin/config/slider/${_editId}/` : '/api/admin/config/slider/';
+  const method = _editId ? 'PATCH' : 'POST';
+
+  const r = await fetch(url, { method, headers: H, body: fd });
+  btn.disabled = false;
+  if (r.ok) {
+    showToast(_editId ? 'Slide mis à jour !' : 'Slide créé !');
+    closeModal(); load();
+  } else {
+    const d = await r.json();
+    showToast(typeof d.error === 'string' ? d.error : 'Erreur', 'error');
+  }
+}
+
+// ── Toggle / Delete ──────────────────────────────────────────────
+async function toggleSlide(id, isActive) {
+  const fd = new FormData();
+  fd.append('is_active', isActive ? 'false' : 'true');
+  const r = await fetch(`/api/admin/config/slider/${id}/`, { method:'PATCH', headers:H, body:fd });
+  if (r.ok) { showToast(`Slide ${isActive?'désactivé':'activé'}`); load(); }
+  else showToast('Erreur', 'error');
+}
+
+async function deleteSlide(id) {
+  if (!confirm('Supprimer ce slide ?')) return;
+  const r = await fetch(`/api/admin/config/slider/${id}/`, { method:'DELETE', headers:H });
+  if (r.ok) { showToast('Slide supprimé'); load(); }
+  else showToast('Erreur', 'error');
+}
+
+mpAuthCheck('superadmin').then(u => { if (u && u.is_superuser) load(); });
+{% endblock %}

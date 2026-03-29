@@ -145,6 +145,14 @@
       .form-row{grid-template-columns:1fr;}
       .page-title{font-size:32px;}
       .footer-grid{grid-template-columns:1fr;}
+      .navbar-actions > a.btn-nav-outline { display:none; }
+    }
+    @media(max-width:480px){
+      .page-title{font-size:26px;}
+      .contact-info{padding:20px 16px;}
+      .contact-form-card{padding:20px 16px;}
+      .page-header{padding:40px 16px 24px;}
+      .btn-nav{padding:7px 12px;font-size:12px;}
     }
   </style>
 </head>
@@ -169,7 +177,6 @@
           <a href="/" class="btn-nav btn-nav-outline"><i class="fas fa-store"></i> Catalogue</a>
           <a href="{% url 'core:apropos' %}" class="btn-nav btn-nav-outline"><i class="fas fa-info-circle"></i> À propos</a>
           <a href="{% url 'core:faq' %}" class="btn-nav btn-nav-outline"><i class="fas fa-question-circle"></i> FAQ</a>
-          <a href="/admin/" class="btn-nav btn-nav-primary"><i class="fas fa-lock"></i> Admin</a>
         </div>
       </div>
     </div>

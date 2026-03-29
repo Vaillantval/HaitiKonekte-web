@@ -133,6 +133,9 @@ def home(request):
 
     produits_catalogue = produits_catalogue.order_by('-created_at')[:24]
 
+    from apps.home.models import SliderImage
+    slider_images = SliderImage.objects.filter(is_active=True).order_by('ordre')
+
     return render(request, 'home/index.html', {
         'stats':              stats,
         'categories':         categories,
@@ -144,6 +147,7 @@ def home(request):
         'categorie_active':   categorie_filtre,
         'recherche':          recherche,
         'nb_panier':          CartService.nb_articles(request),
+        'slider_images':      slider_images,
     })
 
 
@@ -240,6 +244,9 @@ def dashboard_superadmin_vouchers(request):
 
 def dashboard_superadmin_zones(request):
     return render(request, 'dashboard/superadmin_zones.html')
+
+def dashboard_superadmin_slider(request):
+    return render(request, 'dashboard/superadmin_slider.html')
 
 def dashboard_superadmin_config(request):
     return render(request, 'dashboard/superadmin_config.html')

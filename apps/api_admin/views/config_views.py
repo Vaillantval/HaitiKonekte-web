@@ -5,7 +5,7 @@ from django.shortcuts import get_object_or_404
 from drf_spectacular.utils import extend_schema
 
 from apps.accounts.permissions import IsSuperAdmin
-from apps.home.models import SiteConfig, FAQCategorie, FAQItem, ContactMessage
+from apps.home.models import SiteConfig, FAQCategorie, FAQItem, ContactMessage, SliderImage
 
 
 def _config_data(c):
@@ -154,3 +154,74 @@ def contact_message_detail(request, pk):
         msg.save()
 
     return Response({'success': True, 'data': {'id': msg.pk, 'statut': msg.statut}})
+
+
+# ── GET/POST /api/admin/config/slider/ ──────────────────────────
+def _slide_data(s, request=None):
+    image_url = None
+    if s.image:
+        image_url = request.build_absolute_uri(s.image.url) if request else s.image.url
+    return {
+        'id':           s.pk,
+        'titre':        s.titre,
+        'sous_titre':   s.sous_titre,
+        'texte_bouton': s.texte_bouton,
+        'lien':         s.lien,
+        'image':        image_url,
+        'ordre':        s.ordre,
+        'is_active':    s.is_active,
+        'created_at':   s.created_at.isoformat(),
+    }
+
+
+@api_view(['GET', 'POST'])
+@permission_classes([IsSuperAdmin])
+def slider_list(request):
+    if request.method == 'GET':
+        slides = SliderImage.objects.all().order_by('ordre')
+        return Response({'success': True, 'data': [_slide_data(s, request) for s in slides]})
+
+    # POST — multipart (image upload)
+    image = request.FILES.get('image')
+    if not image:
+        return Response({'success': False, 'error': 'Image requise.'}, status=400)
+
+    slide = SliderImage.objects.create(
+        image        = image,
+        titre        = request.data.get('titre', ''),
+        sous_titre   = request.data.get('sous_titre', ''),
+        texte_bouton = request.data.get('texte_bouton', 'Découvrir'),
+        lien         = request.data.get('lien', ''),
+        ordre        = int(request.data.get('ordre', 0)),
+        is_active    = request.data.get('is_active', 'true').lower() != 'false',
+    )
+    return Response({'success': True, 'data': _slide_data(slide, request)}, status=201)
+
+
+@api_view(['GET', 'PATCH', 'DELETE'])
+@permission_classes([IsSuperAdmin])
+def slider_detail(request, pk):
+    slide = get_object_or_404(SliderImage, pk=pk)
+
+    if request.method == 'GET':
+        return Response({'success': True, 'data': _slide_data(slide, request)})
+
+    if request.method == 'DELETE':
+        slide.image.delete(save=False)
+        slide.delete()
+        return Response({'success': True, 'data': {'id': pk}})
+
+    # PATCH
+    for field in ('titre', 'sous_titre', 'texte_bouton', 'lien'):
+        if field in request.data:
+            setattr(slide, field, request.data[field])
+    if 'ordre' in request.data:
+        slide.ordre = int(request.data['ordre'])
+    if 'is_active' in request.data:
+        val = request.data['is_active']
+        slide.is_active = val if isinstance(val, bool) else str(val).lower() != 'false'
+    if 'image' in request.FILES:
+        slide.image.delete(save=False)
+        slide.image = request.FILES['image']
+    slide.save()
+    return Response({'success': True, 'data': _slide_data(slide, request)})

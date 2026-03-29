@@ -35,6 +35,7 @@ urlpatterns = [
     path('dashboard/superadmin/categories/',         views.dashboard_superadmin_categories,        name='dashboard_superadmin_categories'),
     path('dashboard/superadmin/vouchers/',           views.dashboard_superadmin_vouchers,          name='dashboard_superadmin_vouchers'),
     path('dashboard/superadmin/zones/',              views.dashboard_superadmin_zones,             name='dashboard_superadmin_zones'),
+    path('dashboard/superadmin/slider/',             views.dashboard_superadmin_slider,            name='dashboard_superadmin_slider'),
     path('dashboard/superadmin/config/',             views.dashboard_superadmin_config,            name='dashboard_superadmin_config'),
     path('dashboard/superadmin/rapport/',            views.dashboard_superadmin_rapport,           name='dashboard_superadmin_rapport'),
     path('dashboard/superadmin/profil/',             views.dashboard_superadmin_profil,            name='dashboard_superadmin_profil'),

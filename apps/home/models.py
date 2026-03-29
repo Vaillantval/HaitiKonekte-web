@@ -63,6 +63,26 @@ class FAQItem(models.Model):
         return self.question
 
 
+class SliderImage(models.Model):
+    """Slide de la bannière principale de la page d'accueil."""
+    titre        = models.CharField(max_length=120, blank=True)
+    sous_titre   = models.CharField(max_length=220, blank=True)
+    texte_bouton = models.CharField(max_length=50, blank=True, default='Découvrir')
+    lien         = models.CharField(max_length=255, blank=True, help_text='URL ou ancre (#catalogue)')
+    image        = models.ImageField(upload_to='slider/', help_text='Résolution recommandée : 1600 × 700 px')
+    ordre        = models.PositiveSmallIntegerField(default=0)
+    is_active    = models.BooleanField(default=True)
+    created_at   = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name        = 'Slide'
+        verbose_name_plural = 'Slides'
+        ordering            = ['ordre', 'created_at']
+
+    def __str__(self):
+        return self.titre or f'Slide #{self.pk}'
+
+
 class ContactMessage(models.Model):
     """Message envoyé via le formulaire de contact."""
     class Statut(models.TextChoices):
