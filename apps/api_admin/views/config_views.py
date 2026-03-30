@@ -5,7 +5,7 @@ from django.shortcuts import get_object_or_404
 from drf_spectacular.utils import extend_schema
 
 from apps.accounts.permissions import IsSuperAdmin
-from apps.home.models import SiteConfig, FAQCategorie, FAQItem, ContactMessage, SliderImage
+from apps.home.models import SiteConfig, FAQCategorie, FAQItem, ContactMessage, ContactReponse, SliderImage
 
 
 def _config_data(c):
@@ -191,6 +191,15 @@ def contact_messages(request):
 
 
 def _contact_msg_data(m):
+    reponses = [
+        {
+            'id':         r.pk,
+            'contenu':    r.contenu,
+            'envoye_par': r.envoye_par.get_full_name() if r.envoye_par else 'Admin',
+            'envoye_le':  r.envoye_le.isoformat(),
+        }
+        for r in m.reponses.select_related('envoye_par').all()
+    ]
     return {
         'id':         m.pk,
         'nom':        m.nom,
@@ -201,6 +210,7 @@ def _contact_msg_data(m):
         'statut':     m.statut,
         'est_lu':     m.statut != 'nouveau',
         'created_at': m.created_at.isoformat(),
+        'reponses':   reponses,
     }
 
 
@@ -233,6 +243,49 @@ def contact_message_detail(request, pk):
         msg.save()
 
     return Response({'success': True, 'data': _contact_msg_data(msg)})
+
+
+# ── POST /api/admin/config/contact/<pk>/repondre/ ───────────────
+@extend_schema(operation_id='admin_contact_repondre', tags=['Admin — Config'])
+@api_view(['POST'])
+@permission_classes([IsSuperAdmin])
+def repondre_contact(request, pk):
+    """Envoyer une réponse par email à un message de contact."""
+    msg = get_object_or_404(ContactMessage, pk=pk)
+
+    contenu = request.data.get('reponse', '').strip()
+    if not contenu:
+        return Response(
+            {'success': False, 'error': 'Le contenu de la réponse est requis.'},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+
+    # Créer l'enregistrement de réponse
+    reponse = ContactReponse.objects.create(
+        message    = msg,
+        contenu    = contenu,
+        envoye_par = request.user,
+    )
+
+    # Envoyer l'email via Resend
+    from apps.emails.utils import email_reponse_contact
+    sent = email_reponse_contact(msg, contenu, admin=request.user)
+
+    if not sent:
+        reponse.delete()
+        return Response(
+            {'success': False, 'error': "Échec de l'envoi de l'email. Réessayez."},
+            status=status.HTTP_503_SERVICE_UNAVAILABLE,
+        )
+
+    # Mettre le statut du message à "repondu"
+    msg.statut = ContactMessage.Statut.REPONDU
+    msg.save(update_fields=['statut'])
+
+    return Response({
+        'success': True,
+        'data': _contact_msg_data(msg),
+    }, status=status.HTTP_201_CREATED)
 
 
 # ── GET/POST /api/admin/config/slider/ ──────────────────────────

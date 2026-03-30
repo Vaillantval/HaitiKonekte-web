@@ -58,18 +58,35 @@
   .empty-panel { padding:32px; text-align:center; color:var(--text-muted); font-size:13px; }
 
   /* Messages contact */
-  .msg-card { background:var(--card); border-radius:var(--radius); box-shadow:var(--shadow); padding:16px 20px; margin-bottom:10px; border-left:4px solid var(--border); cursor:pointer; transition:border-color .18s; }
+  .msg-card { background:var(--card); border-radius:var(--radius); box-shadow:var(--shadow); padding:16px 20px; margin-bottom:10px; border-left:4px solid var(--border); transition:border-color .18s; }
   .msg-card.non-lu { border-left-color:var(--orange); }
+  .msg-card.repondu-card { border-left-color:#27ae60; }
   .msg-card:hover { box-shadow:0 4px 20px rgba(0,0,0,.1); }
-  .msg-card-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:8px; }
+  .msg-card-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:8px; cursor:pointer; }
   .msg-nom { font-size:14px; font-weight:700; }
   .msg-date { font-size:11px; color:var(--text-muted); }
-  .msg-sujet { font-size:13px; font-weight:600; margin-bottom:4px; }
-  .msg-preview { font-size:12px; color:var(--text-muted); }
+  .msg-sujet { font-size:13px; font-weight:600; margin-bottom:4px; cursor:pointer; }
+  .msg-preview { font-size:12px; color:var(--text-muted); cursor:pointer; }
   .msg-full { display:none; margin-top:12px; padding-top:12px; border-top:1px solid var(--border); font-size:13px; line-height:1.6; }
   .msg-card.open .msg-full { display:block; }
-  .badge-lu  { display:inline-block; padding:2px 8px; border-radius:10px; font-size:11px; font-weight:700; background:#e8f8ee; color:#1a6b2f; }
-  .badge-non-lu { display:inline-block; padding:2px 8px; border-radius:10px; font-size:11px; font-weight:700; background:#fff4e6; color:#e67e22; }
+  .badge-lu       { display:inline-block; padding:2px 8px; border-radius:10px; font-size:11px; font-weight:700; background:#e8f8ee; color:#1a6b2f; }
+  .badge-non-lu   { display:inline-block; padding:2px 8px; border-radius:10px; font-size:11px; font-weight:700; background:#fff4e6; color:#e67e22; }
+  .badge-repondu  { display:inline-block; padding:2px 8px; border-radius:10px; font-size:11px; font-weight:700; background:#d5f5e3; color:#1a6b2f; }
+  /* Zone réponse */
+  .reply-zone { margin-top:16px; padding-top:16px; border-top:1px solid var(--border); display:none; }
+  .msg-card.open .reply-zone { display:block; }
+  .reply-history { margin-bottom:14px; }
+  .reply-item { background:#f0faf4; border-left:3px solid #27ae60; border-radius:0 8px 8px 0; padding:10px 14px; margin-bottom:8px; font-size:12px; }
+  .reply-item-meta { font-size:11px; color:#888; margin-bottom:4px; }
+  .reply-item-text { color:#2c3e50; line-height:1.6; white-space:pre-line; }
+  .reply-form textarea { width:100%; box-sizing:border-box; padding:10px 12px; border:1.5px solid var(--border); border-radius:8px; font-size:13px; font-family:inherit; resize:vertical; min-height:90px; background:var(--bg); color:var(--text); outline:none; }
+  .reply-form textarea:focus { border-color:#27ae60; }
+  .reply-actions { display:flex; justify-content:flex-end; gap:8px; margin-top:8px; }
+  .btn-reply { padding:8px 18px; border-radius:8px; font-size:12px; font-weight:700; border:none; cursor:pointer; background:#27ae60; color:#fff; font-family:inherit; }
+  .btn-reply:hover { background:#1e8449; }
+  .btn-reply:disabled { opacity:.6; cursor:not-allowed; }
+  .btn-reply-inline { flex-shrink:0; display:inline-flex; align-items:center; gap:5px; padding:5px 12px; border-radius:20px; font-size:11px; font-weight:700; border:1.5px solid #27ae60; background:#f0faf4; color:#1a6b2f; cursor:pointer; font-family:inherit; transition:all .18s; white-space:nowrap; }
+  .btn-reply-inline:hover { background:#27ae60; color:#fff; }
 
   /* Modal FAQ */
   .modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,.45); z-index:600; display:flex; align-items:center; justify-content:center; opacity:0; pointer-events:none; transition:opacity .22s; }
@@ -92,6 +109,24 @@
 
 {% block content %}
 <div class="toast-container" id="tc"></div>
+
+<!-- Modale confirmation réponse contact -->
+<div class="modal-overlay" id="reply-confirm-modal">
+  <div class="modal-box" style="width:480px">
+    <h3><i class="fas fa-paper-plane" style="color:#27ae60;margin-right:8px"></i>Confirmer l'envoi</h3>
+    <p style="font-size:13px;color:var(--text-muted);margin-bottom:16px">
+      Vous allez envoyer cette réponse à <strong id="reply-confirm-email"></strong>.<br>
+      L'email sera envoyé immédiatement et ne peut pas être annulé.
+    </p>
+    <div style="background:#f0faf4;border-radius:8px;padding:12px 14px;font-size:13px;color:#2c3e50;max-height:120px;overflow-y:auto;white-space:pre-line;margin-bottom:4px" id="reply-confirm-preview"></div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeReplyModal()">Annuler</button>
+      <button class="btn-reply" id="reply-confirm-btn" onclick="confirmerEnvoi()">
+        <i class="fas fa-paper-plane"></i> Envoyer
+      </button>
+    </div>
+  </div>
+</div>
 
 <!-- Modal FAQ Catégorie -->
 <div class="modal-overlay" id="faqcat-modal">
@@ -757,32 +792,149 @@ async function loadMsgs(est_lu) {
   const list = document.getElementById('msgs-list');
   list.innerHTML = '';
   data.forEach(m => {
+    const statut    = m.statut;
+    const estLu     = m.est_lu;
+    const cardClass = statut === 'repondu' ? 'repondu-card' : (estLu ? '' : 'non-lu');
+    let badgeHtml;
+    if (statut === 'repondu')       badgeHtml = `<span class="badge-repondu">Répondu</span>`;
+    else if (estLu)                  badgeHtml = `<span class="badge-lu">Lu</span>`;
+    else                             badgeHtml = `<span class="badge-non-lu">Non lu</span>`;
+
+    // Historique des réponses existantes
+    let repliesHtml = '';
+    if (m.reponses && m.reponses.length) {
+      repliesHtml = `<div class="reply-history">
+        <p style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:#888;margin-bottom:8px">
+          <i class="fas fa-reply" style="color:#27ae60"></i> ${m.reponses.length} réponse(s) envoyée(s)
+        </p>`;
+      m.reponses.forEach(r => {
+        const d = new Date(r.envoye_le).toLocaleDateString('fr-FR',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'});
+        repliesHtml += `<div class="reply-item">
+          <div class="reply-item-meta">${r.envoye_par} · ${d}</div>
+          <div class="reply-item-text">${escHtml(r.contenu)}</div>
+        </div>`;
+      });
+      repliesHtml += `</div>`;
+    }
+
     list.innerHTML += `
-      <div class="msg-card ${m.est_lu?'':'non-lu'}" id="msg-${m.id}" onclick="toggleMsg(${m.id},${m.est_lu},this)">
-        <div class="msg-card-header">
+      <div class="msg-card ${cardClass}" id="msg-${m.id}" data-id="${m.id}" data-lu="${estLu}" data-email="${escHtml(m.email)}" data-nom="${escHtml(m.nom)}">
+        <div class="msg-card-header" onclick="toggleMsg(${m.id},${estLu},this.closest('.msg-card'))">
           <div>
-            <span class="msg-nom">${m.nom}</span>
-            <span style="font-size:12px;color:var(--text-muted);margin-left:8px">${m.email} ${m.telephone?'· '+m.telephone:''}</span>
+            <span class="msg-nom">${escHtml(m.nom)}</span>
+            <span style="font-size:12px;color:var(--text-muted);margin-left:8px">${escHtml(m.email)} ${m.telephone?'· '+escHtml(m.telephone):''}</span>
           </div>
           <div style="display:flex;align-items:center;gap:10px">
-            <span class="${m.est_lu?'badge-lu':'badge-non-lu'}">${m.est_lu?'Lu':'Non lu'}</span>
+            ${badgeHtml}
             <span class="msg-date">${new Date(m.created_at).toLocaleDateString('fr-FR',{day:'2-digit',month:'short',year:'numeric'})}</span>
+            <i class="fas fa-chevron-down" style="font-size:11px;color:var(--text-muted);transition:transform .2s" id="chev-${m.id}"></i>
           </div>
         </div>
-        <div class="msg-sujet">${m.sujet}</div>
-        <div class="msg-preview">${m.message.substring(0,120)}${m.message.length>120?'…':''}</div>
-        <div class="msg-full">${m.message.replace(/\n/g,'<br>')}</div>
+        <div class="msg-sujet" onclick="toggleMsg(${m.id},${estLu},this.closest('.msg-card'))">${escHtml(m.sujet)}</div>
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:6px">
+          <div class="msg-preview" onclick="toggleMsg(${m.id},${estLu},this.closest('.msg-card'))" style="flex:1">${escHtml(m.message.substring(0,120))}${m.message.length>120?'…':''}</div>
+          <button class="btn-reply-inline" onclick="ouvrirReplyInline(event,${m.id})" title="Répondre à ce message">
+            <i class="fas fa-reply"></i> Répondre
+          </button>
+        </div>
+        <div class="msg-full">
+          <p style="white-space:pre-line">${escHtml(m.message)}</p>
+          <!-- Zone de réponse -->
+          <div class="reply-zone" id="reply-zone-${m.id}">
+            ${repliesHtml}
+            <div class="reply-form">
+              <label style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:#888;display:block;margin-bottom:6px">
+                <i class="fas fa-reply" style="color:#27ae60"></i> Répondre à ${escHtml(m.nom)}
+              </label>
+              <textarea id="reply-txt-${m.id}" placeholder="Écrivez votre réponse ici…"></textarea>
+              <div class="reply-actions">
+                <button class="btn-reply" onclick="ouvrirConfirmReply(${m.id})">
+                  <i class="fas fa-paper-plane"></i> Envoyer la réponse
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>`;
   });
 }
 
+function escHtml(str) {
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
 async function toggleMsg(id, estLu, card) {
   card.classList.toggle('open');
-  if (!estLu) {
+  const chev = document.getElementById('chev-' + id);
+  if (chev) chev.style.transform = card.classList.contains('open') ? 'rotate(180deg)' : '';
+  if (!estLu && card.classList.contains('open')) {
     await fetch(`/api/admin/config/contact/${id}/`, { method:'PATCH', headers:H, body:JSON.stringify({est_lu:true}) });
     card.classList.remove('non-lu');
+    card.dataset.lu = 'true';
     const badge = card.querySelector('.badge-non-lu');
     if (badge) { badge.className = 'badge-lu'; badge.textContent = 'Lu'; }
+  }
+}
+
+// ── Réponse contact ───────────────────────────────────────────────────────────
+function ouvrirReplyInline(event, msgId) {
+  event.stopPropagation();
+  const card = document.getElementById('msg-' + msgId);
+  // Ouvrir la carte si pas encore ouverte
+  if (!card.classList.contains('open')) {
+    const estLu = card.dataset.lu === 'true';
+    toggleMsg(msgId, estLu, card);
+  }
+  // Scroll vers le textarea et le focus
+  setTimeout(() => {
+    const txt = document.getElementById('reply-txt-' + msgId);
+    if (txt) { txt.scrollIntoView({ behavior:'smooth', block:'center' }); txt.focus(); }
+  }, 120);
+}
+
+let _replyMsgId = null;
+
+function ouvrirConfirmReply(msgId) {
+  const txt = document.getElementById('reply-txt-' + msgId);
+  if (!txt || !txt.value.trim()) {
+    showToast('Veuillez écrire une réponse avant d\'envoyer.', 'error');
+    return;
+  }
+  const card  = document.getElementById('msg-' + msgId);
+  const email = card?.dataset.email || '';
+  _replyMsgId = msgId;
+  document.getElementById('reply-confirm-email').textContent = email;
+  document.getElementById('reply-confirm-preview').textContent = txt.value.trim();
+  document.getElementById('reply-confirm-modal').classList.add('open');
+}
+
+function closeReplyModal() {
+  document.getElementById('reply-confirm-modal').classList.remove('open');
+  _replyMsgId = null;
+}
+
+async function confirmerEnvoi() {
+  if (!_replyMsgId) return;
+  const btn = document.getElementById('reply-confirm-btn');
+  const txt = document.getElementById('reply-txt-' + _replyMsgId);
+  btn.disabled = true;
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Envoi…';
+
+  const r = await fetch(`/api/admin/config/contact/${_replyMsgId}/repondre/`, {
+    method: 'POST',
+    headers: H,
+    body: JSON.stringify({ reponse: txt.value.trim() }),
+  });
+  btn.disabled = false;
+  btn.innerHTML = '<i class="fas fa-paper-plane"></i> Envoyer';
+
+  if (r.ok) {
+    closeReplyModal();
+    showToast('Réponse envoyée avec succès !', 'success');
+    loadMsgs(_msgFilter);
+  } else {
+    const err = await r.json().catch(() => ({}));
+    showToast(err.error || 'Échec de l\'envoi. Réessayez.', 'error');
   }
 }
 

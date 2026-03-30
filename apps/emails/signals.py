@@ -47,17 +47,11 @@ def on_producteur_statut_change(sender, instance, **kwargs):
 
 
 # ── Signal : Nouvelle commande créée ───────────────────────────
+# Les emails de confirmation de commande sont envoyés uniquement
+# après confirmation du paiement (voir on_paiement_change ci-dessous).
 @receiver(post_save, sender=Commande)
 def on_commande_creee(sender, instance, created, **kwargs):
-    if created:
-        from apps.emails.utils import (
-            email_nouvelle_commande_acheteur,
-            email_nouvelle_commande_admin,
-        )
-        from apps.emails.fcm_notifications import push_nouvelle_commande_admin
-        email_nouvelle_commande_acheteur(instance)
-        email_nouvelle_commande_admin(instance)
-        push_nouvelle_commande_admin(instance)
+    pass
 
 
 # ── Signal : Statut commande changé ────────────────────────────
@@ -97,6 +91,15 @@ def on_paiement_change(sender, instance, **kwargs):
 
     if instance.statut == Paiement.Statut.CONFIRME:
         email_paiement_confirme(instance)
+        # Envoyer les emails de commande uniquement après paiement confirmé
+        from apps.emails.utils import (
+            email_nouvelle_commande_acheteur,
+            email_nouvelle_commande_admin,
+        )
+        from apps.emails.fcm_notifications import push_nouvelle_commande_admin
+        email_nouvelle_commande_acheteur(instance.commande)
+        email_nouvelle_commande_admin(instance.commande)
+        push_nouvelle_commande_admin(instance.commande)
 
     if instance.statut == Paiement.Statut.SOUMIS:
         email_preuve_paiement_admin(instance)

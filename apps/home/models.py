@@ -1,4 +1,5 @@
 from django.db import models
+from django.conf import settings
 
 
 class SiteConfig(models.Model):
@@ -109,3 +110,28 @@ class ContactMessage(models.Model):
 
     def __str__(self):
         return f"{self.nom} — {self.sujet}"
+
+
+class ContactReponse(models.Model):
+    """Réponse d'un super-admin à un message de contact."""
+    message    = models.ForeignKey(
+                   ContactMessage,
+                   on_delete=models.CASCADE,
+                   related_name='reponses',
+                 )
+    contenu    = models.TextField(verbose_name='Contenu de la réponse')
+    envoye_par = models.ForeignKey(
+                   settings.AUTH_USER_MODEL,
+                   on_delete=models.SET_NULL,
+                   null=True, blank=True,
+                   related_name='reponses_contact',
+                 )
+    envoye_le  = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name        = 'Réponse contact'
+        verbose_name_plural = 'Réponses contact'
+        ordering            = ['envoye_le']
+
+    def __str__(self):
+        return f"Réponse à {self.message.nom} — {self.envoye_le.strftime('%d/%m/%Y')}"

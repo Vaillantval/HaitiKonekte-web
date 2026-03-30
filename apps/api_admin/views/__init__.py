@@ -25,7 +25,7 @@ from .config_views     import (
     site_config,
     faq_categories, faq_categorie_detail,
     faq_items, faq_item_detail,
-    contact_messages, contact_message_detail,
+    contact_messages, contact_message_detail, repondre_contact,
     slider_list, slider_detail,
 )
 from .acheteur_views   import (

@@ -244,6 +244,27 @@ def email_alerte_stock_admin(alerte):
     )
 
 
+# ── Emails Contact ──────────────────────────────────────────────
+
+def email_reponse_contact(contact_msg, texte_reponse, admin=None):
+    admin_name = ''
+    if admin:
+        admin_name = admin.get_full_name() or admin.username
+    return envoyer_email(
+        destinataire=contact_msg.email,
+        sujet=f"Re: {contact_msg.sujet} — Makèt Peyizan",
+        template="contact_reponse.html",
+        contexte={
+            "nom":              contact_msg.nom,
+            "sujet":            contact_msg.sujet,
+            "reponse":          texte_reponse,
+            "message_original": contact_msg.message,
+            "admin_name":       admin_name,
+            "site_url":         settings.SITE_URL,
+        }
+    )
+
+
 # ── Emails Collectes ────────────────────────────────────────────
 
 def email_invitation_collecte(participation):

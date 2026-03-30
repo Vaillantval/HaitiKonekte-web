@@ -757,8 +757,8 @@
       const json = await r.json();
       if (r.ok) {
         updateBadgePanier(json.data?.nb_articles);
-        // Rediriger vers le panier
-        window.location.href = '/panier/';
+        // Rediriger vers le checkout
+        window.location.href = '/commander/';
       } else {
         showToast(json.error || 'Impossible de lancer la commande.', 'error');
         btnCmd.disabled = false;
