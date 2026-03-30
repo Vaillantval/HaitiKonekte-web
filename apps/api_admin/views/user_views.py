@@ -138,7 +138,7 @@ def users_carte(request):
     # Charger les coordonnées géographiques
     geo_path = os.path.join(
         os.path.dirname(__file__),
-        '../../../../apps/geo/data/haiti_geo.json'
+        '../../../apps/geo/data/haiti_geo.json'
     )
     with open(geo_path, 'r', encoding='utf-8') as f:
         geo_data = json.load(f)

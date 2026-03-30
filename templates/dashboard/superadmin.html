@@ -304,23 +304,35 @@ async function loadAlertes() {
     </div>`).join('');
 }
 
+const TYPE_ICONS = { moncash:'📱', natcash:'📲', virement:'🏦', cash:'💵' };
+
 async function loadPaiements() {
   const r = await fetch('/api/admin/paiements/?statut=soumis', { headers: H });
   const el = document.getElementById('panel-paiements');
   if (!r.ok) { el.innerHTML = '<div class="empty-panel">Erreur</div>'; return; }
   const data = (await r.json()).data || [];
   if (!data.length) { el.innerHTML = '<div class="empty-panel">Aucune preuve à vérifier ✓</div>'; return; }
-  el.innerHTML = data.slice(0,6).map(p => `
-    <div class="list-item">
-      <div style="flex:1">
-        <div class="li-main">${p.commande_numero}</div>
-        <div class="li-sub">${p.acheteur} · ${p.type_label}</div>
+  el.innerHTML = data.slice(0,6).map(p => {
+    const icon     = TYPE_ICONS[p.type_paiement] || '💳';
+    const hasProof = p.preuve_image ? `<span title="Preuve jointe" style="color:#27ae60;font-size:11px">🖼 Preuve</span>` : `<span style="color:#e74c3c;font-size:11px">⚠ Sans preuve</span>`;
+    const ref      = p.id_transaction ? `<span style="font-size:11px;color:#888">#${p.id_transaction}</span>` : '';
+    return `
+    <div class="list-item" style="flex-direction:column;align-items:stretch;gap:4px;padding:10px 12px;cursor:pointer"
+         onclick="window.location.href='/dashboard/superadmin/paiements/'">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <span style="font-weight:700;font-size:14px">Cmd. ${p.commande_numero}</span>
+        <span style="font-weight:700;color:var(--green-dark,#1a6b2f)">${fmt(p.montant)} HTG</span>
       </div>
-      <div class="li-right">
-        <div style="font-weight:700">${fmt(p.montant)} HTG</div>
-        <div class="li-sub">${fdate(p.created_at)}</div>
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <span class="li-sub">${p.acheteur || '—'}</span>
+        <span class="li-sub">${fdate(p.created_at)}</span>
       </div>
-    </div>`).join('');
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:2px">
+        <span style="font-size:12px">${icon} ${p.type_label}</span>
+        <div style="display:flex;gap:8px;align-items:center">${ref} ${hasProof}</div>
+      </div>
+    </div>`;
+  }).join('');
 }
 
 mpAuthCheck('superadmin').then(user => {
