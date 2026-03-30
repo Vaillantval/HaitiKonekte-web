@@ -1,0 +1,685 @@
+{% extends "admin/base_site.html" %}
+{% load i18n %}
+
+{% block title %}Carte des Utilisateurs — Makèt Peyizan{% endblock %}
+
+{% block extrastyle %}
+<!-- Leaflet CSS -->
+<link rel="stylesheet"
+  href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+  integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+  crossorigin=""/>
+<!-- Leaflet MarkerCluster -->
+<link rel="stylesheet"
+  href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css"/>
+<link rel="stylesheet"
+  href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css"/>
+
+<style>
+  :root {
+    --vert:   #1a6b2f;
+    --vert2:  #27ae60;
+    --jaune:  #e8d800;
+    --rouge:  #e74c3c;
+    --bleu:   #2980b9;
+    --violet: #8e44ad;
+    --orange: #e67e22;
+    --gris:   #f4f6f9;
+  }
+
+  .carte-wrapper {
+    display: grid;
+    grid-template-columns: 300px 1fr;
+    gap: 20px;
+    padding: 16px;
+    height: calc(100vh - 120px);
+  }
+
+  /* ── Panneau gauche ── */
+  .panneau-gauche {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    overflow-y: auto;
+  }
+
+  .card-panel {
+    background: white;
+    border-radius: 12px;
+    padding: 16px;
+    box-shadow: 0 2px 8px rgba(0,0,0,.07);
+  }
+
+  .card-panel h3 {
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .5px;
+    color: #888;
+    margin-bottom: 12px;
+  }
+
+  /* Filtres */
+  .filter-group { margin-bottom: 12px; }
+  .filter-group label {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    color: #555;
+    margin-bottom: 4px;
+  }
+  .filter-group select,
+  .filter-group input {
+    width: 100%;
+    padding: 8px 10px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 13px;
+    background: var(--gris);
+    box-sizing: border-box;
+  }
+  .filter-group select:focus,
+  .filter-group input:focus {
+    outline: none;
+    border-color: var(--vert2);
+  }
+
+  .btn-filter {
+    width: 100%;
+    padding: 10px;
+    background: var(--vert);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background .2s;
+  }
+  .btn-filter:hover { background: var(--vert2); }
+
+  .btn-reset {
+    width: 100%;
+    padding: 8px;
+    background: transparent;
+    color: #999;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 12px;
+    cursor: pointer;
+    margin-top: 6px;
+  }
+
+  /* Légende */
+  .legende-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+    font-size: 13px;
+  }
+  .legende-dot {
+    width:  14px;
+    height: 14px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  /* Stats compteurs */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+  .stat-item {
+    background: var(--gris);
+    border-radius: 8px;
+    padding: 10px;
+    text-align: center;
+  }
+  .stat-val {
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--vert);
+    line-height: 1;
+  }
+  .stat-lbl {
+    font-size: 11px;
+    color: #888;
+    margin-top: 2px;
+  }
+
+  /* ── Carte ── */
+  .carte-droite { position: relative; }
+
+  #map {
+    width:         100%;
+    height:        100%;
+    border-radius: 12px;
+    box-shadow:    0 2px 12px rgba(0,0,0,.1);
+  }
+
+  /* Compteur résultats sur la carte */
+  .map-counter {
+    position:      absolute;
+    top:           12px;
+    right:         12px;
+    z-index:       1000;
+    background:    white;
+    border-radius: 8px;
+    padding:       8px 14px;
+    font-size:     13px;
+    font-weight:   700;
+    color:         var(--vert);
+    box-shadow:    0 2px 8px rgba(0,0,0,.15);
+  }
+
+  /* Popup Leaflet */
+  .popup-user { min-width: 220px; font-family: -apple-system, sans-serif; }
+  .popup-user .popup-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+  .popup-user .popup-avatar {
+    width:         40px;
+    height:        40px;
+    border-radius: 50%;
+    display:       flex;
+    align-items:   center;
+    justify-content: center;
+    color:         white;
+    font-weight:   700;
+    font-size:     16px;
+    flex-shrink:   0;
+  }
+  .popup-user .popup-nom {
+    font-weight: 700;
+    font-size:   14px;
+    color:       #1a1a1a;
+  }
+  .popup-user .popup-role {
+    font-size:   11px;
+    padding:     2px 8px;
+    border-radius: 4px;
+    color:       white;
+    display:     inline-block;
+    margin-top:  2px;
+  }
+  .popup-user .popup-row {
+    display: flex;
+    gap: 8px;
+    font-size: 12px;
+    color: #555;
+    margin-bottom: 4px;
+  }
+  .popup-user .popup-row i { color: var(--vert2); width: 14px; }
+  .popup-user .popup-precision {
+    font-size:   11px;
+    color:       #aaa;
+    font-style:  italic;
+    margin-top:  8px;
+  }
+
+  /* Donut chart */
+  #chartDonut { max-height: 160px; }
+
+  @media (max-width: 900px) {
+    .carte-wrapper { grid-template-columns: 1fr; height: auto; }
+    #map { height: 400px; }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div style="padding: 0 8px 8px;">
+  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+    <div>
+      <h1 style="margin:0; font-size:20px; color:#2c3e50">
+        🗺️ Carte des Utilisateurs
+      </h1>
+      <p style="margin:2px 0 0; color:#999; font-size:12px">
+        Localisation des utilisateurs inscrits sur Makèt Peyizan
+      </p>
+    </div>
+    <a href="/analytics/dashboard/"
+       style="font-size:13px; color:var(--vert2); text-decoration:none">
+      ← Retour au Dashboard
+    </a>
+  </div>
+
+  <div class="carte-wrapper">
+
+    <!-- ── Panneau gauche ─────────────────────────── -->
+    <div class="panneau-gauche">
+
+      <!-- Filtres -->
+      <div class="card-panel">
+        <h3>🔍 Filtres</h3>
+
+        <div class="filter-group">
+          <label>Rôle</label>
+          <select id="filterRole">
+            <option value="">Tous les rôles</option>
+            <option value="acheteur">🛒 Acheteur</option>
+            <option value="producteur">🌾 Producteur</option>
+            <option value="collecteur">🚛 Collecteur</option>
+            <option value="admin">👑 Admin</option>
+          </select>
+        </div>
+
+        <div class="filter-group">
+          <label>Statut producteur</label>
+          <select id="filterStatut">
+            <option value="">Tous statuts</option>
+            <option value="actif">✅ Actif</option>
+            <option value="en_attente">⏳ En attente</option>
+            <option value="suspendu">🚫 Suspendu</option>
+          </select>
+        </div>
+
+        <div class="filter-group">
+          <label>Inscrit après</label>
+          <input type="date" id="filterDateDebut">
+        </div>
+
+        <div class="filter-group">
+          <label>Inscrit avant</label>
+          <input type="date" id="filterDateFin">
+        </div>
+
+        <button class="btn-filter" onclick="appliquerFiltres()">
+          Appliquer les filtres
+        </button>
+        <button class="btn-reset" onclick="reinitialiserFiltres()">
+          Réinitialiser
+        </button>
+      </div>
+
+      <!-- Stats compteurs -->
+      <div class="card-panel">
+        <h3>📊 Statistiques</h3>
+        <div class="stats-grid">
+          <div class="stat-item">
+            <div class="stat-val" id="statTotal">—</div>
+            <div class="stat-lbl">Total</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-val" id="statProducteurs"
+                 style="color:#27ae60">—</div>
+            <div class="stat-lbl">Producteurs</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-val" id="statAcheteurs"
+                 style="color:#2980b9">—</div>
+            <div class="stat-lbl">Acheteurs</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-val" id="statCollecteurs"
+                 style="color:#8e44ad">—</div>
+            <div class="stat-lbl">Collecteurs</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Graphe donut -->
+      <div class="card-panel">
+        <h3>🥧 Répartition</h3>
+        <canvas id="chartDonut"></canvas>
+      </div>
+
+      <!-- Légende -->
+      <div class="card-panel">
+        <h3>🎨 Légende</h3>
+        <div class="legende-item">
+          <div class="legende-dot" style="background:#27ae60"></div>
+          <span>Producteur actif</span>
+        </div>
+        <div class="legende-item">
+          <div class="legende-dot" style="background:#f39c12"></div>
+          <span>Producteur en attente</span>
+        </div>
+        <div class="legende-item">
+          <div class="legende-dot" style="background:#2980b9"></div>
+          <span>Acheteur</span>
+        </div>
+        <div class="legende-item">
+          <div class="legende-dot" style="background:#8e44ad"></div>
+          <span>Collecteur</span>
+        </div>
+        <div class="legende-item">
+          <div class="legende-dot" style="background:#e74c3c"></div>
+          <span>Suspendu</span>
+        </div>
+        <div class="legende-item">
+          <div class="legende-dot" style="background:#1a1a1a"></div>
+          <span>Admin / Superadmin</span>
+        </div>
+        <hr style="margin:10px 0; border:none; border-top:1px solid #eee">
+        <div class="legende-item">
+          <div class="legende-dot"
+               style="background:#ccc; border:2px solid #999"></div>
+          <span style="color:#aaa">Localisation département</span>
+        </div>
+        <div class="legende-item">
+          <div class="legende-dot"
+               style="background:#27ae60; border:2px solid white;
+                      box-shadow:0 0 0 2px #27ae60"></div>
+          <span>Localisation commune</span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ── Carte ────────────────────────────────── -->
+    <div class="carte-droite">
+      <div id="map"></div>
+      <div class="map-counter" id="mapCounter">
+        Chargement...
+      </div>
+    </div>
+
+  </div>
+</div>
+{% endblock %}
+
+{% block extrascripts %}
+<!-- Leaflet JS -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+  integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV/XN/WLs="
+  crossorigin=""></script>
+<!-- MarkerCluster -->
+<script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+<script>
+// ── Config couleurs par rôle ──────────────────────────────────
+const ROLE_COLORS = {
+  'producteur_actif':     '#27ae60',
+  'producteur_en_attente':'#f39c12',
+  'producteur_suspendu':  '#e74c3c',
+  'producteur_inactif':   '#95a5a6',
+  'acheteur':             '#2980b9',
+  'collecteur':           '#8e44ad',
+  'superadmin':           '#1a1a1a',
+  'admin':                '#1a1a1a',
+  'default':              '#95a5a6',
+};
+
+const ROLE_LABELS = {
+  'acheteur':   '🛒 Acheteur',
+  'producteur': '🌾 Producteur',
+  'collecteur': '🚛 Collecteur',
+  'admin':      '👑 Admin',
+  'superadmin': '👑 Superadmin',
+};
+
+function getRoleColor(user) {
+  if (user.role === 'producteur') {
+    return ROLE_COLORS[`producteur_${user.statut || 'actif'}`]
+           || ROLE_COLORS['producteur_actif'];
+  }
+  return ROLE_COLORS[user.role] || ROLE_COLORS['default'];
+}
+
+// ── Initialiser la carte ──────────────────────────────────────
+const map = L.map('map', {
+  center:  [18.97, -72.28],
+  zoom:    8,
+  minZoom: 6,
+  maxZoom: 14,
+  maxBounds: [
+    [17.5, -74.8],
+    [20.2, -71.5],
+  ],
+});
+
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  attribution: '© <a href="https://www.openstreetmap.org/">OpenStreetMap</a>',
+  maxZoom: 19,
+}).addTo(map);
+
+// Cluster des marqueurs
+const markerCluster = L.markerClusterGroup({
+  maxClusterRadius: 40,
+  showCoverageOnHover: false,
+  iconCreateFunction: (cluster) => {
+    const count = cluster.getChildCount();
+    return L.divIcon({
+      html: `<div style="
+        background:#1a6b2f; color:white;
+        width:36px; height:36px;
+        border-radius:50%; display:flex;
+        align-items:center; justify-content:center;
+        font-weight:700; font-size:13px;
+        border:2px solid white;
+        box-shadow:0 2px 6px rgba(0,0,0,.3)">
+        ${count}
+      </div>`,
+      iconSize:   [36, 36],
+      iconAnchor: [18, 18],
+    });
+  },
+});
+
+map.addLayer(markerCluster);
+
+// ── Créer un marqueur personnalisé ────────────────────────────
+function createMarker(user) {
+  const color      = getRoleColor(user);
+  const isPrecise  = user.precision === 'commune';
+  const borderStyle = isPrecise
+      ? `border:2px solid white; box-shadow:0 0 0 2px ${color}`
+      : `border:2px dashed ${color}; background:${color}44`;
+  const bgStyle = isPrecise
+      ? `background:${color}`
+      : `background:${color}88`;
+
+  const icon = L.divIcon({
+    html: `<div style="
+      width:16px; height:16px;
+      border-radius:50%;
+      ${bgStyle};
+      ${borderStyle};
+      box-shadow:0 2px 4px rgba(0,0,0,.25);
+      cursor:pointer;
+    "></div>`,
+    iconSize:   [16, 16],
+    iconAnchor: [8, 8],
+    className:  '',
+  });
+
+  const marker = L.marker([user.lat, user.lng], { icon });
+  marker.bindPopup(_buildPopup(user), {
+    maxWidth:  280,
+    className: 'popup-clean',
+  });
+  return marker;
+}
+
+// ── Construire le contenu du popup ───────────────────────────
+function _buildPopup(user) {
+  const color    = getRoleColor(user);
+  const initiale = (user.nom || '?')[0].toUpperCase();
+  const roleLabel = ROLE_LABELS[user.role] || user.role;
+
+  let extra = '';
+  if (user.role === 'producteur') {
+    extra = `
+      <div class="popup-row">
+        <i>🌾</i>
+        <span>${user.code_producteur || '—'}</span>
+      </div>
+      <div class="popup-row">
+        <i>📍</i>
+        <span>${user.commune || ''} ${user.departement ? '— ' + user.departement : ''}</span>
+      </div>
+      <div class="popup-row">
+        <i>📦</i>
+        <span>${user.nb_produits || 0} produit(s) actif(s)</span>
+      </div>
+    `;
+  } else if (user.role === 'acheteur') {
+    extra = `
+      <div class="popup-row">
+        <i>🏷️</i>
+        <span>${user.type_acheteur || 'Particulier'}</span>
+      </div>
+      ${user.ville ? `
+      <div class="popup-row">
+        <i>📍</i>
+        <span>${user.ville}</span>
+      </div>` : ''}
+    `;
+  }
+
+  return `
+    <div class="popup-user">
+      <div class="popup-header">
+        <div class="popup-avatar" style="background:${color}">
+          ${initiale}
+        </div>
+        <div>
+          <div class="popup-nom">${user.nom || '—'}</div>
+          <span class="popup-role" style="background:${color}">
+            ${roleLabel}
+          </span>
+        </div>
+      </div>
+
+      <div class="popup-row">
+        <i>✉️</i>
+        <span>${user.email || '—'}</span>
+      </div>
+      <div class="popup-row">
+        <i>📞</i>
+        <span>${user.telephone || '—'}</span>
+      </div>
+      ${user.adresse ? `
+      <div class="popup-row">
+        <i>🏠</i>
+        <span>${user.adresse}</span>
+      </div>` : ''}
+      ${extra}
+      <div class="popup-row">
+        <i>📅</i>
+        <span>Inscrit le ${user.created_at || '—'}</span>
+      </div>
+
+      <div class="popup-precision">
+        📌 Précision : ${user.precision === 'commune'
+          ? 'Niveau commune'
+          : 'Niveau département'}
+      </div>
+    </div>
+  `;
+}
+
+// ── Graphe donut ──────────────────────────────────────────────
+let donutChart = null;
+
+function updateDonut(stats) {
+  const labels = ['Acheteurs', 'Producteurs', 'Collecteurs', 'Admins'];
+  const data   = [
+    stats.acheteur   || 0,
+    stats.producteur || 0,
+    stats.collecteur || 0,
+    (stats.admin || 0) + (stats.superadmin || 0),
+  ];
+  const colors = ['#2980b9', '#27ae60', '#8e44ad', '#1a1a1a'];
+
+  if (donutChart) donutChart.destroy();
+
+  donutChart = new Chart(
+    document.getElementById('chartDonut').getContext('2d'),
+    {
+      type: 'doughnut',
+      data: {
+        labels,
+        datasets: [{ data, backgroundColor: colors, borderWidth: 2 }],
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { position: 'bottom', labels: { font: { size: 11 } } },
+        },
+        cutout: '65%',
+      },
+    }
+  );
+}
+
+// ── Charger les données ───────────────────────────────────────
+async function chargerDonnees(params = {}) {
+  const qs = new URLSearchParams(params).toString();
+  const url = `/api/admin/users/carte/${qs ? '?' + qs : ''}`;
+
+  document.getElementById('mapCounter').textContent = 'Chargement...';
+
+  try {
+    const res  = await fetch(url, { credentials: 'same-origin' });
+    const json = await res.json();
+
+    if (!json.success) {
+      document.getElementById('mapCounter').textContent = 'Erreur';
+      return;
+    }
+
+    const { users, stats } = json.data;
+
+    markerCluster.clearLayers();
+
+    let placed = 0;
+    users.forEach(user => {
+      if (user.lat && user.lng) {
+        markerCluster.addLayer(createMarker(user));
+        placed++;
+      }
+    });
+
+    document.getElementById('mapCounter').textContent =
+      `${placed} utilisateur${placed > 1 ? 's' : ''} sur la carte`;
+
+    document.getElementById('statTotal').textContent      = stats.total || 0;
+    document.getElementById('statProducteurs').textContent = stats.producteur || 0;
+    document.getElementById('statAcheteurs').textContent   = stats.acheteur || 0;
+    document.getElementById('statCollecteurs').textContent = stats.collecteur || 0;
+
+    updateDonut(stats);
+
+  } catch (err) {
+    console.error(err);
+    document.getElementById('mapCounter').textContent = 'Erreur de chargement';
+  }
+}
+
+// ── Filtres ───────────────────────────────────────────────────
+function appliquerFiltres() {
+  const params = {};
+  const role    = document.getElementById('filterRole').value;
+  const statut  = document.getElementById('filterStatut').value;
+  const dateDeb = document.getElementById('filterDateDebut').value;
+  const dateFin = document.getElementById('filterDateFin').value;
+
+  if (role)    params.role       = role;
+  if (statut)  params.statut     = statut;
+  if (dateDeb) params.date_debut = dateDeb;
+  if (dateFin) params.date_fin   = dateFin;
+
+  chargerDonnees(params);
+}
+
+function reinitialiserFiltres() {
+  document.getElementById('filterRole').value      = '';
+  document.getElementById('filterStatut').value    = '';
+  document.getElementById('filterDateDebut').value = '';
+  document.getElementById('filterDateFin').value   = '';
+  chargerDonnees();
+}
+
+// ── Lancement ─────────────────────────────────────────────────
+chargerDonnees();
+</script>
+{% endblock %}

@@ -107,3 +107,185 @@ def user_toggle(request, pk):
             'message':   f"Compte {'activé' if user.is_active else 'désactivé'}."
         }
     })
+
+
+# ── GET /api/admin/users/carte/ ─────────────────────────────────
+import json
+import os
+import random
+
+from drf_spectacular.utils import extend_schema
+from rest_framework.authentication import SessionAuthentication
+from rest_framework.decorators import authentication_classes
+from rest_framework_simplejwt.authentication import JWTAuthentication
+
+
+@extend_schema(tags=['Admin — Carte'])
+@api_view(['GET'])
+@authentication_classes([SessionAuthentication, JWTAuthentication])
+@permission_classes([IsSuperAdmin])
+def users_carte(request):
+    """
+    Données des utilisateurs pour la carte interactive.
+    Retourne lat/lng déduites de la commune ou du département.
+    Filtres : ?role=&statut=&date_debut=&date_fin=
+    """
+    role       = request.query_params.get('role', '')
+    statut     = request.query_params.get('statut', '')
+    date_debut = request.query_params.get('date_debut', '')
+    date_fin   = request.query_params.get('date_fin', '')
+
+    # Charger les coordonnées géographiques
+    geo_path = os.path.join(
+        os.path.dirname(__file__),
+        '../../../../apps/geo/data/haiti_geo.json'
+    )
+    with open(geo_path, 'r', encoding='utf-8') as f:
+        geo_data = json.load(f)
+
+    # Construire des index de lookup lat/lng
+    dept_coords    = {}
+    commune_coords = {}
+    for dept in geo_data['departements']:
+        dept_coords[dept['nom'].lower()] = {'lat': dept['lat'], 'lng': dept['lng']}
+        dept_coords[dept['slug']]        = {'lat': dept['lat'], 'lng': dept['lng']}
+        for arrond in dept['arrondissements']:
+            for commune in arrond['communes']:
+                commune_coords[commune['nom'].lower()] = {
+                    'lat': commune['lat'],
+                    'lng': commune['lng'],
+                    'departement': dept['nom'],
+                }
+
+    def get_coords(user):
+        # 1. Adresse enregistrée avec commune
+        try:
+            adresse = user.adresses.filter(is_default=True).first() or user.adresses.first()
+            if adresse and adresse.commune:
+                coords = commune_coords.get(adresse.commune.lower())
+                if coords:
+                    return (
+                        coords['lat'] + random.uniform(-0.02, 0.02),
+                        coords['lng'] + random.uniform(-0.02, 0.02),
+                        'commune',
+                    )
+        except Exception:
+            pass
+
+        # 2. Profil producteur
+        if user.role == 'producteur':
+            try:
+                p = user.profil_producteur
+                if p.commune:
+                    coords = commune_coords.get(p.commune.lower())
+                    if coords:
+                        return (coords['lat'], coords['lng'], 'commune')
+                if p.departement:
+                    coords = dept_coords.get(p.departement.lower())
+                    if coords:
+                        return (coords['lat'], coords['lng'], 'departement')
+            except Exception:
+                pass
+
+        # 3. Profil acheteur
+        if user.role == 'acheteur':
+            try:
+                a = user.profil_acheteur
+                if a.ville:
+                    coords = commune_coords.get(a.ville.lower())
+                    if coords:
+                        return (coords['lat'], coords['lng'], 'commune')
+                if a.departement:
+                    coords = dept_coords.get(a.departement.lower())
+                    if coords:
+                        return (coords['lat'], coords['lng'], 'departement')
+            except Exception:
+                pass
+
+        return (None, None, None)
+
+    qs = CustomUser.objects.filter(
+        is_active=True
+    ).select_related(
+        'profil_producteur',
+        'profil_acheteur',
+    ).prefetch_related('adresses').order_by('-created_at')
+
+    if role:
+        qs = qs.filter(role=role)
+    if date_debut:
+        qs = qs.filter(created_at__date__gte=date_debut)
+    if date_fin:
+        qs = qs.filter(created_at__date__lte=date_fin)
+    if statut:
+        if statut in ['en_attente', 'actif', 'suspendu', 'inactif']:
+            qs = qs.filter(role='producteur', profil_producteur__statut=statut)
+        elif statut == 'is_active':
+            qs = qs.filter(is_active=True)
+
+    users_data = []
+    stats = {'acheteur': 0, 'producteur': 0, 'collecteur': 0, 'superadmin': 0, 'admin': 0, 'total': 0}
+
+    for user in qs:
+        lat, lng, precision = get_coords(user)
+
+        extra = {}
+        if user.role == 'producteur':
+            try:
+                p = user.profil_producteur
+                extra = {
+                    'code_producteur': p.code_producteur,
+                    'commune':         p.commune,
+                    'departement':     p.get_departement_display(),
+                    'statut':          p.statut,
+                    'nb_produits':     p.nb_produits_actifs,
+                }
+            except Exception:
+                pass
+        elif user.role == 'acheteur':
+            try:
+                a = user.profil_acheteur
+                extra = {
+                    'type_acheteur': a.get_type_acheteur_display(),
+                    'ville':         a.ville,
+                    'departement':   a.departement,
+                }
+            except Exception:
+                pass
+
+        adresse_str = ''
+        try:
+            adresse = user.adresses.filter(is_default=True).first()
+            if adresse:
+                adresse_str = f"{adresse.rue}, {adresse.commune}"
+        except Exception:
+            pass
+
+        user_dict = {
+            'id':          user.pk,
+            'nom':         user.get_full_name(),
+            'email':       user.email,
+            'telephone':   user.telephone,
+            'role':        user.role,
+            'is_verified': user.is_verified,
+            'adresse':     adresse_str,
+            'created_at':  user.created_at.strftime('%d/%m/%Y'),
+            'lat':         lat,
+            'lng':         lng,
+            'precision':   precision,
+            **extra,
+        }
+        users_data.append(user_dict)
+
+        role_key = user.role if user.role in stats else 'admin'
+        stats[role_key] = stats.get(role_key, 0) + 1
+        stats['total'] += 1
+
+    return Response({
+        'success': True,
+        'data': {
+            'users': users_data,
+            'stats': stats,
+            'total': len(users_data),
+        }
+    })

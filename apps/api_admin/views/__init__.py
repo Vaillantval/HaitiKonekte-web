@@ -1,5 +1,5 @@
 from .stats_views      import global_stats, admin_options
-from .user_views       import users_list, user_create, user_detail, user_toggle
+from .user_views       import users_list, user_create, user_detail, user_toggle, users_carte
 from .producteur_views import (
     producteurs_list, producteur_create,
     producteur_detail, producteur_statut,

@@ -10,10 +10,11 @@ urlpatterns = [
     path('options/', views.admin_options, name='options'),
 
     # ── Utilisateurs ────────────────────────────────────────────
-    path('users/',                  views.users_list,  name='users_list'),
-    path('users/create/',           views.user_create, name='user_create'),
-    path('users/<int:pk>/detail/',  views.user_detail, name='user_detail'),
-    path('users/<int:pk>/toggle/',  views.user_toggle, name='user_toggle'),
+    path('users/',                  views.users_list,   name='users_list'),
+    path('users/create/',           views.user_create,  name='user_create'),
+    path('users/carte/',            views.users_carte,  name='users_carte'),
+    path('users/<int:pk>/detail/',  views.user_detail,  name='user_detail'),
+    path('users/<int:pk>/toggle/',  views.user_toggle,  name='user_toggle'),
 
     # ── Producteurs ─────────────────────────────────────────────
     path('producteurs/',                   views.producteurs_list,  name='producteurs_list'),

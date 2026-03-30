@@ -269,6 +269,7 @@ def repondre_contact(request, pk):
 
     # Envoyer l'email via Resend
     from apps.emails.utils import email_reponse_contact
+    from apps.emails.fcm_notifications import push_reponse_contact
     sent = email_reponse_contact(msg, contenu, admin=request.user)
 
     if not sent:
@@ -277,6 +278,9 @@ def repondre_contact(request, pk):
             {'success': False, 'error': "Échec de l'envoi de l'email. Réessayez."},
             status=status.HTTP_503_SERVICE_UNAVAILABLE,
         )
+
+    # Notification FCM (silencieuse si user introuvable ou sans token)
+    push_reponse_contact(msg, reponse)
 
     # Mettre le statut du message à "repondu"
     msg.statut = ContactMessage.Statut.REPONDU

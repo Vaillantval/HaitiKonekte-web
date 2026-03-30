@@ -8,6 +8,7 @@ Convention de routage Flutter (clé `screen`) :
   - admin_collecte       → écran détail collecte (admin)       data: participation_id, collecte_ref
   - admin_alerte_stock   → écran alerte stock (admin)          data: produit_id, niveau
   - producteur_stock     → écran stock producteur              data: produit_id, niveau
+  - contact_reponse      → écran réponse message de contact    data: reponse_id, message_id, sujet, reponse, date
 """
 import logging
 from apps.emails.fcm_service import send_to_token, send_to_topic
@@ -57,6 +58,38 @@ def push_invitation_collecte_producteur(participation):
         "collecte_id":      str(collecte.pk),
         "zone":             collecte.zone.nom,
         "date":             str(collecte.date_planifiee),
+    }
+    send_to_token(fcm_token, title, body, data)
+
+
+# ── Réponse message de contact → utilisateur ──────────────────────────────
+
+def push_reponse_contact(contact_msg, reponse):
+    """
+    Notifie l'utilisateur (par token individuel) qu'il a reçu une réponse
+    à son message de contact.
+    Cherche le user par email — si inexistant ou sans token, ne fait rien.
+    """
+    from apps.accounts.models import CustomUser
+    try:
+        user = CustomUser.objects.get(email=contact_msg.email)
+    except CustomUser.DoesNotExist:
+        return
+
+    fcm_token = getattr(user, 'fcm_token', None)
+    if not fcm_token:
+        return
+
+    title = "Réponse de Makèt Peyizan"
+    body  = f"Vous avez reçu une réponse concernant : « {contact_msg.sujet} »"
+    data  = {
+        "screen":     "contact_reponse",
+        "reponse_id": str(reponse.pk),
+        "message_id": str(contact_msg.pk),
+        "sujet":      contact_msg.sujet,
+        "reponse":    reponse.contenu[:500],
+        "nom":        contact_msg.nom,
+        "date":       reponse.envoye_le.isoformat(),
     }
     send_to_token(fcm_token, title, body, data)
 

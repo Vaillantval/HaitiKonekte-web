@@ -1,4 +1,5 @@
 from django.contrib.admin.views.decorators import staff_member_required
+from django.shortcuts import render
 from django.utils.decorators import method_decorator
 from django.views.generic import TemplateView
 from django.utils import timezone
@@ -365,3 +366,8 @@ class ExportDashboardView(TemplateView):
         except Exception as e:
             return HttpResponseServerError(f'Erreur lors de la génération du fichier Excel: {str(e)}')
 
+
+@staff_member_required
+def carte_utilisateurs(request):
+    """Page carte interactive des utilisateurs."""
+    return render(request, 'analytics/carte_users.html')
