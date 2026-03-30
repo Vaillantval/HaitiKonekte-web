@@ -1,17 +1,13 @@
 {% extends "admin/base_site.html" %}
-{% load i18n %}
+{% load i18n static %}
 
 {% block title %}Carte des Utilisateurs — Makèt Peyizan{% endblock %}
 
 {% block extrastyle %}
-<!-- Leaflet CSS -->
-<link rel="stylesheet"
-  href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css"/>
-<!-- Leaflet MarkerCluster -->
-<link rel="stylesheet"
-  href="https://cdn.jsdelivr.net/npm/leaflet.markercluster@1.5.3/dist/MarkerCluster.css"/>
-<link rel="stylesheet"
-  href="https://cdn.jsdelivr.net/npm/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css"/>
+<!-- Leaflet CSS (self-hosted) -->
+<link rel="stylesheet" href="{% static 'vendor/leaflet/leaflet.css' %}"/>
+<link rel="stylesheet" href="{% static 'vendor/markercluster/MarkerCluster.css' %}"/>
+<link rel="stylesheet" href="{% static 'vendor/markercluster/MarkerCluster.Default.css' %}"/>
 
 <style>
   :root {
@@ -383,12 +379,11 @@
 {% endblock %}
 
 {% block footer %}
-<!-- Leaflet JS -->
-<script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js"></script>
-<!-- MarkerCluster -->
-<script src="https://cdn.jsdelivr.net/npm/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
-<!-- Chart.js -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<!-- Leaflet JS (self-hosted) -->
+<script src="{% static 'vendor/leaflet/leaflet.js' %}"></script>
+<script src="{% static 'vendor/markercluster/leaflet.markercluster.js' %}"></script>
+<!-- Chart.js (self-hosted) -->
+<script src="{% static 'vendor/chart.umd.min.js' %}"></script>
 
 <script>
 // ── Config couleurs par rôle ──────────────────────────────────
