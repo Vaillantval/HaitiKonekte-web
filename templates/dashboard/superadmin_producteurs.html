@@ -274,7 +274,14 @@ async function load() {
   document.getElementById('tbl').style.display = 'none';
   document.getElementById('tbl-empty').style.display = 'none';
 
-  const r = await fetch(url, { headers: H });
+  let r;
+  try {
+    r = await fetch(url, { headers: H });
+  } catch (err) {
+    document.getElementById('tbl-loading').style.display = 'none';
+    document.getElementById('tbl-empty').style.display = 'block';
+    return;
+  }
   document.getElementById('tbl-loading').style.display = 'none';
   if (!r.ok) { document.getElementById('tbl-empty').style.display = 'block'; return; }
   _allData = (await r.json()).data || [];
@@ -505,5 +512,11 @@ async function submitProd(e) {
   }
 }
 
-mpAuthCheck('superadmin').then(u => { if (u && u.is_superuser) load(); });
+mpAuthCheck('superadmin').then(u => {
+  if (u) {
+    // Rafraîchir le token dans H (mpAuthCheck peut avoir renouvelé le token)
+    H['Authorization'] = 'Bearer ' + localStorage.getItem('mp_access');
+    load();
+  }
+});
 {% endblock %}

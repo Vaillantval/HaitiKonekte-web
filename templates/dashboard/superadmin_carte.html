@@ -1,0 +1,363 @@
+{% extends 'dashboard/base.html' %}
+{% load static %}
+{% block title %}Carte des Utilisateurs — Superadmin{% endblock %}
+{% block sidebar_nav %}{% include 'dashboard/superadmin_sidebar.html' with active='carte_users' %}{% endblock %}
+{% block page_title %}Carte des Utilisateurs{% endblock %}
+{% block page_subtitle %}Localisation géographique des utilisateurs inscrits{% endblock %}
+
+{% block extra_css %}
+<meta name="referrer" content="origin-when-cross-origin">
+<link rel="stylesheet" href="{% static 'vendor/leaflet/leaflet.css' %}"/>
+<link rel="stylesheet" href="{% static 'vendor/markercluster/MarkerCluster.css' %}"/>
+<link rel="stylesheet" href="{% static 'vendor/markercluster/MarkerCluster.Default.css' %}"/>
+<style>
+  .carte-wrapper {
+    display: grid;
+    grid-template-columns: 300px 1fr;
+    gap: 20px;
+    height: calc(100vh - var(--topbar-h) - 56px);
+    min-height: 500px;
+  }
+  .panneau-gauche {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    overflow-y: auto;
+  }
+  .cp {
+    background: var(--card);
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow);
+    padding: 16px;
+  }
+  .cp h3 {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    color: var(--text-muted);
+    margin-bottom: 12px;
+  }
+  .filter-group { margin-bottom: 12px; }
+  .filter-group label {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-muted);
+    margin-bottom: 4px;
+  }
+  .filter-group select,
+  .filter-group input {
+    width: 100%;
+    padding: 8px 10px;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    font-size: 13px;
+    background: var(--input-bg);
+    color: var(--text);
+    box-sizing: border-box;
+    font-family: inherit;
+  }
+  .filter-group select:focus,
+  .filter-group input:focus { outline: none; border-color: var(--green-mid); }
+  .btn-filter {
+    width: 100%; padding: 10px;
+    background: var(--green-mid); color: #fff;
+    border: none; border-radius: 8px;
+    font-size: 13px; font-weight: 700;
+    cursor: pointer; font-family: inherit;
+    transition: opacity .18s;
+  }
+  .btn-filter:hover { opacity: .88; }
+  .btn-reset {
+    width: 100%; padding: 8px;
+    background: transparent; color: var(--text-muted);
+    border: 1px solid var(--border); border-radius: 8px;
+    font-size: 12px; cursor: pointer; margin-top: 6px;
+    font-family: inherit;
+  }
+  .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .stat-item {
+    background: var(--bg);
+    border-radius: 8px; padding: 10px; text-align: center;
+    border: 1px solid var(--border);
+  }
+  .stat-val { font-size: 22px; font-weight: 800; color: var(--green-mid); line-height: 1; }
+  .stat-lbl { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+  .legende-item { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; font-size: 13px; color: var(--text); }
+  .legende-dot { width: 14px; height: 14px; border-radius: 50%; flex-shrink: 0; }
+  .carte-droite {
+    position: relative;
+    min-height: 500px;
+    height: calc(100vh - var(--topbar-h) - 100px);
+  }
+  #map {
+    position: absolute;
+    inset: 0;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-md);
+  }
+  .map-counter {
+    position: absolute; top: 12px; right: 12px; z-index: 1000;
+    background: var(--card); border-radius: 8px; padding: 8px 14px;
+    font-size: 13px; font-weight: 700; color: var(--green-mid);
+    box-shadow: var(--shadow-md); border: 1px solid var(--border);
+  }
+  #chartDonut { max-height: 160px; }
+  /* Popup */
+  .popup-user { min-width: 220px; font-family: -apple-system, sans-serif; }
+  .popup-user .popup-header { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+  .popup-user .popup-avatar {
+    width: 40px; height: 40px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    color: #fff; font-weight: 700; font-size: 16px; flex-shrink: 0;
+  }
+  .popup-user .popup-nom { font-weight: 700; font-size: 14px; color: #1a1a1a; }
+  .popup-user .popup-role { font-size: 11px; padding: 2px 8px; border-radius: 4px; color: #fff; display: inline-block; margin-top: 2px; }
+  .popup-user .popup-row { display: flex; gap: 8px; font-size: 12px; color: #555; margin-bottom: 4px; }
+  .popup-user .popup-precision { font-size: 11px; color: #aaa; font-style: italic; margin-top: 8px; }
+  @media (max-width: 900px) {
+    .carte-wrapper { grid-template-columns: 1fr; height: auto; }
+    #map { height: 400px; }
+  }
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'vendor/leaflet/leaflet.js' %}"></script>
+<script src="{% static 'vendor/markercluster/leaflet.markercluster.js' %}"></script>
+<script src="{% static 'vendor/chart.umd.min.js' %}"></script>
+{% endblock %}
+
+{% block content %}
+<div class="carte-wrapper">
+  <!-- ── Panneau gauche ── -->
+  <div class="panneau-gauche">
+
+    <div class="cp">
+      <h3><i class="fas fa-filter" style="margin-right:6px;color:var(--green-mid)"></i>Filtres</h3>
+      <div class="filter-group">
+        <label>Rôle</label>
+        <select id="filterRole">
+          <option value="">Tous les rôles</option>
+          <option value="acheteur">Acheteur</option>
+          <option value="producteur">Producteur</option>
+          <option value="collecteur">Collecteur</option>
+          <option value="admin">Admin</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label>Statut producteur</label>
+        <select id="filterStatut">
+          <option value="">Tous statuts</option>
+          <option value="actif">Actif</option>
+          <option value="en_attente">En attente</option>
+          <option value="suspendu">Suspendu</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label>Inscrit après</label>
+        <input type="date" id="filterDateDebut">
+      </div>
+      <div class="filter-group">
+        <label>Inscrit avant</label>
+        <input type="date" id="filterDateFin">
+      </div>
+      <button class="btn-filter" onclick="appliquerFiltres()"><i class="fas fa-search" style="margin-right:6px"></i>Appliquer</button>
+      <button class="btn-reset" onclick="reinitialiserFiltres()">Réinitialiser</button>
+    </div>
+
+    <div class="cp">
+      <h3><i class="fas fa-chart-bar" style="margin-right:6px;color:var(--green-mid)"></i>Statistiques</h3>
+      <div class="stats-grid">
+        <div class="stat-item"><div class="stat-val" id="statTotal">—</div><div class="stat-lbl">Total</div></div>
+        <div class="stat-item"><div class="stat-val" id="statProducteurs" style="color:#27ae60">—</div><div class="stat-lbl">Producteurs</div></div>
+        <div class="stat-item"><div class="stat-val" id="statAcheteurs" style="color:#2980b9">—</div><div class="stat-lbl">Acheteurs</div></div>
+        <div class="stat-item"><div class="stat-val" id="statCollecteurs" style="color:#8e44ad">—</div><div class="stat-lbl">Collecteurs</div></div>
+      </div>
+    </div>
+
+    <div class="cp">
+      <h3><i class="fas fa-chart-pie" style="margin-right:6px;color:var(--green-mid)"></i>Répartition</h3>
+      <canvas id="chartDonut"></canvas>
+    </div>
+
+    <div class="cp">
+      <h3><i class="fas fa-palette" style="margin-right:6px;color:var(--green-mid)"></i>Légende</h3>
+      <div class="legende-item"><div class="legende-dot" style="background:#27ae60"></div><span>Producteur actif</span></div>
+      <div class="legende-item"><div class="legende-dot" style="background:#f39c12"></div><span>Producteur en attente</span></div>
+      <div class="legende-item"><div class="legende-dot" style="background:#2980b9"></div><span>Acheteur</span></div>
+      <div class="legende-item"><div class="legende-dot" style="background:#8e44ad"></div><span>Collecteur</span></div>
+      <div class="legende-item"><div class="legende-dot" style="background:#e74c3c"></div><span>Suspendu</span></div>
+      <div class="legende-item"><div class="legende-dot" style="background:#1a1a1a"></div><span>Admin / Superadmin</span></div>
+      <hr style="margin:10px 0;border:none;border-top:1px solid var(--border)">
+      <div class="legende-item"><div class="legende-dot" style="background:#ccc;border:2px solid #999"></div><span style="color:var(--text-muted)">Niveau département</span></div>
+      <div class="legende-item"><div class="legende-dot" style="background:#27ae60;border:2px solid white;box-shadow:0 0 0 2px #27ae60"></div><span>Niveau commune</span></div>
+    </div>
+
+  </div>
+
+  <!-- ── Carte ── -->
+  <div class="carte-droite">
+    <div id="map"></div>
+    <div class="map-counter" id="mapCounter"><i class="fas fa-spinner fa-spin"></i> Chargement...</div>
+  </div>
+</div>
+{% endblock %}
+
+{% block page_script %}
+const _carteH = { 'Authorization': 'Bearer ' + localStorage.getItem('mp_access') };
+
+const _CARTE_COLORS = {
+  'producteur_actif':      '#27ae60',
+  'producteur_en_attente': '#f39c12',
+  'producteur_suspendu':   '#e74c3c',
+  'producteur_inactif':    '#95a5a6',
+  'acheteur':              '#2980b9',
+  'collecteur':            '#8e44ad',
+  'superadmin':            '#1a1a1a',
+  'admin':                 '#1a1a1a',
+  'default':               '#95a5a6',
+};
+const _CARTE_LABELS = {
+  'acheteur':   'Acheteur',
+  'producteur': 'Producteur',
+  'collecteur': 'Collecteur',
+  'admin':      'Admin',
+  'superadmin': 'Superadmin',
+};
+
+function getRoleColor(user) {
+  if (user.role === 'producteur')
+    return _CARTE_COLORS['producteur_' + (user.statut || 'actif')] || _CARTE_COLORS['producteur_actif'];
+  return _CARTE_COLORS[user.role] || _CARTE_COLORS['default'];
+}
+
+let map, markerCluster, donutChart;
+
+function initMap() {
+  map = L.map('map', {
+    center: [18.97, -72.28], zoom: 8, minZoom: 6, maxZoom: 14,
+    maxBounds: [[17.5, -74.8], [20.2, -71.5]],
+  });
+
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '© <a href="https://www.openstreetmap.org/">OpenStreetMap</a>',
+    maxZoom: 19,
+  }).addTo(map);
+
+  markerCluster = L.markerClusterGroup({
+    maxClusterRadius: 40,
+    showCoverageOnHover: false,
+    iconCreateFunction: (cluster) => {
+      const count = cluster.getChildCount();
+      return L.divIcon({
+        html: `<div style="background:#1a6b2f;color:white;width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;border:2px solid white;box-shadow:0 2px 6px rgba(0,0,0,.3)">${count}</div>`,
+        iconSize: [36, 36], iconAnchor: [18, 18],
+      });
+    },
+  });
+  map.addLayer(markerCluster);
+}
+
+function createMarker(user) {
+  const color = getRoleColor(user);
+  const isPrecise = user.precision === 'commune';
+  const icon = L.divIcon({
+    html: `<div style="width:16px;height:16px;border-radius:50%;background:${isPrecise ? color : color + '88'};${isPrecise ? 'border:2px solid white;box-shadow:0 0 0 2px ' + color : 'border:2px dashed ' + color};box-shadow:0 2px 4px rgba(0,0,0,.25);cursor:pointer;"></div>`,
+    iconSize: [16, 16], iconAnchor: [8, 8], className: '',
+  });
+  const marker = L.marker([user.lat, user.lng], { icon });
+  marker.bindPopup(buildPopup(user), { maxWidth: 280 });
+  return marker;
+}
+
+function buildPopup(user) {
+  const color = getRoleColor(user);
+  const initiale = (user.nom || '?')[0].toUpperCase();
+  const roleLabel = _CARTE_LABELS[user.role] || user.role;
+  let extra = '';
+  if (user.role === 'producteur') {
+    extra = `<div class="popup-row"><i>🌾</i><span>${user.code_producteur || '—'}</span></div>
+             <div class="popup-row"><i>📍</i><span>${user.commune || ''}${user.departement ? ' — ' + user.departement : ''}</span></div>
+             <div class="popup-row"><i>📦</i><span>${user.nb_produits || 0} produit(s)</span></div>`;
+  } else if (user.role === 'acheteur') {
+    extra = `<div class="popup-row"><i>🏷️</i><span>${user.type_acheteur || 'Particulier'}</span></div>
+             ${user.ville ? `<div class="popup-row"><i>📍</i><span>${user.ville}</span></div>` : ''}`;
+  }
+  return `<div class="popup-user">
+    <div class="popup-header">
+      <div class="popup-avatar" style="background:${color}">${initiale}</div>
+      <div><div class="popup-nom">${user.nom || '—'}</div><span class="popup-role" style="background:${color}">${roleLabel}</span></div>
+    </div>
+    <div class="popup-row"><i>✉️</i><span>${user.email || '—'}</span></div>
+    <div class="popup-row"><i>📞</i><span>${user.telephone || '—'}</span></div>
+    ${user.adresse ? `<div class="popup-row"><i>🏠</i><span>${user.adresse}</span></div>` : ''}
+    ${extra}
+    <div class="popup-row"><i>📅</i><span>Inscrit le ${user.created_at || '—'}</span></div>
+    <div class="popup-precision">📌 Précision : ${user.precision === 'commune' ? 'Niveau commune' : 'Niveau département'}</div>
+  </div>`;
+}
+
+function updateDonut(stats) {
+  const labels = ['Acheteurs', 'Producteurs', 'Collecteurs', 'Admins'];
+  const data   = [stats.acheteur || 0, stats.producteur || 0, stats.collecteur || 0, (stats.admin || 0) + (stats.superadmin || 0)];
+  const colors = ['#2980b9', '#27ae60', '#8e44ad', '#1a1a1a'];
+  if (donutChart) donutChart.destroy();
+  donutChart = new Chart(document.getElementById('chartDonut').getContext('2d'), {
+    type: 'doughnut',
+    data: { labels, datasets: [{ data, backgroundColor: colors, borderWidth: 2 }] },
+    options: { responsive: true, plugins: { legend: { position: 'bottom', labels: { font: { size: 11 } } } }, cutout: '65%' },
+  });
+}
+
+async function chargerDonnees(params = {}) {
+  const qs = new URLSearchParams(params).toString();
+  const url = `/api/admin/users/carte/${qs ? '?' + qs : ''}`;
+  document.getElementById('mapCounter').innerHTML = '<i class="fas fa-spinner fa-spin"></i> Chargement...';
+  try {
+    const res  = await fetch(url, { headers: _carteH });
+    const json = await res.json();
+    if (!json.success) { document.getElementById('mapCounter').textContent = 'Erreur de chargement'; return; }
+    const { users, stats } = json.data;
+    markerCluster.clearLayers();
+    let placed = 0;
+    users.forEach(user => { if (user.lat && user.lng) { markerCluster.addLayer(createMarker(user)); placed++; } });
+    document.getElementById('mapCounter').textContent = `${placed} utilisateur${placed > 1 ? 's' : ''} sur la carte`;
+    document.getElementById('statTotal').textContent      = stats.total       || 0;
+    document.getElementById('statProducteurs').textContent = stats.producteur  || 0;
+    document.getElementById('statAcheteurs').textContent   = stats.acheteur    || 0;
+    document.getElementById('statCollecteurs').textContent = stats.collecteur  || 0;
+    updateDonut(stats);
+  } catch (err) {
+    console.error(err);
+    document.getElementById('mapCounter').textContent = 'Erreur de chargement';
+  }
+}
+
+function appliquerFiltres() {
+  const params = {};
+  const role    = document.getElementById('filterRole').value;
+  const statut  = document.getElementById('filterStatut').value;
+  const dateDeb = document.getElementById('filterDateDebut').value;
+  const dateFin = document.getElementById('filterDateFin').value;
+  if (role)    params.role       = role;
+  if (statut)  params.statut     = statut;
+  if (dateDeb) params.date_debut = dateDeb;
+  if (dateFin) params.date_fin   = dateFin;
+  chargerDonnees(params);
+}
+
+function reinitialiserFiltres() {
+  ['filterRole','filterStatut','filterDateDebut','filterDateFin'].forEach(id => document.getElementById(id).value = '');
+  chargerDonnees();
+}
+
+mpAuthCheck('superadmin').then(u => {
+  if (!u) return;
+  _carteH['Authorization'] = 'Bearer ' + localStorage.getItem('mp_access');
+  initMap();
+  chargerDonnees();
+});
+{% endblock %}

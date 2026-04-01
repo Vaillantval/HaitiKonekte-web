@@ -254,6 +254,9 @@ def dashboard_superadmin_config(request):
 def dashboard_superadmin_profil(request):
     return render(request, 'dashboard/superadmin_profil.html')
 
+def dashboard_superadmin_carte(request):
+    return render(request, 'dashboard/superadmin_carte.html')
+
 def dashboard_superadmin_rapport(request):
     if request.method == 'POST':
         return _handle_superadmin_export(request)

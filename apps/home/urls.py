@@ -39,6 +39,7 @@ urlpatterns = [
     path('dashboard/superadmin/config/',             views.dashboard_superadmin_config,            name='dashboard_superadmin_config'),
     path('dashboard/superadmin/rapport/',            views.dashboard_superadmin_rapport,           name='dashboard_superadmin_rapport'),
     path('dashboard/superadmin/profil/',             views.dashboard_superadmin_profil,            name='dashboard_superadmin_profil'),
+    path('dashboard/superadmin/carte/',              views.dashboard_superadmin_carte,             name='dashboard_superadmin_carte'),
     # Catalogue public
     path('produits/<slug:slug>/',   views.produit_detail,      name='produit_detail'),
     path('panier/',                 views.panier_page,         name='panier'),
