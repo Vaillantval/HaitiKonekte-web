@@ -3,6 +3,7 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
+from django.db import transaction
 from drf_spectacular.utils import extend_schema
 
 from apps.accounts.models import Adresse
@@ -59,10 +60,7 @@ def adresse_detail(request, pk):
         return Response({'success': True, 'data': serializer.data})
 
     adresse.delete()
-    return Response(
-        {'success': True, 'data': {'message': 'Adresse supprimée.'}},
-        status=status.HTTP_200_OK,
-    )
+    return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 # ── PATCH /api/auth/adresses/<pk>/default/ ─────────────────────────────────
@@ -71,9 +69,16 @@ def adresse_detail(request, pk):
 @api_view(['PATCH'])
 @permission_classes([IsAuthenticated])
 def adresse_set_default(request, pk):
-    adresse            = get_object_or_404(Adresse, pk=pk, user=request.user)
-    adresse.is_default = True
-    adresse.save()
+    adresse = get_object_or_404(Adresse, pk=pk, user=request.user)
+    with transaction.atomic():
+        # Retirer le default des autres adresses du même type en premier
+        Adresse.objects.filter(
+            user=request.user,
+            type_adresse=adresse.type_adresse,
+            is_default=True,
+        ).exclude(pk=pk).update(is_default=False)
+        adresse.is_default = True
+        adresse.save(update_fields=['is_default'])
     return Response({
         'success': True,
         'data': {

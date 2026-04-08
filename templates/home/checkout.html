@@ -9,6 +9,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <script src="{% static 'js/geo_selector.js' %}"></script>
   <style>
     :root {
       --vert-fonce:#1a6b2f; --vert-vif:#27ae60; --vert-menthe:#e8f8ee;
@@ -324,7 +325,7 @@
                     <!-- Département -->
                     <div class="form-group">
                       <label class="form-label">Département <span class="req">*</span></label>
-                      <select id="f-dept" class="f-input f-select" onchange="loadCommunes();validateSubmit()">
+                      <select id="f-dept" class="f-input f-select">
                         <option value="">— Sélectionner —</option>
                       </select>
                     </div>
@@ -332,17 +333,13 @@
                     <!-- Commune -->
                     <div class="form-group">
                       <label class="form-label">Commune <span class="req">*</span></label>
-                      <select id="f-commune" class="f-input f-select" onchange="loadSections();validateSubmit()" disabled>
-                        <option value="">— Sélectionner un département —</option>
-                      </select>
+                      <input id="f-commune" class="f-input" type="text" placeholder="Rechercher une commune…">
                     </div>
 
                     <!-- Section communale -->
                     <div class="form-group full">
                       <label class="form-label">Section communale <span style="color:#bbb;font-weight:400">(optionnel)</span></label>
-                      <select id="f-section" class="f-input f-select" disabled>
-                        <option value="">— Optionnel —</option>
-                      </select>
+                      <input id="f-section" class="f-input" type="text" placeholder="Section communale (optionnel)">
                     </div>
 
                     <!-- Rue / Adresse -->
@@ -769,12 +766,6 @@
       });
     }
 
-    // Populate dept select
-    const deptSel = document.getElementById('f-dept');
-    if (!deptSel.options.length || deptSel.options[0].value === '') {
-      deptSel.innerHTML = '<option value="">— Sélectionner —</option>' +
-        DEPTS.map(d => `<option value="${d.slug}">${d.nom}</option>`).join('');
-    }
     validateSubmit();
   }
 
@@ -789,52 +780,6 @@
     if (formMode === mode) { hideAddrForm(); }
     else { showAddrForm(mode); }
     validateSubmit();
-  }
-
-  // ── Géo cascade ──────────────────────────────────────────────────────────
-  async function loadCommunes() {
-    const dept = document.getElementById('f-dept').value;
-    const sel  = document.getElementById('f-commune');
-    const secSel = document.getElementById('f-section');
-
-    sel.innerHTML = '<option value="">Chargement…</option>';
-    sel.disabled  = true;
-    secSel.innerHTML = '<option value="">— Optionnel —</option>';
-    secSel.disabled  = true;
-
-    if (!dept) { sel.innerHTML = '<option value="">— Sélectionner un département —</option>'; return; }
-
-    try {
-      const r    = await fetch(`/api/geo/communes/?dept=${dept}`);
-      const data = await r.json();
-      if (data.success) {
-        sel.innerHTML = '<option value="">— Sélectionner une commune —</option>' +
-          data.data.map(c => `<option value="${_esc(c.nom)}">${_esc(c.nom)}</option>`).join('');
-        sel.disabled = false;
-      }
-    } catch { sel.innerHTML = '<option value="">Erreur de chargement</option>'; }
-  }
-
-  async function loadSections() {
-    const dept    = document.getElementById('f-dept').value;
-    const commune = document.getElementById('f-commune').value;
-    const secSel  = document.getElementById('f-section');
-
-    secSel.innerHTML = '<option value="">Chargement…</option>';
-    secSel.disabled  = true;
-    if (!dept || !commune) { secSel.innerHTML = '<option value="">— Optionnel —</option>'; return; }
-
-    try {
-      const r    = await fetch(`/api/geo/sections/?dept=${dept}&commune=${encodeURIComponent(commune)}`);
-      const data = await r.json();
-      if (data.success && data.data.sections_communales?.length) {
-        secSel.innerHTML = '<option value="">— Optionnel —</option>' +
-          data.data.sections_communales.map(s => `<option value="${_esc(s)}">${_esc(s)}</option>`).join('');
-        secSel.disabled = false;
-      } else {
-        secSel.innerHTML = '<option value="">— Aucune section trouvée —</option>';
-      }
-    } catch { secSel.innerHTML = '<option value="">— Optionnel —</option>'; }
   }
 
   // ── Validation bouton submit ──────────────────────────────────────────────
@@ -1005,14 +950,22 @@
       const json = await r.json();
       if (r.ok) {
         const data = json.data;
-        if ((selectedPM === 'moncash' || selectedPM === 'natcash') && data.redirect_url) {
-          // Sauvegarder la référence pour la page de retour
-          const premRef = data.commandes && data.commandes.length ? data.commandes[0].numero_commande : '';
-          if (premRef) {
-            localStorage.setItem('mp_pending_ref', premRef);
-            localStorage.setItem('mp_pending_method', selectedPM);
+        if (selectedPM === 'moncash' || selectedPM === 'natcash') {
+          if (data.redirect_url) {
+            // Sauvegarder la référence pour la page de retour
+            const premRef = data.commandes && data.commandes.length ? data.commandes[0].numero_commande : '';
+            if (premRef) {
+              localStorage.setItem('mp_pending_ref', premRef);
+              localStorage.setItem('mp_pending_method', selectedPM);
+            }
+            window.location.href = data.redirect_url;
+          } else {
+            // Plopplop a échoué — commande créée mais paiement non initié
+            const pm = selectedPM === 'moncash' ? 'MonCash' : 'NatCash';
+            const errMsg = data.paiement_erreur || `Initiation du paiement ${pm} échouée. Réessayez.`;
+            showToast(errMsg, 'error');
+            restoreSubmitBtns();
           }
-          window.location.href = data.redirect_url;
         } else {
           showConfirmation(data);
         }
@@ -1049,6 +1002,20 @@
     c.appendChild(t);
     setTimeout(() => t.remove(), 4500);
   }
+
+  // ── GeoSelector — cascade Département → Commune → Section ───────────────
+  const _geoCheckout = new GeoSelector({
+    deptEl:    document.getElementById('f-dept'),
+    communeEl: document.getElementById('f-commune'),
+    sectionEl: document.getElementById('f-section'),
+    baseUrl:   '/api/geo',
+  });
+
+  // Déclencher validateSubmit à chaque changement géo
+  // (après instanciation : f-dept pointe maintenant sur le hidden input créé par GeoSelector)
+  document.getElementById('f-dept').addEventListener('change', validateSubmit);
+  document.getElementById('f-commune').addEventListener('change', validateSubmit);
+  document.getElementById('f-commune').addEventListener('input',  validateSubmit);
 
   async function mpLogout() {
     const refresh = localStorage.getItem('mp_refresh');

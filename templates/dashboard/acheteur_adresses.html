@@ -497,7 +497,7 @@
       const r = await fetch(`/api/auth/adresses/${id}/`, {
         method: 'DELETE', headers: { 'Authorization': 'Bearer ' + token },
       });
-      if (r.status === 204) { toast('Adresse supprimée.'); loadAdresses(); }
+      if (r.ok) { toast('Adresse supprimée.'); loadAdresses(); }
       else toast('Impossible de supprimer cette adresse.', 'error');
     } catch (_) { toast('Erreur réseau.', 'error'); }
   }

@@ -1,8 +1,12 @@
+import logging
+
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from django.db import transaction
+
+logger = logging.getLogger(__name__)
 
 from apps.accounts.models import Adresse
 from apps.orders.models import Panier, Commande
@@ -179,9 +183,17 @@ def commander(request):
             response_data['redirect_url']   = result['redirect_url']
             response_data['transaction_id'] = result['transaction_id']
         except Exception as e:
-            response_data['paiement_erreur'] = (
+            logger.error(
+                "Plopplop initiation échouée [%s] ref=%s erreur=%s",
+                methode_paiement,
+                commandes_creees[0].numero_commande if commandes_creees else '?',
+                e,
+                exc_info=True,
+            )
+            # Renvoyer le message exact de plopplop pour aider au debug
+            response_data['paiement_erreur'] = str(e) or (
                 f"Paiement {methode_paiement.capitalize()} temporairement indisponible. "
-                "Vos commandes ont été créées. Contactez-nous."
+                "Vos commandes ont été créées (réf. ci-dessus). Contactez le support."
             )
 
     return Response(
