@@ -716,6 +716,12 @@
     const qty     = parseInt(document.getElementById('qty-input')?.value || QTY_MIN);
     const btnAdd  = document.getElementById('btn-ajouter');
     const access  = localStorage.getItem('mp_access');
+
+    if (!access) {
+      window.location.href = '/connexion/?next=' + encodeURIComponent(window.location.pathname);
+      return;
+    }
+
     btnAdd.disabled = true;
 
     try {
@@ -725,6 +731,10 @@
         body:    JSON.stringify({ slug: PRODUIT_SLUG, quantite: qty }),
       });
       const json = await r.json();
+      if (r.status === 401) {
+        window.location.href = '/connexion/?next=' + encodeURIComponent(window.location.pathname);
+        return;
+      }
       if (r.ok) {
         btnAdd.innerHTML  = '<i class="fas fa-check"></i> Dans le panier';
         btnAdd.classList.add('dans-panier');
@@ -745,6 +755,12 @@
     const qty     = parseInt(document.getElementById('qty-input')?.value || QTY_MIN);
     const btnCmd  = document.getElementById('btn-commander');
     const access  = localStorage.getItem('mp_access');
+
+    if (!access) {
+      window.location.href = '/connexion/?next=/commander/';
+      return;
+    }
+
     btnCmd.disabled = true;
     btnCmd.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Chargement…';
 
@@ -755,6 +771,10 @@
         body:    JSON.stringify({ slug: PRODUIT_SLUG, quantite: qty }),
       });
       const json = await r.json();
+      if (r.status === 401) {
+        window.location.href = '/connexion/?next=/commander/';
+        return;
+      }
       if (r.ok) {
         updateBadgePanier(json.data?.nb_articles);
         // Rediriger vers le checkout

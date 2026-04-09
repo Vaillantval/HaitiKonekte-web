@@ -467,7 +467,10 @@ def panier_page(request):
 
 
 def checkout_page(request):
-    """Page de finalisation de commande."""
+    """Page de finalisation de commande — réservée aux utilisateurs connectés."""
+    if not request.user.is_authenticated:
+        from django.shortcuts import redirect
+        return redirect(f"/connexion/?next=/commander/")
     from apps.orders.services.cart_service import CartService
     nb_panier = CartService.nb_articles(request)
     return render(request, 'home/checkout.html', {'nb_panier': nb_panier})

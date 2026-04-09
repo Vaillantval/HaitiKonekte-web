@@ -240,6 +240,11 @@
   }
 
   function procederCommande() {
+    const access = localStorage.getItem('mp_access');
+    if (!access) {
+      window.location.href = '/connexion/?next=/commander/';
+      return;
+    }
     window.location.href = '/commander/';
   }
 

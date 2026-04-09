@@ -553,10 +553,13 @@
         document.getElementById('alertSuccess').classList.add('show');
         document.getElementById('alertError').classList.remove('show');
         const role = payload.user.role;
+        const params = new URLSearchParams(window.location.search);
+        const nextUrl = params.get('next');
         let dest = '/';
-        if (payload.user.is_superuser || role === 'superadmin') dest = '/dashboard/superadmin/';
+        if (nextUrl) dest = nextUrl;
+        else if (payload.user.is_superuser || role === 'superadmin') dest = '/dashboard/superadmin/';
         else if (role === 'producteur') dest = '/dashboard/producteur/';
-        // acheteur → reste sur l'accueil, son but est d'acheter
+        // acheteur → reste sur l'accueil ou sur la page demandée
         setTimeout(() => { window.location.href = dest; }, 900);
       } else {
         const err = json.error || {};
