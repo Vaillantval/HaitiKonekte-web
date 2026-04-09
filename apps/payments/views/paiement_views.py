@@ -12,6 +12,7 @@ from apps.payments.serializers import (
     PaiementSerializer,
 )
 from apps.payments.services.paiement_service import PaiementService
+from apps.payments.services.moncash_service import MonCashService
 from apps.orders.models import Commande
 
 
