@@ -70,17 +70,12 @@ class Commande(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.numero_commande:
+            import uuid
             from django.utils import timezone
-            from django.db import transaction
             annee = timezone.now().year
-            with transaction.atomic():
-                count = (
-                    Commande.objects
-                    .select_for_update()
-                    .filter(numero_commande__startswith=f'CMD-{annee}-')
-                    .count()
-                )
-                self.numero_commande = f'CMD-{annee}-{str(count + 1).zfill(5)}'
+            # 8 hex chars = 16^8 ≈ 4 milliards de combinaisons → sans collision
+            # Format : CMD-2026-A3F7B2C1 (18 chars, bien en-dessous de max_length=30)
+            self.numero_commande = f'CMD-{annee}-{uuid.uuid4().hex[:8].upper()}'
         self.total = self.sous_total + self.frais_livraison - self.remise
         super().save(*args, **kwargs)
 
