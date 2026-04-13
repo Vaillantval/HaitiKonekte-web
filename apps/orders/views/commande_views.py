@@ -116,17 +116,18 @@ def commander(request):
     methode_django = METHODE_MAP.get(methode_paiement, Commande.MethodePaiement.CASH)
     mode_django    = MODE_MAP.get(mode_livraison, Commande.ModeLivraison.LIVRAISON_DOMICILE)
 
-    logger.info(
-        "commander: début transaction — acheteur=%s nb_producteurs=%d methode=%s mode=%s",
-        acheteur.pk, len(items_par_producteur), methode_paiement, mode_livraison,
-    )
+    # Pour MonCash / NatCash — préparer le type de paiement avant la transaction
+    type_paiement_django = None
+    if methode_paiement in ('moncash', 'natcash'):
+        TYPE_PAI_MAP = {
+            'moncash': Paiement.TypePaiement.MONCASH,
+            'natcash': Paiement.TypePaiement.NATCASH,
+        }
+        type_paiement_django = TYPE_PAI_MAP[methode_paiement]
+
     try:
         with transaction.atomic():
             for pid, groupe in items_par_producteur.items():
-                logger.info(
-                    "commander: appel creer_commande — acheteur=%s producteur=%s nb_items=%d",
-                    acheteur.pk, pid, len(groupe['items']),
-                )
                 commande = CommandeService.creer_commande(
                     acheteur=acheteur,
                     producteur=groupe['producteur'],
@@ -154,23 +155,28 @@ def commander(request):
 
                 commandes_creees.append(commande)
 
+            # Créer les enregistrements Paiement à l'intérieur de la transaction
+            # pour que tout soit atomique (rollback si échec)
+            if type_paiement_django is not None:
+                for commande in commandes_creees:
+                    PaiementService.initier_paiement(
+                        commande=commande,
+                        type_paiement=type_paiement_django,
+                        notes='Initié depuis le checkout',
+                    )
+
             # Vider le panier après commande réussie
             panier.items.all().delete()
 
     except ValueError as e:
-        logger.warning(
-            "commander: erreur de validation — acheteur=%s erreur=%s",
-            acheteur.pk, e,
-        )
         return Response(
             {'success': False, 'error': str(e)},
             status=status.HTTP_400_BAD_REQUEST,
         )
     except Exception:
         logger.exception(
-            "commander: erreur inattendue lors de la création de commande — "
-            "acheteur=%s methode=%s mode=%s nb_producteurs=%d",
-            acheteur.pk, methode_paiement, mode_livraison, len(items_par_producteur),
+            "commander: erreur inattendue — acheteur=%s methode=%s mode=%s",
+            acheteur.pk, methode_paiement, mode_livraison,
         )
         return Response(
             {'success': False, 'error': "Une erreur interne est survenue. Veuillez réessayer."},
@@ -193,22 +199,8 @@ def commander(request):
         'commandes': response_commandes,
     }
 
-    # Pour MonCash / NatCash — créer le Paiement en DB puis initier via Plopplop
-    if methode_paiement in ('moncash', 'natcash') and commandes_creees:
-        TYPE_PAI_MAP = {
-            'moncash': Paiement.TypePaiement.MONCASH,
-            'natcash': Paiement.TypePaiement.NATCASH,
-        }
-        type_paiement_django = TYPE_PAI_MAP[methode_paiement]
-
-        # Créer un enregistrement Paiement pour chaque commande
-        for commande in commandes_creees:
-            PaiementService.initier_paiement(
-                commande=commande,
-                type_paiement=type_paiement_django,
-                notes='Initié depuis le checkout',
-            )
-
+    # Pour MonCash / NatCash — initier le paiement via Plopplop (appel externe)
+    if type_paiement_django is not None and commandes_creees:
         # Initier le paiement Plopplop sur la première commande (redirect unique)
         try:
             from apps.payments.services.plopplop_service import PlopplopService
