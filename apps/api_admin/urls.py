@@ -74,11 +74,14 @@ urlpatterns = [
     path('config/slider/<int:pk>/',         views.slider_detail,          name='slider_detail'),
 
     # ── Acheteurs, Vouchers, Adresses ───────────────────────────
-    path('acheteurs/',                  views.acheteurs_list,    name='acheteurs_list'),
-    path('acheteurs/<int:pk>/',         views.acheteur_detail,   name='acheteur_detail'),
-    path('vouchers/',                   views.vouchers_list,     name='vouchers_list'),
-    path('vouchers/<int:pk>/',          views.voucher_detail,    name='voucher_detail'),
-    path('vouchers/programmes/',        views.programmes_list,   name='programmes_list'),
-    path('vouchers/programmes/<int:pk>/', views.programme_detail, name='programme_detail'),
-    path('adresses/',                   views.adresses_list_admin, name='adresses_admin'),
+    path('acheteurs/',                        views.acheteurs_list,        name='acheteurs_list'),
+    path('acheteurs/<int:pk>/',               views.acheteur_detail,       name='acheteur_detail'),
+    # Programmes — avant vouchers/<int:pk>/ pour éviter l'ambiguïté
+    path('vouchers/programmes/',              views.programmes_list,       name='programmes_list'),
+    path('vouchers/programmes/<int:pk>/',     views.programme_detail,      name='programme_detail'),
+    # Vouchers
+    path('vouchers/',                         views.vouchers_list,         name='vouchers_list'),
+    path('vouchers/bulk/',                    views.vouchers_bulk_create,  name='vouchers_bulk'),
+    path('vouchers/<int:pk>/',                views.voucher_detail,        name='voucher_detail'),
+    path('adresses/',                         views.adresses_list_admin,   name='adresses_admin'),
 ]

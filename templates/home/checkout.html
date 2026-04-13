@@ -125,6 +125,19 @@
     .notes-area:focus { border-color:var(--vert-vif); }
     .notes-hint { font-size:11px; color:#aaa; margin-top:6px; }
 
+    /* ── Voucher ─────────────────────────────────────────────── */
+    .voucher-row { display:flex; gap:10px; align-items:stretch; }
+    .voucher-input { flex:1; padding:11px 14px; border:1.5px solid var(--gris-bord); border-radius:8px; font-size:13px; font-family:'DM Sans',sans-serif; outline:none; transition:border-color .15s; text-transform:uppercase; letter-spacing:.04em; }
+    .voucher-input:focus { border-color:var(--vert-vif); }
+    .voucher-input.v-error { border-color:#ef4444; }
+    .voucher-input.v-ok    { border-color:var(--vert-vif); background:#f0fdf4; }
+    .btn-voucher { padding:11px 18px; background:var(--vert-fonce); color:#fff; border:none; border-radius:8px; font-size:13px; font-weight:700; cursor:pointer; font-family:'DM Sans',sans-serif; white-space:nowrap; transition:background .2s; }
+    .btn-voucher:hover:not(:disabled) { background:#145a26; }
+    .btn-voucher:disabled { opacity:.5; cursor:not-allowed; }
+    .voucher-feedback { margin-top:8px; font-size:12px; display:none; }
+    .voucher-feedback.v-ok    { color:var(--vert-vif); }
+    .voucher-feedback.v-error { color:#ef4444; }
+
     /* ── Recap card (sticky) ─────────────────────────────────── */
     .recap-card { background:var(--blanc); border-radius:var(--radius); box-shadow:var(--shadow); position:sticky; top:84px; overflow:hidden; }
     .recap-head { padding:16px 20px; border-bottom:1px solid var(--gris-bord); display:flex; align-items:center; justify-content:space-between; }
@@ -484,6 +497,22 @@
             </div>
           </div>
 
+          <!-- Section 4: Voucher -->
+          <div class="c-section">
+            <div class="c-section-head">
+              <div class="c-num">4</div>
+              <div class="c-title">Code de réduction <span style="font-size:12px;font-weight:400;color:#aaa">(optionnel)</span></div>
+            </div>
+            <div class="c-body">
+              <div class="voucher-row">
+                <input id="voucher-input" class="voucher-input" type="text" placeholder="Ex. : PROMO2026" maxlength="30"
+                  oninput="this.value=this.value.toUpperCase()" onkeydown="if(event.key==='Enter'){event.preventDefault();applyVoucher();}">
+                <button class="btn-voucher" id="btn-voucher" onclick="applyVoucher()">Appliquer</button>
+              </div>
+              <div class="voucher-feedback" id="voucher-feedback"></div>
+            </div>
+          </div>
+
           <!-- Bouton submit mobile -->
           <button class="btn-submit" id="btn-submit-mobile" onclick="passerCommande()" disabled style="display:none">
             <img class="pm-btn-img" src="{% static 'img/moncash.png' %}" alt=""> Payer avec MonCash
@@ -510,6 +539,10 @@
               <div class="recap-line">
                 <span>Sous-total</span>
                 <span id="recap-subtotal">—</span>
+              </div>
+              <div class="recap-line" id="recap-remise-line" style="display:none;color:var(--vert-vif)">
+                <span>Réduction</span>
+                <span id="recap-remise">—</span>
               </div>
               <div class="recap-line">
                 <span>Livraison</span>
@@ -579,6 +612,8 @@
   let selectedAddrId = null;
   let formMode       = null;   // null | 'autre' | 'nouvelle'
   let selectedPM     = 'moncash';
+  let appliedVoucher = null;   // { code, remise } | null
+  let cartTotal      = 0;      // sous-total brut du panier (number)
 
   // ── URLs images statiques pour les boutons ────────────────────────────────
   const MC_IMG = "{% static 'img/moncash.png' %}";
@@ -674,9 +709,10 @@
         <div class="recap-item-price">${fmtPrice(it.sous_total)}</div>
       </div>`).join('');
 
-    document.getElementById('recap-subtotal').textContent = fmtPrice(data.total);
-    document.getElementById('recap-total').textContent    = fmtPrice(data.total);
-    const _t = fmtPrice(data.total);
+    cartTotal = Number(data.total) || 0;
+    document.getElementById('recap-subtotal').textContent = fmtPrice(cartTotal);
+    updateRecapTotal();
+    const _t = fmtPrice(cartTotal);
     ['mc-montant','nc-montant'].forEach(id => {
       const el = document.getElementById(id); if (el) el.textContent = _t;
     });
@@ -724,6 +760,75 @@
     selectedAddrId = id;
     if (formMode) hideAddrForm();
     validateSubmit();
+  }
+
+  // ── Voucher ───────────────────────────────────────────────────────────────
+  function updateRecapTotal() {
+    const remise = appliedVoucher ? Number(appliedVoucher.remise) : 0;
+    const total  = Math.max(0, cartTotal - remise);
+    document.getElementById('recap-total').textContent = fmtPrice(total);
+
+    const remiseLine = document.getElementById('recap-remise-line');
+    const remiseEl   = document.getElementById('recap-remise');
+    if (appliedVoucher) {
+      remiseLine.style.display = 'flex';
+      remiseEl.textContent     = '- ' + fmtPrice(remise);
+    } else {
+      remiseLine.style.display = 'none';
+    }
+  }
+
+  async function applyVoucher() {
+    const input    = document.getElementById('voucher-input');
+    const feedback = document.getElementById('voucher-feedback');
+    const btn      = document.getElementById('btn-voucher');
+    const code     = input.value.trim().toUpperCase();
+
+    // Reset voucher if clearing the field
+    if (!code) {
+      appliedVoucher = null;
+      input.className   = 'voucher-input';
+      feedback.style.display = 'none';
+      updateRecapTotal();
+      return;
+    }
+
+    btn.disabled = true;
+    btn.textContent = '…';
+    feedback.style.display = 'none';
+
+    try {
+      const access = localStorage.getItem('mp_access');
+      const r = await fetch('/api/payments/voucher/valider/', {
+        method:  'POST',
+        headers: {'Content-Type':'application/json','Authorization':'Bearer '+access},
+        body:    JSON.stringify({ code, montant_commande: cartTotal }),
+      });
+      const json = await r.json();
+      if (r.ok && json.success) {
+        const remise = json.data.remise_appliquee;
+        appliedVoucher = { code, remise };
+        input.className       = 'voucher-input v-ok';
+        feedback.className    = 'voucher-feedback v-ok';
+        feedback.textContent  = `Réduction de ${fmtPrice(remise)} appliquée !`;
+        feedback.style.display = 'block';
+        updateRecapTotal();
+      } else {
+        appliedVoucher = null;
+        input.className       = 'voucher-input v-error';
+        feedback.className    = 'voucher-feedback v-error';
+        feedback.textContent  = (json.error && typeof json.error === 'string') ? json.error : 'Code invalide ou expiré.';
+        feedback.style.display = 'block';
+        updateRecapTotal();
+      }
+    } catch {
+      feedback.className    = 'voucher-feedback v-error';
+      feedback.textContent  = 'Erreur réseau. Réessayez.';
+      feedback.style.display = 'block';
+    } finally {
+      btn.disabled    = false;
+      btn.textContent = 'Appliquer';
+    }
   }
 
   // ── Form: adresse inline ──────────────────────────────────────────────────
@@ -910,6 +1015,7 @@
         fd.append('departement_livraison', departement_livraison);
       }
       fd.append('preuve_paiement', fileInput.files[0]);
+      if (appliedVoucher) fd.append('code_voucher', appliedVoucher.code);
 
       try {
         const r    = await fetch('/api/orders/commander/', {
@@ -939,6 +1045,7 @@
         ? { adresse_livraison_id }
         : { adresse_livraison_text, ville_livraison, departement_livraison }
       ),
+      ...(appliedVoucher ? { code_voucher: appliedVoucher.code } : {}),
     };
 
     try {

@@ -38,6 +38,12 @@ class PasserCommandeSerializer(serializers.Serializer):
                                default='',
                              )
 
+    # Voucher (optionnel)
+    code_voucher           = serializers.CharField(
+                               required=False, allow_blank=True,
+                               default='',
+                             )
+
     def validate(self, data):
         mode = data.get('mode_livraison')
         if mode == 'domicile':

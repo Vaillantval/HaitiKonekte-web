@@ -1,4 +1,5 @@
 import logging
+from decimal import Decimal
 
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
@@ -13,7 +14,7 @@ from apps.orders.models import Panier, Commande
 from apps.orders.serializers import PasserCommandeSerializer
 from apps.orders.services.commande_service import CommandeService
 from apps.payments.models import Paiement
-from apps.payments.services.paiement_service import PaiementService
+from apps.payments.services.paiement_service import PaiementService, VoucherService
 
 
 # ── POST /api/orders/commander/ ─────────────────────────────────
@@ -101,6 +102,30 @@ def commander(request):
     mode_livraison   = data['mode_livraison']
     notes            = data.get('notes', '')
 
+    # ── Voucher ─────────────────────────────────────────────────────
+    voucher_obj    = None
+    remise_totale  = Decimal('0')
+    code_voucher   = data.get('code_voucher', '').strip()
+
+    if code_voucher:
+        # Calculer le sous-total du panier pour valider le voucher
+        panier_sous_total = sum(
+            item.produit.prix_affiche * item.quantite
+            for item in items
+        )
+        try:
+            voucher_obj, remise_totale = VoucherService.valider_voucher(
+                code=code_voucher,
+                acheteur=acheteur,
+                montant_commande=panier_sous_total,
+            )
+        except ValueError as e:
+            return Response(
+                {'success': False, 'error': str(e)},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+    # ────────────────────────────────────────────────────────────────
+
     METHODE_MAP = {
         'cash':       Commande.MethodePaiement.CASH,
         'moncash':    Commande.MethodePaiement.MONCASH,
@@ -125,9 +150,26 @@ def commander(request):
         }
         type_paiement_django = TYPE_PAI_MAP[methode_paiement]
 
+    # Pré-calcul des sous-totaux par producteur pour répartir la remise
+    sous_totaux_par_producteur = {}
+    total_panier = Decimal('0')
+    for pid, groupe in items_par_producteur.items():
+        st = sum(
+            Decimal(str(it['produit'].prix_affiche)) * it['quantite']
+            for it in groupe['items']
+        )
+        sous_totaux_par_producteur[pid] = st
+        total_panier += st
+
     try:
         with transaction.atomic():
             for pid, groupe in items_par_producteur.items():
+                # Distribuer la remise proportionnellement au sous-total du producteur
+                remise_prod = Decimal('0')
+                if voucher_obj and total_panier > 0:
+                    ratio        = sous_totaux_par_producteur[pid] / total_panier
+                    remise_prod  = (remise_totale * ratio).quantize(Decimal('0.01'))
+
                 commande = CommandeService.creer_commande(
                     acheteur=acheteur,
                     producteur=groupe['producteur'],
@@ -136,6 +178,7 @@ def commander(request):
                     mode_livraison=mode_django,
                     adresse_livraison=adresse_texte,
                     notes=notes,
+                    remise=remise_prod if voucher_obj else None,
                 )
                 commande.ville_livraison       = ville
                 commande.departement_livraison = departement
@@ -183,6 +226,22 @@ def commander(request):
             status=status.HTTP_500_INTERNAL_SERVER_ERROR,
         )
 
+    # Marquer le voucher comme utilisé (hors transaction principale pour ne pas bloquer en cas d'erreur mineure)
+    if voucher_obj and commandes_creees:
+        try:
+            VoucherService.utiliser_voucher(
+                voucher=voucher_obj,
+                remise_totale=remise_totale,
+                commandes=commandes_creees,
+            )
+        except Exception:
+            logger.exception(
+                "commander: erreur lors de l'utilisation du voucher=%s — commandes=%s",
+                voucher_obj.code,
+                [c.numero_commande for c in commandes_creees],
+            )
+            # Ne pas bloquer la commande — les commandes sont déjà créées
+
     # Construire la réponse
     response_commandes = [
         {
@@ -198,6 +257,11 @@ def commander(request):
         'message':   f"{len(commandes_creees)} commande(s) créée(s) avec succès !",
         'commandes': response_commandes,
     }
+    if voucher_obj:
+        response_data['voucher'] = {
+            'code':   voucher_obj.code,
+            'remise': str(remise_totale),
+        }
 
     # Pour MonCash / NatCash — initier le paiement via Plopplop (appel externe)
     if type_paiement_django is not None and commandes_creees:

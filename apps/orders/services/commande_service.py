@@ -12,7 +12,7 @@ logger = logging.getLogger(__name__)
 class CommandeService:
     @staticmethod
     @transaction.atomic
-    def creer_commande(acheteur, producteur, items, methode_paiement, mode_livraison, adresse_livraison='', notes=''):
+    def creer_commande(acheteur, producteur, items, methode_paiement, mode_livraison, adresse_livraison='', notes='', remise=None):
         logger.info(
             "creer_commande: début — acheteur=%s producteur=%s nb_items=%d methode=%s mode=%s",
             acheteur.pk, producteur.pk, len(items), methode_paiement, mode_livraison,
@@ -98,6 +98,8 @@ class CommandeService:
 
         try:
             commande.sous_total = sous_total
+            if remise is not None:
+                commande.remise = remise
             commande.save()
             logger.info(
                 "creer_commande: succès — ref=%s sous_total=%s nb_details=%d",

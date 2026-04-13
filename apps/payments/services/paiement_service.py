@@ -73,11 +73,20 @@ class VoucherService:
 
     @staticmethod
     @transaction.atomic
-    def utiliser_voucher(voucher, commande):
-        voucher.statut            = voucher.Statut.UTILISE
-        voucher.date_utilisation  = timezone.now()
+    def utiliser_voucher(voucher, remise_totale, commandes):
+        """
+        Marque le voucher comme utilisé et met à jour budget_utilise.
+        commandes : liste de Commande — le voucher sera lié à chacune.
+        remise_totale : Decimal — montant total de la remise (déjà distribué).
+        """
+        voucher.statut           = voucher.Statut.UTILISE
+        voucher.date_utilisation = timezone.now()
         voucher.save()
+        # Lier le voucher à chaque commande (traçabilité)
+        for commande in commandes:
+            commande.voucher = voucher
+            commande.save(update_fields=['voucher'])
+        # Mettre à jour le budget consommé du programme
         programme = voucher.programme
-        remise    = voucher.calculer_remise(commande.sous_total)
-        programme.budget_utilise += remise
+        programme.budget_utilise += remise_totale
         programme.save(update_fields=['budget_utilise'])
