@@ -1,8 +1,12 @@
+import logging
+
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
+
+logger = logging.getLogger(__name__)
 
 from apps.payments.models import Paiement
 from apps.payments.serializers import (
@@ -257,10 +261,14 @@ def plopplop_verify(request):
 
     trans_status   = result.get('trans_status', 'no')
     id_transaction = result.get('id_transaction', commande_ref)
-    commandes      = Commande.objects.filter(numero_commande=commande_ref)
+    methode        = result.get('method', '')
+    commandes_qs   = Commande.objects.filter(numero_commande=commande_ref).select_related(
+        'acheteur__user', 'producteur__user'
+    )
+    commandes_list = list(commandes_qs)
 
     if trans_status == 'ok':
-        commandes.update(
+        commandes_qs.update(
             statut_paiement=Commande.StatutPaiement.VERIFIE,
             reference_paiement=id_transaction,
         )
@@ -276,12 +284,37 @@ def plopplop_verify(request):
             'success':     True,
             'confirme':    True,
             'montant':     result.get('montant', ''),
-            'method':      result.get('method', ''),
+            'method':      methode,
             'transaction': id_transaction,
-            'commandes':   list(commandes.values('numero_commande', 'total')),
+            'commandes':   list(commandes_qs.values('numero_commande', 'total')),
         })
 
-    # Statut 'no' = toujours en attente
+    # Paiement non confirmé — notifier l'acheteur et les admins
+    if commandes_list:
+        try:
+            acheteur_user   = commandes_list[0].acheteur.user
+            methode_display = methode or (
+                commandes_list[0].get_methode_paiement_display()
+            )
+            from apps.emails.utils import (
+                email_paiement_echec_acheteur,
+                email_paiement_echec_admin,
+            )
+            email_paiement_echec_acheteur(
+                commandes=commandes_list,
+                methode=commandes_list[0].methode_paiement,
+                prenom=acheteur_user.first_name,
+                email_dest=acheteur_user.email,
+            )
+            email_paiement_echec_admin(
+                commandes=commandes_list,
+                methode=commandes_list[0].methode_paiement,
+                acheteur=acheteur_user,
+                raison=f"Plopplop trans_status={trans_status!r} — ref={commande_ref}",
+            )
+        except Exception:
+            logger.exception("Erreur envoi notification paiement non confirme — ref=%s", commande_ref)
+
     return Response({
         'success':  True,
         'confirme': False,

@@ -187,6 +187,51 @@ def email_preuve_paiement_admin(paiement):
     )
 
 
+_METHODE_LABELS = {
+    'moncash': 'MonCash',
+    'natcash': 'NatCash',
+}
+
+
+def email_paiement_echec_acheteur(commandes, methode, prenom, email_dest):
+    """
+    Notifie l'acheteur que son paiement MonCash/NatCash n'a pas été confirmé,
+    avec les conseils pour régulariser (recharger + réessayer, ou payer hors ligne).
+    """
+    return envoyer_email(
+        destinataire=email_dest,
+        sujet=f"⚠️ Paiement {_METHODE_LABELS.get(methode, methode)} non confirmé — action requise",
+        template="paiement_echec_acheteur.html",
+        contexte={
+            "prenom":        prenom,
+            "methode":       methode,
+            "methode_label": _METHODE_LABELS.get(methode, methode),
+            "commandes":     commandes,
+            "site_url":      settings.SITE_URL,
+        }
+    )
+
+
+def email_paiement_echec_admin(commandes, methode, acheteur, raison=''):
+    """
+    Notifie les admins (ADMINS_NOTIFY) d'un paiement MonCash/NatCash non confirmé.
+    """
+    nums = ', '.join(c.numero_commande for c in commandes)
+    return envoyer_email_admin(
+        sujet=f"⚠️ Paiement {_METHODE_LABELS.get(methode, methode)} échoué — {acheteur.get_full_name()} — {nums}",
+        template="paiement_echec_admin.html",
+        contexte={
+            "methode":        methode,
+            "methode_label":  _METHODE_LABELS.get(methode, methode),
+            "acheteur_nom":   acheteur.get_full_name(),
+            "acheteur_email": acheteur.email,
+            "commandes":      commandes,
+            "raison":         raison,
+            "site_url":       settings.SITE_URL,
+        }
+    )
+
+
 # ── Emails Stock ────────────────────────────────────────────────
 
 def email_alerte_stock(alerte):

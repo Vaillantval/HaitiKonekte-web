@@ -221,9 +221,33 @@ def commander(request):
                 e,
                 exc_info=True,
             )
-            response_data['paiement_erreur'] = str(e) or (
-                f"Paiement {methode_paiement.capitalize()} temporairement indisponible. "
-                "Vos commandes ont été créées (réf. ci-dessus). Contactez le support."
+            # Notifier l'acheteur et les admins que le lien de paiement n'a pas pu être généré
+            try:
+                from apps.emails.utils import (
+                    email_paiement_echec_acheteur,
+                    email_paiement_echec_admin,
+                )
+                acheteur_user = premiere_commande.acheteur.user
+                email_paiement_echec_acheteur(
+                    commandes=commandes_creees,
+                    methode=methode_paiement,
+                    prenom=acheteur_user.first_name,
+                    email_dest=acheteur_user.email,
+                )
+                email_paiement_echec_admin(
+                    commandes=commandes_creees,
+                    methode=methode_paiement,
+                    acheteur=acheteur_user,
+                    raison=str(e) or "Passerelle Plopplop indisponible lors de l'initiation",
+                )
+            except Exception:
+                logger.exception("Erreur envoi notification echec initiation plopplop")
+
+            response_data['paiement_erreur'] = (
+                f"La passerelle {methode_paiement.capitalize()} est temporairement indisponible. "
+                "Vos commandes ont bien été créées (références ci-dessus). "
+                "Vous pouvez réessayer plus tard ou utiliser le paiement hors ligne "
+                "depuis « Mes commandes »."
             )
 
     return Response(

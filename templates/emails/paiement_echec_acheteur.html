@@ -1,0 +1,59 @@
+{% extends "emails/base.html" %}
+{% block content %}
+
+<p class="greeting">Bonjour {{ prenom }} 👋</p>
+
+<div class="alert-box">
+  ⚠️ Votre paiement <strong>{{ methode_label }}</strong> n'a pas pu être confirmé.
+</div>
+
+<p class="message">
+  Nous n'avons pas reçu la confirmation de votre paiement pour la/les commande(s) ci-dessous.
+  Vos commandes restent enregistrées — vous pouvez régler la situation en suivant les conseils ci-dessous.
+</p>
+
+<div class="card">
+  {% for cmd in commandes %}
+  <div class="card-row">
+    <span class="card-label">Commande</span>
+    <span class="card-value" style="font-family:monospace">{{ cmd.numero_commande }}</span>
+  </div>
+  <div class="card-row">
+    <span class="card-label">Montant</span>
+    <span class="card-value">{{ cmd.total }} HTG</span>
+  </div>
+  <div class="card-row">
+    <span class="card-label">Statut</span>
+    <span class="badge badge-orange">En attente de paiement</span>
+  </div>
+  {% if not forloop.last %}<hr class="divider">{% endif %}
+  {% endfor %}
+</div>
+
+<!-- Conseils -->
+<p style="font-weight:700; font-size:15px; margin:24px 0 12px; color:#2c3e50;">
+  Que faire maintenant ?
+</p>
+
+<div class="info-box">
+  <strong>Option 1 — Réessayer avec {{ methode_label }}</strong><br>
+  Vérifiez que votre compte {{ methode_label }} est suffisamment approvisionné, puis retournez sur le site pour repasser votre commande.
+</div>
+
+<div class="info-box" style="border-color:#8e44ad; background:#f5eef8; color:#6c3483;">
+  <strong>Option 2 — Paiement hors ligne (virement)</strong><br>
+  Effectuez un virement bancaire ou un transfert d'argent, puis allez dans <strong>« Mes commandes »</strong>
+  et uploadez votre preuve de paiement. L'équipe Makèt Peyizan validera votre commande dans les plus brefs délais.
+</div>
+
+<div style="text-align:center; margin-top:28px;">
+  <a href="{{ site_url }}/dashboard/acheteur/commandes/" class="btn">
+    Voir mes commandes
+  </a>
+</div>
+
+<p style="font-size:13px; color:#aaa; text-align:center; margin-top:16px">
+  Un problème ? Contactez-nous à <a href="mailto:info@maketpeyizan.ht" style="color:#27ae60">info@maketpeyizan.ht</a>
+</p>
+
+{% endblock %}
