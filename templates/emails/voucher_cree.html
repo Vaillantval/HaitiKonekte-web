@@ -1,0 +1,115 @@
+{% extends "emails/base.html" %}
+{% block titre %}Votre code de réduction — Makèt Peyizan{% endblock %}
+{% block content %}
+
+<p class="greeting">Bonjour {{ prenom }} 👋</p>
+
+<p class="message">
+  Bonne nouvelle ! Un code de réduction a été généré pour vous dans le cadre
+  du programme <strong>{{ voucher.programme.nom }}</strong>.
+  Vous pouvez l'utiliser dès maintenant sur Makèt Peyizan.
+</p>
+
+<!-- Code en évidence -->
+<div style="text-align:center;margin:28px 0">
+  <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:#888;margin-bottom:10px;">
+    Votre code promo
+  </div>
+  <div style="display:inline-block;background:#f0faf4;border:2px dashed #27ae60;border-radius:12px;padding:14px 36px;">
+    <span style="font-family:monospace;font-size:28px;font-weight:700;color:#1a6b2f;letter-spacing:3px;">
+      {{ voucher.code }}
+    </span>
+  </div>
+</div>
+
+<!-- Détails du voucher -->
+<div class="card">
+  {% if voucher.type_valeur == 'fixe' %}
+  <div class="card-row">
+    <span class="card-label">Réduction</span>
+    <span class="card-value" style="color:#27ae60;font-size:16px;">
+      {{ voucher.valeur|floatformat:0 }} HTG de réduction
+    </span>
+  </div>
+  {% else %}
+  <div class="card-row">
+    <span class="card-label">Réduction</span>
+    <span class="card-value" style="color:#27ae60;font-size:16px;">
+      {{ voucher.valeur|floatformat:0 }}% de réduction
+      {% if voucher.montant_max %}
+        (max {{ voucher.montant_max|floatformat:0 }} HTG)
+      {% endif %}
+    </span>
+  </div>
+  {% endif %}
+
+  {% if voucher.montant_commande_min > 0 %}
+  <div class="card-row">
+    <span class="card-label">Commande minimum</span>
+    <span class="card-value">{{ voucher.montant_commande_min|floatformat:0 }} HTG</span>
+  </div>
+  {% endif %}
+
+  <div class="card-row">
+    <span class="card-label">Valide jusqu'au</span>
+    <span class="card-value">{{ voucher.date_expiration|date:"d F Y" }}</span>
+  </div>
+
+  <div class="card-row">
+    <span class="card-label">Programme</span>
+    <span class="card-value">{{ voucher.programme.nom }}</span>
+  </div>
+
+  <div class="card-row">
+    <span class="card-label">Statut</span>
+    <span class="badge badge-vert">Actif</span>
+  </div>
+</div>
+
+<!-- Instructions d'utilisation -->
+{% if voucher.type_valeur == 'fixe' %}
+<div class="info-box">
+  <strong>💡 Comment utiliser ce code ?</strong><br><br>
+  Ce code vous donne <strong>{{ voucher.valeur|floatformat:0 }} HTG de réduction</strong> sur votre commande.
+  {% if voucher.montant_commande_min > 0 %}
+  Il est valable pour toute commande d'un montant minimum de <strong>{{ voucher.montant_commande_min|floatformat:0 }} HTG</strong>.
+  {% endif %}
+  <ol style="margin:12px 0 0 18px;line-height:2">
+    <li>Ajoutez vos produits au panier</li>
+    <li>Accédez à la page de paiement</li>
+    <li>Saisissez le code <strong style="font-family:monospace">{{ voucher.code }}</strong> dans le champ « Code de réduction »</li>
+    <li>La réduction de <strong>{{ voucher.valeur|floatformat:0 }} HTG</strong> sera automatiquement appliquée</li>
+  </ol>
+</div>
+{% else %}
+<div class="info-box">
+  <strong>💡 Comment utiliser ce code ?</strong><br><br>
+  Ce code vous donne <strong>{{ voucher.valeur|floatformat:0 }}% de réduction</strong> sur le montant total de votre commande{% if voucher.montant_max %}, jusqu'à un maximum de <strong>{{ voucher.montant_max|floatformat:0 }} HTG</strong>{% endif %}.
+  {% if voucher.montant_commande_min > 0 %}
+  Il est valable pour toute commande d'un montant minimum de <strong>{{ voucher.montant_commande_min|floatformat:0 }} HTG</strong>.
+  {% endif %}
+  <ol style="margin:12px 0 0 18px;line-height:2">
+    <li>Ajoutez vos produits au panier</li>
+    <li>Accédez à la page de paiement</li>
+    <li>Saisissez le code <strong style="font-family:monospace">{{ voucher.code }}</strong> dans le champ « Code de réduction »</li>
+    <li>La réduction sera calculée automatiquement sur le total de votre panier</li>
+  </ol>
+</div>
+{% endif %}
+
+<div style="text-align:center;margin-top:28px">
+  <a class="btn" href="{{ site_url }}">
+    🛒 Faire mes courses sur Makèt Peyizan
+  </a>
+</div>
+
+<hr class="divider">
+
+<p style="font-size:13px;color:#888;text-align:center;line-height:1.6">
+  Ce code est personnel et à usage unique.<br>
+  Il expire le <strong>{{ voucher.date_expiration|date:"d/m/Y" }}</strong>.
+  Retrouvez tous vos codes dans votre
+  <a href="{{ site_url }}dashboard/acheteur/" style="color:#27ae60">espace personnel</a>.
+</p>
+
+{% endblock %}

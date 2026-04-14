@@ -24,6 +24,9 @@ urlpatterns = [
     path('commandes/',                views.acheteur_commandes,       name='acheteur_commandes'),
     path('commandes/<str:numero>/',   views.acheteur_commande_detail, name='acheteur_commande_detail'),
 
+    # ── Vouchers acheteur ────────────────────────────────────────────────────
+    path('vouchers/',                 views.acheteur_vouchers,        name='acheteur_vouchers'),
+
     # ── Dashboard Producteur ─────────────────────────────────────────────────
     path('producteur/stats/',                             views.producteur_stats,            name='producteur_stats'),
     path('producteur/profil/',                            views.producteur_profil,           name='producteur_profil'),

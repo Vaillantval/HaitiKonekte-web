@@ -218,3 +218,51 @@ def acheteur_commande_detail(request, numero):
     commande   = get_object_or_404(Commande, numero_commande=numero, acheteur=acheteur)
     serializer = CommandeProducteurSerializer(commande)
     return Response({'success': True, 'data': serializer.data})
+
+
+# ── GET /api/auth/vouchers/ ────────────────────────────────────────────────
+
+@extend_schema(operation_id='auth_vouchers', tags=['Acheteur'], summary='Mes vouchers')
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def acheteur_vouchers(request):
+    """Retourne tous les vouchers de l'acheteur connecté."""
+    from apps.payments.models import Voucher
+    from django.utils import timezone
+
+    try:
+        acheteur = request.user.profil_acheteur
+    except Exception:
+        return Response(
+            {'success': False, 'error': 'Profil acheteur introuvable.'},
+            status=status.HTTP_404_NOT_FOUND,
+        )
+
+    vouchers = Voucher.objects.filter(
+        beneficiaire=acheteur
+    ).select_related('programme').order_by('-created_at')
+
+    today = timezone.now().date()
+    data = []
+    for v in vouchers:
+        # Recalculer le statut réel (expire peut ne pas être mis à jour en base)
+        statut_affiche = v.statut
+        if v.statut == Voucher.Statut.ACTIF and v.date_expiration < today:
+            statut_affiche = Voucher.Statut.EXPIRE
+
+        data.append({
+            'id':                   v.pk,
+            'code':                 v.code,
+            'programme_nom':        v.programme.nom,
+            'type_valeur':          v.type_valeur,
+            'valeur':               str(v.valeur),
+            'montant_max':          str(v.montant_max) if v.montant_max else None,
+            'montant_commande_min': str(v.montant_commande_min),
+            'statut':               statut_affiche,
+            'statut_label':         v.get_statut_display() if statut_affiche == v.statut else 'Expiré',
+            'date_expiration':      v.date_expiration.isoformat(),
+            'date_utilisation':     v.date_utilisation.isoformat() if v.date_utilisation else None,
+            'est_valide':           statut_affiche == Voucher.Statut.ACTIF,
+        })
+
+    return Response({'success': True, 'data': data})

@@ -310,6 +310,24 @@ def email_reponse_contact(contact_msg, texte_reponse, admin=None):
     )
 
 
+# ── Emails Vouchers ─────────────────────────────────────────────
+
+def email_voucher_cree(voucher):
+    """Notifie le bénéficiaire qu'un voucher a été créé pour lui."""
+    if not voucher.beneficiaire:
+        return False
+    return envoyer_email(
+        destinataire=voucher.beneficiaire.user.email,
+        sujet=f"🎟️ Votre code de réduction Makèt Peyizan : {voucher.code}",
+        template="voucher_cree.html",
+        contexte={
+            "voucher":  voucher,
+            "prenom":   voucher.beneficiaire.user.first_name or voucher.beneficiaire.user.get_full_name(),
+            "site_url": settings.SITE_URL,
+        }
+    )
+
+
 # ── Emails Collectes ────────────────────────────────────────────
 
 def email_invitation_collecte(participation):

@@ -445,13 +445,24 @@ def vouchers_bulk_create(request):
     crees_qs = Voucher.objects.filter(pk__in=ids).select_related(
         'programme', 'beneficiaire__user', 'cree_par'
     )
+    crees_list = list(crees_qs)
+
+    # Envoyer un email à chaque bénéficiaire
+    from apps.emails.utils import email_voucher_cree
+    for v in crees_list:
+        try:
+            email_voucher_cree(v)
+        except Exception:
+            import logging
+            logging.getLogger(__name__).exception("Erreur envoi email voucher %s", v.code)
+
     return Response(
         {
             'success': True,
             'data': {
                 'nb_crees':  nombre,
                 'programme': programme.nom,
-                'vouchers':  [_voucher_data(v) for v in crees_qs],
+                'vouchers':  [_voucher_data(v) for v in crees_list],
             }
         },
         status=status.HTTP_201_CREATED,
@@ -759,13 +770,24 @@ def vouchers_import_excel(request):
     crees_qs = Voucher.objects.filter(pk__in=ids).select_related(
         'programme', 'beneficiaire__user', 'cree_par'
     )
+    crees_list = list(crees_qs)
+
+    # Envoyer un email à chaque bénéficiaire
+    from apps.emails.utils import email_voucher_cree
+    import logging as _logging
+    for v in crees_list:
+        try:
+            email_voucher_cree(v)
+        except Exception:
+            _logging.getLogger(__name__).exception("Erreur envoi email voucher %s", v.code)
+
     return Response(
         {
             'success': True,
             'data': {
                 'nb_crees':  len(crees),
                 'programme': programme.nom,
-                'vouchers':  [_voucher_data(v) for v in crees_qs],
+                'vouchers':  [_voucher_data(v) for v in crees_list],
             }
         },
         status=status.HTTP_201_CREATED,
