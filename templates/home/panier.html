@@ -201,17 +201,6 @@
     if (acc && !document.cookie.split(';').some(c => c.trim().startsWith('mp_jwt='))) {
       document.cookie = 'mp_jwt=' + acc + '; path=/; SameSite=Lax';
     }
-    // Badge panier invité
-    if (!acc) {
-      try {
-        const items = JSON.parse(localStorage.getItem('mp_guest_cart') || '[]');
-        const nb = items.reduce((s, i) => s + i.quantite, 0);
-        if (nb > 0) {
-          const badge = document.getElementById('nav-panier-badge');
-          if (badge) { badge.textContent = nb; badge.classList.remove('hidden'); }
-        }
-      } catch {}
-    }
   })();
 
   function showToast(msg, type='success') {

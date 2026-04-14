@@ -641,17 +641,6 @@
     if (acc && !document.cookie.split(';').some(c => c.trim().startsWith('mp_jwt='))) {
       document.cookie = 'mp_jwt=' + acc + '; path=/; SameSite=Lax';
     }
-    // Badge panier invité
-    if (!acc) {
-      try {
-        const items = JSON.parse(localStorage.getItem('mp_guest_cart') || '[]');
-        const nb = items.reduce((s, i) => s + i.quantite, 0);
-        if (nb > 0) {
-          const badge = document.getElementById('nav-panier-badge');
-          if (badge) { badge.textContent = nb; badge.classList.remove('hidden'); }
-        }
-      } catch {}
-    }
   })();
 
   const PRODUIT_SLUG    = '{{ produit.slug }}';
@@ -751,10 +740,14 @@
     if (!access) {
       const items = guestCartLoad();
       const ex    = items.find(i => i.slug === PRODUIT_SLUG);
+      // Rendre l'URL image absolue pour qu'elle fonctionne depuis n'importe quelle page
+      const imgAbs = PRODUIT_IMAGE
+        ? (PRODUIT_IMAGE.startsWith('http') ? PRODUIT_IMAGE : window.location.origin + (PRODUIT_IMAGE.startsWith('/') ? '' : '/') + PRODUIT_IMAGE)
+        : '';
       if (ex) {
         ex.quantite += qty;
       } else {
-        items.push({ slug: PRODUIT_SLUG, nom: PRODUIT_NOM, image: PRODUIT_IMAGE, prix_unitaire: PRODUIT_PRIX, unite_vente_label: PRODUIT_UNITE, quantite: qty });
+        items.push({ slug: PRODUIT_SLUG, nom: PRODUIT_NOM, image: imgAbs, prix_unitaire: PRODUIT_PRIX, unite_vente_label: PRODUIT_UNITE, quantite: qty });
       }
       guestCartSave(items);
       updateBadgePanier(guestCartCount());

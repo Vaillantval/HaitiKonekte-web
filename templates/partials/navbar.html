@@ -238,4 +238,17 @@
 
   /* Exécution immédiate pour les pages sans auth explicite */
   initNavbar();
+
+  /* Badge panier invité — si non connecté, lire depuis localStorage */
+  (function() {
+    if (localStorage.getItem('mp_access')) return;  // connecté → le badge est géré côté serveur
+    try {
+      const items = JSON.parse(localStorage.getItem('mp_guest_cart') || '[]');
+      const nb = items.reduce(function(s, i) { return s + i.quantite; }, 0);
+      if (nb > 0) {
+        var badge = document.getElementById('nav-panier-badge');
+        if (badge) { badge.textContent = nb; badge.classList.remove('hidden'); }
+      }
+    } catch {}
+  })();
 </script>
