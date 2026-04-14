@@ -80,8 +80,10 @@ urlpatterns = [
     path('vouchers/programmes/',              views.programmes_list,       name='programmes_list'),
     path('vouchers/programmes/<int:pk>/',     views.programme_detail,      name='programme_detail'),
     # Vouchers
-    path('vouchers/',                         views.vouchers_list,         name='vouchers_list'),
-    path('vouchers/bulk/',                    views.vouchers_bulk_create,  name='vouchers_bulk'),
-    path('vouchers/<int:pk>/',                views.voucher_detail,        name='voucher_detail'),
+    path('vouchers/',                         views.vouchers_list,           name='vouchers_list'),
+    path('vouchers/bulk/',                    views.vouchers_bulk_create,    name='vouchers_bulk'),
+    path('vouchers/import-excel/',            views.vouchers_import_excel,   name='vouchers_import_excel'),
+    path('vouchers/template-excel/',          views.vouchers_template_excel, name='vouchers_template_excel'),
+    path('vouchers/<int:pk>/',                views.voucher_detail,          name='voucher_detail'),
     path('adresses/',                         views.adresses_list_admin,   name='adresses_admin'),
 ]

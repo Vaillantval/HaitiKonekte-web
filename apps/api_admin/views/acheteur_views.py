@@ -571,6 +571,207 @@ def _creer_voucher(request):
     )
 
 
+# ── Import Excel ─────────────────────────────────────────────────
+
+@extend_schema(operation_id='admin_vouchers_template_excel', tags=['Admin — Vouchers'])
+@api_view(['GET'])
+@permission_classes([IsSuperAdmin])
+def vouchers_template_excel(request):
+    """Télécharger le modèle Excel pour l'import de bénéficiaires."""
+    import io
+    import openpyxl
+    from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
+    from django.http import HttpResponse
+
+    wb = openpyxl.Workbook()
+    ws = wb.active
+    ws.title = 'Bénéficiaires'
+
+    # En-têtes
+    headers = ['email', 'nom_complet']
+    header_fill = PatternFill(start_color='2D6A4F', end_color='2D6A4F', fill_type='solid')
+    header_font = Font(color='FFFFFF', bold=True, size=11)
+    thin_border = Border(
+        left=Side(style='thin'), right=Side(style='thin'),
+        top=Side(style='thin'),  bottom=Side(style='thin'),
+    )
+    for col_idx, h in enumerate(headers, start=1):
+        cell = ws.cell(row=1, column=col_idx, value=h)
+        cell.font = header_font
+        cell.fill = header_fill
+        cell.alignment = Alignment(horizontal='center', vertical='center')
+        cell.border = thin_border
+
+    # Exemples
+    examples = [
+        ['jean.duval@example.com', 'Jean Duval'],
+        ['marie.pierre@example.com', 'Marie Pierre'],
+    ]
+    example_font = Font(color='555555', italic=True)
+    for row_idx, row_data in enumerate(examples, start=2):
+        for col_idx, value in enumerate(row_data, start=1):
+            cell = ws.cell(row=row_idx, column=col_idx, value=value)
+            cell.font = example_font
+            cell.border = thin_border
+
+    # Largeurs de colonnes
+    ws.column_dimensions['A'].width = 36
+    ws.column_dimensions['B'].width = 28
+
+    # Feuille d'instructions
+    ws_info = wb.create_sheet(title='Instructions')
+    instructions = [
+        ('Colonne', 'Description', 'Obligatoire'),
+        ('email',       'Adresse e-mail du compte Maket Peyizan',  'Oui'),
+        ('nom_complet', 'Nom affiché (informatif seulement)',        'Non'),
+    ]
+    for r_idx, row in enumerate(instructions, start=1):
+        for c_idx, val in enumerate(row, start=1):
+            cell = ws_info.cell(row=r_idx, column=c_idx, value=val)
+            if r_idx == 1:
+                cell.font = Font(bold=True)
+    ws_info.column_dimensions['A'].width = 16
+    ws_info.column_dimensions['B'].width = 44
+    ws_info.column_dimensions['C'].width = 14
+
+    buf = io.BytesIO()
+    wb.save(buf)
+    buf.seek(0)
+
+    response = HttpResponse(
+        buf.read(),
+        content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    )
+    response['Content-Disposition'] = 'attachment; filename="template_beneficiaires.xlsx"'
+    return response
+
+
+@extend_schema(operation_id='admin_vouchers_import_excel', tags=['Admin — Vouchers'])
+@api_view(['POST'])
+@permission_classes([IsSuperAdmin])
+def vouchers_import_excel(request):
+    """
+    Importer des bénéficiaires depuis un fichier Excel et créer un voucher par ligne.
+    Body (multipart/form-data) :
+      file            — fichier .xlsx
+      programme_id    — int
+      type_valeur     — 'montant_fixe' | 'pourcentage'
+      valeur          — nombre
+      date_expiration — YYYY-MM-DD
+      montant_commande_min? — nombre
+    """
+    import io
+    import openpyxl
+
+    fichier = request.FILES.get('file')
+    if not fichier:
+        return Response({'success': False, 'error': 'Aucun fichier fourni.'},
+                        status=status.HTTP_400_BAD_REQUEST)
+
+    # Lire le fichier Excel
+    try:
+        wb = openpyxl.load_workbook(io.BytesIO(fichier.read()), read_only=True, data_only=True)
+        ws = wb.active
+        rows = list(ws.iter_rows(values_only=True))
+    except Exception:
+        return Response({'success': False, 'error': 'Fichier Excel invalide ou illisible.'},
+                        status=status.HTTP_400_BAD_REQUEST)
+
+    if len(rows) < 2:
+        return Response({'success': False, 'error': 'Le fichier ne contient aucune ligne de données (hors en-tête).'},
+                        status=status.HTTP_400_BAD_REQUEST)
+
+    # Trouver la colonne "email" dans la première ligne (en-tête)
+    header = [str(c).strip().lower() if c is not None else '' for c in rows[0]]
+    try:
+        email_col = header.index('email')
+    except ValueError:
+        return Response({'success': False, 'error': "Colonne 'email' introuvable dans le fichier."},
+                        status=status.HTTP_400_BAD_REQUEST)
+
+    # Extraire les e-mails
+    emails = []
+    for row_num, row in enumerate(rows[1:], start=2):
+        if email_col >= len(row):
+            continue
+        email_val = row[email_col]
+        if email_val is None:
+            continue
+        email_str = str(email_val).strip().lower()
+        if email_str:
+            emails.append((row_num, email_str))
+
+    if not emails:
+        return Response({'success': False, 'error': 'Aucun e-mail trouvé dans le fichier.'},
+                        status=status.HTTP_400_BAD_REQUEST)
+
+    # Résoudre les e-mails en Acheteur
+    from apps.accounts.models import CustomUser
+    beneficiaires = []
+    erreurs = []
+    for row_num, email in emails:
+        try:
+            user = CustomUser.objects.get(email__iexact=email)
+            acheteur = Acheteur.objects.get(user=user)
+            beneficiaires.append(acheteur)
+        except CustomUser.DoesNotExist:
+            erreurs.append(f"Ligne {row_num} : aucun compte avec l'email « {email} ».")
+        except Acheteur.DoesNotExist:
+            erreurs.append(f"Ligne {row_num} : l'utilisateur « {email} » n'a pas de profil acheteur.")
+
+    if erreurs:
+        return Response({'success': False, 'error': erreurs},
+                        status=status.HTTP_400_BAD_REQUEST)
+
+    if not beneficiaires:
+        return Response({'success': False, 'error': 'Aucun bénéficiaire valide trouvé.'},
+                        status=status.HTTP_400_BAD_REQUEST)
+
+    # Valider le programme
+    programme_id = request.data.get('programme_id')
+    if not programme_id:
+        return Response({'success': False, 'error': 'programme_id est requis.'},
+                        status=status.HTTP_400_BAD_REQUEST)
+    programme = get_object_or_404(ProgrammeVoucher, pk=programme_id)
+
+    # Valider les champs du voucher
+    erreur, commun = _valider_champs_voucher(request.data)
+    if erreur:
+        return Response({'success': False, 'error': erreur},
+                        status=status.HTTP_400_BAD_REQUEST)
+
+    # Créer les vouchers
+    categories = commun.pop('_categories', [])
+    crees = []
+    for beneficiaire in beneficiaires:
+        v = Voucher(
+            programme    = programme,
+            beneficiaire = beneficiaire,
+            cree_par     = request.user,
+            **commun,
+        )
+        v.save()
+        if categories:
+            v.categories_autorisees.set(categories)
+        crees.append(v)
+
+    ids = [v.pk for v in crees]
+    crees_qs = Voucher.objects.filter(pk__in=ids).select_related(
+        'programme', 'beneficiaire__user', 'cree_par'
+    )
+    return Response(
+        {
+            'success': True,
+            'data': {
+                'nb_crees':  len(crees),
+                'programme': programme.nom,
+                'vouchers':  [_voucher_data(v) for v in crees_qs],
+            }
+        },
+        status=status.HTTP_201_CREATED,
+    )
+
+
 # ── Adresses ─────────────────────────────────────────────────────
 
 @api_view(['GET'])

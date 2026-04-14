@@ -32,6 +32,7 @@ from .config_views     import (
 from .acheteur_views   import (
     acheteurs_list, acheteur_detail,
     vouchers_list, voucher_detail, vouchers_bulk_create,
+    vouchers_import_excel, vouchers_template_excel,
     programmes_list, programme_detail,
     adresses_list_admin,
 )

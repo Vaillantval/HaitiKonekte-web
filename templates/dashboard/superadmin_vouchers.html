@@ -75,6 +75,34 @@
     .drawer-actions { flex-direction: column; }
     .drawer-actions button, .drawer-actions a { width: 100%; justify-content: center; }
   }
+
+  /* Voucher creation — method tabs */
+  .method-tabs { display:flex; gap:0; border:1.5px solid var(--border); border-radius:9px; overflow:hidden; margin-bottom:18px; }
+  .method-tab { flex:1; padding:9px 0; font-size:12px; font-weight:700; border:none; background:var(--bg); color:var(--text-muted); cursor:pointer; font-family:inherit; transition:all .15s; text-align:center; }
+  .method-tab.active { background:var(--green-mid); color:#fff; }
+
+  /* User multi-select list */
+  .user-search-wrap { display:flex; align-items:center; gap:8px; background:var(--bg); border:1.5px solid var(--border); border-radius:8px; padding:7px 12px; margin-bottom:8px; }
+  .user-search-wrap input { border:none; outline:none; background:transparent; font-family:inherit; font-size:13px; color:var(--text); width:100%; }
+  .user-select-list { max-height:200px; overflow-y:auto; border:1.5px solid var(--border); border-radius:8px; background:var(--bg); }
+  .user-item { display:flex; align-items:center; gap:10px; padding:8px 12px; border-bottom:1px solid var(--border); cursor:pointer; transition:background .12s; }
+  .user-item:last-child { border-bottom:none; }
+  .user-item:hover { background:#f0faf4; }
+  .user-item input[type=checkbox] { accent-color:var(--green-mid); width:15px; height:15px; flex-shrink:0; }
+  .user-item-name { font-size:13px; font-weight:600; color:var(--text); flex:1; }
+  .user-item-email { font-size:11px; color:var(--text-muted); }
+  .user-select-count { font-size:12px; color:var(--green-mid); font-weight:700; margin-top:6px; }
+  .user-select-empty { padding:16px; text-align:center; color:var(--text-muted); font-size:12px; }
+
+  /* Excel import */
+  .excel-drop { border:2px dashed var(--border); border-radius:10px; padding:24px 16px; text-align:center; cursor:pointer; transition:border-color .15s; margin-bottom:8px; }
+  .excel-drop:hover, .excel-drop.drag-over { border-color:var(--green-mid); background:#f0faf4; }
+  .excel-drop i { font-size:28px; color:var(--text-muted); margin-bottom:8px; }
+  .excel-drop p { font-size:13px; color:var(--text-muted); margin:0; }
+  .excel-drop .filename { font-size:12px; color:var(--green-mid); font-weight:700; margin-top:6px; }
+  .btn-template { display:inline-flex; align-items:center; gap:7px; padding:7px 14px; border-radius:7px; font-size:12px; font-weight:700; border:1.5px solid var(--green-mid); color:var(--green-mid); background:transparent; cursor:pointer; font-family:inherit; text-decoration:none; transition:all .15s; margin-bottom:12px; }
+  .btn-template:hover { background:var(--green-mid); color:#fff; }
+  .modal-box.wide { width:600px; }
 </style>
 {% endblock %}
 
@@ -142,41 +170,91 @@
   </div>
 </div>
 
-<!-- Modal voucher -->
+<!-- Modal voucher — deux méthodes -->
 <div class="modal-overlay" id="voucher-modal">
-  <div class="modal-box">
-    <h3>Nouveau voucher</h3>
-    <form id="voucher-form" onsubmit="submitVoucher(event)">
-      <div class="form-grid">
-        <div class="field full">
-          <label>Programme *</label>
-          <select id="v-prog" required></select>
-        </div>
-        <div class="field">
-          <label>Type de valeur *</label>
-          <select id="v-type">
-            <option value="montant_fixe">Montant fixe (HTG)</option>
-            <option value="pourcentage">Pourcentage (%)</option>
-          </select>
-        </div>
-        <div class="field">
-          <label>Valeur *</label>
-          <input type="number" id="v-valeur" required min="1" placeholder="Ex: 500">
-        </div>
-        <div class="field">
-          <label>Montant min commande (HTG)</label>
-          <input type="number" id="v-min-cmd" placeholder="0" min="0">
-        </div>
-        <div class="field">
-          <label>Date expiration</label>
-          <input type="date" id="v-expiration">
-        </div>
+  <div class="modal-box wide">
+    <h3><i class="fas fa-ticket-alt" style="color:var(--green-mid);margin-right:8px"></i>Créer des vouchers</h3>
+
+    <!-- Sélection de la méthode -->
+    <div class="method-tabs">
+      <button class="method-tab active" id="mtab-select" onclick="switchVoucherMethod('select')">
+        <i class="fas fa-users"></i> Sélection manuelle
+      </button>
+      <button class="method-tab" id="mtab-excel" onclick="switchVoucherMethod('excel')">
+        <i class="fas fa-file-excel"></i> Import Excel
+      </button>
+    </div>
+
+    <!-- Champs communs (programme, type, valeur, expiration) -->
+    <div class="form-grid" style="margin-bottom:16px">
+      <div class="field full">
+        <label>Programme *</label>
+        <select id="v-prog" required></select>
       </div>
-      <div class="modal-actions">
-        <button type="button" class="btn-cancel" onclick="closeVoucherModal()">Annuler</button>
-        <button type="submit" class="btn-save"><i class="fas fa-plus"></i> Créer le voucher</button>
+      <div class="field">
+        <label>Type de valeur *</label>
+        <select id="v-type">
+          <option value="montant_fixe">Montant fixe (HTG)</option>
+          <option value="pourcentage">Pourcentage (%)</option>
+        </select>
       </div>
-    </form>
+      <div class="field">
+        <label>Valeur *</label>
+        <input type="number" id="v-valeur" required min="1" placeholder="Ex: 500">
+      </div>
+      <div class="field">
+        <label>Montant min commande (HTG)</label>
+        <input type="number" id="v-min-cmd" placeholder="0" min="0">
+      </div>
+      <div class="field">
+        <label>Date expiration *</label>
+        <input type="date" id="v-expiration">
+      </div>
+    </div>
+
+    <!-- Méthode 1 : sélection manuelle -->
+    <div id="method-select">
+      <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--text-muted);margin-bottom:8px;">
+        Bénéficiaires — sélectionnez un ou plusieurs acheteurs
+      </div>
+      <div class="user-search-wrap">
+        <i class="fas fa-search" style="color:var(--text-muted)"></i>
+        <input type="text" id="user-search" placeholder="Rechercher par nom ou email…" oninput="filterAcheteurs()">
+      </div>
+      <div class="user-select-list" id="user-select-list">
+        <div class="user-select-empty"><i class="fas fa-spinner fa-spin"></i> Chargement…</div>
+      </div>
+      <div class="user-select-count" id="user-select-count" style="display:none"></div>
+    </div>
+
+    <!-- Méthode 2 : import Excel -->
+    <div id="method-excel" style="display:none">
+      <a class="btn-template" onclick="downloadTemplate()">
+        <i class="fas fa-download"></i> Télécharger le modèle Excel
+      </a>
+      <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--text-muted);margin-bottom:8px;">
+        Importer votre fichier rempli
+      </div>
+      <div class="excel-drop" id="excel-drop" onclick="document.getElementById('excel-file').click()"
+           ondragover="event.preventDefault();this.classList.add('drag-over')"
+           ondragleave="this.classList.remove('drag-over')"
+           ondrop="handleFileDrop(event)">
+        <i class="fas fa-cloud-upload-alt"></i>
+        <p>Cliquez ou glissez votre fichier <strong>.xlsx</strong> ici</p>
+        <div class="filename" id="excel-filename" style="display:none"></div>
+      </div>
+      <input type="file" id="excel-file" accept=".xlsx" style="display:none" onchange="handleFileSelect(this)">
+      <div style="font-size:11px;color:var(--text-muted);margin-top:6px;">
+        Le fichier doit contenir une colonne <strong>email</strong> — un voucher sera créé par ligne.
+      </div>
+    </div>
+
+    <div class="modal-actions" style="margin-top:20px">
+      <button type="button" class="btn-cancel" onclick="closeVoucherModal()">Annuler</button>
+      <button type="button" class="btn-save" id="v-submit-btn" onclick="submitVoucher()">
+        <i class="fas fa-plus"></i> <span id="v-submit-label">Créer les vouchers</span>
+      </button>
+    </div>
   </div>
 </div>
 
@@ -358,7 +436,10 @@ async function toggleProg(id, isActive) {
   else showToast('Erreur', 'error');
 }
 
-// ── Vouchers ─────────────────────────────────────────────────────────────────
+// ── Vouchers — état ──────────────────────────────────────────────────────────
+let _allAcheteurs = [], _voucherMethod = 'select', _excelFile = null;
+
+// ── Vouchers — liste ─────────────────────────────────────────────────────────
 async function loadVouchers() {
   const search = document.getElementById('v-search').value.trim();
   const statut = document.getElementById('v-statut').value;
@@ -393,34 +474,187 @@ async function loadVouchers() {
   document.getElementById('v-tbl').style.display = 'table';
 }
 
-function openVoucherCreate() {
+async function openVoucherCreate() {
   if (!_programmes.length) { showToast('Créez d\'abord un programme', 'error'); return; }
+  // Réinitialiser les champs
   document.getElementById('v-valeur').value = '';
   document.getElementById('v-min-cmd').value = '';
   document.getElementById('v-expiration').value = '';
+  _excelFile = null;
+  document.getElementById('excel-filename').style.display = 'none';
+  document.getElementById('excel-filename').textContent = '';
+  document.getElementById('excel-file').value = '';
+  // Basculer sur méthode "sélection" par défaut
+  switchVoucherMethod('select');
   document.getElementById('voucher-modal').classList.add('open');
+  // Charger la liste des acheteurs
+  await loadAcheteurs();
 }
 
-function closeVoucherModal() { document.getElementById('voucher-modal').classList.remove('open'); }
+function closeVoucherModal() {
+  document.getElementById('voucher-modal').classList.remove('open');
+  _excelFile = null;
+}
 
-async function submitVoucher(e) {
-  e.preventDefault();
-  const body = {
-    programme_id:        document.getElementById('v-prog').value,
-    type_valeur:         document.getElementById('v-type').value,
-    valeur:              document.getElementById('v-valeur').value,
-    montant_commande_min: document.getElementById('v-min-cmd').value||0,
-    date_expiration:     document.getElementById('v-expiration').value||null,
-  };
-  const r = await fetch('/api/admin/vouchers/', { method:'POST', headers:H, body:JSON.stringify(body) });
-  if (r.ok) {
-    const d = await r.json();
-    showToast(`Voucher créé : ${d.data?.code || ''}`);
-    closeVoucherModal();
-    loadVouchers();
+function switchVoucherMethod(method) {
+  _voucherMethod = method;
+  document.getElementById('mtab-select').classList.toggle('active', method === 'select');
+  document.getElementById('mtab-excel').classList.toggle('active', method === 'excel');
+  document.getElementById('method-select').style.display = method === 'select' ? 'block' : 'none';
+  document.getElementById('method-excel').style.display  = method === 'excel'  ? 'block' : 'none';
+  document.getElementById('v-submit-label').textContent  = method === 'select'
+    ? 'Créer les vouchers'
+    : 'Importer et créer';
+}
+
+// ── Acheteurs pour multi-sélection ───────────────────────────────────────────
+async function loadAcheteurs() {
+  if (_allAcheteurs.length) { renderAcheteurs(_allAcheteurs); return; }
+  document.getElementById('user-select-list').innerHTML =
+    '<div class="user-select-empty"><i class="fas fa-spinner fa-spin"></i> Chargement…</div>';
+  try {
+    const r = await fetch('/api/admin/acheteurs/', { headers: H });
+    if (!r.ok) throw new Error();
+    _allAcheteurs = (await r.json()).data || [];
+    renderAcheteurs(_allAcheteurs);
+  } catch {
+    document.getElementById('user-select-list').innerHTML =
+      '<div class="user-select-empty" style="color:#e74c3c">Erreur lors du chargement.</div>';
+  }
+}
+
+function renderAcheteurs(list) {
+  const search = (document.getElementById('user-search').value || '').toLowerCase();
+  const filtered = list.filter(a =>
+    a.full_name.toLowerCase().includes(search) || a.email.toLowerCase().includes(search)
+  );
+  const container = document.getElementById('user-select-list');
+  if (!filtered.length) {
+    container.innerHTML = '<div class="user-select-empty">Aucun acheteur trouvé.</div>';
   } else {
-    const d = await r.json();
-    showToast(typeof d.error === 'string' ? d.error : 'Erreur', 'error');
+    container.innerHTML = filtered.map(a => `
+      <label class="user-item">
+        <input type="checkbox" class="acheteur-cb" value="${a.id}"
+               onchange="updateSelectCount()">
+        <div style="flex:1;min-width:0">
+          <div class="user-item-name">${a.full_name || '(sans nom)'}</div>
+          <div class="user-item-email">${a.email}</div>
+        </div>
+      </label>`).join('');
+  }
+  updateSelectCount();
+}
+
+function filterAcheteurs() { renderAcheteurs(_allAcheteurs); }
+
+function updateSelectCount() {
+  const checked = document.querySelectorAll('.acheteur-cb:checked').length;
+  const el = document.getElementById('user-select-count');
+  if (checked === 0) { el.style.display = 'none'; return; }
+  el.style.display = 'block';
+  el.textContent = `${checked} acheteur${checked > 1 ? 's' : ''} sélectionné${checked > 1 ? 's' : ''}`;
+}
+
+// ── Excel import helpers ──────────────────────────────────────────────────────
+function handleFileSelect(input) {
+  if (input.files[0]) setExcelFile(input.files[0]);
+}
+function handleFileDrop(event) {
+  event.preventDefault();
+  document.getElementById('excel-drop').classList.remove('drag-over');
+  const file = event.dataTransfer.files[0];
+  if (file) setExcelFile(file);
+}
+function setExcelFile(file) {
+  _excelFile = file;
+  const el = document.getElementById('excel-filename');
+  el.textContent = file.name;
+  el.style.display = 'block';
+}
+
+async function downloadTemplate() {
+  const access = localStorage.getItem('mp_access');
+  const r = await fetch('/api/admin/vouchers/template-excel/', {
+    headers: { 'Authorization': 'Bearer ' + access }
+  });
+  if (!r.ok) { showToast('Erreur lors du téléchargement', 'error'); return; }
+  const blob = await r.blob();
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'template_beneficiaires.xlsx'; a.click();
+  URL.revokeObjectURL(url);
+}
+
+// ── Soumission principale ─────────────────────────────────────────────────────
+async function submitVoucher() {
+  const btn = document.getElementById('v-submit-btn');
+  btn.disabled = true;
+
+  const programme_id   = document.getElementById('v-prog').value;
+  const type_valeur    = document.getElementById('v-type').value;
+  const valeur         = document.getElementById('v-valeur').value;
+  const montant_min    = document.getElementById('v-min-cmd').value || 0;
+  const date_exp       = document.getElementById('v-expiration').value || null;
+
+  if (!programme_id || !valeur || !date_exp) {
+    showToast('Programme, valeur et date d\'expiration sont requis.', 'error');
+    btn.disabled = false; return;
+  }
+
+  try {
+    if (_voucherMethod === 'select') {
+      // Méthode 1 — multi-sélection
+      const ids = [...document.querySelectorAll('.acheteur-cb:checked')].map(cb => parseInt(cb.value));
+      if (!ids.length) { showToast('Sélectionnez au moins un acheteur.', 'error'); btn.disabled = false; return; }
+
+      const body = {
+        programme_id, type_valeur, valeur,
+        montant_commande_min: montant_min,
+        date_expiration: date_exp,
+        nombre: ids.length,
+        beneficiaire_ids: ids,
+      };
+      const r = await fetch('/api/admin/vouchers/bulk/', { method:'POST', headers:H, body:JSON.stringify(body) });
+      const d = await r.json();
+      if (r.ok) {
+        showToast(`${d.data.nb_crees} voucher${d.data.nb_crees > 1 ? 's' : ''} créé${d.data.nb_crees > 1 ? 's' : ''} !`);
+        closeVoucherModal(); loadVouchers();
+      } else {
+        const err = d.error;
+        showToast(typeof err === 'string' ? err : Object.values(err).join(' · '), 'error');
+      }
+    } else {
+      // Méthode 2 — import Excel
+      if (!_excelFile) { showToast('Sélectionnez un fichier .xlsx.', 'error'); btn.disabled = false; return; }
+
+      const fd = new FormData();
+      fd.append('file', _excelFile);
+      fd.append('programme_id', programme_id);
+      fd.append('type_valeur', type_valeur);
+      fd.append('valeur', valeur);
+      fd.append('montant_commande_min', montant_min);
+      if (date_exp) fd.append('date_expiration', date_exp);
+
+      const r = await fetch('/api/admin/vouchers/import-excel/', {
+        method: 'POST',
+        headers: { 'Authorization': 'Bearer ' + localStorage.getItem('mp_access') },
+        body: fd,
+      });
+      const d = await r.json();
+      if (r.ok) {
+        showToast(`${d.data.nb_crees} voucher${d.data.nb_crees > 1 ? 's' : ''} créé${d.data.nb_crees > 1 ? 's' : ''} !`);
+        closeVoucherModal(); loadVouchers();
+      } else {
+        const err = d.error;
+        if (Array.isArray(err)) {
+          showToast(err.slice(0, 3).join(' · ') + (err.length > 3 ? ` (+${err.length - 3} erreurs)` : ''), 'error');
+        } else {
+          showToast(typeof err === 'string' ? err : 'Erreur', 'error');
+        }
+      }
+    }
+  } finally {
+    btn.disabled = false;
   }
 }
 
