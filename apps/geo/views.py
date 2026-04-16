@@ -3,6 +3,7 @@ import os
 from django.http import JsonResponse
 from django.views.decorators.cache import cache_page
 from django.views.decorators.http import require_GET
+from django.utils.translation import gettext as _
 
 # Charger les données une seule fois au démarrage
 _GEO_DATA = None

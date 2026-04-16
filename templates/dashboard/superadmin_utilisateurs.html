@@ -1,4 +1,5 @@
 {% extends 'dashboard/base.html' %}
+{% load i18n %}
 {% block title %}Utilisateurs — Superadmin{% endblock %}
 {% block sidebar_nav %}{% include 'dashboard/superadmin_sidebar.html' with active='users' %}{% endblock %}
 {% block page_title %}Utilisateurs{% endblock %}
@@ -87,48 +88,48 @@
 <!-- Modal Utilisateur -->
 <div class="modal-overlay" id="user-modal">
   <div class="modal-box">
-    <h3 id="modal-title">Nouvel utilisateur</h3>
+    <h3 id="modal-title">{% trans "Nouvel utilisateur" %}</h3>
     <form id="user-form" onsubmit="submitUser(event)">
       <div class="form-grid">
         <div class="field full" id="username-field">
-          <label>Nom d'utilisateur *</label>
-          <input type="text" id="f-username" required placeholder="Ex: jean.pierre">
+          <label>{% trans "Nom d'utilisateur *" %}</label>
+          <input type="text" id="f-username" required placeholder="{% trans 'Ex: jean.pierre' %}">
           <span class="field-error" id="err-username"></span>
         </div>
         <div class="field">
-          <label>Prénom</label>
-          <input type="text" id="f-first_name" placeholder="Prénom">
+          <label>{% trans "Prénom" %}</label>
+          <input type="text" id="f-first_name" placeholder="{% trans 'Prénom' %}">
         </div>
         <div class="field">
-          <label>Nom</label>
-          <input type="text" id="f-last_name" placeholder="Nom">
+          <label>{% trans "Nom" %}</label>
+          <input type="text" id="f-last_name" placeholder="{% trans 'Nom' %}">
         </div>
         <div class="field full">
-          <label>Email *</label>
-          <input type="email" id="f-email" required placeholder="email@exemple.com">
+          <label>{% trans "Email *" %}</label>
+          <input type="email" id="f-email" required placeholder="{% trans 'email@exemple.com' %}">
           <span class="field-error" id="err-email"></span>
         </div>
         <div class="field">
-          <label>Téléphone</label>
+          <label>{% trans "Téléphone" %}</label>
           <input type="text" id="f-telephone" placeholder="+509 ...">
         </div>
         <div class="field">
-          <label>Rôle *</label>
+          <label>{% trans "Rôle *" %}</label>
           <select id="f-role" required onchange="toggleProdFields()">
-            <option value="acheteur">Acheteur</option>
-            <option value="producteur">Producteur</option>
-            <option value="collecteur">Agent de collecte</option>
-            <option value="superadmin">Super Administrateur</option>
+            <option value="acheteur">{% trans "Acheteur" %}</option>
+            <option value="producteur">{% trans "Producteur" %}</option>
+            <option value="collecteur">{% trans "Agent de collecte" %}</option>
+            <option value="superadmin">{% trans "Super Administrateur" %}</option>
           </select>
         </div>
         <div class="field" id="password-field">
-          <label>Mot de passe *</label>
-          <input type="password" id="f-password" placeholder="Minimum 8 caractères">
+          <label>{% trans "Mot de passe *" %}</label>
+          <input type="password" id="f-password" placeholder="{% trans 'Minimum 8 caractères' %}">
           <span class="field-error" id="err-password"></span>
         </div>
         <div class="field" id="password2-field">
-          <label>Confirmer MDP *</label>
-          <input type="password" id="f-password2" placeholder="Répéter le mot de passe">
+          <label>{% trans "Confirmer MDP *" %}</label>
+          <input type="password" id="f-password2" placeholder="{% trans 'Répéter le mot de passe' %}">
         </div>
         <div class="field full">
           <label class="checkbox-row"><input type="checkbox" id="f-is_active" checked> Compte actif</label>
@@ -137,38 +138,38 @@
 
       <!-- Champs supplémentaires pour producteur -->
       <div id="prod-fields">
-        <h4><i class="fas fa-tractor" style="margin-right:6px"></i>Profil Producteur</h4>
+        <h4><i class="fas fa-tractor" style="margin-right:6px"></i>{% trans "Profil Producteur" %}</h4>
         <div class="form-grid">
           <div class="field">
-            <label>Département *</label>
+            <label>{% trans "Département *" %}</label>
             <select id="f-departement">
-              <option value="">-- Choisir --</option>
-              <option value="ouest">Ouest</option>
-              <option value="artibonite">Artibonite</option>
-              <option value="nord">Nord</option>
-              <option value="nord_est">Nord-Est</option>
-              <option value="nord_ouest">Nord-Ouest</option>
-              <option value="sud">Sud</option>
-              <option value="sud_est">Sud-Est</option>
-              <option value="centre">Centre</option>
-              <option value="grand_anse">Grand-Anse</option>
-              <option value="nippes">Nippes</option>
+              <option value="">{% trans "-- Choisir --" %}</option>
+              <option value="ouest">{% trans "Ouest" %}</option>
+              <option value="artibonite">{% trans "Artibonite" %}</option>
+              <option value="nord">{% trans "Nord" %}</option>
+              <option value="nord_est">{% trans "Nord-Est" %}</option>
+              <option value="nord_ouest">{% trans "Nord-Ouest" %}</option>
+              <option value="sud">{% trans "Sud" %}</option>
+              <option value="sud_est">{% trans "Sud-Est" %}</option>
+              <option value="centre">{% trans "Centre" %}</option>
+              <option value="grand_anse">{% trans "Grand-Anse" %}</option>
+              <option value="nippes">{% trans "Nippes" %}</option>
             </select>
           </div>
           <div class="field">
-            <label>Commune *</label>
-            <input type="text" id="f-commune" placeholder="Ex: Croix-des-Bouquets">
+            <label>{% trans "Commune *" %}</label>
+            <input type="text" id="f-commune" placeholder="{% trans 'Ex: Croix-des-Bouquets' %}">
           </div>
           <div class="field">
-            <label>Localité</label>
-            <input type="text" id="f-localite" placeholder="Section, quartier...">
+            <label>{% trans "Localité" %}</label>
+            <input type="text" id="f-localite" placeholder="{% trans 'Section, quartier...' %}">
           </div>
         </div>
       </div>
 
       <div class="modal-actions">
-        <button type="button" class="btn-cancel" onclick="closeUserModal()">Annuler</button>
-        <button type="submit" class="btn-save" id="user-submit-btn"><i class="fas fa-save"></i> Enregistrer</button>
+        <button type="button" class="btn-cancel" onclick="closeUserModal()">{% trans "Annuler" %}</button>
+        <button type="submit" class="btn-save" id="user-submit-btn"><i class="fas fa-save"></i> {% trans "Enregistrer" %}</button>
       </div>
     </form>
   </div>
@@ -177,40 +178,40 @@
 <div class="toolbar">
   <div class="search-box">
     <i class="fas fa-search" style="color:var(--text-muted)"></i>
-    <input type="text" id="search-input" placeholder="Nom, email, téléphone..." oninput="debouncedSearch()">
+    <input type="text" id="search-input" placeholder="{% trans 'Nom, email, téléphone...' %}" oninput="debouncedSearch()">
   </div>
   <select id="role-filter" class="filter-btn" style="appearance:none;padding-right:28px" onchange="load()">
-    <option value="">Tous les rôles</option>
-    <option value="superadmin">Super Administrateur</option>
-    <option value="producteur">Producteur</option>
-    <option value="acheteur">Acheteur</option>
-    <option value="collecteur">Collecteur</option>
+    <option value="">{% trans "Tous les rôles" %}</option>
+    <option value="superadmin">{% trans "Super Administrateur" %}</option>
+    <option value="producteur">{% trans "Producteur" %}</option>
+    <option value="acheteur">{% trans "Acheteur" %}</option>
+    <option value="collecteur">{% trans "Collecteur" %}</option>
   </select>
   <select id="active-filter" class="filter-btn" style="appearance:none;padding-right:28px" onchange="load()">
-    <option value="">Tous statuts</option>
-    <option value="true">Actifs</option>
-    <option value="false">Inactifs</option>
+    <option value="">{% trans "Tous statuts" %}</option>
+    <option value="true">{% trans "Actifs" %}</option>
+    <option value="false">{% trans "Inactifs" %}</option>
   </select>
-  <button class="btn-new" onclick="openCreate()"><i class="fas fa-plus"></i> Nouvel utilisateur</button>
+  <button class="btn-new" onclick="openCreate()"><i class="fas fa-plus"></i> {% trans "Nouvel utilisateur" %}</button>
 </div>
 
 <div class="table-wrap">
-  <div class="empty-state" id="tbl-loading"><i class="fas fa-spinner fa-spin"></i> Chargement...</div>
+  <div class="empty-state" id="tbl-loading"><i class="fas fa-spinner fa-spin"></i> {% trans "Chargement..." %}</div>
   <table id="tbl" style="display:none">
     <thead>
       <tr>
-        <th>Utilisateur</th>
-        <th>Rôle</th>
-        <th>Email</th>
-        <th>Téléphone</th>
-        <th>Statut</th>
-        <th>Inscription</th>
-        <th>Actions</th>
+        <th>{% trans "Utilisateur" %}</th>
+        <th>{% trans "Rôle" %}</th>
+        <th>{% trans "Email" %}</th>
+        <th>{% trans "Téléphone" %}</th>
+        <th>{% trans "Statut" %}</th>
+        <th>{% trans "Inscription" %}</th>
+        <th>{% trans "Actions" %}</th>
       </tr>
     </thead>
     <tbody id="tbody"></tbody>
   </table>
-  <div class="empty-state" id="tbl-empty" style="display:none">Aucun utilisateur trouvé.</div>
+  <div class="empty-state" id="tbl-empty" style="display:none">{% trans "Aucun utilisateur trouvé." %}</div>
 </div>
 {% endblock %}
 
@@ -220,7 +221,7 @@ let _debounce, _editUserId = null;
 
 function roleBadge(role) {
   const labels = { superadmin:'Superadmin', admin:'Admin', producteur:'Producteur', acheteur:'Acheteur', collecteur:'Collecteur' };
-  return `<span class="role-badge role-${role}">${labels[role]||role}</span>`;
+  return `<span class="role-badge role-${role}">{% trans "${labels[role]||role}" %}</span>`;
 }
 function fdate(iso) { return new Date(iso).toLocaleDateString('fr-FR', {day:'2-digit',month:'short',year:'numeric'}); }
 function showToast(msg, type='success') {
@@ -253,22 +254,22 @@ async function load() {
   data.forEach(u => {
     const av = u.photo
       ? `<div class="user-avatar"><img src="${u.photo}" alt=""></div>`
-      : `<div class="user-avatar">${(u.full_name||u.username).charAt(0).toUpperCase()}</div>`;
+      : `<div class="user-avatar">{% trans "${(u.full_name||u.username).charAt(0).toUpperCase()}" %}</div>`;
     const canToggle = !u.is_superuser;
     tbody.innerHTML += `
       <tr id="row-${u.id}">
         <td style="display:flex;align-items:center;gap:10px">
           ${av}
-          <div><div style="font-weight:600">${u.full_name||u.username}</div><div style="font-size:11px;color:var(--text-muted)">@${u.username}</div></div>
+          <div><div style="font-weight:600">{% trans "${u.full_name||u.username}" %}</div><div style="font-size:11px;color:var(--text-muted)">{% trans "@${u.username}" %}</div></div>
         </td>
-        <td>${roleBadge(u.role)}</td>
-        <td style="color:var(--text-muted)">${u.email}</td>
-        <td style="color:var(--text-muted)">${u.telephone||'—'}</td>
+        <td>{% trans "${roleBadge(u.role)}" %}</td>
+        <td style="color:var(--text-muted)">{% trans "${u.email}" %}</td>
+        <td style="color:var(--text-muted)">{% trans "${u.telephone||'—'}" %}</td>
         <td><span class="status-dot ${u.is_active?'dot-green':'dot-red'}"></span>${u.is_active?'Actif':'Inactif'}</td>
-        <td style="color:var(--text-muted);font-size:12px">${fdate(u.created_at)}</td>
+        <td style="color:var(--text-muted);font-size:12px">{% trans "${fdate(u.created_at)}" %}</td>
         <td style="display:flex;gap:6px">
           <button class="action-btn" style="background:var(--bg);color:var(--text-muted);border:1px solid var(--border)" onclick="openEdit(${u.id})"><i class="fas fa-edit"></i></button>
-          ${canToggle?`<button class="action-btn ${u.is_active?'toggle-active':'toggle-inactive'}" onclick="toggleUser(${u.id},this)">${u.is_active?'Désactiver':'Activer'}</button>`:'<span style="font-size:11px;color:var(--text-muted)">—</span>'}
+          ${canToggle?`<button class="action-btn ${u.is_active?'toggle-active':'toggle-inactive'}" onclick="toggleUser(${u.id},this)">{% trans "${u.is_active?'Désactiver':'Activer'}" %}</button>`:'<span style="font-size:11px;color:var(--text-muted)">—</span>'}
         </td>
       </tr>`;
   });
@@ -283,7 +284,7 @@ function toggleProdFields() {
 function openCreate() {
   _editUserId = null;
   document.getElementById('modal-title').textContent = 'Nouvel utilisateur';
-  document.getElementById('user-submit-btn').innerHTML = '<i class="fas fa-plus"></i> Créer';
+  document.getElementById('user-submit-btn').innerHTML = '<i class="fas fa-plus"></i> {% trans "Créer';" %}
   ['f-username','f-first_name','f-last_name','f-email','f-telephone','f-password','f-password2'].forEach(id => document.getElementById(id).value='');
   document.getElementById('f-role').value = 'acheteur';
   document.getElementById('f-is_active').checked = true;
@@ -298,7 +299,7 @@ function openCreate() {
 async function openEdit(id) {
   _editUserId = id;
   document.getElementById('modal-title').textContent = 'Éditer l\'utilisateur';
-  document.getElementById('user-submit-btn').innerHTML = '<i class="fas fa-save"></i> Enregistrer';
+  document.getElementById('user-submit-btn').innerHTML = '<i class="fas fa-save"></i> {% trans "Enregistrer';" %}
   document.getElementById('username-field').style.display = 'none';
   document.getElementById('password-field').querySelector('label').textContent = 'Nouveau mot de passe';
   document.getElementById('password-field').querySelector('input').required = false;

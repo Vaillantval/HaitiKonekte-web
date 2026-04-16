@@ -1,6 +1,7 @@
 {% load static %}
+{% load i18n %}
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="{{ LANGUAGE_CODE }}">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -415,10 +416,10 @@
       </div>
 
       <div class="auth-left-welcome">
-        <div class="welcome-eyebrow">Bon retou</div>
+        <div class="welcome-eyebrow">{% trans "Bon retou" %}</div>
         <h2 class="welcome-title">
           Kontan wè ou<br>
-          <em>ankò !</em>
+          <em>{% trans "ankò !" %}</em>
         </h2>
         <p class="welcome-desc">
           Connectez-vous pour accéder à votre espace, passer des commandes et suivre vos achats auprès des producteurs locaux haïtiens.
@@ -428,15 +429,15 @@
       <div class="auth-left-stats">
         <div class="stat-item">
           <div class="stat-num">500+</div>
-          <div class="stat-lbl">Producteurs actifs</div>
+          <div class="stat-lbl">{% trans "Producteurs actifs" %}</div>
         </div>
         <div class="stat-item">
-          <div class="stat-num">10 dép.</div>
-          <div class="stat-lbl">Couverts en Haïti</div>
+          <div class="stat-num">{% trans "10 dép." %}</div>
+          <div class="stat-lbl">{% trans "Couverts en Haïti" %}</div>
         </div>
         <div class="stat-item">
           <div class="stat-num">100%</div>
-          <div class="stat-lbl">Local & frais</div>
+          <div class="stat-lbl">{% trans "Local & frais" %}</div>
         </div>
       </div>
 
@@ -447,33 +448,49 @@
   <div class="auth-right">
     <div class="auth-form-wrap">
 
+      <!-- Sélecteur de langue -->
+      <div style="display:flex;justify-content:flex-end;margin-bottom:16px;">
+        <form action="{% url 'set_language' %}" method="post" style="display:inline-flex;align-items:center;gap:6px;">
+          {% csrf_token %}
+          <input name="next" type="hidden" value="{{ request.get_full_path }}">
+          {% get_current_language as LANGUAGE_CODE %}
+          {% get_available_languages as LANGUAGES %}
+          <i class="fas fa-globe" style="color:#27ae60;font-size:13px;"></i>
+          <select name="language" onchange="this.form.submit()" style="border:1.5px solid #d1fae5;border-radius:8px;padding:5px 10px;font-size:12px;font-weight:600;font-family:'DM Sans',sans-serif;background:#f0faf4;color:#1a6b2f;cursor:pointer;outline:none;">
+            {% for lang_code, lang_name in LANGUAGES %}
+              <option value="{{ lang_code }}" {% if lang_code == LANGUAGE_CODE %}selected{% endif %}>{{ lang_code|upper }}</option>
+            {% endfor %}
+          </select>
+        </form>
+      </div>
+
       <div class="form-head">
-        <h1>Connexion</h1>
-        <p>Pas encore de compte ? <a href="/inscription/">S'inscrire gratuitement</a></p>
+        <h1>{% trans "Connexion" %}</h1>
+        <p>Pas encore de compte ? <a href="/inscription/">{% trans "S'inscrire gratuitement" %}</a></p>
       </div>
 
       <div class="alert alert-error" id="alertError">
         <i class="fas fa-exclamation-circle" style="flex-shrink:0;margin-top:1px"></i>
-        <span id="alertErrorMsg">Identifiants incorrects.</span>
+        <span id="alertErrorMsg">{% trans "Identifiants incorrects." %}</span>
       </div>
       <div class="alert alert-success" id="alertSuccess">
         <i class="fas fa-check-circle" style="flex-shrink:0;margin-top:1px"></i>
-        <span>Connexion réussie ! Redirection...</span>
+        <span>{% trans "Connexion réussie ! Redirection..." %}</span>
       </div>
 
       <form id="loginForm" novalidate>
 
         <div class="form-group">
-          <label for="email">Adresse email</label>
+          <label for="email">{% trans "Adresse email" %}</label>
           <div class="input-wrap">
             <i class="fas fa-envelope ico"></i>
-            <input type="email" id="email" placeholder="votre@email.com"
+            <input type="email" id="email" placeholder="{% trans 'votre@email.com' %}"
                    autocomplete="email" required>
           </div>
         </div>
 
         <div class="form-group">
-          <label for="password">Mot de passe</label>
+          <label for="password">{% trans "Mot de passe" %}</label>
           <div class="input-wrap">
             <i class="fas fa-lock ico"></i>
             <input type="password" id="password" placeholder="••••••••"
@@ -487,12 +504,12 @@
         <button type="submit" class="btn-submit" id="submitBtn">
           <div class="spinner" id="spinner"></div>
           <i class="fas fa-sign-in-alt" id="submitIcon"></i>
-          <span id="submitText">Se connecter</span>
+          <span id="submitText">{% trans "Se connecter" %}</span>
         </button>
 
       </form>
 
-      <div class="divider">ou</div>
+      <div class="divider">{% trans "ou" %}</div>
 
       <a href="/admin/" class="btn-admin">
         <i class="fas fa-shield-alt"></i>

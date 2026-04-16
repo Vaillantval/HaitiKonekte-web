@@ -7,6 +7,7 @@ from drf_spectacular.utils import extend_schema
 from apps.accounts.permissions import IsSuperAdmin
 from apps.accounts.models import Acheteur
 from apps.payments.models import Voucher, ProgrammeVoucher
+from django.utils.translation import gettext as _
 
 
 # ── Helpers ──────────────────────────────────────────────────────
@@ -162,12 +163,12 @@ def programmes_list(request):
             d_fin   = parse_date(date_fin)
         except Exception:
             return Response(
-                {'success': False, 'error': 'Format de date invalide (YYYY-MM-DD).'},
+                {'success': False, 'error': _('Format de date invalide (YYYY-MM-DD).')},
                 status=status.HTTP_400_BAD_REQUEST,
             )
         if d_debut and d_fin and d_fin < d_debut:
             return Response(
-                {'success': False, 'error': 'La date de fin doit être après la date de début.'},
+                {'success': False, 'error': _('La date de fin doit être après la date de début.')},
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
@@ -177,7 +178,7 @@ def programmes_list(request):
             budget_total = Decimal(str(budget_raw)) if budget_raw not in (None, '') else None
         except (ValueError, TypeError, Exception):
             return Response(
-                {'success': False, 'error': 'budget_total doit être un nombre.'},
+                {'success': False, 'error': _('budget_total doit être un nombre.')},
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
@@ -220,7 +221,7 @@ def programme_detail(request, pk):
         if p.vouchers.filter(statut=Voucher.Statut.UTILISE).exists():
             return Response(
                 {'success': False,
-                 'error': "Impossible de supprimer : des vouchers de ce programme ont déjà été utilisés."},
+                 'error': _("Impossible de supprimer : des vouchers de ce programme ont déjà été utilisés.")},
                 status=status.HTTP_400_BAD_REQUEST,
             )
         p.vouchers.all().delete()
@@ -243,7 +244,7 @@ def programme_detail(request, pk):
                 p.budget_total = Decimal(str(raw)) if raw not in (None, '') else None
             except (ValueError, TypeError, Exception):
                 return Response(
-                    {'success': False, 'error': 'budget_total doit être un nombre.'},
+                    {'success': False, 'error': _('budget_total doit être un nombre.')},
                     status=status.HTTP_400_BAD_REQUEST,
                 )
 
@@ -255,7 +256,7 @@ def programme_detail(request, pk):
 
         if p.date_fin and p.date_debut and p.date_fin < p.date_debut:
             return Response(
-                {'success': False, 'error': 'La date de fin doit être après la date de début.'},
+                {'success': False, 'error': _('La date de fin doit être après la date de début.')},
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
@@ -324,7 +325,7 @@ def voucher_detail(request, pk):
     if request.method == 'DELETE':
         if v.statut == Voucher.Statut.UTILISE:
             return Response(
-                {'success': False, 'error': "Un voucher déjà utilisé ne peut pas être annulé."},
+                {'success': False, 'error': _("Un voucher déjà utilisé ne peut pas être annulé.")},
                 status=status.HTTP_400_BAD_REQUEST,
             )
         v.statut = Voucher.Statut.ANNULE
@@ -334,7 +335,7 @@ def voucher_detail(request, pk):
     if request.method == 'PATCH':
         if v.statut == Voucher.Statut.UTILISE:
             return Response(
-                {'success': False, 'error': "Un voucher déjà utilisé ne peut pas être modifié."},
+                {'success': False, 'error': _("Un voucher déjà utilisé ne peut pas être modifié.")},
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
@@ -358,7 +359,7 @@ def voucher_detail(request, pk):
             d = parse_date(request.data['date_expiration'])
             if not d:
                 return Response(
-                    {'success': False, 'error': 'Format de date invalide (YYYY-MM-DD).'},
+                    {'success': False, 'error': _('Format de date invalide (YYYY-MM-DD).')},
                     status=status.HTTP_400_BAD_REQUEST,
                 )
             v.date_expiration = d
@@ -403,7 +404,7 @@ def vouchers_bulk_create(request):
             raise ValueError
     except (ValueError, TypeError):
         return Response(
-            {'success': False, 'error': 'nombre doit être un entier entre 1 et 500.'},
+            {'success': False, 'error': _('nombre doit être un entier entre 1 et 500.')},
             status=status.HTTP_400_BAD_REQUEST,
         )
 
@@ -515,13 +516,13 @@ def _valider_champs_voucher(data):
     try:
         montant_max = float(montant_max_raw) if montant_max_raw not in (None, '') else None
     except (ValueError, TypeError):
-        return {'montant_max': 'montant_max doit être un nombre.'}, {}
+        return {'montant_max': _('montant_max doit être un nombre.')}, {}
 
     montant_min_raw = data.get('montant_commande_min', 0)
     try:
         montant_min = float(montant_min_raw)
     except (ValueError, TypeError):
-        return {'montant_commande_min': 'montant_commande_min doit être un nombre.'}, {}
+        return {'montant_commande_min': _('montant_commande_min doit être un nombre.')}, {}
 
     # Catégories autorisées (optionnel)
     cat_ids = data.get('categories_autorisees', [])
@@ -530,7 +531,7 @@ def _valider_champs_voucher(data):
         try:
             categories = list(Categorie.objects.filter(pk__in=[int(c) for c in cat_ids]))
         except (ValueError, TypeError):
-            return {'categories_autorisees': 'Liste d\'IDs de catégories invalide.'}, {}
+            return {'categories_autorisees': _('Liste d\'IDs de catégories invalide.')}, {}
 
     champs = {
         'type_valeur':          type_valeur,
@@ -550,7 +551,7 @@ def _creer_voucher(request):
 
     if not programme_id:
         return Response(
-            {'success': False, 'error': 'programme_id est requis.'},
+            {'success': False, 'error': _('programme_id est requis.')},
             status=status.HTTP_400_BAD_REQUEST,
         )
 
@@ -685,7 +686,7 @@ def vouchers_import_excel(request):
 
     fichier = request.FILES.get('file')
     if not fichier:
-        return Response({'success': False, 'error': 'Aucun fichier fourni.'},
+        return Response({'success': False, 'error': _('Aucun fichier fourni.')},
                         status=status.HTTP_400_BAD_REQUEST)
 
     # Lire le fichier Excel
@@ -694,11 +695,11 @@ def vouchers_import_excel(request):
         ws = wb.active
         rows = list(ws.iter_rows(values_only=True))
     except Exception:
-        return Response({'success': False, 'error': 'Fichier Excel invalide ou illisible.'},
+        return Response({'success': False, 'error': _('Fichier Excel invalide ou illisible.')},
                         status=status.HTTP_400_BAD_REQUEST)
 
     if len(rows) < 2:
-        return Response({'success': False, 'error': 'Le fichier ne contient aucune ligne de données (hors en-tête).'},
+        return Response({'success': False, 'error': _('Le fichier ne contient aucune ligne de données (hors en-tête).')},
                         status=status.HTTP_400_BAD_REQUEST)
 
     # Trouver la colonne "email" dans la première ligne (en-tête)
@@ -706,7 +707,7 @@ def vouchers_import_excel(request):
     try:
         email_col = header.index('email')
     except ValueError:
-        return Response({'success': False, 'error': "Colonne 'email' introuvable dans le fichier."},
+        return Response({'success': False, 'error': _("Colonne 'email' introuvable dans le fichier.")},
                         status=status.HTTP_400_BAD_REQUEST)
 
     # Extraire les e-mails
@@ -722,7 +723,7 @@ def vouchers_import_excel(request):
             emails.append((row_num, email_str))
 
     if not emails:
-        return Response({'success': False, 'error': 'Aucun e-mail trouvé dans le fichier.'},
+        return Response({'success': False, 'error': _('Aucun e-mail trouvé dans le fichier.')},
                         status=status.HTTP_400_BAD_REQUEST)
 
     # Résoudre les e-mails en Acheteur
@@ -744,13 +745,13 @@ def vouchers_import_excel(request):
                         status=status.HTTP_400_BAD_REQUEST)
 
     if not beneficiaires:
-        return Response({'success': False, 'error': 'Aucun bénéficiaire valide trouvé.'},
+        return Response({'success': False, 'error': _('Aucun bénéficiaire valide trouvé.')},
                         status=status.HTTP_400_BAD_REQUEST)
 
     # Valider le programme
     programme_id = request.data.get('programme_id')
     if not programme_id:
-        return Response({'success': False, 'error': 'programme_id est requis.'},
+        return Response({'success': False, 'error': _('programme_id est requis.')},
                         status=status.HTTP_400_BAD_REQUEST)
     programme = get_object_or_404(ProgrammeVoucher, pk=programme_id)
 

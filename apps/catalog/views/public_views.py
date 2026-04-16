@@ -13,6 +13,7 @@ from apps.catalog.serializers import (
     CategorieSerializer,
 )
 from apps.catalog.filters import ProduitFilter
+from django.utils.translation import gettext as _
 
 
 class ProduitPagination(PageNumberPagination):

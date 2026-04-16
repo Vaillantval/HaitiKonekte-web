@@ -1,24 +1,25 @@
 from django.db import models
 from django.conf import settings
+from django.utils.translation import gettext_lazy as _
 
 
 class Paiement(models.Model):
     class TypePaiement(models.TextChoices):
-        MONCASH  = 'moncash',  'MonCash'
-        NATCASH  = 'natcash',  'NatCash'
-        VIREMENT = 'virement', 'Virement bancaire'
-        CASH     = 'cash',     'Especes'
-        VOUCHER  = 'voucher',  'e-Voucher'
+        MONCASH  = 'moncash',  _('MonCash')
+        NATCASH  = 'natcash',  _('NatCash')
+        VIREMENT = 'virement', _('Virement bancaire')
+        CASH     = 'cash',     _('Especes')
+        VOUCHER  = 'voucher',  _('e-Voucher')
 
     class Statut(models.TextChoices):
-        INITIE     = 'initie',     'Initie'
-        EN_ATTENTE = 'en_attente', 'En attente'
-        SOUMIS     = 'soumis',     'Preuve soumise'
-        VERIFIE    = 'verifie',    'Verifie'
-        CONFIRME   = 'confirme',   'Confirme'
-        ECHOUE     = 'echoue',     'Echoue'
-        ANNULE     = 'annule',     'Annule'
-        REMBOURSE  = 'rembourse',  'Rembourse'
+        INITIE     = 'initie',     _('Initie')
+        EN_ATTENTE = 'en_attente', _('En attente')
+        SOUMIS     = 'soumis',     _('Preuve soumise')
+        VERIFIE    = 'verifie',    _('Verifie')
+        CONFIRME   = 'confirme',   _('Confirme')
+        ECHOUE     = 'echoue',     _('Echoue')
+        ANNULE     = 'annule',     _('Annule')
+        REMBOURSE  = 'rembourse',  _('Rembourse')
 
     reference           = models.CharField(max_length=100, unique=True, blank=True)
     commande            = models.ForeignKey('orders.Commande', on_delete=models.PROTECT, related_name='paiements')
@@ -38,8 +39,8 @@ class Paiement(models.Model):
     updated_at          = models.DateTimeField(auto_now=True)
 
     class Meta:
-        verbose_name        = 'Paiement'
-        verbose_name_plural = 'Paiements'
+        verbose_name        = _('Paiement')
+        verbose_name_plural = _('Paiements')
         ordering            = ['-created_at']
 
     def __str__(self):

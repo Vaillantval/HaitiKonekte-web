@@ -1,9 +1,10 @@
 {% extends "emails/base.html" %}
+{% load i18n %}
 {% block titre %}Réponse à votre message — Makèt Peyizan{% endblock %}
 
 {% block content %}
 
-<p class="greeting">Bonjour {{ nom }} 👋</p>
+<p class="greeting">{% blocktrans with nom=nom %}Bonjour {{ nom }} 👋{% endblocktrans %}</p>
 
 <p class="message">
   Merci pour votre message. L'équipe Makèt Peyizan vous apporte une réponse
@@ -33,13 +34,13 @@
 
 <p style="font-size:13px;color:#888;line-height:1.7;margin-top:16px;">
   Si vous avez d'autres questions, n'hésitez pas à nous contacter à nouveau via
-  notre <a href="{{ site_url }}/contact/" style="color:#27ae60;text-decoration:none;">formulaire de contact</a>
+  notre <a href="{{ site_url }}/contact/" style="color:#27ae60;text-decoration:none;">{% trans "formulaire de contact" %}</a>
   ou directement par email.
 </p>
 
 <p style="font-size:14px;color:#2c3e50;margin-top:20px;font-weight:600;">
   Cordialement,<br>
-  <span style="color:#27ae60;">L'équipe Makèt Peyizan</span>
+  <span style="color:#27ae60;">{% trans "L'équipe Makèt Peyizan" %}</span>
   {% if admin_name %}<br><span style="font-size:12px;color:#888;font-weight:400;">{{ admin_name }}</span>{% endif %}
 </p>
 

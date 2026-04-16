@@ -7,6 +7,7 @@ from django.shortcuts import get_object_or_404
 from apps.orders.models import Panier, LignePanier
 from apps.orders.serializers import PanierSerializer
 from apps.catalog.models import Produit
+from django.utils.translation import gettext as _
 
 
 def _get_or_create_panier(user):
@@ -43,13 +44,13 @@ def panier_ajouter(request):
 
     if not slug:
         return Response(
-            {'success': False, 'error': "Le champ 'slug' est requis."},
+            {'success': False, 'error': _("Le champ 'slug' est requis.")},
             status=status.HTTP_400_BAD_REQUEST,
         )
 
     if quantite <= 0:
         return Response(
-            {'success': False, 'error': "La quantité doit être supérieure à 0."},
+            {'success': False, 'error': _("La quantité doit être supérieure à 0.")},
             status=status.HTTP_400_BAD_REQUEST,
         )
 
@@ -108,7 +109,7 @@ def panier_modifier(request, slug):
 
     if quantite <= 0:
         return Response(
-            {'success': False, 'error': "La quantité doit être supérieure à 0."},
+            {'success': False, 'error': _("La quantité doit être supérieure à 0.")},
             status=status.HTTP_400_BAD_REQUEST,
         )
 

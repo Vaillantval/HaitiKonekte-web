@@ -5,6 +5,7 @@ from django.utils import timezone
 from apps.orders.models import Commande, CommandeDetail, HistoriqueStatutCommande
 from apps.stock.services.stock_service import StockService
 from apps.stock.models import MouvementStock
+from django.utils.translation import gettext as _
 
 logger = logging.getLogger(__name__)
 
@@ -118,7 +119,7 @@ class CommandeService:
     @transaction.atomic
     def confirmer_commande(commande, effectue_par=None):
         if commande.statut != Commande.Statut.EN_ATTENTE:
-            raise ValueError("Seules les commandes en attente peuvent etre confirmees.")
+            raise ValueError(_("Seules les commandes en attente peuvent etre confirmees."))
         statut_avant = commande.statut
         for detail in commande.details.select_related('produit', 'lot').all():
             lot = detail.lot or detail.produit.lots.filter(statut='disponible', quantite_actuelle__gte=detail.quantite).first()
@@ -152,7 +153,7 @@ class CommandeService:
     @transaction.atomic
     def annuler_commande(commande, effectue_par=None, motif=''):
         if not commande.est_annulable:
-            raise ValueError("Cette commande ne peut plus etre annulee.")
+            raise ValueError(_("Cette commande ne peut plus etre annulee."))
         statut_avant = commande.statut
 
         if statut_avant == Commande.Statut.EN_ATTENTE:

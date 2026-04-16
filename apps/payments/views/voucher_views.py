@@ -9,6 +9,7 @@ from apps.payments.serializers import (
     VoucherSerializer,
 )
 from apps.payments.services.paiement_service import VoucherService
+from django.utils.translation import gettext as _
 
 
 # ── POST /api/payments/voucher/valider/ ─────────────────────────
@@ -33,7 +34,7 @@ def valider_voucher(request):
         acheteur = request.user.profil_acheteur
     except Exception:
         return Response(
-            {'success': False, 'error': "Profil acheteur requis."},
+            {'success': False, 'error': _("Profil acheteur requis.")},
             status=status.HTTP_403_FORBIDDEN,
         )
 

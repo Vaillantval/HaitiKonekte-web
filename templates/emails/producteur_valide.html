@@ -1,11 +1,12 @@
 {% extends "emails/base.html" %}
+{% load i18n %}
 {% block content %}
 
-<p class="greeting">Félicitations {{ prenom }} ! 🎉</p>
+<p class="greeting">{% blocktrans with prenom=prenom %}Félicitations {{ prenom }} ! 🎉{% endblocktrans %}</p>
 
 <p class="message">
-  Votre compte producteur sur <strong>Makèt Peyizan</strong> a été
-  <strong>validé et activé</strong>. Vous pouvez maintenant commencer
+  Votre compte producteur sur <strong>{% trans "Makèt Peyizan" %}</strong> a été
+  <strong>{% trans "validé et activé" %}</strong>. Vous pouvez maintenant commencer
   à vendre vos produits agricoles.
 </p>
 
@@ -15,21 +16,21 @@
 
 <div class="card">
   <div class="card-row">
-    <span class="card-label">Code producteur</span>
+    <span class="card-label">{% trans "Code producteur" %}</span>
     <span class="card-value">{{ producteur.code_producteur }}</span>
   </div>
   <div class="card-row">
-    <span class="card-label">Nom complet</span>
+    <span class="card-label">{% trans "Nom complet" %}</span>
     <span class="card-value">{{ producteur.user.get_full_name }}</span>
   </div>
   <div class="card-row">
-    <span class="card-label">Statut</span>
-    <span class="badge badge-vert">✅ Actif</span>
+    <span class="card-label">{% trans "Statut" %}</span>
+    <span class="badge badge-vert">{% trans "✅ Actif" %}</span>
   </div>
 </div>
 
 <p style="text-align:center">
-  <a href="{{ site_url }}" class="btn">🌾 Accéder à mon espace producteur</a>
+  <a href="{{ site_url }}" class="btn">{% trans "🌾 Accéder à mon espace producteur" %}</a>
 </p>
 
 {% endblock %}

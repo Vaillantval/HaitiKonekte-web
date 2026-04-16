@@ -8,6 +8,7 @@ from drf_spectacular.utils import extend_schema
 
 from apps.accounts.models import Adresse
 from apps.accounts.serializers import AdresseSerializer
+from django.utils.translation import gettext as _
 
 
 # ── GET / POST /api/auth/adresses/ ─────────────────────────────────────────
@@ -82,7 +83,7 @@ def adresse_set_default(request, pk):
     return Response({
         'success': True,
         'data': {
-            'message': 'Adresse définie comme adresse par défaut.',
+            'message': _('Adresse définie comme adresse par défaut.'),
             'adresse': AdresseSerializer(adresse).data,
         }
     })

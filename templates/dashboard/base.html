@@ -1,6 +1,7 @@
 {% load static %}
+{% load i18n %}
 <!DOCTYPE html>
-<html lang="fr" data-theme="light">
+<html lang="{{ LANGUAGE_CODE }}" data-theme="light">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -353,6 +354,23 @@
     }
     [data-theme="dark"] .topbar-site-btn:hover { background: rgba(39,174,96,.12); color: var(--green-mid); }
 
+    /* Language select in topbar */
+    .lang-select-topbar {
+      height: 36px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: var(--card);
+      color: var(--text-muted);
+      font-size: 12px; font-weight: 600;
+      font-family: inherit;
+      padding: 0 10px;
+      cursor: pointer;
+      outline: none;
+      transition: border-color .18s, color .18s, background .18s;
+    }
+    .lang-select-topbar:hover { border-color: var(--green-mid); color: var(--green); background: var(--green-light); }
+    [data-theme="dark"] .lang-select-topbar:hover { background: rgba(39,174,96,.12); }
+
     /* User badge in topbar */
     .topbar-user {
       display: flex; align-items: center; gap: 8px;
@@ -477,7 +495,7 @@
 <div id="loading-screen">
   <div class="loading-logo">🌾</div>
   <div class="loading-spinner"></div>
-  <div class="loading-text">Chargement...</div>
+  <div class="loading-text">{% trans "Chargement..." %}</div>
 </div>
 
 <div id="app">
@@ -497,14 +515,14 @@
       </div>
       <div>
         <div class="sidebar-logo-text">{{ site_settings.nom_site|default:"Makèt Peyizan" }}</div>
-        <div class="sidebar-logo-sub">Admin</div>
+        <div class="sidebar-logo-sub">{% trans "Admin" %}</div>
       </div>
     </div>
 
     <div class="sidebar-user">
       <div class="sidebar-avatar" id="sb-avatar">?</div>
       <div class="sidebar-user-info">
-        <div class="sidebar-user-name" id="sb-name">Chargement...</div>
+        <div class="sidebar-user-name" id="sb-name">{% trans "Chargement..." %}</div>
         <div class="sidebar-user-role" id="sb-role"></div>
       </div>
     </div>
@@ -539,7 +557,7 @@
     <div class="topbar-right">
 
       <!-- Notifications messages contact (superadmin) -->
-      <button class="topbar-icon-btn" id="notif-btn" title="Messages de contact" onclick="window.location='/dashboard/superadmin/config/#contact'" style="display:none">
+      <button class="topbar-icon-btn" id="notif-btn" title="{% trans 'Messages de contact' %}" onclick="window.location='/dashboard/superadmin/config/#contact'" style="display:none">
         <i class="fas fa-envelope"></i>
         <span class="notif-dot" id="notif-dot"></span>
       </button>
@@ -547,20 +565,33 @@
       <div class="topbar-divider"></div>
 
       <!-- Dark mode toggle -->
-      <button class="theme-toggle" id="theme-toggle" title="Basculer le thème" onclick="toggleTheme()">
+      <button class="theme-toggle" id="theme-toggle" title="{% trans 'Basculer le thème' %}" onclick="toggleTheme()">
         <i class="fas fa-moon" id="theme-icon"></i>
       </button>
+
+      <!-- Sélecteur de langue -->
+      <form action="{% url 'set_language' %}" method="post" style="display:flex;align-items:center;">
+        {% csrf_token %}
+        <input name="next" type="hidden" value="{{ request.get_full_path }}">
+        {% get_current_language as LANGUAGE_CODE %}
+        {% get_available_languages as LANGUAGES %}
+        <select name="language" onchange="this.form.submit()" class="lang-select-topbar" title="{% trans 'Langue' %}">
+          {% for lang_code, lang_name in LANGUAGES %}
+            <option value="{{ lang_code }}" {% if lang_code == LANGUAGE_CODE %}selected{% endif %}>{{ lang_code|upper }}</option>
+          {% endfor %}
+        </select>
+      </form>
 
       <div class="topbar-divider"></div>
 
       <!-- Lien vers le site public -->
       <a href="/" class="topbar-site-btn">
         <i class="fas fa-store"></i>
-        <span>Voir le site</span>
+        <span>{% trans "Voir le site" %}</span>
       </a>
 
       <!-- Mini user badge -->
-      <div class="topbar-user" onclick="window.location='/dashboard/superadmin/utilisateurs/'" title="Profil">
+      <div class="topbar-user" onclick="window.location='/dashboard/superadmin/utilisateurs/'" title="{% trans 'Profil' %}">
         <div class="topbar-user-avatar" id="tb-avatar">?</div>
         <span class="topbar-user-name" id="tb-name">...</span>
       </div>

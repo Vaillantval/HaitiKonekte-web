@@ -11,6 +11,7 @@ from apps.accounts.permissions import IsSuperAdmin
 from apps.accounts.models import Producteur
 from apps.accounts.serializers import ProducteurProfilSerializer
 from apps.accounts.serializers.auth_serializers import RegisterSerializer
+from django.utils.translation import gettext as _
 
 
 # ── GET /api/admin/producteurs/ ─────────────────────────────────

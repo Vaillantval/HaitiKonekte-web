@@ -50,8 +50,8 @@
   <!-- Header -->
   <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px;">
     <div>
-      <h1 style="margin:0; color:#2c3e50; font-size:24px;">Dashboard BI — Maket Peyizan</h1>
-      <p style="margin:4px 0 0; color:#7f8c8d; font-size:13px;">Mise a jour : {{ today|date:"d/m/Y H:i" }}</p>
+      <h1 style="margin:0; color:#2c3e50; font-size:24px;">{% trans "Dashboard BI — Maket Peyizan" %}</h1>
+      <p style="margin:4px 0 0; color:#7f8c8d; font-size:13px;">{% blocktrans with today=today|date:"d/m/Y H:i" %}Mise a jour : {{ today }}{% endblocktrans %}</p>
     </div>
     <div style="display:flex; gap:10px;">
       <a href="{% url 'analytics:carte_users' %}"
@@ -62,7 +62,7 @@
         🗺️ Carte des utilisateurs
       </a>
       <a href="{% url 'analytics:export' %}" style="padding:8px 16px; background:#27ae60; color:#fff; border:none; border-radius:6px; cursor:pointer; font-size:13px; text-decoration:none; display:inline-flex; align-items:center; gap:6px;">
-        <i class="fas fa-download"></i> Exporter
+        <i class="fas fa-download"></i> {% trans "Exporter" %}
       </a>
       <button onclick="location.reload()" style="padding:8px 16px; background:#3498db; color:#fff; border:none; border-radius:6px; cursor:pointer; font-size:13px;">
         Actualiser
@@ -73,50 +73,50 @@
   <!-- KPIs -->
   <div class="kpi-grid">
     <div class="kpi-card">
-      <div class="kpi-label">Utilisateurs actifs</div>
+      <div class="kpi-label">{% trans "Utilisateurs actifs" %}</div>
       <div class="kpi-value">{{ kpis.total_utilisateurs }}</div>
     </div>
     <div class="kpi-card green">
-      <div class="kpi-label">Producteurs actifs</div>
+      <div class="kpi-label">{% trans "Producteurs actifs" %}</div>
       <div class="kpi-value">{{ kpis.total_producteurs }}</div>
-      <div class="kpi-sub">{{ kpis.total_acheteurs }} acheteurs</div>
+      <div class="kpi-sub">{% blocktrans with kpis=kpis.total_acheteurs %}{{ kpis }} acheteurs{% endblocktrans %}</div>
     </div>
     <div class="kpi-card">
-      <div class="kpi-label">Produits disponibles</div>
+      <div class="kpi-label">{% trans "Produits disponibles" %}</div>
       <div class="kpi-value">{{ kpis.total_produits }}</div>
     </div>
     <div class="kpi-card orange">
-      <div class="kpi-label">Commandes totales</div>
+      <div class="kpi-label">{% trans "Commandes totales" %}</div>
       <div class="kpi-value">{{ kpis.total_commandes }}</div>
-      <div class="kpi-sub">{{ kpis.commandes_mois }} ce mois</div>
+      <div class="kpi-sub">{% blocktrans with kpis=kpis.commandes_mois %}{{ kpis }} ce mois{% endblocktrans %}</div>
     </div>
     <div class="kpi-card green">
-      <div class="kpi-label">CA total (HTG)</div>
+      <div class="kpi-label">{% trans "CA total (HTG)" %}</div>
       <div class="kpi-value">{{ kpis.ca_total|floatformat:0 }}</div>
-      <div class="kpi-sub">{{ kpis.ca_mois|floatformat:0 }} ce mois</div>
+      <div class="kpi-sub">{% blocktrans with kpis=kpis.ca_mois|floatformat:0 %}{{ kpis }} ce mois{% endblocktrans %}</div>
     </div>
     <div class="kpi-card red">
-      <div class="kpi-label">Alertes stock</div>
+      <div class="kpi-label">{% trans "Alertes stock" %}</div>
       <div class="kpi-value">{{ kpis.alertes_nouvelles }}</div>
-      <div class="kpi-sub">nouvelles alertes</div>
+      <div class="kpi-sub">{% trans "nouvelles alertes" %}</div>
     </div>
     <div class="kpi-card purple">
-      <div class="kpi-label">Paiements en attente</div>
+      <div class="kpi-label">{% trans "Paiements en attente" %}</div>
       <div class="kpi-value">{{ kpis.paiements_en_attente }}</div>
-      <div class="kpi-sub">a verifier</div>
+      <div class="kpi-sub">{% trans "a verifier" %}</div>
     </div>
   </div>
 
   <!-- Graphiques principale -->
   <div class="charts-grid">
     <div class="card">
-      <div class="card-title">Chiffre d'affaires — 30 derniers jours</div>
+      <div class="card-title">{% trans "Chiffre d'affaires — 30 derniers jours" %}</div>
       <div class="chart-container">
         <canvas id="chartVentesJour"></canvas>
       </div>
     </div>
     <div class="card">
-      <div class="card-title">Commandes par statut</div>
+      <div class="card-title">{% trans "Commandes par statut" %}</div>
       <div class="chart-container">
         <canvas id="chartStatuts"></canvas>
       </div>
@@ -125,19 +125,19 @@
 
   <div class="charts-grid-3">
     <div class="card">
-      <div class="card-title">CA mensuel (12 mois)</div>
+      <div class="card-title">{% trans "CA mensuel (12 mois)" %}</div>
       <div class="chart-container">
         <canvas id="chartMensuel"></canvas>
       </div>
     </div>
     <div class="card">
-      <div class="card-title">Paiements par methode</div>
+      <div class="card-title">{% trans "Paiements par methode" %}</div>
       <div class="chart-container">
         <canvas id="chartPaiements"></canvas>
       </div>
     </div>
     <div class="card">
-      <div class="card-title">Ventes par categorie</div>
+      <div class="card-title">{% trans "Ventes par categorie" %}</div>
       <div class="chart-container">
         <canvas id="chartCategories"></canvas>
       </div>
@@ -145,12 +145,12 @@
   </div>
 
   <!-- Top 10 -->
-  <p class="section-title">Classements</p>
+  <p class="section-title">{% trans "Classements" %}</p>
   <div class="tables-grid-3">
     <div class="card">
-      <div class="card-title">Top 10 Produits</div>
+      <div class="card-title">{% trans "Top 10 Produits" %}</div>
       <table class="dash-table">
-        <thead><tr><th>#</th><th>Produit</th><th>Vendu</th><th>CA (HTG)</th></tr></thead>
+        <thead><tr><th>#</th><th>{% trans "Produit" %}</th><th>{% trans "Vendu" %}</th><th>{% trans "CA (HTG)" %}</th></tr></thead>
         <tbody>
           {% for p in top_produits %}
           <tr>
@@ -160,16 +160,16 @@
             <td>{{ p.ca|floatformat:0 }}</td>
           </tr>
           {% empty %}
-          <tr><td colspan="4" style="text-align:center; color:#95a5a6;">Aucune donnee</td></tr>
+          <tr><td colspan="4" style="text-align:center; color:#95a5a6;">{% trans "Aucune donnee" %}</td></tr>
           {% endfor %}
         </tbody>
       </table>
     </div>
 
     <div class="card">
-      <div class="card-title">Top 10 Producteurs</div>
+      <div class="card-title">{% trans "Top 10 Producteurs" %}</div>
       <table class="dash-table">
-        <thead><tr><th>#</th><th>Producteur</th><th>Cmdes</th><th>CA (HTG)</th></tr></thead>
+        <thead><tr><th>#</th><th>{% trans "Producteur" %}</th><th>{% trans "Cmdes" %}</th><th>{% trans "CA (HTG)" %}</th></tr></thead>
         <tbody>
           {% for p in top_producteurs %}
           <tr>
@@ -179,16 +179,16 @@
             <td>{{ p.ca|default:0|floatformat:0 }}</td>
           </tr>
           {% empty %}
-          <tr><td colspan="4" style="text-align:center; color:#95a5a6;">Aucune donnee</td></tr>
+          <tr><td colspan="4" style="text-align:center; color:#95a5a6;">{% trans "Aucune donnee" %}</td></tr>
           {% endfor %}
         </tbody>
       </table>
     </div>
 
     <div class="card">
-      <div class="card-title">Top 10 Acheteurs</div>
+      <div class="card-title">{% trans "Top 10 Acheteurs" %}</div>
       <table class="dash-table">
-        <thead><tr><th>#</th><th>Acheteur</th><th>Cmdes</th><th>Depense (HTG)</th></tr></thead>
+        <thead><tr><th>#</th><th>{% trans "Acheteur" %}</th><th>{% trans "Cmdes" %}</th><th>{% trans "Depense (HTG)" %}</th></tr></thead>
         <tbody>
           {% for a in top_acheteurs %}
           <tr>
@@ -198,7 +198,7 @@
             <td>{{ a.depense|default:0|floatformat:0 }}</td>
           </tr>
           {% empty %}
-          <tr><td colspan="4" style="text-align:center; color:#95a5a6;">Aucune donnee</td></tr>
+          <tr><td colspan="4" style="text-align:center; color:#95a5a6;">{% trans "Aucune donnee" %}</td></tr>
           {% endfor %}
         </tbody>
       </table>
@@ -206,12 +206,12 @@
   </div>
 
   <!-- Alertes & Collectes -->
-  <p class="section-title">Alertes & Operations terrain</p>
+  <p class="section-title">{% trans "Alertes & Operations terrain" %}</p>
   <div class="tables-grid">
     <div class="card">
-      <div class="card-title">Alertes stock actives</div>
+      <div class="card-title">{% trans "Alertes stock actives" %}</div>
       <table class="dash-table">
-        <thead><tr><th>Produit</th><th>Producteur</th><th>Stock</th><th>Seuil</th><th>Niveau</th></tr></thead>
+        <thead><tr><th>{% trans "Produit" %}</th><th>{% trans "Producteur" %}</th><th>{% trans "Stock" %}</th><th>{% trans "Seuil" %}</th><th>{% trans "Niveau" %}</th></tr></thead>
         <tbody>
           {% for a in alertes_stock %}
           <tr class="{% if a.niveau == 'epuise' or a.niveau == 'critique' %}alert-row{% endif %}">
@@ -220,23 +220,23 @@
             <td>{{ a.stock_actuel }}</td>
             <td>{{ a.seuil }}</td>
             <td>
-              {% if a.niveau == 'epuise' %}<span class="badge badge-red">Epuise</span>
-              {% elif a.niveau == 'critique' %}<span class="badge badge-orange">Critique</span>
-              {% elif a.niveau == 'warning' %}<span class="badge badge-blue">Avertiss.</span>
-              {% else %}<span class="badge badge-gray">Info</span>{% endif %}
+              {% if a.niveau == 'epuise' %}<span class="badge badge-red">{% trans "Epuise" %}</span>
+              {% elif a.niveau == 'critique' %}<span class="badge badge-orange">{% trans "Critique" %}</span>
+              {% elif a.niveau == 'warning' %}<span class="badge badge-blue">{% trans "Avertiss." %}</span>
+              {% else %}<span class="badge badge-gray">{% trans "Info" %}</span>{% endif %}
             </td>
           </tr>
           {% empty %}
-          <tr><td colspan="5" style="text-align:center; color:#27ae60; font-weight:600;">Aucune alerte active</td></tr>
+          <tr><td colspan="5" style="text-align:center; color:#27ae60; font-weight:600;">{% trans "Aucune alerte active" %}</td></tr>
           {% endfor %}
         </tbody>
       </table>
     </div>
 
     <div class="card">
-      <div class="card-title">Collectes a venir (14 jours)</div>
+      <div class="card-title">{% trans "Collectes a venir (14 jours)" %}</div>
       <table class="dash-table">
-        <thead><tr><th>Ref</th><th>Zone</th><th>Date</th><th>Collecteur</th><th>Statut</th></tr></thead>
+        <thead><tr><th>{% trans "Ref" %}</th><th>{% trans "Zone" %}</th><th>{% trans "Date" %}</th><th>{% trans "Collecteur" %}</th><th>{% trans "Statut" %}</th></tr></thead>
         <tbody>
           {% for c in collectes_a_venir %}
           <tr>
@@ -244,19 +244,19 @@
             <td>{{ c.zone.nom }}</td>
             <td>{{ c.date_planifiee|date:"d/m/Y" }}</td>
             <td>{{ c.collecteur.get_full_name|default:"—" }}</td>
-            <td><span class="badge badge-blue">Planifiee</span></td>
+            <td><span class="badge badge-blue">{% trans "Planifiee" %}</span></td>
           </tr>
           {% empty %}
-          <tr><td colspan="5" style="text-align:center; color:#95a5a6;">Aucune collecte planifiee</td></tr>
+          <tr><td colspan="5" style="text-align:center; color:#95a5a6;">{% trans "Aucune collecte planifiee" %}</td></tr>
           {% endfor %}
         </tbody>
       </table>
 
       {% if collectes_en_retard %}
       <div style="margin-top:16px;">
-        <div style="color:#e74c3c; font-weight:600; margin-bottom:8px; font-size:13px;">Collectes en retard ({{ collectes_en_retard|length }})</div>
+        <div style="color:#e74c3c; font-weight:600; margin-bottom:8px; font-size:13px;">{% blocktrans with collectes_en_retard=collectes_en_retard|length %}Collectes en retard ({{ collectes_en_retard }}){% endblocktrans %}</div>
         <table class="dash-table">
-          <thead><tr><th>Ref</th><th>Zone</th><th>Date prevue</th><th>Collecteur</th></tr></thead>
+          <thead><tr><th>{% trans "Ref" %}</th><th>{% trans "Zone" %}</th><th>{% trans "Date prevue" %}</th><th>{% trans "Collecteur" %}</th></tr></thead>
           <tbody>
             {% for c in collectes_en_retard %}
             <tr class="alert-row">
@@ -274,12 +274,12 @@
   </div>
 
   <!-- Paiements & Commandes recentes -->
-  <p class="section-title">Activite recente</p>
+  <p class="section-title">{% trans "Activite recente" %}</p>
   <div class="tables-grid">
     <div class="card">
-      <div class="card-title">Paiements en attente de verification</div>
+      <div class="card-title">{% trans "Paiements en attente de verification" %}</div>
       <table class="dash-table">
-        <thead><tr><th>Reference</th><th>Commande</th><th>Acheteur</th><th>Type</th><th>Montant</th><th>Statut</th></tr></thead>
+        <thead><tr><th>{% trans "Reference" %}</th><th>{% trans "Commande" %}</th><th>{% trans "Acheteur" %}</th><th>{% trans "Type" %}</th><th>{% trans "Montant" %}</th><th>{% trans "Statut" %}</th></tr></thead>
         <tbody>
           {% for p in paiements_en_attente %}
           <tr>
@@ -287,40 +287,40 @@
             <td>{{ p.commande.numero_commande }}</td>
             <td>{{ p.commande.acheteur.user.get_full_name }}</td>
             <td>{{ p.get_type_paiement_display }}</td>
-            <td>{{ p.montant|floatformat:0 }} HTG</td>
+            <td>{% blocktrans with p=p.montant|floatformat:0 %}{{ p }} HTG{% endblocktrans %}</td>
             <td>
-              {% if p.statut == 'soumis' %}<span class="badge badge-orange">Preuve soumise</span>
-              {% else %}<span class="badge badge-gray">En attente</span>{% endif %}
+              {% if p.statut == 'soumis' %}<span class="badge badge-orange">{% trans "Preuve soumise" %}</span>
+              {% else %}<span class="badge badge-gray">{% trans "En attente" %}</span>{% endif %}
             </td>
           </tr>
           {% empty %}
-          <tr><td colspan="6" style="text-align:center; color:#27ae60; font-weight:600;">Aucun paiement en attente</td></tr>
+          <tr><td colspan="6" style="text-align:center; color:#27ae60; font-weight:600;">{% trans "Aucun paiement en attente" %}</td></tr>
           {% endfor %}
         </tbody>
       </table>
     </div>
 
     <div class="card">
-      <div class="card-title">Dernieres commandes</div>
+      <div class="card-title">{% trans "Dernieres commandes" %}</div>
       <table class="dash-table">
-        <thead><tr><th>N°</th><th>Acheteur</th><th>Producteur</th><th>Total</th><th>Statut</th></tr></thead>
+        <thead><tr><th>{% trans "N°" %}</th><th>{% trans "Acheteur" %}</th><th>{% trans "Producteur" %}</th><th>{% trans "Total" %}</th><th>{% trans "Statut" %}</th></tr></thead>
         <tbody>
           {% for c in dernieres_commandes %}
           <tr>
             <td><a href="/admin/orders/commande/{{ c.pk }}/change/" style="color:#3498db;">{{ c.numero_commande }}</a></td>
             <td>{{ c.acheteur.user.get_full_name }}</td>
             <td>{{ c.producteur.user.get_full_name }}</td>
-            <td>{{ c.total|floatformat:0 }} HTG</td>
+            <td>{% blocktrans with c=c.total|floatformat:0 %}{{ c }} HTG{% endblocktrans %}</td>
             <td>
-              {% if c.statut == 'livree' %}<span class="badge badge-green">Livree</span>
-              {% elif c.statut == 'annulee' %}<span class="badge badge-red">Annulee</span>
-              {% elif c.statut == 'confirmee' %}<span class="badge badge-blue">Confirmee</span>
-              {% elif c.statut == 'en_attente' %}<span class="badge badge-orange">En attente</span>
+              {% if c.statut == 'livree' %}<span class="badge badge-green">{% trans "Livree" %}</span>
+              {% elif c.statut == 'annulee' %}<span class="badge badge-red">{% trans "Annulee" %}</span>
+              {% elif c.statut == 'confirmee' %}<span class="badge badge-blue">{% trans "Confirmee" %}</span>
+              {% elif c.statut == 'en_attente' %}<span class="badge badge-orange">{% trans "En attente" %}</span>
               {% else %}<span class="badge badge-gray">{{ c.get_statut_display }}</span>{% endif %}
             </td>
           </tr>
           {% empty %}
-          <tr><td colspan="5" style="text-align:center; color:#95a5a6;">Aucune commande</td></tr>
+          <tr><td colspan="5" style="text-align:center; color:#95a5a6;">{% trans "Aucune commande" %}</td></tr>
           {% endfor %}
         </tbody>
       </table>
@@ -329,9 +329,9 @@
 
   {% if derniers_producteurs %}
   <div class="card" style="margin-bottom:28px;">
-    <div class="card-title">Producteurs en attente de validation ({{ derniers_producteurs|length }})</div>
+    <div class="card-title">{% blocktrans with derniers_producteurs=derniers_producteurs|length %}Producteurs en attente de validation ({{ derniers_producteurs }}){% endblocktrans %}</div>
     <table class="dash-table">
-      <thead><tr><th>Code</th><th>Nom</th><th>Departement</th><th>Commune</th><th>Inscription</th><th>Action</th></tr></thead>
+      <thead><tr><th>{% trans "Code" %}</th><th>{% trans "Nom" %}</th><th>{% trans "Departement" %}</th><th>{% trans "Commune" %}</th><th>{% trans "Inscription" %}</th><th>{% trans "Action" %}</th></tr></thead>
       <tbody>
         {% for p in derniers_producteurs %}
         <tr>
@@ -340,7 +340,7 @@
           <td>{{ p.get_departement_display }}</td>
           <td>{{ p.commune }}</td>
           <td>{{ p.created_at|date:"d/m/Y" }}</td>
-          <td><a href="/admin/accounts/producteur/{{ p.pk }}/change/" class="badge badge-orange">Valider</a></td>
+          <td><a href="/admin/accounts/producteur/{{ p.pk }}/change/" class="badge badge-orange">{% trans "Valider" %}</a></td>
         </tr>
         {% endfor %}
       </tbody>

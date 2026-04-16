@@ -1,6 +1,7 @@
 from django.db import transaction
 from django.utils import timezone
 from apps.collectes.models import Collecte, ParticipationCollecte
+from django.utils.translation import gettext as _
 
 
 class CollecteService:
@@ -22,7 +23,7 @@ class CollecteService:
     @transaction.atomic
     def inscrire_producteur(collecte, producteur, quantite_prevue=0, notes=''):
         if collecte.statut not in [Collecte.Statut.PLANIFIEE, Collecte.Statut.EN_COURS]:
-            raise ValueError("Impossible de s'inscrire a une collecte qui n'est pas planifiee ou en cours.")
+            raise ValueError(_("Impossible de s'inscrire a une collecte qui n'est pas planifiee ou en cours."))
         participation, created = ParticipationCollecte.objects.get_or_create(
             collecte=collecte,
             producteur=producteur,
@@ -38,7 +39,7 @@ class CollecteService:
     @transaction.atomic
     def demarrer_collecte(collecte, effectue_par=None):
         if collecte.statut != Collecte.Statut.PLANIFIEE:
-            raise ValueError("Seules les collectes planifiees peuvent etre demarrees.")
+            raise ValueError(_("Seules les collectes planifiees peuvent etre demarrees."))
         collecte.statut         = Collecte.Statut.EN_COURS
         collecte.date_debut_reel = timezone.now()
         collecte.save()
@@ -48,7 +49,7 @@ class CollecteService:
     @transaction.atomic
     def terminer_collecte(collecte, rapport=''):
         if collecte.statut != Collecte.Statut.EN_COURS:
-            raise ValueError("Seules les collectes en cours peuvent etre terminees.")
+            raise ValueError(_("Seules les collectes en cours peuvent etre terminees."))
         collecte.statut       = Collecte.Statut.TERMINEE
         collecte.date_fin_reel = timezone.now()
         collecte.rapport      = rapport

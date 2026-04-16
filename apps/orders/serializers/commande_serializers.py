@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from apps.accounts.models import Adresse
+from django.utils.translation import gettext_lazy as _
 
 
 class PasserCommandeSerializer(serializers.Serializer):
@@ -51,7 +52,6 @@ class PasserCommandeSerializer(serializers.Serializer):
             addr_text = data.get('adresse_livraison_text', '')
             if not addr_id and not addr_text:
                 raise serializers.ValidationError(
-                    "Une adresse de livraison est requise "
-                    "pour la livraison à domicile."
+                    _("Une adresse de livraison est requise pour la livraison à domicile.")
                 )
         return data

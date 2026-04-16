@@ -1,6 +1,7 @@
 from django.db import models
 from django.conf import settings
 from apps.accounts.models.producteur import Departement
+from django.utils.translation import gettext_lazy as _
 
 
 class ZoneCollecte(models.Model):
@@ -11,8 +12,8 @@ class ZoneCollecte(models.Model):
     created_at  = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        verbose_name        = 'Zone de collecte'
-        verbose_name_plural = 'Zones de collecte'
+        verbose_name        = _('Zone de collecte')
+        verbose_name_plural = _('Zones de collecte')
         ordering            = ['departement', 'nom']
 
     def __str__(self):
@@ -32,8 +33,8 @@ class PointCollecte(models.Model):
     created_at  = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        verbose_name        = 'Point de collecte'
-        verbose_name_plural = 'Points de collecte'
+        verbose_name        = _('Point de collecte')
+        verbose_name_plural = _('Points de collecte')
         ordering            = ['zone', 'nom']
 
     def __str__(self):
@@ -42,11 +43,11 @@ class PointCollecte(models.Model):
 
 class Collecte(models.Model):
     class Statut(models.TextChoices):
-        PLANIFIEE  = 'planifiee',  'Planifiee'
-        EN_COURS   = 'en_cours',   'En cours'
-        TERMINEE   = 'terminee',   'Terminee'
-        ANNULEE    = 'annulee',    'Annulee'
-        REPORTEE   = 'reportee',   'Reportee'
+        PLANIFIEE  = 'planifiee',  _('Planifiee')
+        EN_COURS   = 'en_cours',   _('En cours')
+        TERMINEE   = 'terminee',   _('Terminee')
+        ANNULEE    = 'annulee',    _('Annulee')
+        REPORTEE   = 'reportee',   _('Reportee')
 
     reference       = models.CharField(max_length=30, unique=True, blank=True)
     zone            = models.ForeignKey(ZoneCollecte, on_delete=models.PROTECT, related_name='collectes')
@@ -64,8 +65,8 @@ class Collecte(models.Model):
     updated_at      = models.DateTimeField(auto_now=True)
 
     class Meta:
-        verbose_name        = 'Collecte'
-        verbose_name_plural = 'Collectes'
+        verbose_name        = _('Collecte')
+        verbose_name_plural = _('Collectes')
         ordering            = ['-date_planifiee']
 
     def __str__(self):
@@ -102,24 +103,24 @@ class Collecte(models.Model):
 
 class ParticipationCollecte(models.Model):
     class Statut(models.TextChoices):
-        INSCRIT   = 'inscrit',   'Inscrit'
-        CONFIRME  = 'confirme',  'Confirme'
-        PRESENT   = 'present',   'Present'
-        ABSENT    = 'absent',    'Absent'
-        ANNULE    = 'annule',    'Annule'
+        INSCRIT   = 'inscrit',   _('Inscrit')
+        CONFIRME  = 'confirme',  _('Confirme')
+        PRESENT   = 'present',   _('Present')
+        ABSENT    = 'absent',    _('Absent')
+        ANNULE    = 'annule',    _('Annule')
 
     collecte    = models.ForeignKey(Collecte, on_delete=models.CASCADE, related_name='participations')
     producteur  = models.ForeignKey('accounts.Producteur', on_delete=models.CASCADE, related_name='participations_collectes')
     statut      = models.CharField(max_length=20, choices=Statut.choices, default=Statut.INSCRIT)
-    quantite_prevue   = models.PositiveIntegerField(default=0, help_text="Quantite estimee a apporter (kg ou unites)")
-    quantite_collectee = models.PositiveIntegerField(default=0, help_text="Quantite reellement collectee")
+    quantite_prevue   = models.PositiveIntegerField(default=0, help_text=_("Quantite estimee a apporter (kg ou unites)"))
+    quantite_collectee = models.PositiveIntegerField(default=0, help_text=_("Quantite reellement collectee"))
     notes       = models.TextField(blank=True)
     created_at  = models.DateTimeField(auto_now_add=True)
     updated_at  = models.DateTimeField(auto_now=True)
 
     class Meta:
-        verbose_name        = 'Participation collecte'
-        verbose_name_plural = 'Participations collectes'
+        verbose_name        = _('Participation collecte')
+        verbose_name_plural = _('Participations collectes')
         unique_together     = ('collecte', 'producteur')
         ordering            = ['-created_at']
 

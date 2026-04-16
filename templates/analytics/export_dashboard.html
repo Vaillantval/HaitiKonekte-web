@@ -1,4 +1,5 @@
 {% extends "admin/base_site.html" %}
+{% load i18n %}
 {% load static %}
 
 {% block title %}Exporter le Rapport{% endblock %}
@@ -41,17 +42,17 @@
 
 {% block content %}
 <div class="export-wrapper">
-  <h1>Exporter le Rapport du Dashboard</h1>
-  <p class="subtitle">Téléchargez les données du dashboard au format de votre choix</p>
+  <h1>{% trans "Exporter le Rapport du Dashboard" %}</h1>
+  <p class="subtitle">{% trans "Téléchargez les données du dashboard au format de votre choix" %}</p>
 
   <div class="export-grid">
     <div class="exp-card">
-      <h2>Paramètres d'Export</h2>
+      <h2>{% trans "Paramètres d'Export" %}</h2>
         <form method="post" action="{% url 'analytics:export' %}" class="export-form" enctype="multipart/form-data">
           {% csrf_token %}
 
           <div class="form-group">
-            <label for="start_date">Date de début</label>
+            <label for="start_date">{% trans "Date de début" %}</label>
             <input 
               type="date" 
               id="start_date" 
@@ -59,11 +60,11 @@
               value="{{ default_start|date:'Y-m-d' }}"
               required
             >
-            <small class="text-muted">Par défaut: 30 jours avant aujourd'hui</small>
+            <small class="text-muted">{% trans "Par défaut: 30 jours avant aujourd'hui" %}</small>
           </div>
 
           <div class="form-group">
-            <label for="end_date">Date de fin</label>
+            <label for="end_date">{% trans "Date de fin" %}</label>
             <input 
               type="date" 
               id="end_date" 
@@ -71,11 +72,11 @@
               value="{{ today|date:'Y-m-d' }}"
               required
             >
-            <small class="text-muted">Par défaut: Aujourd'hui</small>
+            <small class="text-muted">{% trans "Par défaut: Aujourd'hui" %}</small>
           </div>
 
           <div class="form-group">
-            <label>Format d'export</label>
+            <label>{% trans "Format d'export" %}</label>
             <div class="radio-group">
               <label class="radio-option">
                 <input 
@@ -87,8 +88,8 @@
                 >
                 <span class="radio-label">
                   <i class="fas fa-file-pdf" style="color: #e74c3c;"></i>
-                  <strong>PDF</strong>
-                  <small>Rapport professionnel avec graphes</small>
+                  <strong>{% trans "PDF" %}</strong>
+                  <small>{% trans "Rapport professionnel avec graphes" %}</small>
                 </span>
               </label>
 
@@ -101,8 +102,8 @@
                 >
                 <span class="radio-label">
                   <i class="fas fa-file-csv" style="color: #27ae60;"></i>
-                  <strong>CSV</strong>
-                  <small>Données brutes au format CSV</small>
+                  <strong>{% trans "CSV" %}</strong>
+                  <small>{% trans "Données brutes au format CSV" %}</small>
                 </span>
               </label>
 
@@ -115,8 +116,8 @@
                 >
                 <span class="radio-label">
                   <i class="fas fa-file-excel" style="color: #2ecc71;"></i>
-                  <strong>Excel</strong>
-                  <small>Classeur avec plusieurs feuilles</small>
+                  <strong>{% trans "Excel" %}</strong>
+                  <small>{% trans "Classeur avec plusieurs feuilles" %}</small>
                 </span>
               </label>
             </div>
@@ -124,10 +125,10 @@
 
           <div class="form-actions">
             <button type="submit" class="btn btn-primary">
-              <i class="fas fa-download"></i> Télécharger le Rapport
+              <i class="fas fa-download"></i> {% trans "Télécharger le Rapport" %}
             </button>
             <a href="{% url 'analytics:dashboard' %}" class="btn btn-secondary">
-              <i class="fas fa-arrow-left"></i> Retour
+              <i class="fas fa-arrow-left"></i> {% trans "Retour" %}
             </a>
           </div>
         </form>
@@ -135,35 +136,35 @@
     </div>
 
     <div class="exp-card" style="position:sticky; top:80px; align-self:start;">
-      <h2>À propos des formats</h2>
+      <h2>{% trans "À propos des formats" %}</h2>
       <div class="info-section">
-        <h3><i class="fas fa-file-pdf" style="color:#e74c3c;"></i> PDF</h3>
-        <p>Format idéal pour :</p>
+        <h3><i class="fas fa-file-pdf" style="color:#e74c3c;"></i> {% trans "PDF" %}</h3>
+        <p>{% trans "Format idéal pour :" %}</p>
         <ul>
-          <li>Impression professionnelle</li>
-          <li>Rapports avec tableaux</li>
-          <li>Partage par email</li>
-          <li>Archivage long terme</li>
+          <li>{% trans "Impression professionnelle" %}</li>
+          <li>{% trans "Rapports avec tableaux" %}</li>
+          <li>{% trans "Partage par email" %}</li>
+          <li>{% trans "Archivage long terme" %}</li>
         </ul>
       </div>
       <div class="info-section">
-        <h3><i class="fas fa-file-csv" style="color:#27ae60;"></i> CSV</h3>
-        <p>Format idéal pour :</p>
+        <h3><i class="fas fa-file-csv" style="color:#27ae60;"></i> {% trans "CSV" %}</h3>
+        <p>{% trans "Format idéal pour :" %}</p>
         <ul>
-          <li>Données brutes</li>
-          <li>Import dans d'autres outils</li>
-          <li>Analyse statistique</li>
-          <li>Traitement avec scripts</li>
+          <li>{% trans "Données brutes" %}</li>
+          <li>{% trans "Import dans d'autres outils" %}</li>
+          <li>{% trans "Analyse statistique" %}</li>
+          <li>{% trans "Traitement avec scripts" %}</li>
         </ul>
       </div>
       <div class="info-section">
-        <h3><i class="fas fa-file-excel" style="color:#2ecc71;"></i> Excel</h3>
-        <p>Format idéal pour :</p>
+        <h3><i class="fas fa-file-excel" style="color:#2ecc71;"></i> {% trans "Excel" %}</h3>
+        <p>{% trans "Format idéal pour :" %}</p>
         <ul>
-          <li>Manipulation des données</li>
-          <li>Calculs et formules</li>
-          <li>Graphes interactifs</li>
-          <li>Présentations aux stakeholders</li>
+          <li>{% trans "Manipulation des données" %}</li>
+          <li>{% trans "Calculs et formules" %}</li>
+          <li>{% trans "Graphes interactifs" %}</li>
+          <li>{% trans "Présentations aux stakeholders" %}</li>
         </ul>
       </div>
     </div>

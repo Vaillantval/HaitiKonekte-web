@@ -1,4 +1,5 @@
 {% extends 'dashboard/base.html' %}
+{% load i18n %}
 {% block title %}Producteurs — Superadmin{% endblock %}
 {% block sidebar_nav %}{% include 'dashboard/superadmin_sidebar.html' with active='producteurs' %}{% endblock %}
 {% block page_title %}Producteurs{% endblock %}
@@ -101,86 +102,86 @@
 <!-- Modal Producteur -->
 <div class="modal-overlay" id="prod-modal">
   <div class="modal-box">
-    <h3 id="modal-title">Nouveau producteur</h3>
+    <h3 id="modal-title">{% trans "Nouveau producteur" %}</h3>
     <form id="prod-form" onsubmit="submitProd(event)">
       <div class="form-grid">
-        <div class="section-label">Compte utilisateur</div>
+        <div class="section-label">{% trans "Compte utilisateur" %}</div>
         <div class="field" id="username-wrap">
-          <label>Nom d'utilisateur *</label>
-          <input type="text" id="f-username" placeholder="Ex: jean.pierre">
+          <label>{% trans "Nom d'utilisateur *" %}</label>
+          <input type="text" id="f-username" placeholder="{% trans 'Ex: jean.pierre' %}">
           <span class="field-error" id="err-username"></span>
         </div>
         <div class="field">
-          <label>Téléphone</label>
+          <label>{% trans "Téléphone" %}</label>
           <input type="text" id="f-telephone" placeholder="+509 ...">
         </div>
         <div class="field">
-          <label>Prénom *</label>
-          <input type="text" id="f-first_name" placeholder="Prénom">
+          <label>{% trans "Prénom *" %}</label>
+          <input type="text" id="f-first_name" placeholder="{% trans 'Prénom' %}">
         </div>
         <div class="field">
-          <label>Nom *</label>
-          <input type="text" id="f-last_name" placeholder="Nom de famille">
+          <label>{% trans "Nom *" %}</label>
+          <input type="text" id="f-last_name" placeholder="{% trans 'Nom de famille' %}">
         </div>
         <div class="field full">
-          <label>Email *</label>
-          <input type="email" id="f-email" placeholder="email@exemple.com">
+          <label>{% trans "Email *" %}</label>
+          <input type="email" id="f-email" placeholder="{% trans 'email@exemple.com' %}">
           <span class="field-error" id="err-email"></span>
         </div>
         <div class="field" id="password-wrap">
-          <label>Mot de passe *</label>
-          <input type="password" id="f-password" placeholder="Minimum 8 caractères">
+          <label>{% trans "Mot de passe *" %}</label>
+          <input type="password" id="f-password" placeholder="{% trans 'Minimum 8 caractères' %}">
         </div>
         <div class="field" id="password2-wrap">
-          <label>Confirmer MDP *</label>
+          <label>{% trans "Confirmer MDP *" %}</label>
           <input type="password" id="f-password2">
         </div>
 
         <hr class="section-sep">
-        <div class="section-label"><i class="fas fa-tractor" style="margin-right:5px"></i>Profil Producteur</div>
+        <div class="section-label"><i class="fas fa-tractor" style="margin-right:5px"></i>{% trans "Profil Producteur" %}</div>
         <div class="field">
-          <label>Département *</label>
+          <label>{% trans "Département *" %}</label>
           <select id="f-departement"></select>
         </div>
         <div class="field">
-          <label>Commune *</label>
+          <label>{% trans "Commune *" %}</label>
           <select id="f-commune"></select>
         </div>
         <div class="field">
-          <label>Section Communale</label>
+          <label>{% trans "Section Communale" %}</label>
           <select id="f-localite"></select>
         </div>
         <div class="field">
-          <label>Superficie (ha)</label>
-          <input type="number" id="f-superficie" min="0" step="0.01" placeholder="Ex: 2.5">
+          <label>{% trans "Superficie (ha)" %}</label>
+          <input type="number" id="f-superficie" min="0" step="0.01" placeholder="{% trans 'Ex: 2.5' %}">
         </div>
         <div class="field full">
-          <label>Adresse complète</label>
+          <label>{% trans "Adresse complète" %}</label>
           <textarea id="f-adresse"></textarea>
         </div>
         <div class="field full">
-          <label>Description / Activité</label>
-          <textarea id="f-description" placeholder="Cultures pratiquées, méthodes..."></textarea>
+          <label>{% trans "Description / Activité" %}</label>
+          <textarea id="f-description" placeholder="{% trans 'Cultures pratiquées, méthodes...' %}"></textarea>
         </div>
         <div class="field">
-          <label>N° Identification</label>
-          <input type="text" id="f-num_id" placeholder="NIF ou autre">
+          <label>{% trans "N° Identification" %}</label>
+          <input type="text" id="f-num_id" placeholder="{% trans 'NIF ou autre' %}">
         </div>
         <div class="field">
-          <label>Statut initial</label>
+          <label>{% trans "Statut initial" %}</label>
           <select id="f-statut">
-            <option value="en_attente">En attente</option>
-            <option value="actif">Actif (validé)</option>
+            <option value="en_attente">{% trans "En attente" %}</option>
+            <option value="actif">{% trans "Actif (validé)" %}</option>
           </select>
         </div>
         <div class="field full">
-          <label>Note admin</label>
-          <textarea id="f-note_admin" placeholder="Notes internes..."></textarea>
+          <label>{% trans "Note admin" %}</label>
+          <textarea id="f-note_admin" placeholder="{% trans 'Notes internes...' %}"></textarea>
         </div>
       </div>
       <div class="modal-actions">
-        <button type="button" class="btn-cancel" onclick="closeProdModal()">Annuler</button>
-        <button type="submit" class="btn-save" id="prod-submit-btn"><i class="fas fa-save"></i> Enregistrer</button>
+        <button type="button" class="btn-cancel" onclick="closeProdModal()">{% trans "Annuler" %}</button>
+        <button type="submit" class="btn-save" id="prod-submit-btn"><i class="fas fa-save"></i> {% trans "Enregistrer" %}</button>
       </div>
     </form>
   </div>
@@ -189,7 +190,7 @@
 <div class="drawer-overlay" id="overlay" onclick="closeDrawer()"></div>
 <div class="drawer" id="drawer">
   <div class="drawer-header">
-    <h3 id="drawer-title">Producteur</h3>
+    <h3 id="drawer-title">{% trans "Producteur" %}</h3>
     <button class="drawer-close" onclick="closeDrawer()"><i class="fas fa-times"></i></button>
   </div>
   <div class="drawer-body" id="drawer-body"></div>
@@ -199,33 +200,33 @@
 <div class="toolbar">
   <div class="search-box">
     <i class="fas fa-search" style="color:var(--text-muted)"></i>
-    <input type="text" id="search-input" placeholder="Nom, code, commune..." oninput="debouncedSearch()">
+    <input type="text" id="search-input" placeholder="{% trans 'Nom, code, commune...' %}" oninput="debouncedSearch()">
   </div>
-  <button class="filter-btn active" data-statut="" onclick="setFilter(this)">Tous</button>
-  <button class="filter-btn" data-statut="en_attente" onclick="setFilter(this)"><i class="fas fa-clock"></i> En attente</button>
-  <button class="filter-btn" data-statut="actif" onclick="setFilter(this)"><i class="fas fa-check"></i> Actifs</button>
-  <button class="filter-btn" data-statut="suspendu" onclick="setFilter(this)"><i class="fas fa-ban"></i> Suspendus</button>
-  <button class="filter-btn" data-statut="inactif" onclick="setFilter(this)"><i class="fas fa-times"></i> Inactifs</button>
-  <button class="btn-new" onclick="openCreate()"><i class="fas fa-plus"></i> Nouveau producteur</button>
+  <button class="filter-btn active" data-statut="" onclick="setFilter(this)">{% trans "Tous" %}</button>
+  <button class="filter-btn" data-statut="en_attente" onclick="setFilter(this)"><i class="fas fa-clock"></i> {% trans "En attente" %}</button>
+  <button class="filter-btn" data-statut="actif" onclick="setFilter(this)"><i class="fas fa-check"></i> {% trans "Actifs" %}</button>
+  <button class="filter-btn" data-statut="suspendu" onclick="setFilter(this)"><i class="fas fa-ban"></i> {% trans "Suspendus" %}</button>
+  <button class="filter-btn" data-statut="inactif" onclick="setFilter(this)"><i class="fas fa-times"></i> {% trans "Inactifs" %}</button>
+  <button class="btn-new" onclick="openCreate()"><i class="fas fa-plus"></i> {% trans "Nouveau producteur" %}</button>
 </div>
 
 <div class="table-wrap">
-  <div class="empty-state" id="tbl-loading"><i class="fas fa-spinner fa-spin"></i> Chargement...</div>
+  <div class="empty-state" id="tbl-loading"><i class="fas fa-spinner fa-spin"></i> {% trans "Chargement..." %}</div>
   <table id="tbl" style="display:none">
     <thead>
       <tr>
-        <th>Producteur</th>
-        <th>Code</th>
-        <th>Localisation</th>
-        <th>Produits</th>
-        <th>Statut</th>
-        <th>Inscription</th>
-        <th>Actions</th>
+        <th>{% trans "Producteur" %}</th>
+        <th>{% trans "Code" %}</th>
+        <th>{% trans "Localisation" %}</th>
+        <th>{% trans "Produits" %}</th>
+        <th>{% trans "Statut" %}</th>
+        <th>{% trans "Inscription" %}</th>
+        <th>{% trans "Actions" %}</th>
       </tr>
     </thead>
     <tbody id="tbody"></tbody>
   </table>
-  <div class="empty-state" id="tbl-empty" style="display:none">Aucun producteur trouvé.</div>
+  <div class="empty-state" id="tbl-empty" style="display:none">{% trans "Aucun producteur trouvé." %}</div>
 </div>
 {% endblock %}
 
@@ -249,17 +250,17 @@ function showToast(msg, type='success') {
 function fdate(iso) { return new Date(iso).toLocaleDateString('fr-FR', {day:'2-digit',month:'short',year:'numeric'}); }
 
 function statutBadge(s, label) {
-  return `<span class="statut-badge s-${s}">${label}</span>`;
+  return `<span class="statut-badge s-${s}">{% trans "${label}" %}</span>`;
 }
 
 function rowActions(p) {
   const btns = [];
   if (p.statut === 'en_attente' || p.statut === 'suspendu' || p.statut === 'inactif')
-    btns.push(`<button class="action-btn btn-valider" onclick="doAction(${p.id},'actif')">Valider</button>`);
+    btns.push(`<button class="action-btn btn-valider" onclick="doAction(${p.id},'actif')">{% trans "Valider" %}</button>`);
   if (p.statut === 'actif')
-    btns.push(`<button class="action-btn btn-suspendre" onclick="doAction(${p.id},'suspendu')">Suspendre</button>`);
+    btns.push(`<button class="action-btn btn-suspendre" onclick="doAction(${p.id},'suspendu')">{% trans "Suspendre" %}</button>`);
   if (p.statut === 'en_attente')
-    btns.push(`<button class="action-btn btn-rejeter" onclick="doAction(${p.id},'inactif')">Rejeter</button>`);
+    btns.push(`<button class="action-btn btn-rejeter" onclick="doAction(${p.id},'inactif')">{% trans "Rejeter" %}</button>`);
   btns.push(`<button class="action-btn btn-detail" onclick="openDrawer(${p.id})"><i class="fas fa-eye"></i></button>`);
   btns.push(`<button class="action-btn" style="background:var(--bg);color:var(--text-muted);border:1px solid var(--border)" onclick="openEdit(${p.id})"><i class="fas fa-edit"></i></button>`);
   return btns.join(' ');
@@ -298,13 +299,13 @@ async function load() {
   _allData.forEach(p => {
     tbody.innerHTML += `
       <tr id="row-${p.id}">
-        <td><div style="font-weight:600">${p.nom_complet}</div><div style="font-size:11px;color:var(--text-muted)">${p.email}</div></td>
-        <td style="font-family:monospace;color:var(--green-mid)">${p.code_producteur}</td>
-        <td>${p.commune}<br><span style="font-size:11px;color:var(--text-muted)">${p.departement}</span></td>
-        <td style="text-align:center">${p.nb_produits}</td>
-        <td>${statutBadge(p.statut, p.statut_label)}</td>
-        <td style="color:var(--text-muted);font-size:12px">${fdate(p.created_at)}</td>
-        <td><div style="display:flex;gap:4px;flex-wrap:wrap">${rowActions(p)}</div></td>
+        <td><div style="font-weight:600">{% trans "${p.nom_complet}" %}</div><div style="font-size:11px;color:var(--text-muted)">{% trans "${p.email}" %}</div></td>
+        <td style="font-family:monospace;color:var(--green-mid)">{% trans "${p.code_producteur}" %}</td>
+        <td>${p.commune}<br><span style="font-size:11px;color:var(--text-muted)">{% trans "${p.departement}" %}</span></td>
+        <td style="text-align:center">{% trans "${p.nb_produits}" %}</td>
+        <td>{% trans "${statutBadge(p.statut, p.statut_label)}" %}</td>
+        <td style="color:var(--text-muted);font-size:12px">{% trans "${fdate(p.created_at)}" %}</td>
+        <td><div style="display:flex;gap:4px;flex-wrap:wrap">{% trans "${rowActions(p)}" %}</div></td>
       </tr>`;
   });
   document.getElementById('tbl').style.display = 'table';
@@ -329,38 +330,38 @@ function openDrawer(id) {
 
   document.getElementById('drawer-body').innerHTML = `
     <div class="drawer-section">
-      <div class="drawer-section-title">Statut</div>
+      <div class="drawer-section-title">{% trans "Statut" %}</div>
       ${statutBadge(p.statut, p.statut_label)}
     </div>
     <div class="drawer-section">
-      <div class="drawer-section-title">Informations</div>
-      <div class="drawer-row"><span class="label">Code</span><span style="font-family:monospace;color:var(--green-mid)">${p.code_producteur}</span></div>
-      <div class="drawer-row"><span class="label">Nom</span><span>${p.nom_complet}</span></div>
-      <div class="drawer-row"><span class="label">Email</span><span>${p.email}</span></div>
-      <div class="drawer-row"><span class="label">Téléphone</span><span>${p.telephone || '—'}</span></div>
-      <div class="drawer-row"><span class="label">Commune</span><span>${p.commune}</span></div>
-      <div class="drawer-row"><span class="label">Département</span><span>${p.departement}</span></div>
-      ${p.localite ? `<div class="drawer-row"><span class="label">Localité</span><span>${p.localite}</span></div>` : ''}
-      ${p.superficie_ha ? `<div class="drawer-row"><span class="label">Superficie</span><span>${p.superficie_ha} ha</span></div>` : ''}
-      <div class="drawer-row"><span class="label">Produits</span><span>${p.nb_produits} produits</span></div>
-      <div class="drawer-row"><span class="label">Inscription</span><span>${fdate(p.created_at)}</span></div>
-      ${p.date_validation ? `<div class="drawer-row"><span class="label">Validé le</span><span>${fdate(p.date_validation)}</span></div>` : ''}
+      <div class="drawer-section-title">{% trans "Informations" %}</div>
+      <div class="drawer-row"><span class="label">{% trans "Code" %}</span><span style="font-family:monospace;color:var(--green-mid)">{% trans "${p.code_producteur}" %}</span></div>
+      <div class="drawer-row"><span class="label">{% trans "Nom" %}</span><span>{% trans "${p.nom_complet}" %}</span></div>
+      <div class="drawer-row"><span class="label">{% trans "Email" %}</span><span>{% trans "${p.email}" %}</span></div>
+      <div class="drawer-row"><span class="label">{% trans "Téléphone" %}</span><span>{% trans "${p.telephone || '—'}" %}</span></div>
+      <div class="drawer-row"><span class="label">{% trans "Commune" %}</span><span>{% trans "${p.commune}" %}</span></div>
+      <div class="drawer-row"><span class="label">{% trans "Département" %}</span><span>{% trans "${p.departement}" %}</span></div>
+      ${p.localite ? `<div class="drawer-row"><span class="label">{% trans "Localité" %}</span><span>{% trans "${p.localite}" %}</span></div>` : ''}
+      ${p.superficie_ha ? `<div class="drawer-row"><span class="label">{% trans "Superficie" %}</span><span>{% trans "${p.superficie_ha} ha" %}</span></div>` : ''}
+      <div class="drawer-row"><span class="label">{% trans "Produits" %}</span><span>{% trans "${p.nb_produits} produits" %}</span></div>
+      <div class="drawer-row"><span class="label">{% trans "Inscription" %}</span><span>{% trans "${fdate(p.created_at)}" %}</span></div>
+      ${p.date_validation ? `<div class="drawer-row"><span class="label">{% trans "Validé le" %}</span><span>{% trans "${fdate(p.date_validation)}" %}</span></div>` : ''}
     </div>
-    ${p.note_admin ? `<div class="drawer-section"><div class="drawer-section-title">Note admin</div><p style="font-size:13px;background:var(--bg);padding:10px;border-radius:8px">${p.note_admin}</p></div>` : ''}
+    ${p.note_admin ? `<div class="drawer-section"><div class="drawer-section-title">{% trans "Note admin" %}</div><p style="font-size:13px;background:var(--bg);padding:10px;border-radius:8px">{% trans "${p.note_admin}" %}</p></div>` : ''}
     <div class="drawer-section">
-      <div class="drawer-section-title">Note / Motif</div>
-      <textarea class="note-input" id="note-input" placeholder="Motif de validation ou refus (optionnel)...">${p.note_admin || ''}</textarea>
+      <div class="drawer-section-title">{% trans "Note / Motif" %}</div>
+      <textarea class="note-input" id="note-input" placeholder="{% trans 'Motif de validation ou refus (optionnel)...' %}">${p.note_admin || ''}</textarea>
     </div>
   `;
 
   const aa = document.getElementById('drawer-actions');
   aa.innerHTML = '';
   if (p.statut !== 'actif')
-    aa.innerHTML += `<button class="action-btn btn-valider" onclick="doAction(${p.id},'actif',true)"><i class="fas fa-check"></i> Valider</button>`;
+    aa.innerHTML += `<button class="action-btn btn-valider" onclick="doAction(${p.id},'actif',true)"><i class="fas fa-check"></i> {% trans "Valider" %}</button>`;
   if (p.statut === 'actif')
-    aa.innerHTML += `<button class="action-btn btn-suspendre" onclick="doAction(${p.id},'suspendu',true)"><i class="fas fa-ban"></i> Suspendre</button>`;
+    aa.innerHTML += `<button class="action-btn btn-suspendre" onclick="doAction(${p.id},'suspendu',true)"><i class="fas fa-ban"></i> {% trans "Suspendre" %}</button>`;
   if (p.statut === 'en_attente')
-    aa.innerHTML += `<button class="action-btn btn-rejeter" onclick="doAction(${p.id},'inactif',true)"><i class="fas fa-times"></i> Rejeter</button>`;
+    aa.innerHTML += `<button class="action-btn btn-rejeter" onclick="doAction(${p.id},'inactif',true)"><i class="fas fa-times"></i> {% trans "Rejeter" %}</button>`;
 }
 
 function closeDrawer() {
@@ -390,7 +391,7 @@ let _editProdId = null;
 function openCreate() {
   _editProdId = null;
   document.getElementById('modal-title').textContent = 'Nouveau producteur';
-  document.getElementById('prod-submit-btn').innerHTML = '<i class="fas fa-plus"></i> Créer';
+  document.getElementById('prod-submit-btn').innerHTML = '<i class="fas fa-plus"></i> {% trans "Créer';" %}
   ['f-username','f-first_name','f-last_name','f-email','f-telephone','f-password','f-password2',
    'f-superficie','f-adresse','f-description','f-num_id','f-note_admin'].forEach(id => {
     const el = document.getElementById(id);
@@ -410,7 +411,7 @@ function openCreate() {
 async function openEdit(id) {
   _editProdId = id;
   document.getElementById('modal-title').textContent = 'Éditer le producteur';
-  document.getElementById('prod-submit-btn').innerHTML = '<i class="fas fa-save"></i> Enregistrer';
+  document.getElementById('prod-submit-btn').innerHTML = '<i class="fas fa-save"></i> {% trans "Enregistrer';" %}
   document.getElementById('username-wrap').style.display = 'none';
   document.getElementById('password-wrap').querySelector('label').textContent = 'Nouveau mot de passe (laisser vide = inchangé)';
   document.getElementById('f-username').required = false;

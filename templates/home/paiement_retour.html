@@ -1,6 +1,7 @@
 {% load static %}
+{% load i18n %}
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="{{ LANGUAGE_CODE }}">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -99,6 +100,18 @@
         <span>{{ site_settings.slogan|default:"Marketplace Agricole" }}</span>
       </div>
     </a>
+    <!-- Sélecteur de langue -->
+    <form action="{% url 'set_language' %}" method="post" style="display:inline-flex;align-items:center;margin-left:auto;">
+      {% csrf_token %}
+      <input name="next" type="hidden" value="{{ request.get_full_path }}">
+      {% get_current_language as LANGUAGE_CODE %}
+      {% get_available_languages as LANGUAGES %}
+      <select name="language" onchange="this.form.submit()" style="background:rgba(255,255,255,.15);border:1.5px solid rgba(255,255,255,.4);color:#fff;border-radius:50px;padding:7px 10px;font-size:12px;font-weight:700;font-family:'DM Sans',sans-serif;cursor:pointer;outline:none;min-width:52px;" title="Langue">
+        {% for lang_code, lang_name in LANGUAGES %}
+          <option value="{{ lang_code }}" {% if lang_code == LANGUAGE_CODE %}selected{% endif %} style="background:#1a6b2f;color:#fff;">{{ lang_code|upper }}</option>
+        {% endfor %}
+      </select>
+    </form>
   </div>
 </nav>
 
@@ -108,7 +121,7 @@
     <!-- ── Chargement ── -->
     <div id="state-loading">
       <div class="spinner-wrap"><div class="spinner"></div></div>
-      <div class="loading-title">Vérification en cours…</div>
+      <div class="loading-title">{% trans "Vérification en cours…" %}</div>
       <div class="loading-sub">Nous confirmons votre paiement auprès de la passerelle.<br>Merci de patienter quelques secondes.</div>
     </div>
 
@@ -116,16 +129,16 @@
     <div id="state-success">
       <div id="method-badge-wrap"></div>
       <div class="icon-wrap success"><i class="fas fa-check"></i></div>
-      <div class="card-title success">Paiement confirmé !</div>
+      <div class="card-title success">{% trans "Paiement confirmé !" %}</div>
       <div class="card-sub" id="success-sub">Votre paiement a été vérifié avec succès.<br>Votre commande a été transmise au(x) producteur(s).</div>
       <div class="orders-box" id="success-orders" style="display:none"></div>
       <div class="orders-box" id="success-meta" style="display:none;margin-bottom:16px"></div>
       <div class="btns">
         <a href="/dashboard/acheteur/commandes/" class="btn btn-primary">
-          <i class="fas fa-list-alt"></i> Mes commandes
+          <i class="fas fa-list-alt"></i> {% trans "Mes commandes" %}
         </a>
         <a href="/" class="btn btn-outline">
-          <i class="fas fa-store"></i> Catalogue
+          <i class="fas fa-store"></i> {% trans "Catalogue" %}
         </a>
       </div>
     </div>
@@ -133,30 +146,30 @@
     <!-- ── En attente / Non confirmé ── -->
     <div id="state-pending">
       <div class="icon-wrap pending"><i class="fas fa-exclamation-triangle"></i></div>
-      <div class="card-title pending">Paiement non confirmé</div>
+      <div class="card-title pending">{% trans "Paiement non confirmé" %}</div>
       <div class="card-sub">Votre paiement n'a pas été confirmé par la passerelle.<br>Votre commande est enregistrée — vous pouvez régulariser la situation ci-dessous.</div>
 
       <div style="text-align:left; margin-bottom:20px">
         <div style="background:#fffbeb; border-left:4px solid #f59e0b; border-radius:0 8px 8px 0; padding:14px 16px; margin-bottom:12px; font-size:14px; color:#92400e;">
-          <strong>Option 1 — Recharger votre compte et réessayer</strong><br>
-          Vérifiez que votre compte <span id="pending-method-name">MonCash/NatCash</span> est suffisamment approvisionné, puis repassez commande depuis votre panier.
+          <strong>{% trans "Option 1 — Recharger votre compte et réessayer" %}</strong><br>
+          Vérifiez que votre compte <span id="pending-method-name">{% trans "MonCash/NatCash" %}</span> est suffisamment approvisionné, puis repassez commande depuis votre panier.
         </div>
         <div style="background:#f5f3ff; border-left:4px solid #8b5cf6; border-radius:0 8px 8px 0; padding:14px 16px; font-size:14px; color:#5b21b6;">
-          <strong>Option 2 — Paiement hors ligne</strong><br>
-          Effectuez un virement ou transfert, puis allez dans <strong>« Mes commandes »</strong> et uploadez votre preuve de paiement.
+          <strong>{% trans "Option 2 — Paiement hors ligne" %}</strong><br>
+          Effectuez un virement ou transfert, puis allez dans <strong>{% trans "« Mes commandes »" %}</strong> et uploadez votre preuve de paiement.
           L'équipe Makèt Peyizan validera votre commande rapidement.
         </div>
       </div>
 
       <div class="orders-box pending-box" style="margin-bottom:20px">
-        <div class="meta-line"><i class="fas fa-envelope" style="color:#f59e0b"></i> Un email avec ces instructions vous a été envoyé.</div>
+        <div class="meta-line"><i class="fas fa-envelope" style="color:#f59e0b"></i> {% trans "Un email avec ces instructions vous a été envoyé." %}</div>
       </div>
       <div class="btns">
         <a href="/dashboard/acheteur/commandes/" class="btn btn-warn">
-          <i class="fas fa-list-alt"></i> Mes commandes
+          <i class="fas fa-list-alt"></i> {% trans "Mes commandes" %}
         </a>
         <a href="/commander/" class="btn btn-outline">
-          <i class="fas fa-redo"></i> Réessayer
+          <i class="fas fa-redo"></i> {% trans "Réessayer" %}
         </a>
       </div>
     </div>
@@ -164,23 +177,23 @@
     <!-- ── Erreur ── -->
     <div id="state-error">
       <div class="icon-wrap error"><i class="fas fa-times"></i></div>
-      <div class="card-title error">Erreur de vérification</div>
+      <div class="card-title error">{% trans "Erreur de vérification" %}</div>
       <div class="card-sub">Nous n'avons pas pu contacter la passerelle de paiement.<br>Si votre compte a été débité, contactez le support avec votre référence.</div>
       <div class="orders-box error-box" id="error-box" style="display:none;margin-bottom:16px"></div>
 
       <div style="text-align:left; margin-bottom:20px">
         <div style="background:#f5f3ff; border-left:4px solid #8b5cf6; border-radius:0 8px 8px 0; padding:14px 16px; font-size:14px; color:#5b21b6;">
-          <strong>Solution rapide — Paiement hors ligne</strong><br>
-          Allez dans <strong>« Mes commandes »</strong>, uploadez une preuve de virement ou de transfert, et l'équipe confirmera votre commande.
+          <strong>{% trans "Solution rapide — Paiement hors ligne" %}</strong><br>
+          Allez dans <strong>{% trans "« Mes commandes »" %}</strong>, uploadez une preuve de virement ou de transfert, et l'équipe confirmera votre commande.
         </div>
       </div>
 
       <div class="btns">
         <a href="/dashboard/acheteur/commandes/" class="btn btn-danger">
-          <i class="fas fa-list-alt"></i> Mes commandes
+          <i class="fas fa-list-alt"></i> {% trans "Mes commandes" %}
         </a>
         <a href="/commander/" class="btn btn-outline">
-          <i class="fas fa-redo"></i> Réessayer
+          <i class="fas fa-redo"></i> {% trans "Réessayer" %}
         </a>
       </div>
     </div>

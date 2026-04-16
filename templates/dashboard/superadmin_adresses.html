@@ -1,4 +1,5 @@
 {% extends 'dashboard/base.html' %}
+{% load i18n %}
 {% block title %}Adresses — Superadmin{% endblock %}
 {% block sidebar_nav %}{% include 'dashboard/superadmin_sidebar.html' with active='adresses' %}{% endblock %}
 {% block page_title %}Adresses{% endblock %}
@@ -41,33 +42,33 @@
 <div class="toolbar">
   <div class="search-box">
     <i class="fas fa-search" style="color:var(--text-muted)"></i>
-    <input type="text" id="search-input" placeholder="Nom, commune, utilisateur..." oninput="debouncedSearch()">
+    <input type="text" id="search-input" placeholder="{% trans 'Nom, commune, utilisateur...' %}" oninput="debouncedSearch()">
   </div>
   <select id="type-filter" class="filter-btn" style="appearance:none;padding-right:24px" onchange="load()">
-    <option value="">Tous les types</option>
-    <option value="livraison">Livraison</option>
-    <option value="facturation">Facturation</option>
+    <option value="">{% trans "Tous les types" %}</option>
+    <option value="livraison">{% trans "Livraison" %}</option>
+    <option value="facturation">{% trans "Facturation" %}</option>
   </select>
 </div>
 
 <div class="table-wrap">
-  <div class="empty-state" id="tbl-loading"><i class="fas fa-spinner fa-spin"></i> Chargement...</div>
+  <div class="empty-state" id="tbl-loading"><i class="fas fa-spinner fa-spin"></i> {% trans "Chargement..." %}</div>
   <table id="tbl" style="display:none">
     <thead>
       <tr>
-        <th>Utilisateur</th>
-        <th>Libellé</th>
-        <th>Destinataire</th>
-        <th>Commune</th>
-        <th>Département</th>
-        <th>Type</th>
-        <th>Défaut</th>
-        <th>Créée le</th>
+        <th>{% trans "Utilisateur" %}</th>
+        <th>{% trans "Libellé" %}</th>
+        <th>{% trans "Destinataire" %}</th>
+        <th>{% trans "Commune" %}</th>
+        <th>{% trans "Département" %}</th>
+        <th>{% trans "Type" %}</th>
+        <th>{% trans "Défaut" %}</th>
+        <th>{% trans "Créée le" %}</th>
       </tr>
     </thead>
     <tbody id="tbody"></tbody>
   </table>
-  <div class="empty-state" id="tbl-empty" style="display:none">Aucune adresse trouvée.</div>
+  <div class="empty-state" id="tbl-empty" style="display:none">{% trans "Aucune adresse trouvée." %}</div>
 </div>
 {% endblock %}
 
@@ -100,19 +101,19 @@ async function load() {
     tbody.innerHTML += `
       <tr>
         <td>
-          <div style="font-weight:600">${a.user_nom}</div>
-          <div style="font-size:11px;color:var(--text-muted)">ID ${a.user_id}</div>
+          <div style="font-weight:600">{% trans "${a.user_nom}" %}</div>
+          <div style="font-size:11px;color:var(--text-muted)">{% trans "ID ${a.user_id}" %}</div>
         </td>
-        <td style="font-weight:600">${a.libelle}</td>
+        <td style="font-weight:600">{% trans "${a.libelle}" %}</td>
         <td>
-          <div>${a.nom_complet}</div>
-          <div style="font-size:11px;color:var(--text-muted)">${a.telephone||''}</div>
+          <div>{% trans "${a.nom_complet}" %}</div>
+          <div style="font-size:11px;color:var(--text-muted)">{% trans "${a.telephone||''}" %}</div>
         </td>
-        <td>${a.commune}</td>
-        <td style="color:var(--text-muted)">${a.departement}</td>
-        <td><span class="badge badge-${a.type_adresse}">${a.type_label}</span></td>
-        <td>${a.is_default ? '<span class="badge badge-default"><i class="fas fa-star"></i> Défaut</span>' : '—'}</td>
-        <td style="font-size:12px;color:var(--text-muted)">${fdate(a.created_at)}</td>
+        <td>{% trans "${a.commune}" %}</td>
+        <td style="color:var(--text-muted)">{% trans "${a.departement}" %}</td>
+        <td><span class="badge badge-${a.type_adresse}">{% trans "${a.type_label}" %}</span></td>
+        <td>${a.is_default ? '<span class="badge badge-default"><i class="fas fa-star"></i> {% trans "Défaut" %}</span>' : '—'}</td>
+        <td style="font-size:12px;color:var(--text-muted)">{% trans "${fdate(a.created_at)}" %}</td>
       </tr>`;
   });
   document.getElementById('tbl').style.display = 'table';

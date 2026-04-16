@@ -8,6 +8,7 @@ from rest_framework_simplejwt.exceptions import TokenError
 
 from apps.accounts.serializers import LoginSerializer, RegisterSerializer, MeSerializer, AdresseSerializer
 from apps.accounts.models import Adresse
+from django.utils.translation import gettext as _
 
 
 def _tokens_for_user(user):
@@ -32,7 +33,7 @@ class RegisterView(APIView):
         user = serializer.save()
         tokens = _tokens_for_user(user)
         return Response({
-            'message': "Inscription réussie.",
+            'message': _("Inscription réussie."),
             'user': {
                 'id':           user.id,
                 'username':     user.username,
@@ -58,7 +59,7 @@ class LoginView(APIView):
         user = serializer.validated_data['user']
         tokens = _tokens_for_user(user)
         return Response({
-            'message': "Connexion réussie.",
+            'message': _("Connexion réussie."),
             'user': {
                 'id':           user.id,
                 'username':     user.username,
@@ -83,7 +84,7 @@ class LogoutView(APIView):
         refresh_token = request.data.get('refresh')
         if not refresh_token:
             return Response(
-                {'detail': "Le champ 'refresh' est requis."},
+                {'detail': _("Le champ 'refresh' est requis.")},
                 status=status.HTTP_400_BAD_REQUEST,
             )
         try:
@@ -91,7 +92,7 @@ class LogoutView(APIView):
             token.blacklist()
         except TokenError:
             return Response(
-                {'detail': "Token invalide ou déjà révoqué."},
+                {'detail': _("Token invalide ou déjà révoqué.")},
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
@@ -107,7 +108,7 @@ class LogoutView(APIView):
             request.user.fcm_token = ''
             request.user.save(update_fields=['fcm_token'])
 
-        return Response({'message': "Déconnexion réussie."}, status=status.HTTP_200_OK)
+        return Response({'message': _("Déconnexion réussie.")}, status=status.HTTP_200_OK)
 
 
 class FcmTokenView(APIView):
@@ -115,7 +116,7 @@ class FcmTokenView(APIView):
     POST /api/auth/fcm-token/
     Enregistre ou met à jour le token FCM de l'utilisateur connecté.
     Abonne automatiquement au topic de son rôle.
-    Body: { "fcm_token": "<firebase_registration_token>" }
+    Body: { "fcm_token": _("<firebase_registration_token>") }
     """
     permission_classes = [IsAuthenticated]
 
@@ -123,7 +124,7 @@ class FcmTokenView(APIView):
         fcm_token = request.data.get('fcm_token', '').strip()
         if not fcm_token:
             return Response(
-                {'detail': "Le champ 'fcm_token' est requis."},
+                {'detail': _("Le champ 'fcm_token' est requis.")},
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
@@ -143,7 +144,7 @@ class FcmTokenView(APIView):
             pass
 
         return Response({
-            'message': "Token FCM enregistré.",
+            'message': _("Token FCM enregistré."),
             'role':     user.role,
             'topic_subscribed': subscribed,
         }, status=status.HTTP_200_OK)
@@ -214,13 +215,13 @@ class AdresseDetailView(APIView):
     def get(self, request, pk):
         obj = self._get_adresse(pk, request.user)
         if not obj:
-            return Response({'detail': 'Adresse introuvable.'}, status=status.HTTP_404_NOT_FOUND)
+            return Response({'detail': _('Adresse introuvable.')}, status=status.HTTP_404_NOT_FOUND)
         return Response(AdresseSerializer(obj).data)
 
     def put(self, request, pk):
         obj = self._get_adresse(pk, request.user)
         if not obj:
-            return Response({'detail': 'Adresse introuvable.'}, status=status.HTTP_404_NOT_FOUND)
+            return Response({'detail': _('Adresse introuvable.')}, status=status.HTTP_404_NOT_FOUND)
         serializer = AdresseSerializer(obj, data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
@@ -229,7 +230,7 @@ class AdresseDetailView(APIView):
     def patch(self, request, pk):
         obj = self._get_adresse(pk, request.user)
         if not obj:
-            return Response({'detail': 'Adresse introuvable.'}, status=status.HTTP_404_NOT_FOUND)
+            return Response({'detail': _('Adresse introuvable.')}, status=status.HTTP_404_NOT_FOUND)
         serializer = AdresseSerializer(obj, data=request.data, partial=True)
         serializer.is_valid(raise_exception=True)
         serializer.save()
@@ -238,7 +239,7 @@ class AdresseDetailView(APIView):
     def delete(self, request, pk):
         obj = self._get_adresse(pk, request.user)
         if not obj:
-            return Response({'detail': 'Adresse introuvable.'}, status=status.HTTP_404_NOT_FOUND)
+            return Response({'detail': _('Adresse introuvable.')}, status=status.HTTP_404_NOT_FOUND)
         obj.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
@@ -253,7 +254,7 @@ class AdresseSetDefaultView(APIView):
         try:
             obj = Adresse.objects.get(pk=pk, user=request.user)
         except Adresse.DoesNotExist:
-            return Response({'detail': 'Adresse introuvable.'}, status=status.HTTP_404_NOT_FOUND)
+            return Response({'detail': _('Adresse introuvable.')}, status=status.HTTP_404_NOT_FOUND)
         obj.is_default = True
         obj.save()
         return Response(AdresseSerializer(obj).data)
@@ -272,7 +273,7 @@ class MesCommandesView(APIView):
         try:
             acheteur = request.user.profil_acheteur
         except Exception:
-            return Response({'detail': 'Profil acheteur introuvable.'}, status=status.HTTP_404_NOT_FOUND)
+            return Response({'detail': _('Profil acheteur introuvable.')}, status=status.HTTP_404_NOT_FOUND)
 
         commandes = Commande.objects.filter(acheteur=acheteur).select_related(
             'producteur__user'
@@ -309,7 +310,7 @@ class CommandeDetailView(APIView):
         try:
             acheteur = request.user.profil_acheteur
         except Exception:
-            return Response({'detail': 'Profil acheteur introuvable.'}, status=status.HTTP_404_NOT_FOUND)
+            return Response({'detail': _('Profil acheteur introuvable.')}, status=status.HTTP_404_NOT_FOUND)
 
         try:
             c = Commande.objects.select_related(
@@ -318,7 +319,7 @@ class CommandeDetailView(APIView):
                 numero_commande=numero, acheteur=acheteur
             )
         except Commande.DoesNotExist:
-            return Response({'detail': 'Commande introuvable.'}, status=status.HTTP_404_NOT_FOUND)
+            return Response({'detail': _('Commande introuvable.')}, status=status.HTTP_404_NOT_FOUND)
 
         details = []
         for d in c.details.all():
@@ -372,17 +373,17 @@ class ChangePasswordView(APIView):
 
         if not request.user.check_password(current):
             return Response(
-                {'detail': 'Mot de passe actuel incorrect.'},
+                {'detail': _('Mot de passe actuel incorrect.')},
                 status=status.HTTP_400_BAD_REQUEST,
             )
         if len(new_pwd) < 8:
             return Response(
-                {'detail': 'Le nouveau mot de passe doit contenir au moins 8 caractères.'},
+                {'detail': _('Le nouveau mot de passe doit contenir au moins 8 caractères.')},
                 status=status.HTTP_400_BAD_REQUEST,
             )
         request.user.set_password(new_pwd)
         request.user.save()
-        return Response({'message': 'Mot de passe mis à jour avec succès.'})
+        return Response({'message': _('Mot de passe mis à jour avec succès.')})
 
 
 # ── Dashboard Producteur ───────────────────────────────────────────────────────
@@ -405,7 +406,7 @@ class ProducteurStatsView(APIView):
 
         prod = _get_producteur(request.user)
         if not prod:
-            return Response({'detail': 'Profil producteur introuvable.'}, status=status.HTTP_404_NOT_FOUND)
+            return Response({'detail': _('Profil producteur introuvable.')}, status=status.HTTP_404_NOT_FOUND)
 
         qs = Commande.objects.filter(producteur=prod)
         now = timezone.now()
@@ -451,7 +452,7 @@ class ProducteurCommandesView(APIView):
 
         prod = _get_producteur(request.user)
         if not prod:
-            return Response({'detail': 'Profil producteur introuvable.'}, status=status.HTTP_404_NOT_FOUND)
+            return Response({'detail': _('Profil producteur introuvable.')}, status=status.HTTP_404_NOT_FOUND)
 
         statut_filtre = request.GET.get('statut', '')
         qs = Commande.objects.filter(producteur=prod).select_related(
@@ -505,7 +506,7 @@ class ProducteurCommandeDetailView(APIView):
 
         prod = _get_producteur(request.user)
         if not prod:
-            return Response({'detail': 'Profil producteur introuvable.'}, status=status.HTTP_404_NOT_FOUND)
+            return Response({'detail': _('Profil producteur introuvable.')}, status=status.HTTP_404_NOT_FOUND)
 
         try:
             c = Commande.objects.select_related(
@@ -514,7 +515,7 @@ class ProducteurCommandeDetailView(APIView):
                 numero_commande=numero, producteur=prod
             )
         except Commande.DoesNotExist:
-            return Response({'detail': 'Commande introuvable.'}, status=status.HTTP_404_NOT_FOUND)
+            return Response({'detail': _('Commande introuvable.')}, status=status.HTTP_404_NOT_FOUND)
 
         details = [{
             'produit_nom':   d.produit.nom,
@@ -571,21 +572,21 @@ class ProducteurCommandeStatutView(APIView):
 
         prod = _get_producteur(request.user)
         if not prod:
-            return Response({'detail': 'Profil producteur introuvable.'}, status=status.HTTP_404_NOT_FOUND)
+            return Response({'detail': _('Profil producteur introuvable.')}, status=status.HTTP_404_NOT_FOUND)
 
         try:
             c = Commande.objects.get(numero_commande=numero, producteur=prod)
         except Commande.DoesNotExist:
-            return Response({'detail': 'Commande introuvable.'}, status=status.HTTP_404_NOT_FOUND)
+            return Response({'detail': _('Commande introuvable.')}, status=status.HTTP_404_NOT_FOUND)
 
         action = request.data.get('action', '')
         if action not in TRANSITION_MAP:
-            return Response({'detail': 'Action invalide.'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'detail': _('Action invalide.')}, status=status.HTTP_400_BAD_REQUEST)
 
         statut_requis, nouveau_statut = TRANSITION_MAP[action]
         if action == 'annuler':
             if c.statut not in ['en_attente', 'confirmee']:
-                return Response({'detail': 'Cette commande ne peut plus être annulée.'}, status=status.HTTP_400_BAD_REQUEST)
+                return Response({'detail': _('Cette commande ne peut plus être annulée.')}, status=status.HTTP_400_BAD_REQUEST)
         elif c.statut != statut_requis:
             return Response(
                 {'detail': f"Action impossible depuis le statut '{c.get_statut_display()}'."},
@@ -620,13 +621,13 @@ class ProducteurProfilUpdateView(APIView):
     def get(self, request):
         prod = _get_producteur(request.user)
         if not prod:
-            return Response({'detail': 'Profil producteur introuvable.'}, status=status.HTTP_404_NOT_FOUND)
+            return Response({'detail': _('Profil producteur introuvable.')}, status=status.HTTP_404_NOT_FOUND)
         return Response(self._serialize(prod))
 
     def patch(self, request):
         prod = _get_producteur(request.user)
         if not prod:
-            return Response({'detail': 'Profil producteur introuvable.'}, status=status.HTTP_404_NOT_FOUND)
+            return Response({'detail': _('Profil producteur introuvable.')}, status=status.HTTP_404_NOT_FOUND)
 
         # Champs modifiables sur le profil producteur
         prod_fields = ['commune', 'departement', 'localite', 'adresse_complete', 'superficie_ha', 'description']

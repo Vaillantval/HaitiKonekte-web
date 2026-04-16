@@ -14,6 +14,7 @@ from apps.accounts.serializers import (
     ChangePasswordSerializer,
     FCMTokenSerializer,
 )
+from django.utils.translation import gettext as _
 
 
 def _get_tokens(user):
@@ -94,7 +95,7 @@ def logout(request):
         request.user.fcm_token = ''
         request.user.save(update_fields=['fcm_token'])
 
-    return Response({'success': True, 'data': {'message': 'Déconnexion réussie.'}})
+    return Response({'success': True, 'data': {'message': _('Déconnexion réussie.')}})
 
 
 # ── GET / PATCH /api/auth/me/ ──────────────────────────────────────────────
@@ -137,7 +138,7 @@ def change_password(request):
         )
     request.user.set_password(serializer.validated_data['new_password'])
     request.user.save()
-    return Response({'success': True, 'data': {'message': 'Mot de passe modifié avec succès.'}})
+    return Response({'success': True, 'data': {'message': _('Mot de passe modifié avec succès.')}})
 
 
 # ── POST /api/auth/fcm-token/ ───────────────────────────────────────────────
@@ -167,7 +168,7 @@ def fcm_token(request):
     return Response({
         'success': True,
         'data': {
-            'message':          'Token enregistré.',
+            'message':          _('Token enregistré.'),
             'role':             request.user.role,
             'topic_subscribed': topic,
         }
@@ -186,7 +187,7 @@ def acheteur_commandes(request):
         acheteur = request.user.profil_acheteur
     except Exception:
         return Response(
-            {'success': False, 'error': 'Profil acheteur introuvable.'},
+            {'success': False, 'error': _('Profil acheteur introuvable.')},
             status=status.HTTP_404_NOT_FOUND,
         )
     commandes = Commande.objects.filter(
@@ -212,7 +213,7 @@ def acheteur_commande_detail(request, numero):
         acheteur = request.user.profil_acheteur
     except Exception:
         return Response(
-            {'success': False, 'error': 'Profil acheteur introuvable.'},
+            {'success': False, 'error': _('Profil acheteur introuvable.')},
             status=status.HTTP_404_NOT_FOUND,
         )
     commande   = get_object_or_404(Commande, numero_commande=numero, acheteur=acheteur)
@@ -234,7 +235,7 @@ def acheteur_vouchers(request):
         acheteur = request.user.profil_acheteur
     except Exception:
         return Response(
-            {'success': False, 'error': 'Profil acheteur introuvable.'},
+            {'success': False, 'error': _('Profil acheteur introuvable.')},
             status=status.HTTP_404_NOT_FOUND,
         )
 

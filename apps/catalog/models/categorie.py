@@ -1,5 +1,6 @@
 from django.db import models
 from django.utils.text import slugify
+from django.utils.translation import gettext_lazy as _
 
 
 class Categorie(models.Model):
@@ -7,15 +8,15 @@ class Categorie(models.Model):
     slug        = models.SlugField(max_length=120, unique=True, blank=True)
     description = models.TextField(blank=True)
     image       = models.ImageField(upload_to='categories/images/', null=True, blank=True)
-    icone       = models.CharField(max_length=50, blank=True, help_text="Classe Font Awesome ex: fas fa-carrot")
+    icone       = models.CharField(max_length=50, blank=True, help_text=_("Classe Font Awesome ex: fas fa-carrot"))
     parent      = models.ForeignKey('self', on_delete=models.SET_NULL, null=True, blank=True, related_name='sous_categories')
     ordre       = models.PositiveSmallIntegerField(default=0)
     is_active   = models.BooleanField(default=True)
     created_at  = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        verbose_name        = 'Categorie'
-        verbose_name_plural = 'Categories'
+        verbose_name        = _('Categorie')
+        verbose_name_plural = _('Categories')
         ordering            = ['ordre', 'nom']
 
     def __str__(self):

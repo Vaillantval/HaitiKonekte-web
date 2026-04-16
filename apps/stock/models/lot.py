@@ -1,14 +1,15 @@
 from django.db import models
 from django.conf import settings
+from django.utils.translation import gettext_lazy as _
 
 
 class Lot(models.Model):
     class Statut(models.TextChoices):
-        EN_COURS   = 'en_cours',   'En cours'
-        DISPONIBLE = 'disponible', 'Disponible'
-        EPUISE     = 'epuise',     'Epuise'
-        EXPIRE     = 'expire',     'Expire'
-        RAPPEL     = 'rappel',     'Rappele'
+        EN_COURS   = 'en_cours',   _('En cours')
+        DISPONIBLE = 'disponible', _('Disponible')
+        EPUISE     = 'epuise',     _('Epuise')
+        EXPIRE     = 'expire',     _('Expire')
+        RAPPEL     = 'rappel',     _('Rappele')
 
     produit            = models.ForeignKey('catalog.Produit', on_delete=models.CASCADE, related_name='lots')
     numero_lot         = models.CharField(max_length=50, unique=True, blank=True)
@@ -26,8 +27,8 @@ class Lot(models.Model):
     updated_at         = models.DateTimeField(auto_now=True)
 
     class Meta:
-        verbose_name        = 'Lot'
-        verbose_name_plural = 'Lots'
+        verbose_name        = _('Lot')
+        verbose_name_plural = _('Lots')
         ordering            = ['-created_at']
 
     def __str__(self): return f"{self.numero_lot} — {self.produit.nom}"

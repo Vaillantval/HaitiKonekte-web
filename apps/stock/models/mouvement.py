@@ -1,17 +1,18 @@
 from django.db import models
 from django.conf import settings
+from django.utils.translation import gettext_lazy as _
 
 
 class MouvementStock(models.Model):
     class TypeMouvement(models.TextChoices):
-        ENTREE          = 'entree',          'Entree — Nouvelle recolte'
-        SORTIE_VENTE    = 'sortie_vente',    'Sortie — Vente'
-        SORTIE_COLLECTE = 'sortie_collecte', 'Sortie — Collecte'
-        AJUSTEMENT_POS  = 'ajust_pos',       'Ajustement positif'
-        AJUSTEMENT_NEG  = 'ajust_neg',       'Ajustement negatif'
-        PERTE           = 'perte',           'Perte / Deterioration'
-        RETOUR          = 'retour',          'Retour client'
-        TRANSFERT       = 'transfert',       'Transfert de lot'
+        ENTREE          = 'entree',          _('Entree — Nouvelle recolte')
+        SORTIE_VENTE    = 'sortie_vente',    _('Sortie — Vente')
+        SORTIE_COLLECTE = 'sortie_collecte', _('Sortie — Collecte')
+        AJUSTEMENT_POS  = 'ajust_pos',       _('Ajustement positif')
+        AJUSTEMENT_NEG  = 'ajust_neg',       _('Ajustement negatif')
+        PERTE           = 'perte',           _('Perte / Deterioration')
+        RETOUR          = 'retour',          _('Retour client')
+        TRANSFERT       = 'transfert',       _('Transfert de lot')
 
     lot            = models.ForeignKey('stock.Lot', on_delete=models.CASCADE, related_name='mouvements')
     produit        = models.ForeignKey('catalog.Produit', on_delete=models.CASCADE, related_name='mouvements_stock')
@@ -27,8 +28,8 @@ class MouvementStock(models.Model):
     created_at     = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        verbose_name        = 'Mouvement de stock'
-        verbose_name_plural = 'Mouvements de stock'
+        verbose_name        = _('Mouvement de stock')
+        verbose_name_plural = _('Mouvements de stock')
         ordering            = ['-created_at']
 
     def __str__(self):

@@ -14,6 +14,7 @@ from apps.payments.models import Paiement, Voucher
 from apps.stock.models import AlerteStock
 from apps.collectes.models import Collecte
 from apps.api_admin.serializers.stats_serializers import GlobalStatsSerializer
+from django.utils.translation import gettext as _
 
 
 # ── GET /api/admin/stats/ ────────────────────────────────────────

@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from apps.catalog.models import Produit, Categorie, ImageProduit
+from django.utils.translation import gettext_lazy as _
 
 
 class ImageProduitSerializer(serializers.ModelSerializer):
@@ -126,13 +127,13 @@ class ProduitCreateUpdateSerializer(serializers.ModelSerializer):
     def validate_prix_unitaire(self, value):
         if value <= 0:
             raise serializers.ValidationError(
-                "Le prix doit être supérieur à 0."
+                _("Le prix doit être supérieur à 0.")
             )
         return value
 
     def validate_stock_disponible(self, value):
         if value < 0:
             raise serializers.ValidationError(
-                "Le stock ne peut pas être négatif."
+                _("Le stock ne peut pas être négatif.")
             )
         return value

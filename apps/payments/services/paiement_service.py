@@ -2,6 +2,7 @@ from django.db import transaction
 from django.utils import timezone
 from apps.payments.models import Paiement
 from apps.orders.models import Commande
+from django.utils.translation import gettext as _
 
 
 class PaiementService:
@@ -61,11 +62,11 @@ class VoucherService:
         try:
             voucher = Voucher.objects.get(code=code.upper())
         except Voucher.DoesNotExist:
-            raise ValueError("Code voucher invalide.")
+            raise ValueError(_("Code voucher invalide."))
         if not voucher.est_valide:
-            raise ValueError("Ce voucher est expire ou deja utilise.")
+            raise ValueError(_("Ce voucher est expire ou deja utilise."))
         if voucher.beneficiaire and voucher.beneficiaire != acheteur:
-            raise ValueError("Ce voucher n'est pas assigne a votre compte.")
+            raise ValueError(_("Ce voucher n'est pas assigne a votre compte."))
         # Pour les vouchers ouverts (sans bénéficiaire), un acheteur ne peut
         # utiliser qu'un seul voucher par programme.
         if not voucher.beneficiaire:
@@ -76,7 +77,7 @@ class VoucherService:
             ).exists()
             if deja_utilise:
                 raise ValueError(
-                    "Vous avez deja utilise un voucher de ce programme."
+                    _("Vous avez deja utilise un voucher de ce programme.")
                 )
         remise = voucher.calculer_remise(montant_commande)
         if remise == 0:

@@ -1,4 +1,5 @@
 {% extends 'dashboard/base.html' %}
+{% load i18n %}
 {% block title %}Catégories — Superadmin{% endblock %}
 {% block sidebar_nav %}{% include 'dashboard/superadmin_sidebar.html' with active='categories' %}{% endblock %}
 {% block page_title %}Catégories{% endblock %}
@@ -68,36 +69,36 @@
 <!-- Modal catégorie -->
 <div class="modal-overlay" id="cat-modal">
   <div class="modal-box">
-    <h3 id="modal-title">Nouvelle catégorie</h3>
+    <h3 id="modal-title">{% trans "Nouvelle catégorie" %}</h3>
     <form id="cat-form" onsubmit="submitCat(event)">
       <div class="form-grid">
         <div class="field full">
-          <label>Nom *</label>
-          <input type="text" id="f-nom" required placeholder="Ex: Légumes">
+          <label>{% trans "Nom *" %}</label>
+          <input type="text" id="f-nom" required placeholder="{% trans 'Ex: Légumes' %}">
         </div>
         <div class="field">
-          <label>Icône Font Awesome</label>
-          <input type="text" id="f-icone" placeholder="fas fa-leaf">
+          <label>{% trans "Icône Font Awesome" %}</label>
+          <input type="text" id="f-icone" placeholder="{% trans 'fas fa-leaf' %}">
         </div>
         <div class="field">
-          <label>Ordre</label>
+          <label>{% trans "Ordre" %}</label>
           <input type="number" id="f-ordre" value="0" min="0">
         </div>
         <div class="field full">
-          <label>Catégorie parente</label>
+          <label>{% trans "Catégorie parente" %}</label>
           <select id="f-parent">
-            <option value="">— Aucune (catégorie principale) —</option>
+            <option value="">{% trans "— Aucune (catégorie principale) —" %}</option>
           </select>
         </div>
         <div class="field full">
-          <label>Image de la catégorie</label>
+          <label>{% trans "Image de la catégorie" %}</label>
           <div class="img-upload-zone" onclick="document.getElementById('f-image').click()">
             <input type="file" id="f-image" accept="image/*" onchange="previewCatImage(this)">
             <i class="fas fa-image" style="font-size:22px;color:var(--text-muted)"></i>
-            <div style="font-size:12px;color:var(--text-muted);margin-top:4px">Cliquer pour choisir une image</div>
+            <div style="font-size:12px;color:var(--text-muted);margin-top:4px">{% trans "Cliquer pour choisir une image" %}</div>
             <img id="f-image-preview" class="img-preview">
           </div>
-          <span id="f-image-current" style="font-size:11px;color:var(--text-muted);margin-top:4px;display:none">Image actuelle conservée si vide</span>
+          <span id="f-image-current" style="font-size:11px;color:var(--text-muted);margin-top:4px;display:none">{% trans "Image actuelle conservée si vide" %}</span>
         </div>
         <div class="field full">
           <label style="display:flex;align-items:center;gap:8px;cursor:pointer">
@@ -106,34 +107,34 @@
         </div>
       </div>
       <div class="modal-actions">
-        <button type="button" class="btn-cancel" onclick="closeModal()">Annuler</button>
-        <button type="submit" class="btn-save" id="submit-btn"><i class="fas fa-save"></i> Enregistrer</button>
+        <button type="button" class="btn-cancel" onclick="closeModal()">{% trans "Annuler" %}</button>
+        <button type="submit" class="btn-save" id="submit-btn"><i class="fas fa-save"></i> {% trans "Enregistrer" %}</button>
       </div>
     </form>
   </div>
 </div>
 
 <div class="toolbar">
-  <button class="btn-new" onclick="openCreate()"><i class="fas fa-plus"></i> Nouvelle catégorie</button>
+  <button class="btn-new" onclick="openCreate()"><i class="fas fa-plus"></i> {% trans "Nouvelle catégorie" %}</button>
 </div>
 
 <div class="table-wrap">
-  <div class="empty-state" id="tbl-loading"><i class="fas fa-spinner fa-spin"></i> Chargement...</div>
+  <div class="empty-state" id="tbl-loading"><i class="fas fa-spinner fa-spin"></i> {% trans "Chargement..." %}</div>
   <table id="tbl" style="display:none">
     <thead>
       <tr>
-        <th>Icône</th>
-        <th>Nom</th>
-        <th>Parente</th>
-        <th>Produits</th>
-        <th>Ordre</th>
-        <th>Statut</th>
-        <th>Actions</th>
+        <th>{% trans "Icône" %}</th>
+        <th>{% trans "Nom" %}</th>
+        <th>{% trans "Parente" %}</th>
+        <th>{% trans "Produits" %}</th>
+        <th>{% trans "Ordre" %}</th>
+        <th>{% trans "Statut" %}</th>
+        <th>{% trans "Actions" %}</th>
       </tr>
     </thead>
     <tbody id="tbody"></tbody>
   </table>
-  <div class="empty-state" id="tbl-empty" style="display:none">Aucune catégorie.</div>
+  <div class="empty-state" id="tbl-empty" style="display:none">{% trans "Aucune catégorie." %}</div>
 </div>
 {% endblock %}
 
@@ -173,9 +174,9 @@ async function load() {
   // Mettre à jour le select parent dans le modal
   const sel = document.getElementById('f-parent');
   const prevVal = sel.value;
-  sel.innerHTML = '<option value="">— Aucune (catégorie principale) —</option>';
+  sel.innerHTML = '<option value="">{% trans "— Aucune (catégorie principale) —" %}</option>';
   _allCats.filter(c => !c.parent_id).forEach(c => {
-    sel.innerHTML += `<option value="${c.id}">${c.nom}</option>`;
+    sel.innerHTML += `<option value="${c.id}">{% trans "${c.nom}" %}</option>`;
   });
   if (prevVal) sel.value = prevVal;
 
@@ -186,14 +187,14 @@ async function load() {
     tbody.innerHTML += `
       <tr id="row-${c.id}">
         <td>${c.image ? `<img src="${c.image}" style="width:36px;height:36px;border-radius:8px;object-fit:cover">` : `<div class="cat-icon"><i class="${c.icone||'fas fa-leaf'}"></i></div>`}</td>
-        <td class="${isSubCat?'sub-cat':''}"><strong>${isSubCat?'↳ ':''}</strong>${c.nom}</td>
-        <td style="color:var(--text-muted)">${c.parent_nom||'—'}</td>
-        <td><strong>${c.nb_produits}</strong></td>
-        <td>${c.ordre}</td>
+        <td class="${isSubCat?'sub-cat':''}"><strong>{% trans "${isSubCat?'↳ ':''}" %}</strong>${c.nom}</td>
+        <td style="color:var(--text-muted)">{% trans "${c.parent_nom||'—'}" %}</td>
+        <td><strong>{% trans "${c.nb_produits}" %}</strong></td>
+        <td>{% trans "${c.ordre}" %}</td>
         <td><span class="status-dot ${c.is_active?'dot-green':'dot-red'}"></span>${c.is_active?'Active':'Inactive'}</td>
         <td style="display:flex;gap:6px">
           <button class="action-btn" style="background:var(--bg);border:1px solid var(--border);color:var(--text-muted)" onclick="openEdit(${c.id})"><i class="fas fa-edit"></i></button>
-          <button class="action-btn" style="background:${c.is_active?'#fde8e8':'#e8f8ee'};color:${c.is_active?'#e74c3c':'#27ae60'}" onclick="toggleActive(${c.id}, ${c.is_active})">${c.is_active?'Désactiver':'Activer'}</button>
+          <button class="action-btn" style="background:${c.is_active?'#fde8e8':'#e8f8ee'};color:${c.is_active?'#e74c3c':'#27ae60'}" onclick="toggleActive(${c.id}, ${c.is_active})">{% trans "${c.is_active?'Désactiver':'Activer'}" %}</button>
           ${c.nb_produits===0?`<button class="action-btn" style="background:#fde8e8;color:#e74c3c" onclick="deleteCat(${c.id},'${c.nom}')"><i class="fas fa-trash"></i></button>`:''}
         </td>
       </tr>`;
@@ -204,7 +205,7 @@ async function load() {
 function openCreate() {
   _editId = null;
   document.getElementById('modal-title').textContent = 'Nouvelle catégorie';
-  document.getElementById('submit-btn').innerHTML = '<i class="fas fa-plus"></i> Créer';
+  document.getElementById('submit-btn').innerHTML = '<i class="fas fa-plus"></i> {% trans "Créer';" %}
   document.getElementById('f-nom').value = '';
   document.getElementById('f-icone').value = 'fas fa-leaf';
   document.getElementById('f-ordre').value = '0';
@@ -222,7 +223,7 @@ async function openEdit(id) {
   if (!r.ok) { showToast('Erreur', 'error'); return; }
   const c = (await r.json()).data;
   document.getElementById('modal-title').textContent = 'Modifier catégorie';
-  document.getElementById('submit-btn').innerHTML = '<i class="fas fa-save"></i> Enregistrer';
+  document.getElementById('submit-btn').innerHTML = '<i class="fas fa-save"></i> {% trans "Enregistrer';" %}
   document.getElementById('f-nom').value    = c.nom;
   document.getElementById('f-icone').value  = c.icone||'';
   document.getElementById('f-ordre').value  = c.ordre;

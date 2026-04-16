@@ -7,6 +7,7 @@ from apps.accounts.permissions import IsSuperAdmin
 from apps.payments.models import Paiement
 from apps.payments.serializers import PaiementSerializer
 from apps.payments.services.paiement_service import PaiementService
+from django.utils.translation import gettext as _
 
 
 # ── GET /api/admin/paiements/ ────────────────────────────────────
@@ -41,7 +42,7 @@ def paiement_statut(request, pk):
 
     if action not in ['confirmer', 'rejeter']:
         return Response(
-            {'success': False, 'error': "Action : 'confirmer' ou 'rejeter'."},
+            {'success': False, 'error': _("Action : 'confirmer' ou 'rejeter'.")},
             status=status.HTTP_400_BAD_REQUEST
         )
 

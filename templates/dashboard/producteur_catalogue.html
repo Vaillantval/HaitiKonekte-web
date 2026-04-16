@@ -1,29 +1,30 @@
 {% extends 'dashboard/base.html' %}
+{% load i18n %}
 
 {% block title %}Mon catalogue — Producteur{% endblock %}
 
 {% block sidebar_nav %}
-  <div class="nav-section-label">Navigation</div>
+  <div class="nav-section-label">{% trans "Navigation" %}</div>
   <a href="/dashboard/producteur/" class="nav-item">
-    <i class="fas fa-th-large"></i> Vue d'ensemble
+    <i class="fas fa-th-large"></i> {% trans "Vue d'ensemble" %}
   </a>
   <a href="/dashboard/producteur/collectes/" class="nav-item">
-    <i class="fas fa-truck"></i> Mes collectes
+    <i class="fas fa-truck"></i> {% trans "Mes collectes" %}
     <span class="nav-badge" id="sb-badge-collectes" style="display:none"></span>
   </a>
   <a href="/dashboard/producteur/catalogue/" class="nav-item active">
-    <i class="fas fa-seedling"></i> Mon catalogue
+    <i class="fas fa-seedling"></i> {% trans "Mon catalogue" %}
   </a>
   <a href="/" class="nav-item">
-    <i class="fas fa-store"></i> Catalogue public
+    <i class="fas fa-store"></i> {% trans "Catalogue public" %}
   </a>
 
-  <div class="nav-section-label">Compte</div>
+  <div class="nav-section-label">{% trans "Compte" %}</div>
   <a href="/dashboard/producteur/profil/" class="nav-item">
-    <i class="fas fa-user-edit"></i> Mon profil
+    <i class="fas fa-user-edit"></i> {% trans "Mon profil" %}
   </a>
   <a href="/dashboard/producteur/rapport/" class="nav-item">
-    <i class="fas fa-file-alt"></i> Mon rapport
+    <i class="fas fa-file-alt"></i> {% trans "Mon rapport" %}
   </a>
 {% endblock %}
 
@@ -266,7 +267,7 @@
 <div class="modal-overlay" id="modal-overlay">
   <div class="modal">
     <div class="modal-header">
-      <h3 id="modal-title">Nouveau produit</h3>
+      <h3 id="modal-title">{% trans "Nouveau produit" %}</h3>
       <button class="modal-close" onclick="closeModal()"><i class="fas fa-times"></i></button>
     </div>
     <div class="modal-body">
@@ -274,93 +275,93 @@
 
       <div class="form-row full">
         <div class="form-group">
-          <label>Nom du produit *</label>
-          <input type="text" id="m-nom" placeholder="Ex: Maïs blanc">
+          <label>{% trans "Nom du produit *" %}</label>
+          <input type="text" id="m-nom" placeholder="{% trans 'Ex: Maïs blanc' %}">
         </div>
       </div>
       <div class="form-row">
         <div class="form-group">
-          <label>Catégorie *</label>
+          <label>{% trans "Catégorie *" %}</label>
           <select id="m-categorie"></select>
         </div>
         <div class="form-group">
-          <label>Variété</label>
-          <input type="text" id="m-variete" placeholder="Ex: Variété locale">
+          <label>{% trans "Variété" %}</label>
+          <input type="text" id="m-variete" placeholder="{% trans 'Ex: Variété locale' %}">
         </div>
       </div>
       <div class="form-row">
         <div class="form-group">
-          <label>Prix unitaire (HTG) *</label>
+          <label>{% trans "Prix unitaire (HTG) *" %}</label>
           <input type="number" id="m-prix" placeholder="0" min="0" step="0.01">
         </div>
         <div class="form-group">
-          <label>Prix de gros (HTG)</label>
-          <input type="number" id="m-prix-gros" placeholder="Optionnel" min="0" step="0.01">
+          <label>{% trans "Prix de gros (HTG)" %}</label>
+          <input type="number" id="m-prix-gros" placeholder="{% trans 'Optionnel' %}" min="0" step="0.01">
         </div>
       </div>
       <div class="form-row">
         <div class="form-group">
-          <label>Unité de vente *</label>
+          <label>{% trans "Unité de vente *" %}</label>
           <select id="m-unite">
-            <option value="kg">Kilogramme (kg)</option>
-            <option value="tonne">Tonne</option>
-            <option value="sac_50">Sac 50 kg</option>
-            <option value="sac_25">Sac 25 kg</option>
-            <option value="botte">Botte</option>
-            <option value="piece">Pièce</option>
-            <option value="litre">Litre</option>
-            <option value="carton">Carton</option>
-            <option value="douz">Douzaine</option>
+            <option value="kg">{% trans "Kilogramme (kg)" %}</option>
+            <option value="tonne">{% trans "Tonne" %}</option>
+            <option value="sac_50">{% trans "Sac 50 kg" %}</option>
+            <option value="sac_25">{% trans "Sac 25 kg" %}</option>
+            <option value="botte">{% trans "Botte" %}</option>
+            <option value="piece">{% trans "Pièce" %}</option>
+            <option value="litre">{% trans "Litre" %}</option>
+            <option value="carton">{% trans "Carton" %}</option>
+            <option value="douz">{% trans "Douzaine" %}</option>
           </select>
         </div>
         <div class="form-group">
-          <label>Qté min. commande</label>
+          <label>{% trans "Qté min. commande" %}</label>
           <input type="number" id="m-qte-min" placeholder="1" min="1" value="1">
         </div>
       </div>
       <div class="form-row">
         <div class="form-group">
-          <label>Stock disponible *</label>
+          <label>{% trans "Stock disponible *" %}</label>
           <input type="number" id="m-stock" placeholder="0" min="0">
         </div>
         <div class="form-group">
-          <label>Seuil d'alerte stock</label>
+          <label>{% trans "Seuil d'alerte stock" %}</label>
           <input type="number" id="m-seuil" placeholder="10" min="0" value="10">
         </div>
       </div>
       <div class="form-row">
         <div class="form-group">
-          <label>Origine</label>
-          <input type="text" id="m-origine" placeholder="Ex: Cayes, Sud">
+          <label>{% trans "Origine" %}</label>
+          <input type="text" id="m-origine" placeholder="{% trans 'Ex: Cayes, Sud' %}">
         </div>
         <div class="form-group">
-          <label>Saison</label>
-          <input type="text" id="m-saison" placeholder="Ex: Novembre — Janvier">
-        </div>
-      </div>
-      <div class="form-row full">
-        <div class="form-group">
-          <label>Certifications</label>
-          <input type="text" id="m-certifications" placeholder="Ex: Bio, Sans pesticide">
+          <label>{% trans "Saison" %}</label>
+          <input type="text" id="m-saison" placeholder="{% trans 'Ex: Novembre — Janvier' %}">
         </div>
       </div>
       <div class="form-row full">
         <div class="form-group">
-          <label>Description</label>
-          <textarea id="m-description" placeholder="Décrivez votre produit..."></textarea>
+          <label>{% trans "Certifications" %}</label>
+          <input type="text" id="m-certifications" placeholder="{% trans 'Ex: Bio, Sans pesticide' %}">
         </div>
       </div>
       <div class="form-row full">
         <div class="form-group">
-          <label>Photo principale</label>
+          <label>{% trans "Description" %}</label>
+          <textarea id="m-description" placeholder="{% trans 'Décrivez votre produit...' %}"></textarea>
+        </div>
+      </div>
+      <div class="form-row full">
+        <div class="form-group">
+          <label>{% trans "Photo principale" %}</label>
           <input type="file" id="m-image" accept="image/*">
         </div>
       </div>
     </div>
     <div class="modal-footer">
-      <button class="btn-ghost" onclick="closeModal()">Annuler</button>
+      <button class="btn-ghost" onclick="closeModal()">{% trans "Annuler" %}</button>
       <button class="btn-primary" id="btn-save-produit" onclick="saveProduit()">
-        <i class="fas fa-save"></i> Enregistrer
+        <i class="fas fa-save"></i> {% trans "Enregistrer" %}
       </button>
     </div>
   </div>
@@ -369,30 +370,30 @@
 <!-- Toolbar -->
 <div class="catalogue-toolbar">
   <div class="toolbar-left">
-    <input type="text" class="search-input" placeholder="Rechercher un produit..." oninput="filterLocal(this.value)">
-    <button class="filter-btn active" data-filter="all" onclick="setFilterLocal(this)">Tous</button>
-    <button class="filter-btn" data-filter="active" onclick="setFilterLocal(this)">Actifs</button>
-    <button class="filter-btn" data-filter="alerte" onclick="setFilterLocal(this)">Stock faible</button>
-    <button class="filter-btn" data-filter="inactif" onclick="setFilterLocal(this)">Inactifs</button>
+    <input type="text" class="search-input" placeholder="{% trans 'Rechercher un produit...' %}" oninput="filterLocal(this.value)">
+    <button class="filter-btn active" data-filter="all" onclick="setFilterLocal(this)">{% trans "Tous" %}</button>
+    <button class="filter-btn" data-filter="active" onclick="setFilterLocal(this)">{% trans "Actifs" %}</button>
+    <button class="filter-btn" data-filter="alerte" onclick="setFilterLocal(this)">{% trans "Stock faible" %}</button>
+    <button class="filter-btn" data-filter="inactif" onclick="setFilterLocal(this)">{% trans "Inactifs" %}</button>
   </div>
   <button class="btn-primary" onclick="openModal()">
-    <i class="fas fa-plus"></i> Nouveau produit
+    <i class="fas fa-plus"></i> {% trans "Nouveau produit" %}
   </button>
 </div>
 
 <!-- Grille -->
 <div id="catalogue-loading" style="text-align:center;padding:60px;color:var(--text-muted)">
   <i class="fas fa-spinner fa-spin" style="font-size:28px"></i>
-  <p style="margin-top:12px">Chargement du catalogue...</p>
+  <p style="margin-top:12px">{% trans "Chargement du catalogue..." %}</p>
 </div>
 
 <div class="produits-grid" id="produits-grid" style="display:none"></div>
 
 <div class="empty-state" id="catalogue-empty" style="display:none">
   <i class="fas fa-seedling"></i>
-  <p>Aucun produit dans votre catalogue.</p>
+  <p>{% trans "Aucun produit dans votre catalogue." %}</p>
   <button class="btn-primary" onclick="openModal()">
-    <i class="fas fa-plus"></i> Ajouter un produit
+    <i class="fas fa-plus"></i> {% trans "Ajouter un produit" %}
   </button>
 </div>
 
@@ -430,9 +431,9 @@
       if (rc.ok) {
         _categories = (await rc.json()).data || [];
         const sel = document.getElementById('m-categorie');
-        sel.innerHTML = '<option value="">— Catégorie —</option>';
+        sel.innerHTML = '<option value="">{% trans "— Catégorie —" %}</option>';
         _categories.forEach(cat => {
-          sel.innerHTML += `<option value="${cat.id}">${cat.nom}</option>`;
+          sel.innerHTML += `<option value="${cat.id}">{% trans "${cat.nom}" %}</option>`;
         });
       }
 
@@ -488,25 +489,25 @@
         <div class="produit-card">
           <div class="produit-card-img">
             ${imgHtml}
-            <span class="statut-pill" style="background:${sc.bg};color:${sc.color}">${p.statut_label}</span>
-            ${p.est_en_alerte ? '<span class="alerte-stock"><i class="fas fa-exclamation"></i> Stock faible</span>' : ''}
+            <span class="statut-pill" style="background:${sc.bg};color:${sc.color}">{% trans "${p.statut_label}" %}</span>
+            ${p.est_en_alerte ? '<span class="alerte-stock"><i class="fas fa-exclamation"></i> {% trans "Stock faible" %}</span>' : ''}
           </div>
           <div class="produit-card-body">
-            <div class="produit-nom">${p.nom}</div>
-            <div class="produit-cat">${p.categorie?.nom || '—'}${p.variete ? ' · ' + p.variete : ''}</div>
+            <div class="produit-nom">{% trans "${p.nom}" %}</div>
+            <div class="produit-cat">{% trans "${p.categorie?.nom || '—'}${p.variete ? ' · ' + p.variete : ''}" %}</div>
             <div class="produit-prix">${Number(p.prix_unitaire).toLocaleString('fr-FR')} HTG
-              <span class="produit-unite">/ ${p.unite_vente_label}</span>
+              <span class="produit-unite">{% trans "/ ${p.unite_vente_label}" %}</span>
             </div>
             <div class="produit-stock">
-              Stock : <span class="stock-value ${p.est_en_alerte ? 'stock-low' : ''}">${p.stock_disponible}</span>
-              <span style="color:var(--text-muted)">· Seuil : ${p.seuil_alerte}</span>
+              Stock : <span class="stock-value ${p.est_en_alerte ? 'stock-low' : ''}">{% trans "${p.stock_disponible}" %}</span>
+              <span style="color:var(--text-muted)">{% trans "· Seuil : ${p.seuil_alerte}" %}</span>
             </div>
           </div>
           <div class="produit-card-footer">
             <button class="btn-edit" onclick='openModal(${JSON.stringify(p)})'>
-              <i class="fas fa-edit"></i> Modifier
+              <i class="fas fa-edit"></i> {% trans "Modifier" %}
             </button>
-            <button class="btn-delete" onclick="deleteProduit('${p.slug}','${p.nom.replace(/'/g,'\\\'')}')" title="Supprimer">
+            <button class="btn-delete" onclick="deleteProduit('${p.slug}','${p.nom.replace(/'/g,'\\\'')}')" title="{% trans 'Supprimer' %}">
               <i class="fas fa-trash"></i>
             </button>
           </div>
@@ -573,7 +574,7 @@
     if (stock === '') { showToast('Le stock est requis.', 'error'); return; }
 
     const btn = document.getElementById('btn-save-produit');
-    btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enregistrement…';
+    btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> {% trans "Enregistrement…';" %}
 
     const formData = new FormData();
     formData.append('nom',                   nom);
@@ -613,7 +614,7 @@
       }
     } catch { showToast('Erreur réseau.', 'error'); }
 
-    btn.disabled = false; btn.innerHTML = '<i class="fas fa-save"></i> Enregistrer';
+    btn.disabled = false; btn.innerHTML = '<i class="fas fa-save"></i> {% trans "Enregistrer';" %}
   }
 
   // ── Suppression ───────────────────────────────────────────────────────────────

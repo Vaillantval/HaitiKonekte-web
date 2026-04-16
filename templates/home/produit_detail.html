@@ -1,6 +1,7 @@
 {% load static %}
+{% load i18n %}
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="{{ LANGUAGE_CODE }}">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -373,9 +374,9 @@
 <!-- ══ BREADCRUMB ══ -->
 <div class="breadcrumb">
   <div class="container breadcrumb-inner">
-    <a href="/"><i class="fas fa-home"></i> Accueil</a>
+    <a href="/"><i class="fas fa-home"></i> {% trans "Accueil" %}</a>
     <i class="fas fa-chevron-right"></i>
-    <a href="/#catalogue">Catalogue</a>
+    <a href="/#catalogue">{% trans "Catalogue" %}</a>
     <i class="fas fa-chevron-right"></i>
     <a href="/#catalogue">{{ produit.categorie.nom }}</a>
     <i class="fas fa-chevron-right"></i>
@@ -432,15 +433,15 @@
         <!-- Prix -->
         <div class="prix-bloc">
           <div class="prix-principal">
-            <span class="currency">HTG</span>
+            <span class="currency">{% trans "HTG" %}</span>
             <span id="prix-affiche">{{ produit.prix_unitaire }}</span>
             <span class="unite">/ {{ produit.get_unite_vente_display }}</span>
           </div>
           {% if produit.prix_gros %}
           <div class="prix-gros">
             <i class="fas fa-tags"></i>
-            Prix de gros : <strong>HTG {{ produit.prix_gros }} / {{ produit.get_unite_vente_display }}</strong>
-            <span style="font-style:italic;font-size:11px">(grandes quantités)</span>
+            Prix de gros : <strong>{% blocktrans with produit=produit.prix_gros produit1=produit.get_unite_vente_display %}HTG {{ produit }} / {{ produit1 }}{% endblocktrans %}</strong>
+            <span style="font-style:italic;font-size:11px">{% trans "(grandes quantités)" %}</span>
           </div>
           {% endif %}
         </div>
@@ -460,14 +461,14 @@
           {% endif %}
         {% else %}
           <div class="stock-badge stock-vide">
-            <i class="fas fa-times-circle"></i> Épuisé
+            <i class="fas fa-times-circle"></i> {% trans "Épuisé" %}
           </div>
         {% endif %}
 
         <!-- Quantité -->
         {% if produit.stock_reel > 0 %}
         <div class="qty-section">
-          <div class="qty-label">Quantité ({{ produit.get_unite_vente_display }})</div>
+          <div class="qty-label">{% blocktrans with produit=produit.get_unite_vente_display %}Quantité ({{ produit }}){% endblocktrans %}</div>
           <div class="qty-wrap">
             <button class="qty-btn" id="btn-moins" onclick="changerQty(-1)">−</button>
             <input class="qty-input" type="number" id="qty-input"
@@ -487,18 +488,18 @@
           <button class="btn-ajouter {% if dans_panier %}dans-panier{% endif %}"
                   id="btn-ajouter" onclick="ajouterAuPanier()">
             {% if dans_panier %}
-              <i class="fas fa-check"></i> Dans le panier
+              <i class="fas fa-check"></i> {% trans "Dans le panier" %}
             {% else %}
-              <i class="fas fa-shopping-basket"></i> Ajouter au panier
+              <i class="fas fa-shopping-basket"></i> {% trans "Ajouter au panier" %}
             {% endif %}
           </button>
           <button class="btn-commander" id="btn-commander" onclick="commanderMaintenant()">
-            <i class="fas fa-bolt"></i> Commander maintenant
+            <i class="fas fa-bolt"></i> {% trans "Commander maintenant" %}
           </button>
         </div>
         {% else %}
         <div style="background:#fde8e8;border-radius:10px;padding:16px;text-align:center;color:#c0392b;font-weight:600;margin-bottom:24px;">
-          <i class="fas fa-ban"></i> Ce produit est actuellement épuisé.
+          <i class="fas fa-ban"></i> {% trans "Ce produit est actuellement épuisé." %}
         </div>
         {% endif %}
 
@@ -524,7 +525,7 @@
   <!-- ── Description ──────────────────────────────────── -->
   {% if produit.description %}
   <div class="section">
-    <div class="section-titre"><i class="fas fa-align-left"></i> Description</div>
+    <div class="section-titre"><i class="fas fa-align-left"></i> {% trans "Description" %}</div>
     <p class="description-text">{{ produit.description }}</p>
   </div>
   {% endif %}
@@ -532,38 +533,38 @@
   <!-- ── Attributs ─────────────────────────────────────── -->
   {% if produit.origine or produit.saison or produit.certifications or produit.variete %}
   <div class="section">
-    <div class="section-titre"><i class="fas fa-leaf"></i> Caractéristiques du produit</div>
+    <div class="section-titre"><i class="fas fa-leaf"></i> {% trans "Caractéristiques du produit" %}</div>
     <div class="attrs-grid">
       {% if produit.variete %}
       <div class="attr-item">
-        <div class="attr-label">Variété</div>
+        <div class="attr-label">{% trans "Variété" %}</div>
         <div class="attr-val">{{ produit.variete }}</div>
       </div>
       {% endif %}
       {% if produit.origine %}
       <div class="attr-item">
-        <div class="attr-label">Origine</div>
+        <div class="attr-label">{% trans "Origine" %}</div>
         <div class="attr-val">{{ produit.origine }}</div>
       </div>
       {% endif %}
       {% if produit.saison %}
       <div class="attr-item">
-        <div class="attr-label">Saison</div>
+        <div class="attr-label">{% trans "Saison" %}</div>
         <div class="attr-val">{{ produit.saison }}</div>
       </div>
       {% endif %}
       {% if produit.certifications %}
       <div class="attr-item">
-        <div class="attr-label">Certifications</div>
+        <div class="attr-label">{% trans "Certifications" %}</div>
         <div class="attr-val">{{ produit.certifications }}</div>
       </div>
       {% endif %}
       <div class="attr-item">
-        <div class="attr-label">Unité de vente</div>
+        <div class="attr-label">{% trans "Unité de vente" %}</div>
         <div class="attr-val">{{ produit.get_unite_vente_display }}</div>
       </div>
       <div class="attr-item">
-        <div class="attr-label">Qté min. commande</div>
+        <div class="attr-label">{% trans "Qté min. commande" %}</div>
         <div class="attr-val">{{ produit.quantite_min_commande }} {{ produit.get_unite_vente_display }}</div>
       </div>
     </div>
@@ -572,7 +573,7 @@
 
   <!-- ── Producteur + QR ───────────────────────────────── -->
   <div class="section">
-    <div class="section-titre"><i class="fas fa-tractor"></i> À propos du producteur</div>
+    <div class="section-titre"><i class="fas fa-tractor"></i> {% trans "À propos du producteur" %}</div>
     <div style="display:grid;grid-template-columns:1fr auto;gap:24px;align-items:start;">
       <div>
         <div style="font-size:17px;font-weight:700;margin-bottom:6px;">
@@ -593,7 +594,7 @@
       {% if produit.qr_code %}
       <div class="qr-bloc">
         <img src="{{ produit.qr_code.url }}" alt="QR Code {{ produit.nom }}">
-        <div class="qr-caption">Scanner pour partager</div>
+        <div class="qr-caption">{% trans "Scanner pour partager" %}</div>
       </div>
       {% endif %}
     </div>
@@ -602,7 +603,7 @@
   <!-- ── Produits similaires ───────────────────────────── -->
   {% if similaires %}
   <div class="section">
-    <div class="section-titre"><i class="fas fa-th-large"></i> Autres produits similaires</div>
+    <div class="section-titre"><i class="fas fa-th-large"></i> {% trans "Autres produits similaires" %}</div>
     <div class="similaires-grid">
       {% for s in similaires %}
       <a href="{% url 'home:produit_detail' s.slug %}" class="produit-card">
@@ -615,7 +616,7 @@
         </div>
         <div class="card-body">
           <div class="card-nom">{{ s.nom }}</div>
-          <div class="card-prix">HTG {{ s.prix_unitaire }}</div>
+          <div class="card-prix">{% blocktrans with s=s.prix_unitaire %}HTG {{ s }}{% endblocktrans %}</div>
           <div class="card-unite">/ {{ s.get_unite_vente_display }}</div>
           <div class="card-producteur">
             <i class="fas fa-map-marker-alt" style="color:var(--vert-vif);font-size:10px"></i>

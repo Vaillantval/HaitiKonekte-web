@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from .models import FAQCategorie, ContactMessage, SiteSettings
+from django.utils.translation import gettext as _
 
 
 def apropos(request):

@@ -1,4 +1,5 @@
 {% extends 'dashboard/base.html' %}
+{% load i18n %}
 {% block title %}Stocks — Superadmin{% endblock %}
 {% block sidebar_nav %}{% include 'dashboard/superadmin_sidebar.html' with active='stocks' %}{% endblock %}
 {% block page_title %}Gestion des stocks{% endblock %}
@@ -85,64 +86,64 @@
 <!-- Modal Lot -->
 <div class="modal-overlay" id="lot-modal">
   <div class="modal-box">
-    <h3 id="modal-title">Nouveau lot</h3>
+    <h3 id="modal-title">{% trans "Nouveau lot" %}</h3>
     <form id="lot-form" onsubmit="submitLot(event)">
       <div class="form-grid">
         <div class="field full">
-          <label>Produit *</label>
-          <select id="f-produit" required><option value="">Chargement...</option></select>
+          <label>{% trans "Produit *" %}</label>
+          <select id="f-produit" required><option value="">{% trans "Chargement..." %}</option></select>
         </div>
         <div class="field">
-          <label>Quantité initiale *</label>
-          <input type="number" id="f-qte-init" required min="1" placeholder="Ex: 500">
+          <label>{% trans "Quantité initiale *" %}</label>
+          <input type="number" id="f-qte-init" required min="1" placeholder="{% trans 'Ex: 500' %}">
         </div>
         <div class="field" id="f-qte-actuelle-wrap" style="display:none">
-          <label>Quantité actuelle</label>
+          <label>{% trans "Quantité actuelle" %}</label>
           <input type="number" id="f-qte-actuelle" min="0">
         </div>
         <div class="field">
-          <label>Date de récolte</label>
+          <label>{% trans "Date de récolte" %}</label>
           <input type="date" id="f-date-recolte">
         </div>
         <div class="field">
-          <label>Date d'expiration</label>
+          <label>{% trans "Date d'expiration" %}</label>
           <input type="date" id="f-date-expiration">
         </div>
         <div class="field full">
-          <label>Lieu de stockage</label>
-          <input type="text" id="f-lieu" placeholder="Ex: Entrepôt central, Magasin...">
+          <label>{% trans "Lieu de stockage" %}</label>
+          <input type="text" id="f-lieu" placeholder="{% trans 'Ex: Entrepôt central, Magasin...' %}">
         </div>
         <div class="field">
-          <label>Statut</label>
+          <label>{% trans "Statut" %}</label>
           <select id="f-lot-statut">
-            <option value="disponible">Disponible</option>
-            <option value="en_cours">En cours</option>
-            <option value="epuise">Épuisé</option>
-            <option value="expire">Expiré</option>
-            <option value="rappel">Rappelé</option>
+            <option value="disponible">{% trans "Disponible" %}</option>
+            <option value="en_cours">{% trans "En cours" %}</option>
+            <option value="epuise">{% trans "Épuisé" %}</option>
+            <option value="expire">{% trans "Expiré" %}</option>
+            <option value="rappel">{% trans "Rappelé" %}</option>
           </select>
         </div>
         <div class="field full">
-          <label>Notes</label>
-          <textarea id="f-lot-notes" placeholder="Notes internes..."></textarea>
+          <label>{% trans "Notes" %}</label>
+          <textarea id="f-lot-notes" placeholder="{% trans 'Notes internes...' %}"></textarea>
         </div>
       </div>
       <div class="modal-actions">
-        <button type="button" class="btn-cancel" onclick="closeLotModal()">Annuler</button>
-        <button type="submit" class="btn-save" id="lot-submit-btn"><i class="fas fa-save"></i> Enregistrer</button>
+        <button type="button" class="btn-cancel" onclick="closeLotModal()">{% trans "Annuler" %}</button>
+        <button type="submit" class="btn-save" id="lot-submit-btn"><i class="fas fa-save"></i> {% trans "Enregistrer" %}</button>
       </div>
     </form>
   </div>
 </div>
 
 <div class="tabs">
-  <button class="tab-btn active" onclick="switchTab('lots', this)"><i class="fas fa-boxes"></i> Lots de stock</button>
+  <button class="tab-btn active" onclick="switchTab('lots', this)"><i class="fas fa-boxes"></i> {% trans "Lots de stock" %}</button>
   <button class="tab-btn" onclick="switchTab('alertes', this)">
-    <i class="fas fa-exclamation-triangle"></i> Alertes
+    <i class="fas fa-exclamation-triangle"></i> {% trans "Alertes" %}
     <span id="badge-alertes" style="background:#e74c3c;color:#fff;border-radius:10px;font-size:10px;padding:1px 6px;margin-left:4px;display:none"></span>
   </button>
   <button class="tab-btn" onclick="switchTab('mouvements', this)">
-    <i class="fas fa-exchange-alt"></i> Mouvements
+    <i class="fas fa-exchange-alt"></i> {% trans "Mouvements" %}
   </button>
 </div>
 
@@ -151,49 +152,49 @@
   <div class="toolbar">
     <div class="search-box">
       <i class="fas fa-search" style="color:var(--text-muted)"></i>
-      <input type="text" id="lots-search" placeholder="N° lot, produit..." oninput="debouncedLots()">
+      <input type="text" id="lots-search" placeholder="{% trans 'N° lot, produit...' %}" oninput="debouncedLots()">
     </div>
-    <button class="filter-btn active" data-statut="" onclick="setLotsFilter(this)">Tous</button>
-    <button class="filter-btn" data-statut="disponible" onclick="setLotsFilter(this)">Disponibles</button>
-    <button class="filter-btn" data-statut="epuise" onclick="setLotsFilter(this)">Épuisés</button>
-    <button class="filter-btn" data-statut="expire" onclick="setLotsFilter(this)">Expirés</button>
-    <button class="filter-btn" data-statut="retire" onclick="setLotsFilter(this)">Retirés</button>
-    <button class="btn-new" onclick="openLotCreate()"><i class="fas fa-plus"></i> Nouveau lot</button>
+    <button class="filter-btn active" data-statut="" onclick="setLotsFilter(this)">{% trans "Tous" %}</button>
+    <button class="filter-btn" data-statut="disponible" onclick="setLotsFilter(this)">{% trans "Disponibles" %}</button>
+    <button class="filter-btn" data-statut="epuise" onclick="setLotsFilter(this)">{% trans "Épuisés" %}</button>
+    <button class="filter-btn" data-statut="expire" onclick="setLotsFilter(this)">{% trans "Expirés" %}</button>
+    <button class="filter-btn" data-statut="retire" onclick="setLotsFilter(this)">{% trans "Retirés" %}</button>
+    <button class="btn-new" onclick="openLotCreate()"><i class="fas fa-plus"></i> {% trans "Nouveau lot" %}</button>
   </div>
   <div class="table-wrap">
-    <div class="empty-state" id="lots-loading"><i class="fas fa-spinner fa-spin"></i> Chargement...</div>
+    <div class="empty-state" id="lots-loading"><i class="fas fa-spinner fa-spin"></i> {% trans "Chargement..." %}</div>
     <table id="lots-tbl" style="display:none">
       <thead>
         <tr>
-          <th>N° Lot</th>
-          <th>Produit</th>
-          <th>Producteur</th>
-          <th>Catégorie</th>
-          <th>Qté init.</th>
-          <th>Qté actuelle</th>
-          <th>Écoulement</th>
-          <th>Statut</th>
-          <th>Exp.</th>
-          <th>Actions</th>
+          <th>{% trans "N° Lot" %}</th>
+          <th>{% trans "Produit" %}</th>
+          <th>{% trans "Producteur" %}</th>
+          <th>{% trans "Catégorie" %}</th>
+          <th>{% trans "Qté init." %}</th>
+          <th>{% trans "Qté actuelle" %}</th>
+          <th>{% trans "Écoulement" %}</th>
+          <th>{% trans "Statut" %}</th>
+          <th>{% trans "Exp." %}</th>
+          <th>{% trans "Actions" %}</th>
         </tr>
       </thead>
       <tbody id="lots-tbody"></tbody>
     </table>
-    <div class="empty-state" id="lots-empty" style="display:none">Aucun lot trouvé.</div>
+    <div class="empty-state" id="lots-empty" style="display:none">{% trans "Aucun lot trouvé." %}</div>
   </div>
 </div>
 
 <!-- Tab Alertes -->
 <div class="tab-panel" id="tab-alertes">
   <div class="toolbar">
-    <button class="filter-btn active" data-niveau="" onclick="setAlertesFilter(this)">Toutes</button>
-    <button class="filter-btn" data-niveau="epuise" onclick="setAlertesFilter(this)"><i class="fas fa-times-circle"></i> Épuisés</button>
-    <button class="filter-btn" data-niveau="critique" onclick="setAlertesFilter(this)"><i class="fas fa-exclamation-triangle"></i> Critiques</button>
-    <button class="filter-btn" data-niveau="bas" onclick="setAlertesFilter(this)">Stock bas</button>
+    <button class="filter-btn active" data-niveau="" onclick="setAlertesFilter(this)">{% trans "Toutes" %}</button>
+    <button class="filter-btn" data-niveau="epuise" onclick="setAlertesFilter(this)"><i class="fas fa-times-circle"></i> {% trans "Épuisés" %}</button>
+    <button class="filter-btn" data-niveau="critique" onclick="setAlertesFilter(this)"><i class="fas fa-exclamation-triangle"></i> {% trans "Critiques" %}</button>
+    <button class="filter-btn" data-niveau="bas" onclick="setAlertesFilter(this)">{% trans "Stock bas" %}</button>
   </div>
-  <div class="empty-state" id="alertes-loading" style="display:none"><i class="fas fa-spinner fa-spin"></i> Chargement...</div>
+  <div class="empty-state" id="alertes-loading" style="display:none"><i class="fas fa-spinner fa-spin"></i> {% trans "Chargement..." %}</div>
   <div class="alerte-card" id="alertes-list" style="display:none"></div>
-  <div class="empty-state" id="alertes-empty" style="display:none"><i class="fas fa-check-circle" style="color:#27ae60;margin-right:6px"></i> Aucune alerte.</div>
+  <div class="empty-state" id="alertes-empty" style="display:none"><i class="fas fa-check-circle" style="color:#27ae60;margin-right:6px"></i> {% trans "Aucune alerte." %}</div>
 </div>
 
 <!-- Tab Mouvements -->
@@ -201,37 +202,37 @@
   <div class="toolbar">
     <div class="search-box">
       <i class="fas fa-search" style="color:var(--text-muted)"></i>
-      <input type="text" id="mvt-search" placeholder="Produit, lot, motif..." oninput="debouncedMvt()">
+      <input type="text" id="mvt-search" placeholder="{% trans 'Produit, lot, motif...' %}" oninput="debouncedMvt()">
     </div>
     <select id="mvt-type" class="filter-btn" style="appearance:none;padding-right:24px" onchange="loadMouvements()">
-      <option value="">Tous les types</option>
-      <option value="entree">Entrée</option>
-      <option value="sortie_vente">Sortie vente</option>
-      <option value="sortie_collecte">Sortie collecte</option>
-      <option value="ajust_pos">Ajustement +</option>
-      <option value="ajust_neg">Ajustement —</option>
-      <option value="perte">Perte</option>
-      <option value="retour">Retour</option>
+      <option value="">{% trans "Tous les types" %}</option>
+      <option value="entree">{% trans "Entrée" %}</option>
+      <option value="sortie_vente">{% trans "Sortie vente" %}</option>
+      <option value="sortie_collecte">{% trans "Sortie collecte" %}</option>
+      <option value="ajust_pos">{% trans "Ajustement +" %}</option>
+      <option value="ajust_neg">{% trans "Ajustement —" %}</option>
+      <option value="perte">{% trans "Perte" %}</option>
+      <option value="retour">{% trans "Retour" %}</option>
     </select>
   </div>
   <div class="table-wrap">
-    <div class="empty-state" id="mvt-loading" style="display:none"><i class="fas fa-spinner fa-spin"></i> Chargement...</div>
+    <div class="empty-state" id="mvt-loading" style="display:none"><i class="fas fa-spinner fa-spin"></i> {% trans "Chargement..." %}</div>
     <table id="mvt-tbl" style="display:none">
       <thead>
         <tr>
-          <th>Date</th>
-          <th>Produit</th>
-          <th>Lot</th>
-          <th>Type</th>
-          <th>Qté</th>
-          <th>Avant → Après</th>
-          <th>Motif</th>
-          <th>Par</th>
+          <th>{% trans "Date" %}</th>
+          <th>{% trans "Produit" %}</th>
+          <th>{% trans "Lot" %}</th>
+          <th>{% trans "Type" %}</th>
+          <th>{% trans "Qté" %}</th>
+          <th>{% trans "Avant → Après" %}</th>
+          <th>{% trans "Motif" %}</th>
+          <th>{% trans "Par" %}</th>
         </tr>
       </thead>
       <tbody id="mvt-tbody"></tbody>
     </table>
-    <div class="empty-state" id="mvt-empty" style="display:none">Aucun mouvement.</div>
+    <div class="empty-state" id="mvt-empty" style="display:none">{% trans "Aucun mouvement." %}</div>
   </div>
 </div>
 {% endblock %}
@@ -256,7 +257,7 @@ const ALERTE_NIVEAU = {
 
 function sBadge(s, label, map) {
   const st = (map||LOT_STATUT)[s] || { bg:'#eee', color:'#888' };
-  return `<span class="badge" style="background:${st.bg};color:${st.color}">${label}</span>`;
+  return `<span class="badge" style="background:${st.bg};color:${st.color}">{% trans "${label}" %}</span>`;
 }
 function fdate(iso) { return new Date(iso).toLocaleDateString('fr-FR', {day:'2-digit',month:'short',year:'numeric'}); }
 function showToast(msg, type='success') {
@@ -308,14 +309,14 @@ async function loadMouvements() {
     const c = MVT_COLORS[m.type_mouvement]||'#95a5a6';
     tbody.innerHTML += `
       <tr>
-        <td style="font-size:12px;color:var(--text-muted)">${fdatetime(m.created_at)}</td>
-        <td style="font-weight:600">${m.produit_nom}</td>
-        <td style="font-size:12px;color:var(--text-muted);font-family:monospace">${m.lot_numero}</td>
-        <td><span style="background:${c}22;color:${c};padding:2px 8px;border-radius:10px;font-size:11px;font-weight:700">${m.type_label}</span></td>
-        <td><strong style="color:${c}">${m.quantite > 0 ? '+':'-'}${Math.abs(m.quantite)}</strong></td>
-        <td style="font-size:12px;color:var(--text-muted)">${m.stock_avant} → ${m.stock_apres}</td>
-        <td style="font-size:12px;color:var(--text-muted);max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${m.motif||'—'}</td>
-        <td style="font-size:12px;color:var(--text-muted)">${m.effectue_par}</td>
+        <td style="font-size:12px;color:var(--text-muted)">{% trans "${fdatetime(m.created_at)}" %}</td>
+        <td style="font-weight:600">{% trans "${m.produit_nom}" %}</td>
+        <td style="font-size:12px;color:var(--text-muted);font-family:monospace">{% trans "${m.lot_numero}" %}</td>
+        <td><span style="background:${c}22;color:${c};padding:2px 8px;border-radius:10px;font-size:11px;font-weight:700">{% trans "${m.type_label}" %}</span></td>
+        <td><strong style="color:${c}">{% trans "${m.quantite > 0 ? '+':'-'}${Math.abs(m.quantite)}" %}</strong></td>
+        <td style="font-size:12px;color:var(--text-muted)">{% trans "${m.stock_avant} → ${m.stock_apres}" %}</td>
+        <td style="font-size:12px;color:var(--text-muted);max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{% trans "${m.motif||'—'}" %}</td>
+        <td style="font-size:12px;color:var(--text-muted)">{% trans "${m.effectue_par}" %}</td>
       </tr>`;
   });
   document.getElementById('mvt-tbl').style.display = 'table';
@@ -325,8 +326,8 @@ async function loadProduitOptions(selectedId) {
   const r = await fetch('/api/admin/options/?type=produits', { headers: H });
   const data = (await r.json()).data || [];
   const sel = document.getElementById('f-produit');
-  sel.innerHTML = '<option value="">-- Choisir un produit --</option>' +
-    data.map(p => `<option value="${p.id}"${selectedId==p.id?' selected':''}>${p.label}</option>`).join('');
+  sel.innerHTML = '<option value="">{% trans "-- Choisir un produit --" %}</option>' +
+    data.map(p => `<option value="${p.id}"${selectedId==p.id?' selected':''}>{% trans "${p.label}" %}</option>`).join('');
 }
 
 async function loadLots() {
@@ -350,18 +351,18 @@ async function loadLots() {
     const expired = lot.date_expiration && new Date(lot.date_expiration) < new Date();
     tbody.innerHTML += `
       <tr>
-        <td style="font-family:monospace;font-size:12px;color:var(--green-mid)">${lot.numero_lot}</td>
-        <td style="font-weight:600">${lot.produit_nom}</td>
-        <td><div style="font-weight:600">${lot.producteur_nom}</div><div style="font-size:11px;color:var(--text-muted)">${lot.producteur_code}</div></td>
-        <td style="color:var(--text-muted)">${lot.categorie}</td>
-        <td style="text-align:right">${lot.quantite_initiale}</td>
-        <td style="text-align:right;font-weight:600;color:${lot.quantite_actuelle<=0?'#e74c3c':lot.quantite_actuelle<=3?'#e67e22':'var(--text)'}">${lot.quantite_actuelle}</td>
-        <td>${progressBar(lot.taux_ecoulement)}</td>
-        <td>${sBadge(lot.statut, lot.statut_label)}</td>
-        <td style="font-size:12px;color:${expired?'#e74c3c':'var(--text-muted)'}">${lot.date_expiration||'—'}</td>
+        <td style="font-family:monospace;font-size:12px;color:var(--green-mid)">{% trans "${lot.numero_lot}" %}</td>
+        <td style="font-weight:600">{% trans "${lot.produit_nom}" %}</td>
+        <td><div style="font-weight:600">{% trans "${lot.producteur_nom}" %}</div><div style="font-size:11px;color:var(--text-muted)">{% trans "${lot.producteur_code}" %}</div></td>
+        <td style="color:var(--text-muted)">{% trans "${lot.categorie}" %}</td>
+        <td style="text-align:right">{% trans "${lot.quantite_initiale}" %}</td>
+        <td style="text-align:right;font-weight:600;color:${lot.quantite_actuelle<=0?'#e74c3c':lot.quantite_actuelle<=3?'#e67e22':'var(--text)'}">{% trans "${lot.quantite_actuelle}" %}</td>
+        <td>{% trans "${progressBar(lot.taux_ecoulement)}" %}</td>
+        <td>{% trans "${sBadge(lot.statut, lot.statut_label)}" %}</td>
+        <td style="font-size:12px;color:${expired?'#e74c3c':'var(--text-muted)'}">{% trans "${lot.date_expiration||'—'}" %}</td>
         <td>
           <button class="action-btn" style="background:var(--bg);color:var(--text-muted);border:1px solid var(--border)" onclick="openLotEdit(${lot.id})">
-            <i class="fas fa-edit"></i> Éditer
+            <i class="fas fa-edit"></i> {% trans "Éditer" %}
           </button>
         </td>
       </tr>`;
@@ -378,7 +379,7 @@ function debouncedLots() { clearTimeout(_lotsDebounce); _lotsDebounce = setTimeo
 function openLotCreate() {
   _editLotId = null;
   document.getElementById('modal-title').textContent = 'Nouveau lot de stock';
-  document.getElementById('lot-submit-btn').innerHTML = '<i class="fas fa-plus"></i> Créer le lot';
+  document.getElementById('lot-submit-btn').innerHTML = '<i class="fas fa-plus"></i> {% trans "Créer le lot';" %}
   ['f-qte-init','f-date-recolte','f-date-expiration','f-lieu','f-lot-notes'].forEach(id => document.getElementById(id).value = '');
   document.getElementById('f-lot-statut').value = 'disponible';
   document.getElementById('f-qte-actuelle-wrap').style.display = 'none';
@@ -390,7 +391,7 @@ function openLotCreate() {
 async function openLotEdit(id) {
   _editLotId = id;
   document.getElementById('modal-title').textContent = 'Éditer le lot';
-  document.getElementById('lot-submit-btn').innerHTML = '<i class="fas fa-save"></i> Enregistrer';
+  document.getElementById('lot-submit-btn').innerHTML = '<i class="fas fa-save"></i> {% trans "Enregistrer';" %}
   document.getElementById('lot-modal').classList.add('open');
 
   const r = await fetch(`/api/admin/stocks/lots/${id}/`, { headers: H });
@@ -483,14 +484,14 @@ async function loadAlertes() {
     return `<div class="alerte-row">
       <div class="alerte-icon ${a.niveau}"><i class="fas fa-${a.niveau==='epuise'?'times-circle':'exclamation-triangle'}"></i></div>
       <div style="flex:1">
-        <div style="font-weight:600">${a.produit_nom}</div>
-        <div style="font-size:12px;color:var(--text-muted)">${a.producteur_nom} · ${a.producteur_tel||''}</div>
+        <div style="font-weight:600">{% trans "${a.produit_nom}" %}</div>
+        <div style="font-size:12px;color:var(--text-muted)">{% trans "${a.producteur_nom} · ${a.producteur_tel||''}" %}</div>
       </div>
       <div style="text-align:right">
-        <span class="badge" style="background:${niv.bg};color:${niv.color}">${a.niveau_label}</span>
-        <div style="font-size:12px;color:var(--text-muted);margin-top:3px">${a.quantite_actuelle} ${a.unite_vente} / seuil ${a.seuil_alerte}</div>
+        <span class="badge" style="background:${niv.bg};color:${niv.color}">{% trans "${a.niveau_label}" %}</span>
+        <div style="font-size:12px;color:var(--text-muted);margin-top:3px">{% trans "${a.quantite_actuelle} ${a.unite_vente} / seuil ${a.seuil_alerte}" %}</div>
       </div>
-      <div style="font-size:11px;color:var(--text-muted);min-width:60px;text-align:right">${fdate(a.created_at)}</div>
+      <div style="font-size:11px;color:var(--text-muted);min-width:60px;text-align:right">{% trans "${fdate(a.created_at)}" %}</div>
     </div>`;
   }).join('');
   list.style.display = 'block';

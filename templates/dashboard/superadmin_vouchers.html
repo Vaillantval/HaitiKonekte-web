@@ -1,4 +1,5 @@
 {% extends 'dashboard/base.html' %}
+{% load i18n %}
 {% block title %}Vouchers — Superadmin{% endblock %}
 {% block sidebar_nav %}{% include 'dashboard/superadmin_sidebar.html' with active='vouchers' %}{% endblock %}
 {% block page_title %}Vouchers{% endblock %}
@@ -112,48 +113,48 @@
 <!-- Modal programme -->
 <div class="modal-overlay" id="prog-modal">
   <div class="modal-box">
-    <h3 id="prog-modal-title">Nouveau programme</h3>
+    <h3 id="prog-modal-title">{% trans "Nouveau programme" %}</h3>
     <form id="prog-form" onsubmit="submitProg(event)">
       <div class="form-grid">
         <div class="field full">
-          <label>Nom du programme *</label>
-          <input type="text" id="p-nom" required placeholder="Ex: Programme WFP 2026">
+          <label>{% trans "Nom du programme *" %}</label>
+          <input type="text" id="p-nom" required placeholder="{% trans 'Ex: Programme WFP 2026' %}">
         </div>
         <div class="field">
-          <label>Type *</label>
+          <label>{% trans "Type *" %}</label>
           <select id="p-type" required>
-            <option value="aide_alimentaire">Aide alimentaire</option>
-            <option value="subvention">Subvention</option>
-            <option value="promotion">Promotion commerciale</option>
-            <option value="partenariat">Partenariat</option>
+            <option value="aide_alimentaire">{% trans "Aide alimentaire" %}</option>
+            <option value="subvention">{% trans "Subvention" %}</option>
+            <option value="promotion">{% trans "Promotion commerciale" %}</option>
+            <option value="partenariat">{% trans "Partenariat" %}</option>
           </select>
         </div>
         <div class="field">
-          <label>Budget total (HTG)</label>
+          <label>{% trans "Budget total (HTG)" %}</label>
           <input type="number" id="p-budget" placeholder="0" min="0">
         </div>
         <div class="field">
-          <label>Date début</label>
+          <label>{% trans "Date début" %}</label>
           <input type="date" id="p-debut">
         </div>
         <div class="field">
-          <label>Date fin</label>
+          <label>{% trans "Date fin" %}</label>
           <input type="date" id="p-fin">
         </div>
         <div class="field full">
-          <label>Description</label>
+          <label>{% trans "Description" %}</label>
           <textarea id="p-description" rows="2" style="resize:vertical"></textarea>
         </div>
         <div class="field">
-          <label>Contact — Nom</label>
-          <input type="text" id="p-contact-nom" placeholder="Responsable">
+          <label>{% trans "Contact — Nom" %}</label>
+          <input type="text" id="p-contact-nom" placeholder="{% trans 'Responsable' %}">
         </div>
         <div class="field">
-          <label>Contact — Email</label>
+          <label>{% trans "Contact — Email" %}</label>
           <input type="email" id="p-contact-email">
         </div>
         <div class="field">
-          <label>Contact — Tél</label>
+          <label>{% trans "Contact — Tél" %}</label>
           <input type="text" id="p-contact-tel">
         </div>
         <div class="field">
@@ -163,8 +164,8 @@
         </div>
       </div>
       <div class="modal-actions">
-        <button type="button" class="btn-cancel" onclick="closeProgModal()">Annuler</button>
-        <button type="submit" class="btn-save" id="prog-submit-btn"><i class="fas fa-save"></i> Enregistrer</button>
+        <button type="button" class="btn-cancel" onclick="closeProgModal()">{% trans "Annuler" %}</button>
+        <button type="submit" class="btn-save" id="prog-submit-btn"><i class="fas fa-save"></i> {% trans "Enregistrer" %}</button>
       </div>
     </form>
   </div>
@@ -173,41 +174,41 @@
 <!-- Modal voucher — deux méthodes -->
 <div class="modal-overlay" id="voucher-modal">
   <div class="modal-box wide">
-    <h3><i class="fas fa-ticket-alt" style="color:var(--green-mid);margin-right:8px"></i>Créer des vouchers</h3>
+    <h3><i class="fas fa-ticket-alt" style="color:var(--green-mid);margin-right:8px"></i>{% trans "Créer des vouchers" %}</h3>
 
     <!-- Sélection de la méthode -->
     <div class="method-tabs">
       <button class="method-tab active" id="mtab-select" onclick="switchVoucherMethod('select')">
-        <i class="fas fa-users"></i> Sélection manuelle
+        <i class="fas fa-users"></i> {% trans "Sélection manuelle" %}
       </button>
       <button class="method-tab" id="mtab-excel" onclick="switchVoucherMethod('excel')">
-        <i class="fas fa-file-excel"></i> Import Excel
+        <i class="fas fa-file-excel"></i> {% trans "Import Excel" %}
       </button>
     </div>
 
     <!-- Champs communs (programme, type, valeur, expiration) -->
     <div class="form-grid" style="margin-bottom:16px">
       <div class="field full">
-        <label>Programme *</label>
+        <label>{% trans "Programme *" %}</label>
         <select id="v-prog" required></select>
       </div>
       <div class="field">
-        <label>Type de valeur *</label>
+        <label>{% trans "Type de valeur *" %}</label>
         <select id="v-type">
-          <option value="fixe">Montant fixe (HTG)</option>
-          <option value="pourcent">Pourcentage (%)</option>
+          <option value="fixe">{% trans "Montant fixe (HTG)" %}</option>
+          <option value="pourcent">{% trans "Pourcentage (%)" %}</option>
         </select>
       </div>
       <div class="field">
-        <label>Valeur *</label>
-        <input type="number" id="v-valeur" required min="1" placeholder="Ex: 500">
+        <label>{% trans "Valeur *" %}</label>
+        <input type="number" id="v-valeur" required min="1" placeholder="{% trans 'Ex: 500' %}">
       </div>
       <div class="field">
-        <label>Montant min commande (HTG)</label>
+        <label>{% trans "Montant min commande (HTG)" %}</label>
         <input type="number" id="v-min-cmd" placeholder="0" min="0">
       </div>
       <div class="field">
-        <label>Date expiration *</label>
+        <label>{% trans "Date expiration *" %}</label>
         <input type="date" id="v-expiration">
       </div>
     </div>
@@ -219,10 +220,10 @@
       </div>
       <div class="user-search-wrap">
         <i class="fas fa-search" style="color:var(--text-muted)"></i>
-        <input type="text" id="user-search" placeholder="Rechercher par nom ou email…" oninput="filterAcheteurs()">
+        <input type="text" id="user-search" placeholder="{% trans 'Rechercher par nom ou email…' %}" oninput="filterAcheteurs()">
       </div>
       <div class="user-select-list" id="user-select-list">
-        <div class="user-select-empty"><i class="fas fa-spinner fa-spin"></i> Chargement…</div>
+        <div class="user-select-empty"><i class="fas fa-spinner fa-spin"></i> {% trans "Chargement…" %}</div>
       </div>
       <div class="user-select-count" id="user-select-count" style="display:none"></div>
     </div>
@@ -230,7 +231,7 @@
     <!-- Méthode 2 : import Excel -->
     <div id="method-excel" style="display:none">
       <a class="btn-template" onclick="downloadTemplate()">
-        <i class="fas fa-download"></i> Télécharger le modèle Excel
+        <i class="fas fa-download"></i> {% trans "Télécharger le modèle Excel" %}
       </a>
       <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--text-muted);margin-bottom:8px;">
         Importer votre fichier rempli
@@ -240,37 +241,37 @@
            ondragleave="this.classList.remove('drag-over')"
            ondrop="handleFileDrop(event)">
         <i class="fas fa-cloud-upload-alt"></i>
-        <p>Cliquez ou glissez votre fichier <strong>.xlsx</strong> ici</p>
+        <p>Cliquez ou glissez votre fichier <strong>{% trans ".xlsx" %}</strong> ici</p>
         <div class="filename" id="excel-filename" style="display:none"></div>
       </div>
       <input type="file" id="excel-file" accept=".xlsx" style="display:none" onchange="handleFileSelect(this)">
       <div style="font-size:11px;color:var(--text-muted);margin-top:6px;">
-        Le fichier doit contenir une colonne <strong>email</strong> — un voucher sera créé par ligne.
+        Le fichier doit contenir une colonne <strong>{% trans "email" %}</strong> — un voucher sera créé par ligne.
       </div>
     </div>
 
     <div class="modal-actions" style="margin-top:20px">
-      <button type="button" class="btn-cancel" onclick="closeVoucherModal()">Annuler</button>
+      <button type="button" class="btn-cancel" onclick="closeVoucherModal()">{% trans "Annuler" %}</button>
       <button type="button" class="btn-save" id="v-submit-btn" onclick="submitVoucher()">
-        <i class="fas fa-plus"></i> <span id="v-submit-label">Créer les vouchers</span>
+        <i class="fas fa-plus"></i> <span id="v-submit-label">{% trans "Créer les vouchers" %}</span>
       </button>
     </div>
   </div>
 </div>
 
 <div class="tabs">
-  <button class="tab-btn active" onclick="switchTab('programmes',this)">Programmes</button>
-  <button class="tab-btn" onclick="switchTab('vouchers',this)">Codes Vouchers</button>
+  <button class="tab-btn active" onclick="switchTab('programmes',this)">{% trans "Programmes" %}</button>
+  <button class="tab-btn" onclick="switchTab('vouchers',this)">{% trans "Codes Vouchers" %}</button>
 </div>
 
 <!-- Onglet Programmes -->
 <div class="tab-panel active" id="tab-programmes">
   <div class="toolbar">
-    <button class="btn-new" onclick="openProgCreate()"><i class="fas fa-plus"></i> Nouveau programme</button>
+    <button class="btn-new" onclick="openProgCreate()"><i class="fas fa-plus"></i> {% trans "Nouveau programme" %}</button>
   </div>
-  <div id="prog-loading" class="empty-state"><i class="fas fa-spinner fa-spin"></i> Chargement...</div>
+  <div id="prog-loading" class="empty-state"><i class="fas fa-spinner fa-spin"></i> {% trans "Chargement..." %}</div>
   <div id="prog-list"></div>
-  <div id="prog-empty" class="empty-state" style="display:none">Aucun programme.</div>
+  <div id="prog-empty" class="empty-state" style="display:none">{% trans "Aucun programme." %}</div>
 </div>
 
 <!-- Onglet Vouchers -->
@@ -278,34 +279,34 @@
   <div class="toolbar">
     <div class="search-box">
       <i class="fas fa-search" style="color:var(--text-muted)"></i>
-      <input type="text" id="v-search" placeholder="Code, bénéficiaire..." oninput="debouncedVoucher()">
+      <input type="text" id="v-search" placeholder="{% trans 'Code, bénéficiaire...' %}" oninput="debouncedVoucher()">
     </div>
     <select id="v-statut" class="filter-btn" style="appearance:none;padding-right:24px" onchange="loadVouchers()">
-      <option value="">Tous les statuts</option>
-      <option value="actif">Actif</option>
-      <option value="utilise">Utilisé</option>
-      <option value="expire">Expiré</option>
-      <option value="annule">Annulé</option>
+      <option value="">{% trans "Tous les statuts" %}</option>
+      <option value="actif">{% trans "Actif" %}</option>
+      <option value="utilise">{% trans "Utilisé" %}</option>
+      <option value="expire">{% trans "Expiré" %}</option>
+      <option value="annule">{% trans "Annulé" %}</option>
     </select>
-    <button class="btn-new" onclick="openVoucherCreate()"><i class="fas fa-plus"></i> Nouveau voucher</button>
+    <button class="btn-new" onclick="openVoucherCreate()"><i class="fas fa-plus"></i> {% trans "Nouveau voucher" %}</button>
   </div>
   <div class="table-wrap">
-    <div class="empty-state" id="v-loading"><i class="fas fa-spinner fa-spin"></i> Chargement...</div>
+    <div class="empty-state" id="v-loading"><i class="fas fa-spinner fa-spin"></i> {% trans "Chargement..." %}</div>
     <table id="v-tbl" style="display:none">
       <thead>
         <tr>
-          <th>Code</th>
-          <th>Programme</th>
-          <th>Bénéficiaire</th>
-          <th>Valeur</th>
-          <th>Statut</th>
-          <th>Expiration</th>
-          <th>Utilisé le</th>
+          <th>{% trans "Code" %}</th>
+          <th>{% trans "Programme" %}</th>
+          <th>{% trans "Bénéficiaire" %}</th>
+          <th>{% trans "Valeur" %}</th>
+          <th>{% trans "Statut" %}</th>
+          <th>{% trans "Expiration" %}</th>
+          <th>{% trans "Utilisé le" %}</th>
         </tr>
       </thead>
       <tbody id="v-tbody"></tbody>
     </table>
-    <div class="empty-state" id="v-empty" style="display:none">Aucun voucher trouvé.</div>
+    <div class="empty-state" id="v-empty" style="display:none">{% trans "Aucun voucher trouvé." %}</div>
   </div>
 </div>
 {% endblock %}
@@ -346,26 +347,26 @@ async function loadProgrammes() {
   list.innerHTML = '';
   // Mettre à jour aussi le select du modal voucher
   const vsel = document.getElementById('v-prog');
-  vsel.innerHTML = '<option value="">-- Sélectionner --</option>';
+  vsel.innerHTML = '<option value="">{% trans "-- Sélectionner --" %}</option>';
   _programmes.forEach(p => {
-    vsel.innerHTML += `<option value="${p.id}">${p.nom} (${p.code_programme})</option>`;
+    vsel.innerHTML += `<option value="${p.id}">{% trans "${p.nom} (${p.code_programme})" %}</option>`;
     list.innerHTML += `
       <div class="prog-card ${p.is_active?'':'inactive'}">
         <div class="prog-info">
           <div class="prog-nom"><i class="fas fa-ticket-alt" style="color:var(--green-mid);margin-right:6px"></i>${p.nom}
-            <span style="font-size:11px;font-weight:400;color:var(--text-muted);margin-left:8px">${p.code_programme}</span>
+            <span style="font-size:11px;font-weight:400;color:var(--text-muted);margin-left:8px">{% trans "${p.code_programme}" %}</span>
           </div>
           <div class="prog-meta">${p.type_label} · ${p.nb_vouchers} voucher(s) · ${p.date_debut?fdate(p.date_debut):'N/A'} → ${p.date_fin?fdate(p.date_fin):'N/A'}</div>
-          <div class="prog-meta" style="margin-top:4px">Contact: ${p.contact_nom||'—'} ${p.contact_email?'· '+p.contact_email:''}</div>
+          <div class="prog-meta" style="margin-top:4px">{% trans "Contact: ${p.contact_nom||'—'} ${p.contact_email?'· '+p.contact_email:''}" %}</div>
         </div>
         <div class="prog-budget">
-          <div class="val">${fmt(p.budget_restant)}</div>
-          <div class="lbl">HTG restant</div>
-          <div style="font-size:11px;color:var(--text-muted)">${fmt(p.budget_utilise)} / ${fmt(p.budget_total)} utilisé</div>
+          <div class="val">{% trans "${fmt(p.budget_restant)}" %}</div>
+          <div class="lbl">{% trans "HTG restant" %}</div>
+          <div style="font-size:11px;color:var(--text-muted)">{% trans "${fmt(p.budget_utilise)} / ${fmt(p.budget_total)} utilisé" %}</div>
         </div>
         <div style="display:flex;flex-direction:column;gap:6px">
-          <button class="action-btn" style="background:var(--bg);border:1px solid var(--border);color:var(--text-muted)" onclick="openProgEdit(${p.id})"><i class="fas fa-edit"></i> Modifier</button>
-          <button class="action-btn" style="background:${p.is_active?'#fde8e8':'#e8f8ee'};color:${p.is_active?'#e74c3c':'#27ae60'}" onclick="toggleProg(${p.id},${p.is_active})">${p.is_active?'Désactiver':'Activer'}</button>
+          <button class="action-btn" style="background:var(--bg);border:1px solid var(--border);color:var(--text-muted)" onclick="openProgEdit(${p.id})"><i class="fas fa-edit"></i> {% trans "Modifier" %}</button>
+          <button class="action-btn" style="background:${p.is_active?'#fde8e8':'#e8f8ee'};color:${p.is_active?'#e74c3c':'#27ae60'}" onclick="toggleProg(${p.id},${p.is_active})">{% trans "${p.is_active?'Désactiver':'Activer'}" %}</button>
         </div>
       </div>`;
   });
@@ -374,7 +375,7 @@ async function loadProgrammes() {
 function openProgCreate() {
   _progEditId = null;
   document.getElementById('prog-modal-title').textContent = 'Nouveau programme';
-  document.getElementById('prog-submit-btn').innerHTML = '<i class="fas fa-plus"></i> Créer';
+  document.getElementById('prog-submit-btn').innerHTML = '<i class="fas fa-plus"></i> {% trans "Créer';" %}
   ['p-nom','p-description','p-contact-nom','p-contact-email','p-contact-tel'].forEach(id => document.getElementById(id).value='');
   document.getElementById('p-budget').value = '0';
   document.getElementById('p-debut').value = '';
@@ -389,7 +390,7 @@ async function openProgEdit(id) {
   if (!r.ok) return;
   const p = (await r.json()).data;
   document.getElementById('prog-modal-title').textContent = 'Modifier programme';
-  document.getElementById('prog-submit-btn').innerHTML = '<i class="fas fa-save"></i> Enregistrer';
+  document.getElementById('prog-submit-btn').innerHTML = '<i class="fas fa-save"></i> {% trans "Enregistrer';" %}
   document.getElementById('p-nom').value          = p.nom;
   document.getElementById('p-type').value         = p.type_programme;
   document.getElementById('p-budget').value       = p.budget_total;
@@ -462,13 +463,13 @@ async function loadVouchers() {
   data.forEach(v => {
     tbody.innerHTML += `
       <tr>
-        <td><strong style="font-family:monospace;font-size:14px">${v.code}</strong></td>
-        <td style="font-size:12px;color:var(--text-muted)">${v.programme_nom}</td>
-        <td>${v.beneficiaire_nom || '—'}</td>
-        <td><strong>${v.type_valeur==='pourcentage'?v.valeur+'%':fmt(v.valeur)+' HTG'}</strong></td>
-        <td><span class="badge badge-${v.statut}">${v.statut_label}</span></td>
-        <td style="font-size:12px;color:var(--text-muted)">${fdate(v.date_expiration)}</td>
-        <td style="font-size:12px;color:var(--text-muted)">${v.date_utilisation?fdate(v.date_utilisation):'—'}</td>
+        <td><strong style="font-family:monospace;font-size:14px">{% trans "${v.code}" %}</strong></td>
+        <td style="font-size:12px;color:var(--text-muted)">{% trans "${v.programme_nom}" %}</td>
+        <td>{% trans "${v.beneficiaire_nom || '—'}" %}</td>
+        <td><strong>{% trans "${v.type_valeur==='pourcentage'?v.valeur+'%':fmt(v.valeur)+' HTG'}" %}</strong></td>
+        <td><span class="badge badge-${v.statut}">{% trans "${v.statut_label}" %}</span></td>
+        <td style="font-size:12px;color:var(--text-muted)">{% trans "${fdate(v.date_expiration)}" %}</td>
+        <td style="font-size:12px;color:var(--text-muted)">{% trans "${v.date_utilisation?fdate(v.date_utilisation):'—'}" %}</td>
       </tr>`;
   });
   document.getElementById('v-tbl').style.display = 'table';
@@ -511,7 +512,7 @@ function switchVoucherMethod(method) {
 async function loadAcheteurs() {
   if (_allAcheteurs.length) { renderAcheteurs(_allAcheteurs); return; }
   document.getElementById('user-select-list').innerHTML =
-    '<div class="user-select-empty"><i class="fas fa-spinner fa-spin"></i> Chargement…</div>';
+    '<div class="user-select-empty"><i class="fas fa-spinner fa-spin"></i> {% trans "Chargement…" %}</div>';
   try {
     const r = await fetch('/api/admin/acheteurs/', { headers: H });
     if (!r.ok) throw new Error();
@@ -519,7 +520,7 @@ async function loadAcheteurs() {
     renderAcheteurs(_allAcheteurs);
   } catch {
     document.getElementById('user-select-list').innerHTML =
-      '<div class="user-select-empty" style="color:#e74c3c">Erreur lors du chargement.</div>';
+      '<div class="user-select-empty" style="color:#e74c3c">{% trans "Erreur lors du chargement." %}</div>';
   }
 }
 
@@ -530,15 +531,15 @@ function renderAcheteurs(list) {
   );
   const container = document.getElementById('user-select-list');
   if (!filtered.length) {
-    container.innerHTML = '<div class="user-select-empty">Aucun acheteur trouvé.</div>';
+    container.innerHTML = '<div class="user-select-empty">{% trans "Aucun acheteur trouvé." %}</div>';
   } else {
     container.innerHTML = filtered.map(a => `
       <label class="user-item">
         <input type="checkbox" class="acheteur-cb" value="${a.id}"
                onchange="updateSelectCount()">
         <div style="flex:1;min-width:0">
-          <div class="user-item-name">${a.full_name || '(sans nom)'}</div>
-          <div class="user-item-email">${a.email}</div>
+          <div class="user-item-name">{% trans "${a.full_name || '(sans nom)'}" %}</div>
+          <div class="user-item-email">{% trans "${a.email}" %}</div>
         </div>
       </label>`).join('');
   }

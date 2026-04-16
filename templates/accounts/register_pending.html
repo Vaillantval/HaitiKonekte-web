@@ -1,5 +1,6 @@
+{% load i18n %}
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="{{ LANGUAGE_CODE }}">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -217,15 +218,31 @@
 </head>
 <body>
 
+<!-- Sélecteur de langue — coin haut droit -->
+<div style="position:fixed;top:16px;right:16px;z-index:100;display:inline-flex;align-items:center;gap:6px;">
+  <form action="{% url 'set_language' %}" method="post" style="display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.9);border:1.5px solid #d1fae5;border-radius:20px;padding:6px 12px;box-shadow:0 2px 8px rgba(0,0,0,.1);">
+    {% csrf_token %}
+    <input name="next" type="hidden" value="{{ request.get_full_path }}">
+    {% get_current_language as LANGUAGE_CODE %}
+    {% get_available_languages as LANGUAGES %}
+    <i class="fas fa-globe" style="color:#27ae60;font-size:12px;"></i>
+    <select name="language" onchange="this.form.submit()" style="border:none;background:transparent;color:#1a6b2f;font-size:12px;font-weight:700;cursor:pointer;outline:none;font-family:-apple-system,sans-serif;">
+      {% for lang_code, lang_name in LANGUAGES %}
+        <option value="{{ lang_code }}" {% if lang_code == LANGUAGE_CODE %}selected{% endif %}>{{ lang_code|upper }}</option>
+      {% endfor %}
+    </select>
+  </form>
+</div>
+
 <div class="card">
   <div class="card-top">
     <div class="check-circle"><i class="fas fa-clock"></i></div>
-    <h1>Demande bien reçue !</h1>
-    <p>Votre dossier est entre nos mains</p>
+    <h1>{% trans "Demande bien reçue !" %}</h1>
+    <p>{% trans "Votre dossier est entre nos mains" %}</p>
   </div>
 
   <div class="card-body">
-    <p class="greeting" id="greeting">Merci pour votre inscription !</p>
+    <p class="greeting" id="greeting">{% trans "Merci pour votre inscription !" %}</p>
     <p class="message">
       Votre demande de compte producteur sur <strong>{{ site_settings.nom_site }}</strong>
       a été enregistrée avec succès. Notre équipe va examiner votre dossier
@@ -235,8 +252,8 @@
     <div class="delay-badge">
       <div class="icon"><i class="fas fa-hourglass-half"></i></div>
       <div class="text">
-        <strong>Délai de traitement : 24 à 48 heures</strong>
-        <span>Un email de confirmation vous sera envoyé à la validation de votre compte.</span>
+        <strong>{% trans "Délai de traitement : 24 à 48 heures" %}</strong>
+        <span>{% trans "Un email de confirmation vous sera envoyé à la validation de votre compte." %}</span>
       </div>
     </div>
 
@@ -244,26 +261,26 @@
     <div class="account-info" id="account-info"></div>
 
     <div class="steps">
-      <div class="steps-title">Prochaines étapes</div>
+      <div class="steps-title">{% trans "Prochaines étapes" %}</div>
       <div class="step">
         <div class="step-num active">1</div>
         <div class="step-text">
-          <strong>Dossier en examen</strong>
-          <span>Notre équipe vérifie vos informations</span>
+          <strong>{% trans "Dossier en examen" %}</strong>
+          <span>{% trans "Notre équipe vérifie vos informations" %}</span>
         </div>
       </div>
       <div class="step">
         <div class="step-num">2</div>
         <div class="step-text">
-          <strong>Notification par email</strong>
-          <span>Vous recevrez un email de validation ou de contact</span>
+          <strong>{% trans "Notification par email" %}</strong>
+          <span>{% trans "Vous recevrez un email de validation ou de contact" %}</span>
         </div>
       </div>
       <div class="step">
         <div class="step-num">3</div>
         <div class="step-text">
-          <strong>Accès à votre espace producteur</strong>
-          <span>Publiez vos produits et recevez vos premières commandes</span>
+          <strong>{% trans "Accès à votre espace producteur" %}</strong>
+          <span>{% trans "Publiez vos produits et recevez vos premières commandes" %}</span>
         </div>
       </div>
     </div>

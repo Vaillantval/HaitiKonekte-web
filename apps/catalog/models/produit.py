@@ -4,27 +4,28 @@ from django.utils.text import slugify
 import qrcode
 import io
 from django.core.files.base import ContentFile
+from django.utils.translation import gettext_lazy as _
 
 
 class UniteVente(models.TextChoices):
-    KG       = 'kg',     'Kilogramme (kg)'
-    TONNE    = 'tonne',  'Tonne'
-    SAC_50KG = 'sac_50', 'Sac 50 kg'
-    SAC_25KG = 'sac_25', 'Sac 25 kg'
-    BOTTE    = 'botte',  'Botte'
-    PIECE    = 'piece',  'Piece'
-    LITRE    = 'litre',  'Litre'
-    CARTON   = 'carton', 'Carton'
-    DOUZ     = 'douz',   'Douzaine'
+    KG       = 'kg',     _('Kilogramme (kg)')
+    TONNE    = 'tonne',  _('Tonne')
+    SAC_50KG = 'sac_50', _('Sac 50 kg')
+    SAC_25KG = 'sac_25', _('Sac 25 kg')
+    BOTTE    = 'botte',  _('Botte')
+    PIECE    = 'piece',  _('Piece')
+    LITRE    = 'litre',  _('Litre')
+    CARTON   = 'carton', _('Carton')
+    DOUZ     = 'douz',   _('Douzaine')
 
 
 class Produit(models.Model):
     class Statut(models.TextChoices):
-        BROUILLON  = 'brouillon',  'Brouillon'
-        EN_ATTENTE = 'en_attente', 'En attente de validation'
-        ACTIF      = 'actif',      'Actif'
-        EPUISE     = 'epuise',     'Epuise'
-        INACTIF    = 'inactif',    'Inactif'
+        BROUILLON  = 'brouillon',  _('Brouillon')
+        EN_ATTENTE = 'en_attente', _('En attente de validation')
+        ACTIF      = 'actif',      _('Actif')
+        EPUISE     = 'epuise',     _('Epuise')
+        INACTIF    = 'inactif',    _('Inactif')
 
     producteur            = models.ForeignKey('accounts.Producteur', on_delete=models.CASCADE, related_name='produits')
     categorie             = models.ForeignKey('catalog.Categorie', on_delete=models.PROTECT, related_name='produits')
@@ -51,8 +52,8 @@ class Produit(models.Model):
     updated_at            = models.DateTimeField(auto_now=True)
 
     class Meta:
-        verbose_name        = 'Produit'
-        verbose_name_plural = 'Produits'
+        verbose_name        = _('Produit')
+        verbose_name_plural = _('Produits')
         ordering            = ['-created_at']
 
     def __str__(self):
@@ -113,8 +114,8 @@ class ImageProduit(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        verbose_name        = 'Image produit'
-        verbose_name_plural = 'Images produit'
+        verbose_name        = _('Image produit')
+        verbose_name_plural = _('Images produit')
         ordering            = ['ordre']
 
     def __str__(self):

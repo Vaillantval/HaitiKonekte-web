@@ -2,14 +2,15 @@ from django.db import models
 from django.conf import settings
 from django.utils import timezone
 import uuid
+from django.utils.translation import gettext_lazy as _
 
 
 class ProgrammeVoucher(models.Model):
     class TypeProgramme(models.TextChoices):
-        ONG          = 'ong',        'Organisation Non Gouvernementale'
-        GOUVERNEMENT = 'gouv',       'Programme gouvernemental'
-        COOPERATIVE  = 'coop',       'Cooperative agricole'
-        ENTREPRISE   = 'entreprise', 'Entreprise privee'
+        ONG          = 'ong',        _('Organisation Non Gouvernementale')
+        GOUVERNEMENT = 'gouv',       _('Programme gouvernemental')
+        COOPERATIVE  = 'coop',       _('Cooperative agricole')
+        ENTREPRISE   = 'entreprise', _('Entreprise privee')
 
     nom             = models.CharField(max_length=200)
     code_programme  = models.CharField(max_length=50, unique=True)
@@ -27,8 +28,8 @@ class ProgrammeVoucher(models.Model):
     created_at      = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        verbose_name        = 'Programme Voucher'
-        verbose_name_plural = 'Programmes Voucher'
+        verbose_name        = _('Programme Voucher')
+        verbose_name_plural = _('Programmes Voucher')
         ordering            = ['-created_at']
 
     def __str__(self): return f"{self.nom} ({self.code_programme})"
@@ -46,15 +47,15 @@ class ProgrammeVoucher(models.Model):
 
 class Voucher(models.Model):
     class Statut(models.TextChoices):
-        ACTIF    = 'actif',    'Actif'
-        UTILISE  = 'utilise',  'Utilise'
-        EXPIRE   = 'expire',   'Expire'
-        ANNULE   = 'annule',   'Annule'
-        SUSPENDU = 'suspendu', 'Suspendu'
+        ACTIF    = 'actif',    _('Actif')
+        UTILISE  = 'utilise',  _('Utilise')
+        EXPIRE   = 'expire',   _('Expire')
+        ANNULE   = 'annule',   _('Annule')
+        SUSPENDU = 'suspendu', _('Suspendu')
 
     class TypeValeur(models.TextChoices):
-        FIXE        = 'fixe',    'Montant fixe'
-        POURCENTAGE = 'pourcent','Pourcentage de reduction'
+        FIXE        = 'fixe',    _('Montant fixe')
+        POURCENTAGE = 'pourcent',_('Pourcentage de reduction')
 
     code                  = models.CharField(max_length=20, unique=True, blank=True)
     programme             = models.ForeignKey(ProgrammeVoucher, on_delete=models.PROTECT, related_name='vouchers')
@@ -71,8 +72,8 @@ class Voucher(models.Model):
     created_at            = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        verbose_name        = 'Voucher'
-        verbose_name_plural = 'Vouchers'
+        verbose_name        = _('Voucher')
+        verbose_name_plural = _('Vouchers')
         ordering            = ['-created_at']
 
     def __str__(self): return f"{self.code} — {self.valeur} HTG — {self.get_statut_display()}"

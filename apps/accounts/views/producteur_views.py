@@ -15,6 +15,7 @@ from apps.accounts.serializers import (
 )
 from apps.orders.models import Commande
 from apps.orders.services.commande_service import CommandeService
+from django.utils.translation import gettext as _
 
 
 # ── GET /api/auth/producteur/stats/ ────────────────────────────────────────
@@ -201,7 +202,7 @@ def producteur_commande_statut(request, numero):
 
     if action == 'annuler' and not motif:
         return Response(
-            {'success': False, 'error': "Le motif est requis pour annuler une commande."},
+            {'success': False, 'error': _("Le motif est requis pour annuler une commande.")},
             status=status.HTTP_400_BAD_REQUEST,
         )
 

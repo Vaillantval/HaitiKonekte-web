@@ -8,6 +8,7 @@ import csv
 
 from django.db.models import Sum, Count, Q
 from django.utils import timezone
+from django.utils.translation import gettext as _
 
 
 class ReportDataGenerator:

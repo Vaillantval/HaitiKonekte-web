@@ -8,6 +8,7 @@ from drf_spectacular.utils import extend_schema
 from apps.accounts.permissions import IsSuperAdmin
 from apps.stock.models import Lot, MouvementStock, AlerteStock
 from apps.stock.services.stock_service import StockService
+from django.utils.translation import gettext as _
 
 
 def _lot_data(lot):
@@ -69,7 +70,7 @@ def lot_create(request):
     quantite = int(request.data.get('quantite', 0))
     if quantite <= 0:
         return Response(
-            {'success': False, 'error': "La quantité doit être > 0."},
+            {'success': False, 'error': _("La quantité doit être > 0.")},
             status=status.HTTP_400_BAD_REQUEST
         )
 

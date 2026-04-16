@@ -1,29 +1,30 @@
 {% extends 'dashboard/base.html' %}
+{% load i18n %}
 
 {% block title %}Mon profil — Acheteur{% endblock %}
 
 {% block sidebar_nav %}
-  <div class="nav-section-label">Navigation</div>
+  <div class="nav-section-label">{% trans "Navigation" %}</div>
   <a href="/dashboard/acheteur/" class="nav-item">
-    <i class="fas fa-th-large"></i> Vue d'ensemble
+    <i class="fas fa-th-large"></i> {% trans "Vue d'ensemble" %}
   </a>
   <a href="/dashboard/acheteur/commandes/" class="nav-item">
-    <i class="fas fa-clipboard-list"></i> Mes commandes
+    <i class="fas fa-clipboard-list"></i> {% trans "Mes commandes" %}
     <span class="nav-badge" id="sb-badge-commandes" style="display:none"></span>
   </a>
   <a href="/dashboard/acheteur/adresses/" class="nav-item">
-    <i class="fas fa-map-marker-alt"></i> Mes adresses
+    <i class="fas fa-map-marker-alt"></i> {% trans "Mes adresses" %}
   </a>
   <a href="/dashboard/acheteur/vouchers/" class="nav-item">
-    <i class="fas fa-ticket-alt"></i> Mes vouchers
+    <i class="fas fa-ticket-alt"></i> {% trans "Mes vouchers" %}
   </a>
   <a href="/" class="nav-item">
-    <i class="fas fa-store"></i> Catalogue
+    <i class="fas fa-store"></i> {% trans "Catalogue" %}
   </a>
 
-  <div class="nav-section-label">Compte</div>
+  <div class="nav-section-label">{% trans "Compte" %}</div>
   <a href="/dashboard/acheteur/profil/" class="nav-item active">
-    <i class="fas fa-user-edit"></i> Mon profil
+    <i class="fas fa-user-edit"></i> {% trans "Mon profil" %}
   </a>
 {% endblock %}
 
@@ -333,15 +334,15 @@
     <div class="avatar-username" id="av-username">@—</div>
     <div class="avatar-role-badge">
       <i class="fas fa-user-check" style="font-size:9px"></i>
-      <span id="av-role">Acheteur</span>
+      <span id="av-role">{% trans "Acheteur" %}</span>
     </div>
 
     <div class="avatar-meta">
-      <div><strong>Email</strong></div>
+      <div><strong>{% trans "Email" %}</strong></div>
       <div id="av-email" style="word-break:break-all">—</div>
-      <div style="margin-top:8px"><strong>Téléphone</strong></div>
+      <div style="margin-top:8px"><strong>{% trans "Téléphone" %}</strong></div>
       <div id="av-tel">—</div>
-      <div style="margin-top:8px"><strong>Membre depuis</strong></div>
+      <div style="margin-top:8px"><strong>{% trans "Membre depuis" %}</strong></div>
       <div id="av-joined">—</div>
     </div>
   </div>
@@ -354,43 +355,43 @@
       <div class="form-card-header">
         <div class="icon green"><i class="fas fa-user-edit"></i></div>
         <div>
-          <h3>Informations personnelles</h3>
-          <p>Mettez à jour vos informations de base</p>
+          <h3>{% trans "Informations personnelles" %}</h3>
+          <p>{% trans "Mettez à jour vos informations de base" %}</p>
         </div>
       </div>
       <div class="form-card-body">
         <div class="form-row">
           <div class="form-group">
-            <label>Prénom</label>
-            <input type="text" id="f-first-name" placeholder="Prénom">
+            <label>{% trans "Prénom" %}</label>
+            <input type="text" id="f-first-name" placeholder="{% trans 'Prénom' %}">
           </div>
           <div class="form-group">
-            <label>Nom</label>
-            <input type="text" id="f-last-name" placeholder="Nom de famille">
+            <label>{% trans "Nom" %}</label>
+            <input type="text" id="f-last-name" placeholder="{% trans 'Nom de famille' %}">
           </div>
         </div>
         <div class="form-row">
           <div class="form-group">
-            <label>Nom d'utilisateur</label>
-            <input type="text" id="f-username" placeholder="nom_utilisateur">
+            <label>{% trans "Nom d'utilisateur" %}</label>
+            <input type="text" id="f-username" placeholder="{% trans 'nom_utilisateur' %}">
           </div>
           <div class="form-group">
-            <label>Téléphone</label>
-            <input type="tel" id="f-telephone" placeholder="+509 xxxx xxxx">
+            <label>{% trans "Téléphone" %}</label>
+            <input type="tel" id="f-telephone" placeholder="{% trans '+509 xxxx xxxx' %}">
           </div>
         </div>
         <div class="form-row full">
           <div class="form-group">
-            <label>Adresse e-mail</label>
-            <input type="email" id="f-email" placeholder="vous@example.com">
+            <label>{% trans "Adresse e-mail" %}</label>
+            <input type="email" id="f-email" placeholder="{% trans 'vous@example.com' %}">
           </div>
         </div>
         <div class="form-actions">
           <button class="btn-ghost" type="button" onclick="resetInfoForm()">
-            <i class="fas fa-undo"></i> Annuler
+            <i class="fas fa-undo"></i> {% trans "Annuler" %}
           </button>
           <button class="btn-primary" type="button" id="btn-save-info" onclick="saveInfo()">
-            <i class="fas fa-save"></i> Enregistrer
+            <i class="fas fa-save"></i> {% trans "Enregistrer" %}
           </button>
         </div>
       </div>
@@ -401,36 +402,36 @@
       <div class="form-card-header">
         <div class="icon orange"><i class="fas fa-lock"></i></div>
         <div>
-          <h3>Mot de passe</h3>
-          <p>Modifiez votre mot de passe de connexion</p>
+          <h3>{% trans "Mot de passe" %}</h3>
+          <p>{% trans "Modifiez votre mot de passe de connexion" %}</p>
         </div>
       </div>
       <div class="form-card-body">
         <div class="form-row full">
           <div class="form-group">
-            <label>Mot de passe actuel</label>
+            <label>{% trans "Mot de passe actuel" %}</label>
             <input type="password" id="f-current-pwd" placeholder="••••••••" autocomplete="current-password">
           </div>
         </div>
         <div class="form-row">
           <div class="form-group">
-            <label>Nouveau mot de passe</label>
-            <input type="password" id="f-new-pwd" placeholder="8 caractères minimum"
+            <label>{% trans "Nouveau mot de passe" %}</label>
+            <input type="password" id="f-new-pwd" placeholder="{% trans '8 caractères minimum' %}"
                    autocomplete="new-password" oninput="checkPwdStrength(this.value)">
             <div class="pwd-strength-bar"><div class="pwd-strength-fill" id="pwd-fill"></div></div>
             <div class="pwd-strength-text" id="pwd-strength-text" style="color:var(--text-muted)"></div>
           </div>
           <div class="form-group">
-            <label>Confirmer le mot de passe</label>
+            <label>{% trans "Confirmer le mot de passe" %}</label>
             <input type="password" id="f-confirm-pwd" placeholder="••••••••" autocomplete="new-password">
           </div>
         </div>
         <div class="form-actions">
           <button class="btn-ghost" type="button" onclick="resetPwdForm()">
-            <i class="fas fa-undo"></i> Annuler
+            <i class="fas fa-undo"></i> {% trans "Annuler" %}
           </button>
           <button class="btn-primary" type="button" id="btn-save-pwd" onclick="savePassword()">
-            <i class="fas fa-key"></i> Changer le mot de passe
+            <i class="fas fa-key"></i> {% trans "Changer le mot de passe" %}
           </button>
         </div>
       </div>
@@ -462,16 +463,16 @@
     const wrap = document.getElementById('avatar-wrap');
     if (user.photo) {
       wrap.innerHTML = `
-        <img src="${user.photo}" alt="avatar" class="avatar-img" id="av-img">
-        <button class="avatar-change-btn" title="Changer la photo"
+        <img src="${user.photo}" alt="{% trans 'avatar' %}" class="avatar-img" id="av-img">
+        <button class="avatar-change-btn" title="{% trans 'Changer la photo' %}"
                 onclick="document.getElementById('avatar-file-input').click()">
           <i class="fas fa-camera"></i>
         </button>`;
     } else {
       const initials = ((user.first_name || '')[0] || (user.username || '')[0] || '?').toUpperCase();
       wrap.innerHTML = `
-        <div class="avatar-initials" id="av-initials">${initials}</div>
-        <button class="avatar-change-btn" title="Ajouter une photo"
+        <div class="avatar-initials" id="av-initials">{% trans "${initials}" %}</div>
+        <button class="avatar-change-btn" title="{% trans 'Ajouter une photo' %}"
                 style="bottom:-4px;right:calc(50% - 64px)"
                 onclick="document.getElementById('avatar-file-input').click()">
           <i class="fas fa-camera"></i>
@@ -546,7 +547,7 @@
   async function saveInfo() {
     const btn = document.getElementById('btn-save-info');
     btn.disabled = true;
-    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enregistrement…';
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> {% trans "Enregistrement…';" %}
 
     const payload = {
       first_name: document.getElementById('f-first-name').value.trim(),
@@ -584,7 +585,7 @@
       showToast('Erreur réseau.', 'error');
     } finally {
       btn.disabled = false;
-      btn.innerHTML = '<i class="fas fa-save"></i> Enregistrer';
+      btn.innerHTML = '<i class="fas fa-save"></i> {% trans "Enregistrer';" %}
     }
   }
 
@@ -600,7 +601,7 @@
 
     const btn = document.getElementById('btn-save-pwd');
     btn.disabled = true;
-    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Mise à jour…';
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> {% trans "Mise à jour…';" %}
 
     try {
       const r = await fetch('/api/auth/change-password/', {
@@ -628,7 +629,7 @@
       showToast('Erreur réseau.', 'error');
     } finally {
       btn.disabled = false;
-      btn.innerHTML = '<i class="fas fa-key"></i> Changer le mot de passe';
+      btn.innerHTML = '<i class="fas fa-key"></i> {% trans "Changer le mot de passe';" %}
     }
   }
 

@@ -11,6 +11,7 @@ from apps.collectes.models import (
 )
 from apps.collectes.services.collecte_service import CollecteService
 from apps.accounts.models import Producteur
+from django.utils.translation import gettext as _
 
 
 def _collecte_data(c):
@@ -131,7 +132,7 @@ def collecte_statut(request, pk):
             collecte.save()
         else:
             return Response(
-                {'success': False, 'error': "Action : demarrer|terminer|annuler"},
+                {'success': False, 'error': _("Action : demarrer|terminer|annuler")},
                 status=status.HTTP_400_BAD_REQUEST
             )
     except ValueError as e:
@@ -206,7 +207,7 @@ def participation_delete(request, pk):
     part.delete()
     return Response({
         'success': True,
-        'data': {'message': 'Participation supprimée.'}
+        'data': {'message': _('Participation supprimée.')}
     })
 
 

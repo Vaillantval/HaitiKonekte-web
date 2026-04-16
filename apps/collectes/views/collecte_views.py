@@ -9,6 +9,7 @@ from apps.collectes.serializers import (
     ParticipationCollecteSerializer,
     ConfirmerParticipationSerializer,
 )
+from django.utils.translation import gettext as _
 
 
 # ── GET /api/collectes/mes-participations/ ──────────────────────
@@ -88,6 +89,6 @@ def confirmer_participation(request, pk):
         'success': True,
         'data': {
             **ParticipationCollecteSerializer(participation).data,
-            'message': "Participation confirmée avec succès.",
+            'message': _("Participation confirmée avec succès."),
         },
     })

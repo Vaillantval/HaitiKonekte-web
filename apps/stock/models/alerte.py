@@ -1,20 +1,21 @@
 from django.db import models
 from django.conf import settings
+from django.utils.translation import gettext_lazy as _
 
 
 class AlerteStock(models.Model):
     class Niveau(models.TextChoices):
-        INFO     = 'info',     'Information'
-        WARNING  = 'warning',  'Avertissement'
-        CRITIQUE = 'critique', 'Critique — Stock tres faible'
-        EPUISE   = 'epuise',   'Epuise'
+        INFO     = 'info',     _('Information')
+        WARNING  = 'warning',  _('Avertissement')
+        CRITIQUE = 'critique', _('Critique — Stock tres faible')
+        EPUISE   = 'epuise',   _('Epuise')
 
     class Statut(models.TextChoices):
-        NOUVELLE = 'nouvelle', 'Nouvelle'
-        VUE      = 'vue',      'Vue'
-        EN_COURS = 'en_cours', 'En cours de traitement'
-        RESOLUE  = 'resolue',  'Resolue'
-        IGNOREE  = 'ignoree',  'Ignoree'
+        NOUVELLE = 'nouvelle', _('Nouvelle')
+        VUE      = 'vue',      _('Vue')
+        EN_COURS = 'en_cours', _('En cours de traitement')
+        RESOLUE  = 'resolue',  _('Resolue')
+        IGNOREE  = 'ignoree',  _('Ignoree')
 
     produit         = models.ForeignKey('catalog.Produit', on_delete=models.CASCADE, related_name='alertes_stock')
     lot             = models.ForeignKey('stock.Lot', on_delete=models.CASCADE, null=True, blank=True, related_name='alertes')
@@ -29,8 +30,8 @@ class AlerteStock(models.Model):
     created_at      = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        verbose_name        = 'Alerte stock'
-        verbose_name_plural = 'Alertes stock'
+        verbose_name        = _('Alerte stock')
+        verbose_name_plural = _('Alertes stock')
         ordering            = ['-created_at']
 
     def __str__(self):

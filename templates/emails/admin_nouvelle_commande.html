@@ -1,51 +1,52 @@
 {% extends 'emails/base.html' %}
+{% load i18n %}
 {% block titre %}Nouvelle commande — {{ commande.numero_commande }}{% endblock %}
 
 {% block content %}
-<p class="greeting">Bonjour,</p>
+<p class="greeting">{% trans "Bonjour," %}</p>
 <p class="message">
   Une nouvelle commande vient d'être passée sur la plateforme Makèt Peyizan.
 </p>
 
 <div class="card">
   <div class="card-row">
-    <span class="card-label">N° Commande</span>
+    <span class="card-label">{% trans "N° Commande" %}</span>
     <span class="card-value">{{ commande.numero_commande }}</span>
   </div>
   <div class="card-row">
-    <span class="card-label">Acheteur</span>
+    <span class="card-label">{% trans "Acheteur" %}</span>
     <span class="card-value">{{ commande.acheteur.user.get_full_name|default:commande.acheteur.user.username }}</span>
   </div>
   <div class="card-row">
-    <span class="card-label">Téléphone</span>
+    <span class="card-label">{% trans "Téléphone" %}</span>
     <span class="card-value">{{ commande.acheteur.user.telephone|default:"—" }}</span>
   </div>
   <div class="card-row">
-    <span class="card-label">Email</span>
+    <span class="card-label">{% trans "Email" %}</span>
     <span class="card-value">{{ commande.acheteur.user.email }}</span>
   </div>
   <div class="card-row">
-    <span class="card-label">Mode de livraison</span>
+    <span class="card-label">{% trans "Mode de livraison" %}</span>
     <span class="card-value">{{ commande.get_mode_livraison_display }}</span>
   </div>
   <div class="card-row">
-    <span class="card-label">Méthode de paiement</span>
+    <span class="card-label">{% trans "Méthode de paiement" %}</span>
     <span class="card-value">{{ commande.get_methode_paiement_display }}</span>
   </div>
   <div class="card-row">
-    <span class="card-label">Statut paiement</span>
+    <span class="card-label">{% trans "Statut paiement" %}</span>
     <span class="card-value">{{ commande.get_statut_paiement_display }}</span>
   </div>
 </div>
 
-<p style="font-size:14px;font-weight:700;color:#2c3e50;margin:20px 0 8px">Articles commandés</p>
+<p style="font-size:14px;font-weight:700;color:#2c3e50;margin:20px 0 8px">{% trans "Articles commandés" %}</p>
 <table class="table-produits">
   <thead>
     <tr>
-      <th>Produit</th>
-      <th>Qté</th>
-      <th>Prix unit.</th>
-      <th>Sous-total</th>
+      <th>{% trans "Produit" %}</th>
+      <th>{% trans "Qté" %}</th>
+      <th>{% trans "Prix unit." %}</th>
+      <th>{% trans "Sous-total" %}</th>
     </tr>
   </thead>
   <tbody>
@@ -53,20 +54,20 @@
     <tr>
       <td>{{ d.produit.nom }}</td>
       <td style="text-align:center">{{ d.quantite }} {{ d.produit.unite_vente }}</td>
-      <td style="text-align:right">{{ d.prix_unitaire|floatformat:2 }} HTG</td>
-      <td style="text-align:right;font-weight:600">{{ d.sous_total|floatformat:2 }} HTG</td>
+      <td style="text-align:right">{% blocktrans with d=d.prix_unitaire|floatformat:2 %}{{ d }} HTG{% endblocktrans %}</td>
+      <td style="text-align:right;font-weight:600">{% blocktrans with d=d.sous_total|floatformat:2 %}{{ d }} HTG{% endblocktrans %}</td>
     </tr>
     {% endfor %}
     <tr class="total-row">
-      <td colspan="3">Total</td>
-      <td style="text-align:right">{{ commande.total|floatformat:2 }} HTG</td>
+      <td colspan="3">{% trans "Total" %}</td>
+      <td style="text-align:right">{% blocktrans with commande=commande.total|floatformat:2 %}{{ commande }} HTG{% endblocktrans %}</td>
     </tr>
   </tbody>
 </table>
 
 {% if commande.notes_acheteur %}
 <div class="info-box">
-  <strong>Note de l'acheteur :</strong> {{ commande.notes_acheteur }}
+  <strong>{% trans "Note de l'acheteur :" %}</strong> {{ commande.notes_acheteur }}
 </div>
 {% endif %}
 

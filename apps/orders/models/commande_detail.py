@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils.translation import gettext_lazy as _
 
 
 class CommandeDetail(models.Model):
@@ -14,8 +15,8 @@ class CommandeDetail(models.Model):
     created_at     = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        verbose_name        = 'Detail commande'
-        verbose_name_plural = 'Details commande'
+        verbose_name        = _('Detail commande')
+        verbose_name_plural = _('Details commande')
 
     def __str__(self):
         return f"{self.commande.numero_commande} — {self.produit.nom} x{self.quantite}"
@@ -34,8 +35,8 @@ class HistoriqueStatutCommande(models.Model):
     created_at   = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        verbose_name        = 'Historique statut'
-        verbose_name_plural = 'Historiques statuts'
+        verbose_name        = _('Historique statut')
+        verbose_name_plural = _('Historiques statuts')
         ordering            = ['-created_at']
 
     def __str__(self):

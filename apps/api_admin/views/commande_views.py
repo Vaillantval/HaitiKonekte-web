@@ -9,6 +9,7 @@ from apps.accounts.permissions import IsSuperAdmin
 from apps.orders.models import Commande
 from apps.orders.services.commande_service import CommandeService
 from apps.accounts.serializers.producteur_serializers import CommandeProducteurSerializer
+from django.utils.translation import gettext as _
 
 
 # ── GET /api/admin/commandes/ ────────────────────────────────────

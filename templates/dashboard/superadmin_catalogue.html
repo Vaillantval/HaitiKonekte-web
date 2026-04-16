@@ -1,4 +1,5 @@
 {% extends 'dashboard/base.html' %}
+{% load i18n %}
 {% block title %}Catalogue — Superadmin{% endblock %}
 {% block sidebar_nav %}{% include 'dashboard/superadmin_sidebar.html' with active='catalogue' %}{% endblock %}
 {% block page_title %}Catalogue produits{% endblock %}
@@ -89,84 +90,84 @@
 <div class="drawer-overlay" id="drawer-overlay" onclick="closeDrawer()"></div>
 <div class="drawer" id="drawer">
   <button class="drawer-close" onclick="closeDrawer()"><i class="fas fa-times"></i></button>
-  <h3 id="drawer-title">Nouveau produit</h3>
+  <h3 id="drawer-title">{% trans "Nouveau produit" %}</h3>
 
   <form id="prod-form" onsubmit="submitForm(event)">
     <div class="form-grid">
       <div class="field full">
-        <label>Producteur *</label>
-        <select id="f-producteur" required><option value="">Chargement...</option></select>
+        <label>{% trans "Producteur *" %}</label>
+        <select id="f-producteur" required><option value="">{% trans "Chargement..." %}</option></select>
         <span class="field-error" id="err-producteur"></span>
       </div>
       <div class="field full">
-        <label>Catégorie *</label>
-        <select id="f-categorie" required><option value="">Chargement...</option></select>
+        <label>{% trans "Catégorie *" %}</label>
+        <select id="f-categorie" required><option value="">{% trans "Chargement..." %}</option></select>
         <span class="field-error" id="err-categorie"></span>
       </div>
       <div class="field full">
-        <label>Nom du produit *</label>
-        <input type="text" id="f-nom" required placeholder="Ex: Riz local variété...">
+        <label>{% trans "Nom du produit *" %}</label>
+        <input type="text" id="f-nom" required placeholder="{% trans 'Ex: Riz local variété...' %}">
         <span class="field-error" id="err-nom"></span>
       </div>
       <div class="field full">
-        <label>Description</label>
-        <textarea id="f-description" placeholder="Description détaillée..."></textarea>
+        <label>{% trans "Description" %}</label>
+        <textarea id="f-description" placeholder="{% trans 'Description détaillée...' %}"></textarea>
       </div>
       <div class="field">
-        <label>Variété</label>
-        <input type="text" id="f-variete" placeholder="Ex: Jasmin, Caraïbe...">
+        <label>{% trans "Variété" %}</label>
+        <input type="text" id="f-variete" placeholder="{% trans 'Ex: Jasmin, Caraïbe...' %}">
       </div>
       <div class="field">
-        <label>Unité de vente *</label>
+        <label>{% trans "Unité de vente *" %}</label>
         <select id="f-unite_vente" required>
-          <option value="kg">Kilogramme (kg)</option>
-          <option value="tonne">Tonne</option>
-          <option value="sac_50">Sac 50 kg</option>
-          <option value="sac_25">Sac 25 kg</option>
-          <option value="botte">Botte</option>
-          <option value="piece">Pièce</option>
-          <option value="litre">Litre</option>
-          <option value="carton">Carton</option>
-          <option value="douz">Douzaine</option>
+          <option value="kg">{% trans "Kilogramme (kg)" %}</option>
+          <option value="tonne">{% trans "Tonne" %}</option>
+          <option value="sac_50">{% trans "Sac 50 kg" %}</option>
+          <option value="sac_25">{% trans "Sac 25 kg" %}</option>
+          <option value="botte">{% trans "Botte" %}</option>
+          <option value="piece">{% trans "Pièce" %}</option>
+          <option value="litre">{% trans "Litre" %}</option>
+          <option value="carton">{% trans "Carton" %}</option>
+          <option value="douz">{% trans "Douzaine" %}</option>
         </select>
       </div>
       <div class="field">
-        <label>Prix unitaire (HTG) *</label>
+        <label>{% trans "Prix unitaire (HTG) *" %}</label>
         <input type="number" id="f-prix_unitaire" required min="0" step="0.01">
         <span class="field-error" id="err-prix_unitaire"></span>
       </div>
       <div class="field">
-        <label>Prix en gros (HTG)</label>
-        <input type="number" id="f-prix_gros" min="0" step="0.01" placeholder="Optionnel">
+        <label>{% trans "Prix en gros (HTG)" %}</label>
+        <input type="number" id="f-prix_gros" min="0" step="0.01" placeholder="{% trans 'Optionnel' %}">
       </div>
       <div class="field">
-        <label>Qté min. commande</label>
+        <label>{% trans "Qté min. commande" %}</label>
         <input type="number" id="f-quantite_min_commande" min="1" value="1">
       </div>
       <div class="field">
-        <label>Seuil d'alerte stock</label>
+        <label>{% trans "Seuil d'alerte stock" %}</label>
         <input type="number" id="f-seuil_alerte" min="0" value="10">
       </div>
       <div class="field">
-        <label>Origine / Région</label>
-        <input type="text" id="f-origine" placeholder="Ex: Artibonite">
+        <label>{% trans "Origine / Région" %}</label>
+        <input type="text" id="f-origine" placeholder="{% trans 'Ex: Artibonite' %}">
       </div>
       <div class="field">
-        <label>Saison</label>
-        <input type="text" id="f-saison" placeholder="Ex: Hivernal 2024">
+        <label>{% trans "Saison" %}</label>
+        <input type="text" id="f-saison" placeholder="{% trans 'Ex: Hivernal 2024' %}">
       </div>
       <div class="field full">
-        <label>Certifications</label>
-        <input type="text" id="f-certifications" placeholder="Ex: Bio, Label vert...">
+        <label>{% trans "Certifications" %}</label>
+        <input type="text" id="f-certifications" placeholder="{% trans 'Ex: Bio, Label vert...' %}">
       </div>
       <div class="field">
-        <label>Statut</label>
+        <label>{% trans "Statut" %}</label>
         <select id="f-statut">
-          <option value="en_attente">En attente de validation</option>
-          <option value="actif">Actif</option>
-          <option value="brouillon">Brouillon</option>
-          <option value="suspendu">Suspendu</option>
-          <option value="inactif">Inactif</option>
+          <option value="en_attente">{% trans "En attente de validation" %}</option>
+          <option value="actif">{% trans "Actif" %}</option>
+          <option value="brouillon">{% trans "Brouillon" %}</option>
+          <option value="suspendu">{% trans "Suspendu" %}</option>
+          <option value="inactif">{% trans "Inactif" %}</option>
         </select>
       </div>
       <div class="field" style="justify-content:flex-end;gap:10px">
@@ -175,15 +176,15 @@
         <label class="checkbox-row"><input type="checkbox" id="f-is_featured"> Mis en vedette</label>
       </div>
       <div class="field full">
-        <label>Image principale</label>
+        <label>{% trans "Image principale" %}</label>
         <img id="current-img" class="current-img" src="" alt="" style="display:none">
         <input type="file" id="f-image" accept="image/*" onchange="previewImg(this)">
         <img id="img-preview" class="img-preview">
       </div>
     </div>
     <div class="drawer-actions">
-      <button type="button" class="btn-cancel" onclick="closeDrawer()">Annuler</button>
-      <button type="submit" class="btn-save" id="btn-submit"><i class="fas fa-save"></i> Enregistrer</button>
+      <button type="button" class="btn-cancel" onclick="closeDrawer()">{% trans "Annuler" %}</button>
+      <button type="submit" class="btn-save" id="btn-submit"><i class="fas fa-save"></i> {% trans "Enregistrer" %}</button>
     </div>
   </form>
 </div>
@@ -191,36 +192,36 @@
 <div class="toolbar">
   <div class="search-box">
     <i class="fas fa-search" style="color:var(--text-muted)"></i>
-    <input type="text" id="search-input" placeholder="Nom, catégorie..." oninput="debouncedSearch()">
+    <input type="text" id="search-input" placeholder="{% trans 'Nom, catégorie...' %}" oninput="debouncedSearch()">
   </div>
-  <button class="filter-btn active" data-statut="" onclick="setFilter(this)">Tous</button>
-  <button class="filter-btn" data-statut="actif" onclick="setFilter(this)">Actifs</button>
-  <button class="filter-btn" data-statut="en_attente" onclick="setFilter(this)">En attente</button>
-  <button class="filter-btn" data-statut="suspendu" onclick="setFilter(this)">Suspendus</button>
-  <button class="filter-btn" data-statut="brouillon" onclick="setFilter(this)">Brouillons</button>
-  <button class="filter-btn" data-statut="inactif" onclick="setFilter(this)">Inactifs</button>
-  <button class="btn-new" onclick="openCreate()"><i class="fas fa-plus"></i> Nouveau produit</button>
+  <button class="filter-btn active" data-statut="" onclick="setFilter(this)">{% trans "Tous" %}</button>
+  <button class="filter-btn" data-statut="actif" onclick="setFilter(this)">{% trans "Actifs" %}</button>
+  <button class="filter-btn" data-statut="en_attente" onclick="setFilter(this)">{% trans "En attente" %}</button>
+  <button class="filter-btn" data-statut="suspendu" onclick="setFilter(this)">{% trans "Suspendus" %}</button>
+  <button class="filter-btn" data-statut="brouillon" onclick="setFilter(this)">{% trans "Brouillons" %}</button>
+  <button class="filter-btn" data-statut="inactif" onclick="setFilter(this)">{% trans "Inactifs" %}</button>
+  <button class="btn-new" onclick="openCreate()"><i class="fas fa-plus"></i> {% trans "Nouveau produit" %}</button>
 </div>
 
 <div class="table-wrap">
-  <div class="empty-state" id="tbl-loading"><i class="fas fa-spinner fa-spin"></i> Chargement...</div>
+  <div class="empty-state" id="tbl-loading"><i class="fas fa-spinner fa-spin"></i> {% trans "Chargement..." %}</div>
   <table id="tbl" style="display:none">
     <thead>
       <tr>
-        <th>Produit</th>
-        <th>Producteur</th>
-        <th>Catégorie</th>
-        <th>Prix</th>
-        <th>Stock réel</th>
-        <th>Statut</th>
-        <th>Actif</th>
-        <th>Vedette</th>
-        <th>Actions</th>
+        <th>{% trans "Produit" %}</th>
+        <th>{% trans "Producteur" %}</th>
+        <th>{% trans "Catégorie" %}</th>
+        <th>{% trans "Prix" %}</th>
+        <th>{% trans "Stock réel" %}</th>
+        <th>{% trans "Statut" %}</th>
+        <th>{% trans "Actif" %}</th>
+        <th>{% trans "Vedette" %}</th>
+        <th>{% trans "Actions" %}</th>
       </tr>
     </thead>
     <tbody id="tbody"></tbody>
   </table>
-  <div class="empty-state" id="tbl-empty" style="display:none">Aucun produit trouvé.</div>
+  <div class="empty-state" id="tbl-empty" style="display:none">{% trans "Aucun produit trouvé." %}</div>
 </div>
 {% endblock %}
 
@@ -239,7 +240,7 @@ const STATUT_COLORS = {
 
 function sBadge(s, label) {
   const st = STATUT_COLORS[s] || { bg:'#eee', color:'#888' };
-  return `<span class="badge" style="background:${st.bg};color:${st.color}">${label}</span>`;
+  return `<span class="badge" style="background:${st.bg};color:${st.color}">{% trans "${label}" %}</span>`;
 }
 function fmt(n) { return Number(n).toLocaleString('fr-FR'); }
 function showToast(msg, type='success') {
@@ -255,8 +256,8 @@ async function loadOptions() {
   ]);
   const catSel  = document.getElementById('f-categorie');
   const prodSel = document.getElementById('f-producteur');
-  catSel.innerHTML  = '<option value="">-- Choisir une catégorie --</option>' + cats.map(c => `<option value="${c.id}">${c.label}</option>`).join('');
-  prodSel.innerHTML = '<option value="">-- Choisir un producteur --</option>' + prods.map(p => `<option value="${p.id}">${p.label}</option>`).join('');
+  catSel.innerHTML  = '<option value="">{% trans "-- Choisir une catégorie --" %}</option>' + cats.map(c => `<option value="${c.id}">{% trans "${c.label}" %}</option>`).join('');
+  prodSel.innerHTML = '<option value="">{% trans "-- Choisir un producteur --" %}</option>' + prods.map(p => `<option value="${p.id}">{% trans "${p.label}" %}</option>`).join('');
 }
 
 async function load() {
@@ -284,21 +285,21 @@ async function load() {
       <tr id="row-${p.id}">
         <td style="display:flex;align-items:center;gap:10px">
           ${img}
-          <div><div style="font-weight:600">${p.nom}</div><div style="font-size:11px;color:var(--text-muted)">${p.unite_vente}</div></div>
+          <div><div style="font-weight:600">{% trans "${p.nom}" %}</div><div style="font-size:11px;color:var(--text-muted)">{% trans "${p.unite_vente}" %}</div></div>
         </td>
-        <td><div style="font-weight:600">${p.producteur?.nom||'—'}</div><div style="font-size:11px;color:var(--text-muted)">${p.producteur?.code_producteur||''}</div></td>
-        <td style="color:var(--text-muted)">${p.categorie?.nom||'—'}</td>
-        <td style="font-weight:600">${fmt(p.prix_unitaire)} HTG</td>
-        <td><span style="font-weight:600;color:${p.stock_reel<=0?'#e74c3c':p.stock_reel<=5?'#e67e22':'var(--text)'}">${p.stock_reel}</span><span style="color:var(--text-muted);font-size:11px"> / ${p.stock_disponible}</span></td>
-        <td>${sBadge(p.statut, p.statut_label)}</td>
+        <td><div style="font-weight:600">{% trans "${p.producteur?.nom||'—'}" %}</div><div style="font-size:11px;color:var(--text-muted)">{% trans "${p.producteur?.code_producteur||''}" %}</div></td>
+        <td style="color:var(--text-muted)">{% trans "${p.categorie?.nom||'—'}" %}</td>
+        <td style="font-weight:600">{% trans "${fmt(p.prix_unitaire)} HTG" %}</td>
+        <td><span style="font-weight:600;color:${p.stock_reel<=0?'#e74c3c':p.stock_reel<=5?'#e67e22':'var(--text)'}">{% trans "${p.stock_reel}" %}</span><span style="color:var(--text-muted);font-size:11px"> {% trans "/ ${p.stock_disponible}" %}</span></td>
+        <td>{% trans "${sBadge(p.statut, p.statut_label)}" %}</td>
         <td style="text-align:center">
-          <button class="action-btn ${p.is_active?'btn-toggle-on':'btn-toggle-off'}" onclick="toggleChamp(${p.id},'is_active',this)">${p.is_active?'Désactiver':'Activer'}</button>
+          <button class="action-btn ${p.is_active?'btn-toggle-on':'btn-toggle-off'}" onclick="toggleChamp(${p.id},'is_active',this)">{% trans "${p.is_active?'Désactiver':'Activer'}" %}</button>
         </td>
         <td style="text-align:center">
           <button class="action-btn ${p.is_featured?'btn-feat-on':'btn-feat-off'}" onclick="toggleChamp(${p.id},'is_featured',this)"><i class="fas fa-star"></i> ${p.is_featured?'Retirer':'Mettre'}</button>
         </td>
         <td>
-          <button class="action-btn" style="background:var(--bg);color:var(--text-muted);border:1px solid var(--border)" onclick="openEdit(${p.id})"><i class="fas fa-edit"></i> Éditer</button>
+          <button class="action-btn" style="background:var(--bg);color:var(--text-muted);border:1px solid var(--border)" onclick="openEdit(${p.id})"><i class="fas fa-edit"></i> {% trans "Éditer" %}</button>
         </td>
       </tr>`;
   });
@@ -331,7 +332,7 @@ async function openCreate() {
   _editId = null;
   resetForm();
   document.getElementById('drawer-title').textContent = 'Nouveau produit';
-  document.getElementById('btn-submit').innerHTML = '<i class="fas fa-plus"></i> Créer le produit';
+  document.getElementById('btn-submit').innerHTML = '<i class="fas fa-plus"></i> {% trans "Créer le produit';" %}
   document.getElementById('drawer-overlay').classList.add('open');
   document.getElementById('drawer').classList.add('open');
 }
@@ -339,7 +340,7 @@ async function openCreate() {
 async function openEdit(id) {
   _editId = id;
   document.getElementById('drawer-title').textContent = 'Éditer le produit';
-  document.getElementById('btn-submit').innerHTML = '<i class="fas fa-save"></i> Enregistrer';
+  document.getElementById('btn-submit').innerHTML = '<i class="fas fa-save"></i> {% trans "Enregistrer';" %}
   document.getElementById('drawer-overlay').classList.add('open');
   document.getElementById('drawer').classList.add('open');
 

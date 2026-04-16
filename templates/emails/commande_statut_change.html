@@ -1,7 +1,8 @@
 {% extends "emails/base.html" %}
+{% load i18n %}
 {% block content %}
 
-<p class="greeting">Bonjour {{ prenom }},</p>
+<p class="greeting">{% blocktrans with prenom=prenom %}Bonjour {{ prenom }},{% endblocktrans %}</p>
 
 <p class="message">
   Le statut de votre commande
@@ -11,20 +12,20 @@
 
 <div class="card">
   <div class="card-row">
-    <span class="card-label">Ancien statut</span>
+    <span class="card-label">{% trans "Ancien statut" %}</span>
     <span class="badge badge-orange">{{ statut_avant }}</span>
   </div>
   <div class="card-row">
-    <span class="card-label">Nouveau statut</span>
+    <span class="card-label">{% trans "Nouveau statut" %}</span>
     <span class="badge badge-vert">{{ statut_apres }}</span>
   </div>
   <div class="card-row">
-    <span class="card-label">N° commande</span>
+    <span class="card-label">{% trans "N° commande" %}</span>
     <span class="card-value">{{ commande.numero_commande }}</span>
   </div>
   <div class="card-row">
-    <span class="card-label">Total</span>
-    <span class="card-value">{{ commande.total }} HTG</span>
+    <span class="card-label">{% trans "Total" %}</span>
+    <span class="card-value">{% blocktrans with commande=commande.total %}{{ commande }} HTG{% endblocktrans %}</span>
   </div>
 </div>
 

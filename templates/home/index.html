@@ -1,6 +1,7 @@
 {% load static %}
+{% load i18n %}
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="{{ LANGUAGE_CODE }}">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -1764,8 +1765,8 @@
 
       <!-- Texte -->
       <div class="apk-text">
-        <span class="apk-label">Application Mobile</span>
-        <span class="apk-desc">Téléchargez Makèt Peyizan sur Android</span>
+        <span class="apk-label">{% trans "Application Mobile" %}</span>
+        <span class="apk-desc">{% trans "Téléchargez Makèt Peyizan sur Android" %}</span>
       </div>
 
       <!-- Bouton téléchargement -->
@@ -1775,13 +1776,13 @@
           <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true" class="apk-btn-icon">
             <path d="M12 16l-5-5h3V4h4v7h3l-5 5zm-7 2h14v2H5v-2z"/>
           </svg>
-          <span>Télécharger .apk</span>
+          <span>{% trans "Télécharger .apk" %}</span>
         </span>
         <span class="apk-btn-pulse"></span>
       </a>
 
       <!-- Fermer -->
-      <button class="apk-close" id="apk-close-btn" aria-label="Fermer">
+      <button class="apk-close" id="apk-close-btn" aria-label="{% trans 'Fermer' %}">
         <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>
       </button>
     </div>
@@ -2045,7 +2046,7 @@
             <input
               type="text"
               name="q"
-              placeholder="Chercher haricot, maïs, légumes..."
+              placeholder="{% trans 'Chercher haricot, maïs, légumes...' %}"
               value="{{ recherche }}"
             >
             <button type="submit">
@@ -2059,12 +2060,12 @@
           <!-- Panier + dropdown -->
           <div class="cart-dd-wrap" id="cart-dd-wrap">
             <a href="{% url 'home:panier' %}" class="btn-panier" id="btn-panier-nav">
-              <i class="fas fa-shopping-basket"></i> Panier
+              <i class="fas fa-shopping-basket"></i> {% trans "Panier" %}
               <span class="panier-badge {% if nb_panier == 0 %}hidden{% endif %}" id="nav-panier-badge">{{ nb_panier }}</span>
             </a>
             <div class="cart-dd" id="cart-dd">
               <div class="cart-dd-loading" id="cart-dd-loading">
-                <i class="fas fa-spinner fa-spin"></i> Chargement…
+                <i class="fas fa-spinner fa-spin"></i> {% trans "Chargement…" %}
               </div>
             </div>
           </div>
@@ -2072,17 +2073,30 @@
           <!-- Connexion (guest) / Mon espace (connecté) — toujours visible -->
           <div id="nav-guest" style="display:flex;align-items:center">
             <a href="{% url 'home:login' %}" class="btn-nav btn-nav-primary">
-              <i class="fas fa-sign-in-alt"></i> Connexion
+              <i class="fas fa-sign-in-alt"></i> {% trans "Connexion" %}
             </a>
           </div>
           <div id="nav-user" style="display:none;align-items:center">
             <a id="nav-dashboard-link" href="/dashboard/" class="btn-nav btn-nav-primary">
-              <i class="fas fa-th-large"></i> Mon espace
+              <i class="fas fa-th-large"></i> {% trans "Mon espace" %}
             </a>
           </div>
 
+          <!-- Sélecteur de langue -->
+          <form action="{% url 'set_language' %}" method="post" style="display:inline-flex;align-items:center;">
+            {% csrf_token %}
+            <input name="next" type="hidden" value="{{ request.get_full_path }}">
+            {% get_current_language as LANGUAGE_CODE %}
+            {% get_available_languages as LANGUAGES %}
+            <select name="language" onchange="this.form.submit()" style="background:rgba(255,255,255,.15);border:1.5px solid rgba(255,255,255,.4);color:#fff;border-radius:50px;padding:7px 10px;font-size:12px;font-weight:700;font-family:'DM Sans',sans-serif;cursor:pointer;outline:none;min-width:52px;transition:background .2s;" title="{% trans 'Langue' %}">
+              {% for lang_code, lang_name in LANGUAGES %}
+                <option value="{{ lang_code }}" {% if lang_code == LANGUAGE_CODE %}selected{% endif %} style="background:#1a6b2f;color:#fff;">{{ lang_code|upper }}</option>
+              {% endfor %}
+            </select>
+          </form>
+
           <!-- Burger menu -->
-          <button class="btn-burger" onclick="openNavDrawer()" aria-label="Menu">
+          <button class="btn-burger" onclick="openNavDrawer()" aria-label="{% trans 'Menu' %}">
             <i class="fas fa-bars"></i>
           </button>
 
@@ -2095,7 +2109,7 @@
   <!-- ══ NAV DRAWER ═══════════════════════════════════════════ -->
   <div class="nav-drawer-overlay" id="nav-drawer-overlay" onclick="closeNavDrawer()"></div>
 
-  <aside class="nav-drawer" id="nav-drawer" role="dialog" aria-label="Menu navigation">
+  <aside class="nav-drawer" id="nav-drawer" role="dialog" aria-label="{% trans 'Menu navigation' %}">
 
     <!-- En-tête -->
     <div class="nav-drawer-head">
@@ -2117,11 +2131,11 @@
 
     <!-- Liens de navigation -->
     <nav class="nav-drawer-nav">
-      <a href="/" class="nav-drawer-link"><i class="fas fa-home"></i> Accueil</a>
-      <a href="#catalogue" class="nav-drawer-link" onclick="closeNavDrawer()"><i class="fas fa-store"></i> Catalogue</a>
-      <a href="{% url 'core:apropos' %}" class="nav-drawer-link"><i class="fas fa-info-circle"></i> À propos</a>
-      <a href="{% url 'core:faq' %}" class="nav-drawer-link"><i class="fas fa-question-circle"></i> FAQ</a>
-      <a href="{% url 'core:contact' %}" class="nav-drawer-link"><i class="fas fa-envelope"></i> Contact</a>
+      <a href="/" class="nav-drawer-link"><i class="fas fa-home"></i> {% trans "Accueil" %}</a>
+      <a href="#catalogue" class="nav-drawer-link" onclick="closeNavDrawer()"><i class="fas fa-store"></i> {% trans "Catalogue" %}</a>
+      <a href="{% url 'core:apropos' %}" class="nav-drawer-link"><i class="fas fa-info-circle"></i> {% trans "À propos" %}</a>
+      <a href="{% url 'core:faq' %}" class="nav-drawer-link"><i class="fas fa-question-circle"></i> {% trans "FAQ" %}</a>
+      <a href="{% url 'core:contact' %}" class="nav-drawer-link"><i class="fas fa-envelope"></i> {% trans "Contact" %}</a>
     </nav>
 
     <!-- Section auth -->
@@ -2130,10 +2144,10 @@
       <!-- Guest -->
       <div class="drawer-auth-guest" id="drawer-guest">
         <a href="{% url 'home:register' %}" class="btn-drawer-inscrit">
-          <i class="fas fa-user-plus"></i> S'inscrire gratuitement
+          <i class="fas fa-user-plus"></i> {% trans "S'inscrire gratuitement" %}
         </a>
         <a href="{% url 'home:login' %}" class="btn-drawer-connexion">
-          <i class="fas fa-sign-in-alt"></i> Se connecter
+          <i class="fas fa-sign-in-alt"></i> {% trans "Se connecter" %}
         </a>
       </div>
 
@@ -2147,10 +2161,10 @@
           </div>
         </div>
         <a id="drawer-espace-link" href="/dashboard/" class="btn-drawer-espace">
-          <i class="fas fa-th-large"></i> Mon espace
+          <i class="fas fa-th-large"></i> {% trans "Mon espace" %}
         </a>
         <button class="btn-drawer-logout" onclick="mpLogout()">
-          <i class="fas fa-sign-out-alt"></i> Se déconnecter
+          <i class="fas fa-sign-out-alt"></i> {% trans "Se déconnecter" %}
         </button>
       </div>
 
@@ -2194,22 +2208,22 @@
             <div class="hero-mini-card">
               <div class="icon">🌾</div>
               <div class="val">{{ stats.nb_producteurs }}</div>
-              <div class="lbl">Producteurs actifs</div>
+              <div class="lbl">{% trans "Producteurs actifs" %}</div>
             </div>
             <div class="hero-mini-card">
               <div class="icon">🥬</div>
               <div class="val">{{ stats.nb_produits }}</div>
-              <div class="lbl">Produits disponibles</div>
+              <div class="lbl">{% trans "Produits disponibles" %}</div>
             </div>
             <div class="hero-mini-card">
               <div class="icon">🏷️</div>
               <div class="val">{{ stats.nb_categories }}</div>
-              <div class="lbl">Catégories</div>
+              <div class="lbl">{% trans "Catégories" %}</div>
             </div>
             <div class="hero-mini-card">
               <div class="icon">📍</div>
               <div class="val">{{ stats.nb_communes }}</div>
-              <div class="lbl">Communes couvertes</div>
+              <div class="lbl">{% trans "Communes couvertes" %}</div>
             </div>
           </div>
         </div>
@@ -2221,7 +2235,7 @@
 
   <!-- ══ SLIDER ══════════════════════════════════════════════ -->
   {% if slider_images %}
-  <section class="slider-section" id="slider-section" aria-label="Bannière principale">
+  <section class="slider-section" id="slider-section" aria-label="{% trans 'Bannière principale' %}">
     <div class="slider-track" id="slider-track">
       {% for slide in slider_images %}
       <div class="slider-slide" style="background-image:url('{{ slide.image.url }}')">
@@ -2237,10 +2251,10 @@
       {% endfor %}
     </div>
     <!-- Flèches -->
-    <button class="slider-arrow slider-prev" onclick="sliderPrev()" aria-label="Précédent">
+    <button class="slider-arrow slider-prev" onclick="sliderPrev()" aria-label="{% trans 'Précédent' %}">
       <i class="fas fa-chevron-left"></i>
     </button>
-    <button class="slider-arrow slider-next" onclick="sliderNext()" aria-label="Suivant">
+    <button class="slider-arrow slider-next" onclick="sliderNext()" aria-label="{% trans 'Suivant' %}">
       <i class="fas fa-chevron-right"></i>
     </button>
     <!-- Points -->
@@ -2257,8 +2271,8 @@
   <section class="section section-alt">
     <div class="container">
       <div class="section-header">
-        <span class="section-tag">Parcourir</span>
-        <h2 class="section-title">Nos catégories</h2>
+        <span class="section-tag">{% trans "Parcourir" %}</span>
+        <h2 class="section-title">{% trans "Nos catégories" %}</h2>
         <p class="section-desc">
           Explorez notre sélection de produits frais
           organisés par catégorie agricole.
@@ -2269,8 +2283,8 @@
       <div class="categories-grid">
         <a href="/#catalogue" class="categorie-card {% if not categorie_active %}active{% endif %}">
           <div class="categorie-icon">🛒</div>
-          <div class="categorie-nom">Tout voir</div>
-          <div class="categorie-count">{{ stats.nb_produits }} produits</div>
+          <div class="categorie-nom">{% trans "Tout voir" %}</div>
+          <div class="categorie-count">{% blocktrans with stats=stats.nb_produits %}{{ stats }} produits{% endblocktrans %}</div>
         </a>
 
         {% for cat in categories %}
@@ -2286,15 +2300,15 @@
           </div>
           {% endif %}
           <div class="categorie-nom">{{ cat.nom }}</div>
-          <div class="categorie-count">{{ cat.nb }} produit{{ cat.nb|pluralize }}</div>
+          <div class="categorie-count">{% blocktrans with cat=cat.nb cat1=cat.nb|pluralize %}{{ cat }} produit{{ cat1 }}{% endblocktrans %}</div>
         </a>
         {% endfor %}
       </div>
       {% else %}
       <div class="empty-state">
         <div class="icon">🏷️</div>
-        <h3>Aucune catégorie</h3>
-        <p>Les catégories apparaîtront ici une fois ajoutées.</p>
+        <h3>{% trans "Aucune catégorie" %}</h3>
+        <p>{% trans "Les catégories apparaîtront ici une fois ajoutées." %}</p>
       </div>
       {% endif %}
     </div>
@@ -2306,8 +2320,8 @@
   <section class="section">
     <div class="container">
       <div class="section-header">
-        <span class="section-tag">⭐ Sélection</span>
-        <h2 class="section-title">Produits en vedette</h2>
+        <span class="section-tag">{% trans "⭐ Sélection" %}</span>
+        <h2 class="section-title">{% trans "Produits en vedette" %}</h2>
         <p class="section-desc">
           Une sélection de nos meilleurs produits du moment,
           choisis par notre équipe.
@@ -2328,7 +2342,7 @@
             {% else %}
               <div class="produit-img-placeholder">🥬</div>
             {% endif %}
-            <span class="produit-badge-featured">⭐ Vedette</span>
+            <span class="produit-badge-featured">{% trans "⭐ Vedette" %}</span>
             {% if produit.stock_disponible <= produit.seuil_alerte %}
               <span class="produit-stock-low">
                 ⚡ {{ produit.stock_disponible }} restants
@@ -2353,7 +2367,7 @@
                 {{ produit.prix_unitaire }} HTG
                 <span>/ {{ produit.get_unite_vente_display }}</span>
               </div>
-              <button class="btn-commander">Détails</button>
+              <button class="btn-commander">{% trans "Détails" %}</button>
             </div>
           </div>
         </div>
@@ -2368,7 +2382,7 @@
   <section class="section section-yellow" id="catalogue">
     <div class="container">
       <div class="section-header">
-        <span class="section-tag">🛒 Catalogue</span>
+        <span class="section-tag">{% trans "🛒 Catalogue" %}</span>
         <h2 class="section-title">
           {% if recherche %}
             Résultats pour "{{ recherche }}"
@@ -2400,7 +2414,7 @@
           <input
             type="text"
             name="q"
-            placeholder="Rechercher..."
+            placeholder="{% trans 'Rechercher...' %}"
             value="{{ recherche }}"
             style="padding:8px 16px; border:1.5px solid #ddd;
                    border-radius:50px; font-family:'DM Sans',sans-serif;
@@ -2442,7 +2456,7 @@
             {% endif %}
 
             {% if produit.stock_disponible <= produit.seuil_alerte and produit.stock_disponible > 0 %}
-              <span class="produit-stock-low">⚡ Limité</span>
+              <span class="produit-stock-low">{% trans "⚡ Limité" %}</span>
             {% endif %}
           </div>
 
@@ -2464,7 +2478,7 @@
                 {{ produit.prix_unitaire }} HTG
                 <span>/ {{ produit.get_unite_vente_display }}</span>
               </div>
-              <button class="btn-commander">Détails</button>
+              <button class="btn-commander">{% trans "Détails" %}</button>
             </div>
           </div>
         </div>
@@ -2474,7 +2488,7 @@
       {% else %}
       <div class="empty-state">
         <div class="icon">🔍</div>
-        <h3>Aucun produit trouvé</h3>
+        <h3>{% trans "Aucun produit trouvé" %}</h3>
         <p>
           {% if recherche %}
             Aucun résultat pour "{{ recherche }}".
@@ -2497,8 +2511,8 @@
   <section class="section section-alt">
     <div class="container">
       <div class="section-header">
-        <span class="section-tag">🌾 Nos agriculteurs</span>
-        <h2 class="section-title">Les producteurs</h2>
+        <span class="section-tag">{% trans "🌾 Nos agriculteurs" %}</span>
+        <h2 class="section-title">{% trans "Les producteurs" %}</h2>
         <p class="section-desc">
           Des agriculteurs haïtiens passionnés qui cultivent
           pour votre santé et votre famille.
@@ -2538,8 +2552,8 @@
   <section class="section">
     <div class="container">
       <div class="section-header">
-        <span class="section-tag">Guide</span>
-        <h2 class="section-title">Comment ça marche ?</h2>
+        <span class="section-tag">{% trans "Guide" %}</span>
+        <h2 class="section-title">{% trans "Comment ça marche ?" %}</h2>
         <p class="section-desc">
           Commander sur Makèt Peyizan est simple et rapide.
           Du champ à votre table en 4 étapes.
@@ -2549,7 +2563,7 @@
       <div class="steps-grid">
         <div class="step-card">
           <div class="step-num">1</div>
-          <div class="step-title">Parcourez le catalogue</div>
+          <div class="step-title">{% trans "Parcourez le catalogue" %}</div>
           <div class="step-desc">
             Explorez les produits frais disponibles
             par catégorie ou recherche.
@@ -2557,7 +2571,7 @@
         </div>
         <div class="step-card">
           <div class="step-num">2</div>
-          <div class="step-title">Choisissez votre adresse</div>
+          <div class="step-title">{% trans "Choisissez votre adresse" %}</div>
           <div class="step-desc">
             Renseignez votre adresse de livraison
             et/ou de facturation à la commande.
@@ -2565,7 +2579,7 @@
         </div>
         <div class="step-card">
           <div class="step-num">3</div>
-          <div class="step-title">Payez facilement</div>
+          <div class="step-title">{% trans "Payez facilement" %}</div>
           <div class="step-desc">
             MonCash, NatCash, virement ou
             espèces — choisissez votre méthode.
@@ -2573,7 +2587,7 @@
         </div>
         <div class="step-card">
           <div class="step-num">4</div>
-          <div class="step-title">Recevez vos produits</div>
+          <div class="step-title">{% trans "Recevez vos produits" %}</div>
           <div class="step-desc">
             Livraison à domicile, retrait chez le
             producteur ou point de collecte.
@@ -2588,7 +2602,7 @@
   <section class="cta-banner">
     <div class="container">
       <h2 class="cta-title">
-        Vous êtes <em>producteur</em> ?
+        Vous êtes <em>{% trans "producteur" %}</em> ?
       </h2>
       <p class="cta-desc">
         Rejoignez {{ site_settings.nom_site|default:"Makèt Peyizan" }} et vendez vos récoltes
@@ -2629,7 +2643,7 @@
         </div>
 
         <div class="footer-col">
-          <h4>Catalogue</h4>
+          <h4>{% trans "Catalogue" %}</h4>
           <ul>
             {% for cat in categories %}
             <li>
@@ -2642,18 +2656,18 @@
         </div>
 
         <div class="footer-col">
-          <h4>Navigation</h4>
+          <h4>{% trans "Navigation" %}</h4>
           <ul>
-            <li><a href="/">Accueil</a></li>
-            <li><a href="/#catalogue">Catalogue</a></li>
-            <li><a href="{% url 'core:apropos' %}">À propos</a></li>
-            <li><a href="{% url 'core:faq' %}">FAQ</a></li>
-            <li><a href="{% url 'core:contact' %}">Contact</a></li>
+            <li><a href="/">{% trans "Accueil" %}</a></li>
+            <li><a href="/#catalogue">{% trans "Catalogue" %}</a></li>
+            <li><a href="{% url 'core:apropos' %}">{% trans "À propos" %}</a></li>
+            <li><a href="{% url 'core:faq' %}">{% trans "FAQ" %}</a></li>
+            <li><a href="{% url 'core:contact' %}">{% trans "Contact" %}</a></li>
           </ul>
         </div>
 
         <div class="footer-col">
-          <h4>Contact</h4>
+          <h4>{% trans "Contact" %}</h4>
           <ul>
             <li>
               <a href="mailto:{{ site_settings.email_contact|default:'info@maketpeyizan.ht' }}">
@@ -3112,7 +3126,7 @@
 
         <div class="mp-notice">
           <i class="fas fa-info-circle"></i>
-          <span>Vous êtes déjà inscrit sur Makèt Peyizan en tant que producteur. Accédez à votre espace pour gérer votre catalogue et vos commandes.</span>
+          <span>{% trans "Vous êtes déjà inscrit sur Makèt Peyizan en tant que producteur. Accédez à votre espace pour gérer votre catalogue et vos commandes." %}</span>
         </div>
 
         <div class="mp-info-grid" id="mp-info-grid">
@@ -3125,9 +3139,9 @@
 
         <div class="mp-modal-footer">
           <a href="/dashboard/producteur/" class="mp-btn-dash">
-            <i class="fas fa-th-large"></i> Mon espace producteur
+            <i class="fas fa-th-large"></i> {% trans "Mon espace producteur" %}
           </a>
-          <button class="mp-btn-close" onclick="closeProdModal()">Fermer</button>
+          <button class="mp-btn-close" onclick="closeProdModal()">{% trans "Fermer" %}</button>
         </div>
 
       </div>

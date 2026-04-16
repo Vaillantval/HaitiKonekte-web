@@ -1,29 +1,30 @@
 {% extends 'dashboard/base.html' %}
+{% load i18n %}
 
 {% block title %}Mes collectes — Producteur{% endblock %}
 
 {% block sidebar_nav %}
-  <div class="nav-section-label">Navigation</div>
+  <div class="nav-section-label">{% trans "Navigation" %}</div>
   <a href="/dashboard/producteur/" class="nav-item">
-    <i class="fas fa-th-large"></i> Vue d'ensemble
+    <i class="fas fa-th-large"></i> {% trans "Vue d'ensemble" %}
   </a>
   <a href="/dashboard/producteur/collectes/" class="nav-item active">
-    <i class="fas fa-truck"></i> Mes collectes
+    <i class="fas fa-truck"></i> {% trans "Mes collectes" %}
     <span class="nav-badge" id="sb-badge-collectes" style="display:none"></span>
   </a>
   <a href="/dashboard/producteur/catalogue/" class="nav-item">
-    <i class="fas fa-seedling"></i> Mon catalogue
+    <i class="fas fa-seedling"></i> {% trans "Mon catalogue" %}
   </a>
   <a href="/" class="nav-item">
-    <i class="fas fa-store"></i> Catalogue public
+    <i class="fas fa-store"></i> {% trans "Catalogue public" %}
   </a>
 
-  <div class="nav-section-label">Compte</div>
+  <div class="nav-section-label">{% trans "Compte" %}</div>
   <a href="/dashboard/producteur/profil/" class="nav-item">
-    <i class="fas fa-user-edit"></i> Mon profil
+    <i class="fas fa-user-edit"></i> {% trans "Mon profil" %}
   </a>
   <a href="/dashboard/producteur/rapport/" class="nav-item">
-    <i class="fas fa-file-alt"></i> Mon rapport
+    <i class="fas fa-file-alt"></i> {% trans "Mon rapport" %}
   </a>
 {% endblock %}
 
@@ -269,7 +270,7 @@
 <!-- Drawer détail -->
 <div class="drawer" id="detail-drawer">
   <div class="drawer-header">
-    <h3 id="drawer-title">Collecte</h3>
+    <h3 id="drawer-title">{% trans "Collecte" %}</h3>
     <button class="drawer-close" onclick="closeDrawer()"><i class="fas fa-times"></i></button>
   </div>
   <div class="drawer-body" id="drawer-body">
@@ -283,20 +284,20 @@
 <!-- Modal confirmation -->
 <div class="modal-overlay" id="confirm-modal-overlay">
   <div class="modal-box">
-    <h3><i class="fas fa-check-circle" style="color:var(--green-mid);margin-right:6px"></i> Confirmer ma participation</h3>
-    <p>En confirmant, vous indiquez aux administrateurs que vous êtes prêt pour la collecte. Un email leur sera envoyé automatiquement.</p>
+    <h3><i class="fas fa-check-circle" style="color:var(--green-mid);margin-right:6px"></i> {% trans "Confirmer ma participation" %}</h3>
+    <p>{% trans "En confirmant, vous indiquez aux administrateurs que vous êtes prêt pour la collecte. Un email leur sera envoyé automatiquement." %}</p>
     <div class="modal-field">
-      <label>Quantité que vous pouvez apporter (kg ou unités)</label>
-      <input type="number" id="modal-quantite" min="0" placeholder="ex: 50">
+      <label>{% trans "Quantité que vous pouvez apporter (kg ou unités)" %}</label>
+      <input type="number" id="modal-quantite" min="0" placeholder="{% trans 'ex: 50' %}">
     </div>
     <div class="modal-field">
-      <label>Notes / informations complémentaires (optionnel)</label>
-      <textarea id="modal-notes" placeholder="Produits disponibles, contraintes logistiques..."></textarea>
+      <label>{% trans "Notes / informations complémentaires (optionnel)" %}</label>
+      <textarea id="modal-notes" placeholder="{% trans 'Produits disponibles, contraintes logistiques...' %}"></textarea>
     </div>
     <div class="modal-actions">
-      <button class="action-btn detail" onclick="closeConfirmModal()">Annuler</button>
+      <button class="action-btn detail" onclick="closeConfirmModal()">{% trans "Annuler" %}</button>
       <button class="action-btn confirm" id="modal-confirm-btn" onclick="submitConfirmation()">
-        <i class="fas fa-check"></i> Confirmer
+        <i class="fas fa-check"></i> {% trans "Confirmer" %}
       </button>
     </div>
   </div>
@@ -305,28 +306,28 @@
 <!-- Filtres -->
 <div class="filters-bar">
   <button class="filter-btn active" data-statut="" onclick="setFilter(this)">
-    <i class="fas fa-list"></i> Toutes
+    <i class="fas fa-list"></i> {% trans "Toutes" %}
   </button>
   <button class="filter-btn" data-statut="inscrit" onclick="setFilter(this)">
-    <i class="fas fa-clock"></i> En attente
+    <i class="fas fa-clock"></i> {% trans "En attente" %}
   </button>
   <button class="filter-btn" data-statut="confirme" onclick="setFilter(this)">
-    <i class="fas fa-check"></i> Confirmées
+    <i class="fas fa-check"></i> {% trans "Confirmées" %}
   </button>
   <button class="filter-btn" data-statut="present" onclick="setFilter(this)">
-    <i class="fas fa-user-check"></i> Présent
+    <i class="fas fa-user-check"></i> {% trans "Présent" %}
   </button>
 </div>
 
 <!-- Grille de cartes -->
 <div id="grid-loading" class="empty-state">
   <i class="fas fa-spinner fa-spin"></i>
-  <p>Chargement des collectes...</p>
+  <p>{% trans "Chargement des collectes..." %}</p>
 </div>
 <div class="cards-grid" id="cards-grid" style="display:none"></div>
 <div class="empty-state" id="grid-empty" style="display:none">
   <i class="fas fa-truck"></i>
-  <p>Aucune collecte pour ce filtre.</p>
+  <p>{% trans "Aucune collecte pour ce filtre." %}</p>
 </div>
 
 {% endblock %}
@@ -370,7 +371,7 @@
 
   function collecteStatutBadge(statut, label) {
     const s = STATUT_COL[statut] || { bg:'#eee', color:'#888' };
-    return `<span class="statut-badge" style="background:${s.bg};color:${s.color};font-size:10px">${label}</span>`;
+    return `<span class="statut-badge" style="background:${s.bg};color:${s.color};font-size:10px">{% trans "${label}" %}</span>`;
   }
 
   function formatDate(iso) {
@@ -406,32 +407,32 @@
           </div>
           <div class="card-body">
             <div class="card-row">
-              <span class="card-label"><i class="fas fa-calendar-alt" style="margin-right:4px;opacity:.5"></i>Date</span>
-              <span class="card-val">${formatDate(c.date_planifiee)}</span>
+              <span class="card-label"><i class="fas fa-calendar-alt" style="margin-right:4px;opacity:.5"></i>{% trans "Date" %}</span>
+              <span class="card-val">{% trans "${formatDate(c.date_planifiee)}" %}</span>
             </div>
             ${c.heure_debut ? `<div class="card-row">
-              <span class="card-label"><i class="fas fa-clock" style="margin-right:4px;opacity:.5"></i>Heure</span>
-              <span class="card-val">${c.heure_debut.substring(0,5)}</span>
+              <span class="card-label"><i class="fas fa-clock" style="margin-right:4px;opacity:.5"></i>{% trans "Heure" %}</span>
+              <span class="card-val">{% trans "${c.heure_debut.substring(0,5)}" %}</span>
             </div>` : ''}
             <div class="card-row">
-              <span class="card-label"><i class="fas fa-map-marker-alt" style="margin-right:4px;opacity:.5"></i>Zone</span>
-              <span class="card-val">${zoneNom}${zoneDept ? ' — ' + zoneDept : ''}</span>
+              <span class="card-label"><i class="fas fa-map-marker-alt" style="margin-right:4px;opacity:.5"></i>{% trans "Zone" %}</span>
+              <span class="card-val">{% trans "${zoneNom}${zoneDept ? ' — ' + zoneDept : ''}" %}</span>
             </div>
             ${ptNom ? `<div class="card-row">
-              <span class="card-label"><i class="fas fa-flag" style="margin-right:4px;opacity:.5"></i>Point</span>
-              <span class="card-val">${ptNom}${ptComm ? ', ' + ptComm : ''}</span>
+              <span class="card-label"><i class="fas fa-flag" style="margin-right:4px;opacity:.5"></i>{% trans "Point" %}</span>
+              <span class="card-val">{% trans "${ptNom}${ptComm ? ', ' + ptComm : ''}" %}</span>
             </div>` : ''}
             ${p.quantite_prevue ? `<div class="card-row">
-              <span class="card-label"><i class="fas fa-weight" style="margin-right:4px;opacity:.5"></i>Qté prévue</span>
-              <span class="card-val">${p.quantite_prevue} unités</span>
+              <span class="card-label"><i class="fas fa-weight" style="margin-right:4px;opacity:.5"></i>{% trans "Qté prévue" %}</span>
+              <span class="card-val">{% trans "${p.quantite_prevue} unités" %}</span>
             </div>` : ''}
           </div>
           <div class="card-footer">
             ${canConfirm ? `<button class="action-btn confirm" onclick="openConfirmModal(${p.id})">
-              <i class="fas fa-check"></i> Confirmer ma participation
+              <i class="fas fa-check"></i> {% trans "Confirmer ma participation" %}
             </button>` : ''}
             <button class="action-btn detail" onclick="openDrawer(${p.id})">
-              <i class="fas fa-eye"></i> Détails
+              <i class="fas fa-eye"></i> {% trans "Détails" %}
             </button>
           </div>
         </div>`;
@@ -497,7 +498,7 @@
 
     document.getElementById('drawer-body').innerHTML = `
       <div class="drawer-section">
-        <div class="drawer-section-title">Statut de participation</div>
+        <div class="drawer-section-title">{% trans "Statut de participation" %}</div>
         <div style="display:flex;gap:10px;align-items:center">
           ${statutBadge(p.statut)}
           ${collecteStatutBadge(c.statut, c.statut_label)}
@@ -505,20 +506,20 @@
       </div>
 
       <div class="drawer-section">
-        <div class="drawer-section-title">Détails de la collecte</div>
-        <div class="drawer-row"><span class="label">Référence</span><span>${c.reference}</span></div>
-        <div class="drawer-row"><span class="label">Zone</span><span>${dZoneNom}${dZoneDept ? ' — ' + dZoneDept : ''}</span></div>
-        <div class="drawer-row"><span class="label">Date</span><span>${formatDate(c.date_planifiee)}</span></div>
-        ${c.heure_debut ? `<div class="drawer-row"><span class="label">Heure</span><span>${c.heure_debut.substring(0,5)}</span></div>` : ''}
-        ${dPtNom ? `<div class="drawer-row"><span class="label">Point de collecte</span><span>${dPtNom}${dPtComm ? ', '+dPtComm : ''}</span></div>` : ''}
-        ${c.notes ? `<div class="drawer-row" style="flex-direction:column;gap:4px"><span class="label">Notes organisateur</span><span style="font-size:12px;background:var(--bg);padding:8px;border-radius:6px;margin-top:4px">${c.notes}</span></div>` : ''}
+        <div class="drawer-section-title">{% trans "Détails de la collecte" %}</div>
+        <div class="drawer-row"><span class="label">{% trans "Référence" %}</span><span>{% trans "${c.reference}" %}</span></div>
+        <div class="drawer-row"><span class="label">{% trans "Zone" %}</span><span>{% trans "${dZoneNom}${dZoneDept ? ' — ' + dZoneDept : ''}" %}</span></div>
+        <div class="drawer-row"><span class="label">{% trans "Date" %}</span><span>{% trans "${formatDate(c.date_planifiee)}" %}</span></div>
+        ${c.heure_debut ? `<div class="drawer-row"><span class="label">{% trans "Heure" %}</span><span>{% trans "${c.heure_debut.substring(0,5)}" %}</span></div>` : ''}
+        ${dPtNom ? `<div class="drawer-row"><span class="label">{% trans "Point de collecte" %}</span><span>{% trans "${dPtNom}${dPtComm ? ', '+dPtComm : ''}" %}</span></div>` : ''}
+        ${c.notes ? `<div class="drawer-row" style="flex-direction:column;gap:4px"><span class="label">{% trans "Notes organisateur" %}</span><span style="font-size:12px;background:var(--bg);padding:8px;border-radius:6px;margin-top:4px">{% trans "${c.notes}" %}</span></div>` : ''}
       </div>
 
       <div class="drawer-section">
-        <div class="drawer-section-title">Ma participation</div>
-        <div class="drawer-row"><span class="label">Quantité prévue</span><span>${p.quantite_prevue || '—'}</span></div>
-        <div class="drawer-row"><span class="label">Quantité collectée</span><span>${p.quantite_collectee || '—'}</span></div>
-        ${p.notes ? `<div class="drawer-row" style="flex-direction:column;gap:4px"><span class="label">Mes notes</span><span style="font-size:12px;background:var(--bg);padding:8px;border-radius:6px;margin-top:4px">${p.notes}</span></div>` : ''}
+        <div class="drawer-section-title">{% trans "Ma participation" %}</div>
+        <div class="drawer-row"><span class="label">{% trans "Quantité prévue" %}</span><span>{% trans "${p.quantite_prevue || '—'}" %}</span></div>
+        <div class="drawer-row"><span class="label">{% trans "Quantité collectée" %}</span><span>{% trans "${p.quantite_collectee || '—'}" %}</span></div>
+        ${p.notes ? `<div class="drawer-row" style="flex-direction:column;gap:4px"><span class="label">{% trans "Mes notes" %}</span><span style="font-size:12px;background:var(--bg);padding:8px;border-radius:6px;margin-top:4px">{% trans "${p.notes}" %}</span></div>` : ''}
       </div>
     `;
 
@@ -526,7 +527,7 @@
     actions.innerHTML = '';
     if (p.statut === 'inscrit' && c.statut === 'planifiee') {
       actions.innerHTML = `<button class="action-btn confirm" onclick="closeDrawer(); openConfirmModal(${p.id})">
-        <i class="fas fa-check"></i> Confirmer ma participation
+        <i class="fas fa-check"></i> {% trans "Confirmer ma participation" %}
       </button>`;
     }
   }
@@ -553,7 +554,7 @@
     if (!_confirmId) return;
     const btn = document.getElementById('modal-confirm-btn');
     btn.disabled = true;
-    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Envoi...';
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> {% trans "Envoi...';" %}
 
     const body = {
       quantite_prevue: parseInt(document.getElementById('modal-quantite').value) || 0,
@@ -589,7 +590,7 @@
       showToast('Erreur réseau.', 'error');
     } finally {
       btn.disabled = false;
-      btn.innerHTML = '<i class="fas fa-check"></i> Confirmer';
+      btn.innerHTML = '<i class="fas fa-check"></i> {% trans "Confirmer';" %}
     }
   }
 

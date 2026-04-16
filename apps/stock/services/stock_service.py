@@ -1,5 +1,6 @@
 from django.db import transaction
 from apps.stock.models import Lot, MouvementStock, AlerteStock
+from django.utils.translation import gettext as _
 
 
 class StockService:

@@ -4,6 +4,7 @@ from rest_framework import serializers
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from apps.accounts.models import CustomUser, Producteur, Acheteur
+from django.utils.translation import gettext_lazy as _
 
 
 # ── Profils imbriqués ────────────────────────────────────────────────────────
@@ -68,21 +69,21 @@ class RegisterSerializer(serializers.Serializer):
 
     def validate_username(self, value):
         if CustomUser.objects.filter(username=value).exists():
-            raise serializers.ValidationError("Ce nom d'utilisateur est déjà pris.")
+            raise serializers.ValidationError(_("Ce nom d'utilisateur est déjà pris."))
         return value
 
     def validate_email(self, value):
         if CustomUser.objects.filter(email=value).exists():
-            raise serializers.ValidationError("Cet email est déjà utilisé.")
+            raise serializers.ValidationError(_("Cet email est déjà utilisé."))
         return value
 
     def validate(self, data):
         if data['password'] != data['password2']:
             raise serializers.ValidationError({'password2': "Les mots de passe ne correspondent pas."})
         if data['role'] == CustomUser.Role.PRODUCTEUR and not data.get('departement'):
-            raise serializers.ValidationError({'departement': "Le département est requis pour un producteur."})
+            raise serializers.ValidationError({'departement': _("Le département est requis pour un producteur.")})
         if data['role'] == CustomUser.Role.PRODUCTEUR and not data.get('commune'):
-            raise serializers.ValidationError({'commune': "La commune est requise pour un producteur."})
+            raise serializers.ValidationError({'commune': _("La commune est requise pour un producteur.")})
         return data
 
     def create(self, validated_data):
@@ -148,9 +149,9 @@ class LoginSerializer(serializers.Serializer):
     def validate(self, data):
         user = authenticate(username=data['username'], password=data['password'])
         if not user:
-            raise serializers.ValidationError("Identifiants incorrects.")
+            raise serializers.ValidationError(_("Identifiants incorrects."))
         if not user.is_active:
-            raise serializers.ValidationError("Ce compte est désactivé.")
+            raise serializers.ValidationError(_("Ce compte est désactivé."))
         data['user'] = user
         return data
 

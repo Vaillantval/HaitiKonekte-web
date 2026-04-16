@@ -1,15 +1,16 @@
 from django.db import models
 from django.conf import settings
+from django.utils.translation import gettext_lazy as _
 
 
 class Acheteur(models.Model):
     class TypeAcheteur(models.TextChoices):
-        PARTICULIER = 'particulier', 'Particulier'
-        GROSSISTE   = 'grossiste',   'Grossiste'
-        DETAILLANT  = 'detaillant',  'Detaillant'
-        COOPERATIVE = 'cooperative', 'Cooperative'
-        INSTITUTION = 'institution', 'Institution / ONG'
-        RESTAURANT  = 'restaurant',  'Restaurant / Hotel'
+        PARTICULIER = 'particulier', _('Particulier')
+        GROSSISTE   = 'grossiste',   _('Grossiste')
+        DETAILLANT  = 'detaillant',  _('Detaillant')
+        COOPERATIVE = 'cooperative', _('Cooperative')
+        INSTITUTION = 'institution', _('Institution / ONG')
+        RESTAURANT  = 'restaurant',  _('Restaurant / Hotel')
 
     user             = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='profil_acheteur')
     type_acheteur    = models.CharField(max_length=20, choices=TypeAcheteur.choices, default=TypeAcheteur.PARTICULIER)
@@ -24,8 +25,8 @@ class Acheteur(models.Model):
     updated_at       = models.DateTimeField(auto_now=True)
 
     class Meta:
-        verbose_name        = 'Acheteur'
-        verbose_name_plural = 'Acheteurs'
+        verbose_name        = _('Acheteur')
+        verbose_name_plural = _('Acheteurs')
         ordering            = ['-created_at']
 
     def __str__(self):

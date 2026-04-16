@@ -1,7 +1,8 @@
 {% extends "emails/base.html" %}
+{% load i18n %}
 {% block content %}
 
-<p class="greeting">Bonjour {{ prenom }} 👋</p>
+<p class="greeting">{% blocktrans with prenom=prenom %}Bonjour {{ prenom }} 👋{% endblocktrans %}</p>
 
 <div class="alert-box">
   ⚠️ Votre paiement <strong>{{ methode_label }}</strong> n'a pas pu être confirmé.
@@ -15,16 +16,16 @@
 <div class="card">
   {% for cmd in commandes %}
   <div class="card-row">
-    <span class="card-label">Commande</span>
+    <span class="card-label">{% trans "Commande" %}</span>
     <span class="card-value" style="font-family:monospace">{{ cmd.numero_commande }}</span>
   </div>
   <div class="card-row">
-    <span class="card-label">Montant</span>
-    <span class="card-value">{{ cmd.total }} HTG</span>
+    <span class="card-label">{% trans "Montant" %}</span>
+    <span class="card-value">{% blocktrans with cmd=cmd.total %}{{ cmd }} HTG{% endblocktrans %}</span>
   </div>
   <div class="card-row">
-    <span class="card-label">Statut</span>
-    <span class="badge badge-orange">En attente de paiement</span>
+    <span class="card-label">{% trans "Statut" %}</span>
+    <span class="badge badge-orange">{% trans "En attente de paiement" %}</span>
   </div>
   {% if not forloop.last %}<hr class="divider">{% endif %}
   {% endfor %}
@@ -36,13 +37,13 @@
 </p>
 
 <div class="info-box">
-  <strong>Option 1 — Réessayer avec {{ methode_label }}</strong><br>
+  <strong>{% blocktrans with methode_label=methode_label %}Option 1 — Réessayer avec {{ methode_label }}{% endblocktrans %}</strong><br>
   Vérifiez que votre compte {{ methode_label }} est suffisamment approvisionné, puis retournez sur le site pour repasser votre commande.
 </div>
 
 <div class="info-box" style="border-color:#8e44ad; background:#f5eef8; color:#6c3483;">
-  <strong>Option 2 — Paiement hors ligne (virement)</strong><br>
-  Effectuez un virement bancaire ou un transfert d'argent, puis allez dans <strong>« Mes commandes »</strong>
+  <strong>{% trans "Option 2 — Paiement hors ligne (virement)" %}</strong><br>
+  Effectuez un virement bancaire ou un transfert d'argent, puis allez dans <strong>{% trans "« Mes commandes »" %}</strong>
   et uploadez votre preuve de paiement. L'équipe Makèt Peyizan validera votre commande dans les plus brefs délais.
 </div>
 
@@ -53,7 +54,7 @@
 </div>
 
 <p style="font-size:13px; color:#aaa; text-align:center; margin-top:16px">
-  Un problème ? Contactez-nous à <a href="mailto:info@maketpeyizan.ht" style="color:#27ae60">info@maketpeyizan.ht</a>
+  Un problème ? Contactez-nous à <a href="mailto:info@maketpeyizan.ht" style="color:#27ae60">{% trans "info@maketpeyizan.ht" %}</a>
 </p>
 
 {% endblock %}

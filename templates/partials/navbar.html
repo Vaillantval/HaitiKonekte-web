@@ -1,4 +1,5 @@
 {% load static %}
+{% load i18n %}
 
 {# ── CSS : nouvelles pièces seulement (burger + drawer) ──────────── #}
 <style>
@@ -62,6 +63,25 @@
   .btn-drawer-espace:hover { background:#d4c800; }
   .btn-drawer-logout { display:flex; align-items:center; justify-content:center; gap:8px; padding:11px 20px; background:transparent; border:1.5px solid #e74c3c; color:#e74c3c; border-radius:50px; font-size:13px; font-weight:600; cursor:pointer; width:100%; font-family:'DM Sans',sans-serif; transition:all .2s; }
   .btn-drawer-logout:hover { background:#fde8e8; }
+
+  /* ── Sélecteur de langue ─────────────────────────────────────── */
+  .lang-form-nav { display:flex; align-items:center; }
+  .lang-select-nav {
+    background: rgba(255,255,255,.15);
+    border: 1.5px solid rgba(255,255,255,.4);
+    color: #fff;
+    border-radius: 50px;
+    padding: 7px 10px;
+    font-size: 12px;
+    font-weight: 700;
+    font-family: 'DM Sans', sans-serif;
+    cursor: pointer;
+    outline: none;
+    min-width: 52px;
+    transition: background .2s;
+  }
+  .lang-select-nav option { background: #1a6b2f; color: #fff; }
+  .lang-select-nav:hover   { background: rgba(255,255,255,.26); }
 </style>
 
 {# ── Navbar HTML ─────────────────────────────────────────────────── #}
@@ -87,7 +107,7 @@
 
         <!-- Panier -->
         <a href="{% url 'home:panier' %}" class="nb-btn-panier">
-          <i class="fas fa-shopping-basket"></i> Panier
+          <i class="fas fa-shopping-basket"></i> {% trans "Panier" %}
           {% with count=nb_panier|default:0 %}
             <span class="nb-panier-badge{% if count == 0 %} hidden{% endif %}" id="nav-panier-badge">{{ count }}</span>
           {% endwith %}
@@ -96,17 +116,30 @@
         <!-- Connexion (guest) / Mon espace (connecté) — toujours visible -->
         <div id="nav-guest" style="display:flex;align-items:center">
           <a href="{% url 'home:login' %}" class="btn-nav btn-nav-primary">
-            <i class="fas fa-sign-in-alt"></i> Connexion
+            <i class="fas fa-sign-in-alt"></i> {% trans "Connexion" %}
           </a>
         </div>
         <div id="nav-user" style="display:none;align-items:center">
           <a id="nav-dashboard-link" href="/dashboard/" class="btn-nav btn-nav-primary">
-            <i class="fas fa-th-large"></i> Mon espace
+            <i class="fas fa-th-large"></i> {% trans "Mon espace" %}
           </a>
         </div>
 
+        <!-- Sélecteur de langue -->
+        <form action="{% url 'set_language' %}" method="post" class="lang-form-nav">
+          {% csrf_token %}
+          <input name="next" type="hidden" value="{{ request.get_full_path }}">
+          {% get_current_language as LANGUAGE_CODE %}
+          {% get_available_languages as LANGUAGES %}
+          <select name="language" onchange="this.form.submit()" class="lang-select-nav" title="{% trans 'Langue' %}">
+            {% for lang_code, lang_name in LANGUAGES %}
+              <option value="{{ lang_code }}" {% if lang_code == LANGUAGE_CODE %}selected{% endif %}>{{ lang_code|upper }}</option>
+            {% endfor %}
+          </select>
+        </form>
+
         <!-- Burger -->
-        <button class="btn-burger" onclick="openNavDrawer()" aria-label="Menu">
+        <button class="btn-burger" onclick="openNavDrawer()" aria-label="{% trans 'Menu' %}">
           <i class="fas fa-bars"></i>
         </button>
 
@@ -118,7 +151,7 @@
 {# ── Drawer ──────────────────────────────────────────────────────── #}
 <div class="nav-drawer-overlay" id="nav-drawer-overlay" onclick="closeNavDrawer()"></div>
 
-<aside class="nav-drawer" id="nav-drawer" role="dialog" aria-label="Menu navigation">
+<aside class="nav-drawer" id="nav-drawer" role="dialog" aria-label="{% trans 'Menu navigation' %}">
 
   <div class="nav-drawer-head">
     <a href="/" class="nav-drawer-logo">
@@ -138,21 +171,21 @@
   </div>
 
   <nav class="nav-drawer-nav">
-    <a href="/" class="nav-drawer-link"><i class="fas fa-home"></i> Accueil</a>
-    <a href="/#catalogue" class="nav-drawer-link" onclick="closeNavDrawer()"><i class="fas fa-store"></i> Catalogue</a>
-    <a href="{% url 'core:apropos' %}" class="nav-drawer-link"><i class="fas fa-info-circle"></i> À propos</a>
-    <a href="{% url 'core:faq' %}" class="nav-drawer-link"><i class="fas fa-question-circle"></i> FAQ</a>
-    <a href="{% url 'core:contact' %}" class="nav-drawer-link"><i class="fas fa-envelope"></i> Contact</a>
+    <a href="/" class="nav-drawer-link"><i class="fas fa-home"></i> {% trans "Accueil" %}</a>
+    <a href="/#catalogue" class="nav-drawer-link" onclick="closeNavDrawer()"><i class="fas fa-store"></i> {% trans "Catalogue" %}</a>
+    <a href="{% url 'core:apropos' %}" class="nav-drawer-link"><i class="fas fa-info-circle"></i> {% trans "À propos" %}</a>
+    <a href="{% url 'core:faq' %}" class="nav-drawer-link"><i class="fas fa-question-circle"></i> {% trans "FAQ" %}</a>
+    <a href="{% url 'core:contact' %}" class="nav-drawer-link"><i class="fas fa-envelope"></i> {% trans "Contact" %}</a>
   </nav>
 
   <div class="drawer-auth">
     <!-- Guest -->
     <div class="drawer-auth-guest" id="drawer-guest">
       <a href="{% url 'home:register' %}" class="btn-drawer-inscrit">
-        <i class="fas fa-user-plus"></i> S'inscrire gratuitement
+        <i class="fas fa-user-plus"></i> {% trans "S'inscrire gratuitement" %}
       </a>
       <a href="{% url 'home:login' %}" class="btn-drawer-connexion">
-        <i class="fas fa-sign-in-alt"></i> Se connecter
+        <i class="fas fa-sign-in-alt"></i> {% trans "Se connecter" %}
       </a>
     </div>
     <!-- Connecté -->
@@ -165,10 +198,10 @@
         </div>
       </div>
       <a id="drawer-espace-link" href="/dashboard/" class="btn-drawer-espace">
-        <i class="fas fa-th-large"></i> Mon espace
+        <i class="fas fa-th-large"></i> {% trans "Mon espace" %}
       </a>
       <button class="btn-drawer-logout" onclick="_navbarLogout()">
-        <i class="fas fa-sign-out-alt"></i> Se déconnecter
+        <i class="fas fa-sign-out-alt"></i> {% trans "Se déconnecter" %}
       </button>
     </div>
   </div>

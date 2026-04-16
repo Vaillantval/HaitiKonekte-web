@@ -1,17 +1,18 @@
 {% extends "emails/base.html" %}
+{% load i18n %}
 {% block content %}
 
-<p class="greeting">Bonjour {{ prenom }},</p>
+<p class="greeting">{% blocktrans with prenom=prenom %}Bonjour {{ prenom }},{% endblocktrans %}</p>
 
 <p class="message">
   Après examen de votre dossier, nous ne sommes malheureusement pas
-  en mesure de valider votre inscription sur <strong>Makèt Peyizan</strong>
+  en mesure de valider votre inscription sur <strong>{% trans "Makèt Peyizan" %}</strong>
   pour le moment.
 </p>
 
 {% if motif %}
 <div class="alert-box">
-  <strong>Motif :</strong> {{ motif }}
+  <strong>{% trans "Motif :" %}</strong> {{ motif }}
 </div>
 {% endif %}
 

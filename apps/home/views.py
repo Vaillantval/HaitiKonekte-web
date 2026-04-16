@@ -5,6 +5,7 @@ from django.http import JsonResponse
 from django.db.models import Count, Q
 from apps.catalog.models import Produit, Categorie
 from apps.accounts.models import Producteur
+from django.utils.translation import gettext as _
 
 
 def health_check(request):

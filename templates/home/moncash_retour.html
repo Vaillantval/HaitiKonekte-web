@@ -1,6 +1,7 @@
 {% load static %}
+{% load i18n %}
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="{{ LANGUAGE_CODE }}">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -81,6 +82,18 @@
         <span>{{ site_settings.slogan|default:"Marketplace Agricole" }}</span>
       </div>
     </a>
+    <!-- Sélecteur de langue -->
+    <form action="{% url 'set_language' %}" method="post" style="display:inline-flex;align-items:center;margin-left:auto;">
+      {% csrf_token %}
+      <input name="next" type="hidden" value="{{ request.get_full_path }}">
+      {% get_current_language as LANGUAGE_CODE %}
+      {% get_available_languages as LANGUAGES %}
+      <select name="language" onchange="this.form.submit()" style="background:rgba(255,255,255,.15);border:1.5px solid rgba(255,255,255,.4);color:#fff;border-radius:50px;padding:7px 10px;font-size:12px;font-weight:700;font-family:'DM Sans',sans-serif;cursor:pointer;outline:none;min-width:52px;" title="Langue">
+        {% for lang_code, lang_name in LANGUAGES %}
+          <option value="{{ lang_code }}" {% if lang_code == LANGUAGE_CODE %}selected{% endif %} style="background:#1a6b2f;color:#fff;">{{ lang_code|upper }}</option>
+        {% endfor %}
+      </select>
+    </form>
   </div>
 </nav>
 
@@ -90,7 +103,7 @@
     {% if success %}
       <!-- ── Succès ── -->
       <div class="icon-wrap success"><i class="fas fa-check"></i></div>
-      <div class="card-title success">Paiement confirmé !</div>
+      <div class="card-title success">{% trans "Paiement confirmé !" %}</div>
       <div class="card-sub">
         Votre paiement MonCash a été vérifié avec succès.<br>
         Votre commande a été transmise au(x) producteur(s).
@@ -102,7 +115,7 @@
             <div class="meta-line">Payeur : <span>{{ payer }}</span></div>
           {% endif %}
           {% if montant %}
-            <div class="meta-line">Montant : <span>{{ montant }} HTG</span></div>
+            <div class="meta-line">Montant : <span>{% blocktrans with montant=montant %}{{ montant }} HTG{% endblocktrans %}</span></div>
           {% endif %}
           {% if transaction_id %}
             <div class="meta-line">Réf. transaction : <span style="font-family:monospace">{{ transaction_id }}</span></div>
@@ -119,7 +132,7 @@
               <span style="font-weight:400;color:#666;font-size:12px;flex:1">
                 — {{ c.producteur__user__first_name }} {{ c.producteur__user__last_name }}
               </span>
-              <span class="order-total">{{ c.total }} HTG</span>
+              <span class="order-total">{% blocktrans with c=c.total %}{{ c }} HTG{% endblocktrans %}</span>
             </div>
           {% endfor %}
         </div>
@@ -127,17 +140,17 @@
 
       <div class="btns">
         <a href="/dashboard/acheteur/commandes/" class="btn btn-primary">
-          <i class="fas fa-list-alt"></i> Mes commandes
+          <i class="fas fa-list-alt"></i> {% trans "Mes commandes" %}
         </a>
         <a href="/" class="btn btn-outline">
-          <i class="fas fa-store"></i> Catalogue
+          <i class="fas fa-store"></i> {% trans "Catalogue" %}
         </a>
       </div>
 
     {% else %}
       <!-- ── Erreur ── -->
       <div class="icon-wrap error"><i class="fas fa-times"></i></div>
-      <div class="card-title error">Paiement non confirmé</div>
+      <div class="card-title error">{% trans "Paiement non confirmé" %}</div>
       <div class="card-sub">
         Nous n'avons pas pu vérifier votre paiement MonCash.<br>
         Si vous avez déjà payé, contactez le support en indiquant votre référence de transaction.
@@ -154,10 +167,10 @@
 
       <div class="btns">
         <a href="/commander/" class="btn btn-danger">
-          <i class="fas fa-redo"></i> Réessayer
+          <i class="fas fa-redo"></i> {% trans "Réessayer" %}
         </a>
         <a href="/" class="btn btn-outline">
-          <i class="fas fa-home"></i> Accueil
+          <i class="fas fa-home"></i> {% trans "Accueil" %}
         </a>
       </div>
     {% endif %}

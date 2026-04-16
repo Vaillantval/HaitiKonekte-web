@@ -1,4 +1,5 @@
 {% extends 'dashboard/base.html' %}
+{% load i18n %}
 {% load static %}
 {% block title %}Carte des Utilisateurs — Superadmin{% endblock %}
 {% block sidebar_nav %}{% include 'dashboard/superadmin_sidebar.html' with active='carte_users' %}{% endblock %}
@@ -136,64 +137,64 @@
   <div class="panneau-gauche">
 
     <div class="cp">
-      <h3><i class="fas fa-filter" style="margin-right:6px;color:var(--green-mid)"></i>Filtres</h3>
+      <h3><i class="fas fa-filter" style="margin-right:6px;color:var(--green-mid)"></i>{% trans "Filtres" %}</h3>
       <div class="filter-group">
-        <label>Rôle</label>
+        <label>{% trans "Rôle" %}</label>
         <select id="filterRole">
-          <option value="">Tous les rôles</option>
-          <option value="acheteur">Acheteur</option>
-          <option value="producteur">Producteur</option>
-          <option value="collecteur">Collecteur</option>
-          <option value="admin">Admin</option>
+          <option value="">{% trans "Tous les rôles" %}</option>
+          <option value="acheteur">{% trans "Acheteur" %}</option>
+          <option value="producteur">{% trans "Producteur" %}</option>
+          <option value="collecteur">{% trans "Collecteur" %}</option>
+          <option value="admin">{% trans "Admin" %}</option>
         </select>
       </div>
       <div class="filter-group">
-        <label>Statut producteur</label>
+        <label>{% trans "Statut producteur" %}</label>
         <select id="filterStatut">
-          <option value="">Tous statuts</option>
-          <option value="actif">Actif</option>
-          <option value="en_attente">En attente</option>
-          <option value="suspendu">Suspendu</option>
+          <option value="">{% trans "Tous statuts" %}</option>
+          <option value="actif">{% trans "Actif" %}</option>
+          <option value="en_attente">{% trans "En attente" %}</option>
+          <option value="suspendu">{% trans "Suspendu" %}</option>
         </select>
       </div>
       <div class="filter-group">
-        <label>Inscrit après</label>
+        <label>{% trans "Inscrit après" %}</label>
         <input type="date" id="filterDateDebut">
       </div>
       <div class="filter-group">
-        <label>Inscrit avant</label>
+        <label>{% trans "Inscrit avant" %}</label>
         <input type="date" id="filterDateFin">
       </div>
-      <button class="btn-filter" onclick="appliquerFiltres()"><i class="fas fa-search" style="margin-right:6px"></i>Appliquer</button>
-      <button class="btn-reset" onclick="reinitialiserFiltres()">Réinitialiser</button>
+      <button class="btn-filter" onclick="appliquerFiltres()"><i class="fas fa-search" style="margin-right:6px"></i>{% trans "Appliquer" %}</button>
+      <button class="btn-reset" onclick="reinitialiserFiltres()">{% trans "Réinitialiser" %}</button>
     </div>
 
     <div class="cp">
-      <h3><i class="fas fa-chart-bar" style="margin-right:6px;color:var(--green-mid)"></i>Statistiques</h3>
+      <h3><i class="fas fa-chart-bar" style="margin-right:6px;color:var(--green-mid)"></i>{% trans "Statistiques" %}</h3>
       <div class="stats-grid">
-        <div class="stat-item"><div class="stat-val" id="statTotal">—</div><div class="stat-lbl">Total</div></div>
-        <div class="stat-item"><div class="stat-val" id="statProducteurs" style="color:#27ae60">—</div><div class="stat-lbl">Producteurs</div></div>
-        <div class="stat-item"><div class="stat-val" id="statAcheteurs" style="color:#2980b9">—</div><div class="stat-lbl">Acheteurs</div></div>
-        <div class="stat-item"><div class="stat-val" id="statCollecteurs" style="color:#8e44ad">—</div><div class="stat-lbl">Collecteurs</div></div>
+        <div class="stat-item"><div class="stat-val" id="statTotal">—</div><div class="stat-lbl">{% trans "Total" %}</div></div>
+        <div class="stat-item"><div class="stat-val" id="statProducteurs" style="color:#27ae60">—</div><div class="stat-lbl">{% trans "Producteurs" %}</div></div>
+        <div class="stat-item"><div class="stat-val" id="statAcheteurs" style="color:#2980b9">—</div><div class="stat-lbl">{% trans "Acheteurs" %}</div></div>
+        <div class="stat-item"><div class="stat-val" id="statCollecteurs" style="color:#8e44ad">—</div><div class="stat-lbl">{% trans "Collecteurs" %}</div></div>
       </div>
     </div>
 
     <div class="cp">
-      <h3><i class="fas fa-chart-pie" style="margin-right:6px;color:var(--green-mid)"></i>Répartition</h3>
+      <h3><i class="fas fa-chart-pie" style="margin-right:6px;color:var(--green-mid)"></i>{% trans "Répartition" %}</h3>
       <canvas id="chartDonut"></canvas>
     </div>
 
     <div class="cp">
-      <h3><i class="fas fa-palette" style="margin-right:6px;color:var(--green-mid)"></i>Légende</h3>
-      <div class="legende-item"><div class="legende-dot" style="background:#27ae60"></div><span>Producteur actif</span></div>
-      <div class="legende-item"><div class="legende-dot" style="background:#f39c12"></div><span>Producteur en attente</span></div>
-      <div class="legende-item"><div class="legende-dot" style="background:#2980b9"></div><span>Acheteur</span></div>
-      <div class="legende-item"><div class="legende-dot" style="background:#8e44ad"></div><span>Collecteur</span></div>
-      <div class="legende-item"><div class="legende-dot" style="background:#e74c3c"></div><span>Suspendu</span></div>
-      <div class="legende-item"><div class="legende-dot" style="background:#1a1a1a"></div><span>Admin / Superadmin</span></div>
+      <h3><i class="fas fa-palette" style="margin-right:6px;color:var(--green-mid)"></i>{% trans "Légende" %}</h3>
+      <div class="legende-item"><div class="legende-dot" style="background:#27ae60"></div><span>{% trans "Producteur actif" %}</span></div>
+      <div class="legende-item"><div class="legende-dot" style="background:#f39c12"></div><span>{% trans "Producteur en attente" %}</span></div>
+      <div class="legende-item"><div class="legende-dot" style="background:#2980b9"></div><span>{% trans "Acheteur" %}</span></div>
+      <div class="legende-item"><div class="legende-dot" style="background:#8e44ad"></div><span>{% trans "Collecteur" %}</span></div>
+      <div class="legende-item"><div class="legende-dot" style="background:#e74c3c"></div><span>{% trans "Suspendu" %}</span></div>
+      <div class="legende-item"><div class="legende-dot" style="background:#1a1a1a"></div><span>{% trans "Admin / Superadmin" %}</span></div>
       <hr style="margin:10px 0;border:none;border-top:1px solid var(--border)">
-      <div class="legende-item"><div class="legende-dot" style="background:#ccc;border:2px solid #999"></div><span style="color:var(--text-muted)">Niveau département</span></div>
-      <div class="legende-item"><div class="legende-dot" style="background:#27ae60;border:2px solid white;box-shadow:0 0 0 2px #27ae60"></div><span>Niveau commune</span></div>
+      <div class="legende-item"><div class="legende-dot" style="background:#ccc;border:2px solid #999"></div><span style="color:var(--text-muted)">{% trans "Niveau département" %}</span></div>
+      <div class="legende-item"><div class="legende-dot" style="background:#27ae60;border:2px solid white;box-shadow:0 0 0 2px #27ae60"></div><span>{% trans "Niveau commune" %}</span></div>
     </div>
 
   </div>
@@ -201,7 +202,7 @@
   <!-- ── Carte ── -->
   <div class="carte-droite">
     <div id="map"></div>
-    <div class="map-counter" id="mapCounter"><i class="fas fa-spinner fa-spin"></i> Chargement...</div>
+    <div class="map-counter" id="mapCounter"><i class="fas fa-spinner fa-spin"></i> {% trans "Chargement..." %}</div>
   </div>
 </div>
 {% endblock %}
@@ -243,7 +244,7 @@ function initMap() {
   });
 
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '© <a href="https://www.openstreetmap.org/">OpenStreetMap</a>',
+    attribution: '© <a href="https://www.openstreetmap.org/">{% trans "OpenStreetMap" %}</a>',
     maxZoom: 19,
   }).addTo(map);
 
@@ -253,7 +254,7 @@ function initMap() {
     iconCreateFunction: (cluster) => {
       const count = cluster.getChildCount();
       return L.divIcon({
-        html: `<div style="background:#1a6b2f;color:white;width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;border:2px solid white;box-shadow:0 2px 6px rgba(0,0,0,.3)">${count}</div>`,
+        html: `<div style="background:#1a6b2f;color:white;width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;border:2px solid white;box-shadow:0 2px 6px rgba(0,0,0,.3)">{% trans "${count}" %}</div>`,
         iconSize: [36, 36], iconAnchor: [18, 18],
       });
     },
@@ -279,24 +280,24 @@ function buildPopup(user) {
   const roleLabel = _CARTE_LABELS[user.role] || user.role;
   let extra = '';
   if (user.role === 'producteur') {
-    extra = `<div class="popup-row"><i>🌾</i><span>${user.code_producteur || '—'}</span></div>
-             <div class="popup-row"><i>📍</i><span>${user.commune || ''}${user.departement ? ' — ' + user.departement : ''}</span></div>
-             <div class="popup-row"><i>📦</i><span>${user.nb_produits || 0} produit(s)</span></div>`;
+    extra = `<div class="popup-row"><i>🌾</i><span>{% trans "${user.code_producteur || '—'}" %}</span></div>
+             <div class="popup-row"><i>📍</i><span>{% trans "${user.commune || ''}${user.departement ? ' — ' + user.departement : ''}" %}</span></div>
+             <div class="popup-row"><i>📦</i><span>{% trans "${user.nb_produits || 0} produit(s)" %}</span></div>`;
   } else if (user.role === 'acheteur') {
-    extra = `<div class="popup-row"><i>🏷️</i><span>${user.type_acheteur || 'Particulier'}</span></div>
-             ${user.ville ? `<div class="popup-row"><i>📍</i><span>${user.ville}</span></div>` : ''}`;
+    extra = `<div class="popup-row"><i>🏷️</i><span>{% trans "${user.type_acheteur || 'Particulier'}" %}</span></div>
+             ${user.ville ? `<div class="popup-row"><i>📍</i><span>{% trans "${user.ville}" %}</span></div>` : ''}`;
   }
   return `<div class="popup-user">
     <div class="popup-header">
-      <div class="popup-avatar" style="background:${color}">${initiale}</div>
-      <div><div class="popup-nom">${user.nom || '—'}</div><span class="popup-role" style="background:${color}">${roleLabel}</span></div>
+      <div class="popup-avatar" style="background:${color}">{% trans "${initiale}" %}</div>
+      <div><div class="popup-nom">{% trans "${user.nom || '—'}" %}</div><span class="popup-role" style="background:${color}">{% trans "${roleLabel}" %}</span></div>
     </div>
-    <div class="popup-row"><i>✉️</i><span>${user.email || '—'}</span></div>
-    <div class="popup-row"><i>📞</i><span>${user.telephone || '—'}</span></div>
-    ${user.adresse ? `<div class="popup-row"><i>🏠</i><span>${user.adresse}</span></div>` : ''}
+    <div class="popup-row"><i>✉️</i><span>{% trans "${user.email || '—'}" %}</span></div>
+    <div class="popup-row"><i>📞</i><span>{% trans "${user.telephone || '—'}" %}</span></div>
+    ${user.adresse ? `<div class="popup-row"><i>🏠</i><span>{% trans "${user.adresse}" %}</span></div>` : ''}
     ${extra}
-    <div class="popup-row"><i>📅</i><span>Inscrit le ${user.created_at || '—'}</span></div>
-    <div class="popup-precision">📌 Précision : ${user.precision === 'commune' ? 'Niveau commune' : 'Niveau département'}</div>
+    <div class="popup-row"><i>📅</i><span>{% trans "Inscrit le ${user.created_at || '—'}" %}</span></div>
+    <div class="popup-precision">{% trans "📌 Précision : ${user.precision === 'commune' ? 'Niveau commune' : 'Niveau département'}" %}</div>
   </div>`;
 }
 
@@ -315,7 +316,7 @@ function updateDonut(stats) {
 async function chargerDonnees(params = {}) {
   const qs = new URLSearchParams(params).toString();
   const url = `/api/admin/users/carte/${qs ? '?' + qs : ''}`;
-  document.getElementById('mapCounter').innerHTML = '<i class="fas fa-spinner fa-spin"></i> Chargement...';
+  document.getElementById('mapCounter').innerHTML = '<i class="fas fa-spinner fa-spin"></i> {% trans "Chargement...';" %}
   try {
     const res  = await fetch(url, { headers: _carteH });
     const json = await res.json();

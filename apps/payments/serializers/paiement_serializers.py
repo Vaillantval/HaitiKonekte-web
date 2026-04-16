@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from apps.payments.models import Paiement
 from apps.orders.models import Commande
+from django.utils.translation import gettext_lazy as _
 
 
 class InitierPaiementSerializer(serializers.Serializer):
@@ -49,7 +50,7 @@ class VerifierPaiementSerializer(serializers.Serializer):
     def validate(self, data):
         if not data.get('paiement_id') and not data.get('id_transaction'):
             raise serializers.ValidationError(
-                "Fournir 'paiement_id' ou 'id_transaction'."
+                _("Fournir 'paiement_id' ou 'id_transaction'.")
             )
         return data
 

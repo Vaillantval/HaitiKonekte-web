@@ -6,6 +6,7 @@ from drf_spectacular.utils import extend_schema
 
 from apps.accounts.permissions import IsSuperAdmin
 from apps.home.models import SiteConfig, FAQCategorie, FAQItem, ContactMessage, ContactReponse, SliderImage
+from django.utils.translation import gettext as _
 
 
 # ── GET/POST/DELETE /api/admin/config/site/apk/ ─────────────────
@@ -34,13 +35,13 @@ def android_apk(request):
     # POST — upload du fichier .apk
     apk_file = request.FILES.get('android_apk')
     if not apk_file:
-        return Response({'success': False, 'error': 'Aucun fichier fourni.'}, status=400)
+        return Response({'success': False, 'error': _('Aucun fichier fourni.')}, status=400)
 
     # Validation extension
     filename = apk_file.name.lower()
     if not filename.endswith('.apk'):
         return Response(
-            {'success': False, 'error': 'Format invalide. Seuls les fichiers .apk sont acceptés.'},
+            {'success': False, 'error': _('Format invalide. Seuls les fichiers .apk sont acceptés.')},
             status=400,
         )
 
@@ -99,7 +100,7 @@ def faq_categories(request):
     if request.method == 'POST':
         titre = request.data.get('titre', '').strip()
         if not titre:
-            return Response({'success': False, 'error': 'Le titre est requis.'}, status=400)
+            return Response({'success': False, 'error': _('Le titre est requis.')}, status=400)
         cat = FAQCategorie.objects.create(
             titre     = titre,
             ordre     = int(request.data.get('ordre', 0)),
@@ -169,11 +170,11 @@ def faq_items(request):
         cat_id = request.data.get('categorie_id')
         cat    = get_object_or_404(FAQCategorie, pk=cat_id) if cat_id else None
         if not cat:
-            return Response({'success': False, 'error': 'Catégorie requise.'}, status=400)
+            return Response({'success': False, 'error': _('Catégorie requise.')}, status=400)
         question = request.data.get('question', '').strip()
         reponse  = request.data.get('reponse', '').strip()
         if not question or not reponse:
-            return Response({'success': False, 'error': 'Question et réponse requises.'}, status=400)
+            return Response({'success': False, 'error': _('Question et réponse requises.')}, status=400)
         item = FAQItem.objects.create(
             categorie = cat,
             question  = question,
@@ -313,7 +314,7 @@ def repondre_contact(request, pk):
     contenu = request.data.get('reponse', '').strip()
     if not contenu:
         return Response(
-            {'success': False, 'error': 'Le contenu de la réponse est requis.'},
+            {'success': False, 'error': _('Le contenu de la réponse est requis.')},
             status=status.HTTP_400_BAD_REQUEST,
         )
 
@@ -332,7 +333,7 @@ def repondre_contact(request, pk):
     if not sent:
         reponse.delete()
         return Response(
-            {'success': False, 'error': "Échec de l'envoi de l'email. Réessayez."},
+            {'success': False, 'error': _("Échec de l'envoi de l'email. Réessayez.")},
             status=status.HTTP_503_SERVICE_UNAVAILABLE,
         )
 
@@ -377,7 +378,7 @@ def slider_list(request):
     # POST — multipart (image upload)
     image = request.FILES.get('image')
     if not image:
-        return Response({'success': False, 'error': 'Image requise.'}, status=400)
+        return Response({'success': False, 'error': _('Image requise.')}, status=400)
 
     slide = SliderImage.objects.create(
         image        = image,

@@ -1,4 +1,5 @@
 {% extends 'dashboard/base.html' %}
+{% load i18n %}
 {% block title %}Configuration du site — Superadmin{% endblock %}
 {% block sidebar_nav %}{% include 'dashboard/superadmin_sidebar.html' with active='config' %}{% endblock %}
 {% block page_title %}Configuration du site{% endblock %}
@@ -113,16 +114,16 @@
 <!-- Modale confirmation réponse contact -->
 <div class="modal-overlay" id="reply-confirm-modal">
   <div class="modal-box" style="width:480px">
-    <h3><i class="fas fa-paper-plane" style="color:#27ae60;margin-right:8px"></i>Confirmer l'envoi</h3>
+    <h3><i class="fas fa-paper-plane" style="color:#27ae60;margin-right:8px"></i>{% trans "Confirmer l'envoi" %}</h3>
     <p style="font-size:13px;color:var(--text-muted);margin-bottom:16px">
       Vous allez envoyer cette réponse à <strong id="reply-confirm-email"></strong>.<br>
       L'email sera envoyé immédiatement et ne peut pas être annulé.
     </p>
     <div style="background:#f0faf4;border-radius:8px;padding:12px 14px;font-size:13px;color:#2c3e50;max-height:120px;overflow-y:auto;white-space:pre-line;margin-bottom:4px" id="reply-confirm-preview"></div>
     <div class="modal-actions">
-      <button class="btn-cancel" onclick="closeReplyModal()">Annuler</button>
+      <button class="btn-cancel" onclick="closeReplyModal()">{% trans "Annuler" %}</button>
       <button class="btn-reply" id="reply-confirm-btn" onclick="confirmerEnvoi()">
-        <i class="fas fa-paper-plane"></i> Envoyer
+        <i class="fas fa-paper-plane"></i> {% trans "Envoyer" %}
       </button>
     </div>
   </div>
@@ -131,19 +132,19 @@
 <!-- Modal FAQ Catégorie -->
 <div class="modal-overlay" id="faqcat-modal">
   <div class="modal-box">
-    <h3 id="faqcat-modal-title">Nouvelle catégorie FAQ</h3>
+    <h3 id="faqcat-modal-title">{% trans "Nouvelle catégorie FAQ" %}</h3>
     <form id="faqcat-form" onsubmit="submitFaqCat(event)">
       <div class="form-grid" style="grid-template-columns:1fr">
         <div class="field">
-          <label>Titre *</label>
-          <input type="text" id="fc-titre" required placeholder="Ex: Livraison et collecte">
+          <label>{% trans "Titre *" %}</label>
+          <input type="text" id="fc-titre" required placeholder="{% trans 'Ex: Livraison et collecte' %}">
         </div>
         <div class="field">
-          <label>Icône Font Awesome</label>
-          <input type="text" id="fc-icone" placeholder="fas fa-question-circle">
+          <label>{% trans "Icône Font Awesome" %}</label>
+          <input type="text" id="fc-icone" placeholder="{% trans 'fas fa-question-circle' %}">
         </div>
         <div class="field">
-          <label>Ordre</label>
+          <label>{% trans "Ordre" %}</label>
           <input type="number" id="fc-ordre" value="0" min="0">
         </div>
         <div class="field">
@@ -151,8 +152,8 @@
         </div>
       </div>
       <div class="modal-actions">
-        <button type="button" class="btn-cancel" onclick="closeFaqCatModal()">Annuler</button>
-        <button type="submit" class="btn-save" id="faqcat-submit"><i class="fas fa-save"></i> Enregistrer</button>
+        <button type="button" class="btn-cancel" onclick="closeFaqCatModal()">{% trans "Annuler" %}</button>
+        <button type="submit" class="btn-save" id="faqcat-submit"><i class="fas fa-save"></i> {% trans "Enregistrer" %}</button>
       </div>
     </form>
   </div>
@@ -161,23 +162,23 @@
 <!-- Modal FAQ Item -->
 <div class="modal-overlay" id="faqitem-modal">
   <div class="modal-box">
-    <h3 id="faqitem-modal-title">Nouvelle question</h3>
+    <h3 id="faqitem-modal-title">{% trans "Nouvelle question" %}</h3>
     <form id="faqitem-form" onsubmit="submitFaqItem(event)">
       <div class="form-grid" style="grid-template-columns:1fr">
         <div class="field">
-          <label>Catégorie *</label>
+          <label>{% trans "Catégorie *" %}</label>
           <select id="fi-cat" required></select>
         </div>
         <div class="field">
-          <label>Question *</label>
-          <input type="text" id="fi-question" required placeholder="Ex: Comment passer une commande ?">
+          <label>{% trans "Question *" %}</label>
+          <input type="text" id="fi-question" required placeholder="{% trans 'Ex: Comment passer une commande ?' %}">
         </div>
         <div class="field">
-          <label>Réponse *</label>
-          <textarea id="fi-reponse" rows="4" required placeholder="Réponse complète..."></textarea>
+          <label>{% trans "Réponse *" %}</label>
+          <textarea id="fi-reponse" rows="4" required placeholder="{% trans 'Réponse complète...' %}"></textarea>
         </div>
         <div class="field">
-          <label>Ordre</label>
+          <label>{% trans "Ordre" %}</label>
           <input type="number" id="fi-ordre" value="0" min="0">
         </div>
         <div class="field">
@@ -185,44 +186,44 @@
         </div>
       </div>
       <div class="modal-actions">
-        <button type="button" class="btn-cancel" onclick="closeFaqItemModal()">Annuler</button>
-        <button type="submit" class="btn-save" id="faqitem-submit"><i class="fas fa-save"></i> Enregistrer</button>
+        <button type="button" class="btn-cancel" onclick="closeFaqItemModal()">{% trans "Annuler" %}</button>
+        <button type="submit" class="btn-save" id="faqitem-submit"><i class="fas fa-save"></i> {% trans "Enregistrer" %}</button>
       </div>
     </form>
   </div>
 </div>
 
 <div class="tabs" id="config-tabs">
-  <button class="tab-btn active" onclick="switchTab('settings',this)"><i class="fas fa-cog"></i> Paramètres</button>
-  <button class="tab-btn" onclick="switchTab('faq',this)"><i class="fas fa-question-circle"></i> FAQ</button>
+  <button class="tab-btn active" onclick="switchTab('settings',this)"><i class="fas fa-cog"></i> {% trans "Paramètres" %}</button>
+  <button class="tab-btn" onclick="switchTab('faq',this)"><i class="fas fa-question-circle"></i> {% trans "FAQ" %}</button>
   <button class="tab-btn" onclick="switchTab('contact',this)"><i class="fas fa-envelope"></i> Messages de contact <span id="tab-contact-badge" style="display:none;background:#e74c3c;color:#fff;border-radius:10px;font-size:10px;padding:1px 6px;margin-left:4px"></span></button>
 </div>
 
 <!-- ═══ ONGLET PARAMÈTRES ══════════════════════════════════════════════════ -->
 <div class="tab-panel active" id="tab-settings">
-  <div id="settings-loading" style="text-align:center;padding:40px;color:var(--text-muted)"><i class="fas fa-spinner fa-spin"></i> Chargement...</div>
+  <div id="settings-loading" style="text-align:center;padding:40px;color:var(--text-muted)"><i class="fas fa-spinner fa-spin"></i> {% trans "Chargement..." %}</div>
   <form id="settings-form" onsubmit="saveSettings(event)" style="display:none">
 
     <!-- Identité -->
     <div class="settings-card">
-      <div class="settings-header"><i class="fas fa-store"></i><h3>Identité du site</h3></div>
+      <div class="settings-header"><i class="fas fa-store"></i><h3>{% trans "Identité du site" %}</h3></div>
       <div class="settings-body">
         <div class="form-grid">
           <div class="field">
-            <label>Nom du site</label>
-            <input type="text" id="s-nom-site" placeholder="Makèt Peyizan">
+            <label>{% trans "Nom du site" %}</label>
+            <input type="text" id="s-nom-site" placeholder="{% trans 'Makèt Peyizan' %}">
           </div>
           <div class="field">
-            <label>Slogan</label>
-            <input type="text" id="s-slogan" placeholder="Marketplace Agricole Haïtienne">
+            <label>{% trans "Slogan" %}</label>
+            <input type="text" id="s-slogan" placeholder="{% trans 'Marketplace Agricole Haïtienne' %}">
           </div>
           <div class="field">
-            <label>Logo</label>
+            <label>{% trans "Logo" %}</label>
             <input type="file" id="s-logo" accept="image/*">
             <img id="s-logo-preview" class="img-preview" style="display:none">
           </div>
           <div class="field">
-            <label>Favicon</label>
+            <label>{% trans "Favicon" %}</label>
             <input type="file" id="s-favicon" accept="image/*,image/x-icon">
             <img id="s-favicon-preview" class="img-preview" style="display:none">
           </div>
@@ -232,23 +233,23 @@
 
     <!-- Hero -->
     <div class="settings-card">
-      <div class="settings-header"><i class="fas fa-home"></i><h3>Page d'accueil — Hero</h3></div>
+      <div class="settings-header"><i class="fas fa-home"></i><h3>{% trans "Page d'accueil — Hero" %}</h3></div>
       <div class="settings-body">
         <div class="form-grid">
           <div class="field full">
-            <label>Texte du badge</label>
-            <input type="text" id="s-hero-badge" placeholder="Marketplace Agricole Haïtienne">
+            <label>{% trans "Texte du badge" %}</label>
+            <input type="text" id="s-hero-badge" placeholder="{% trans 'Marketplace Agricole Haïtienne' %}">
           </div>
           <div class="field">
-            <label>Titre ligne 1</label>
-            <input type="text" id="s-hero-t1" placeholder="Sòti nan jaden">
+            <label>{% trans "Titre ligne 1" %}</label>
+            <input type="text" id="s-hero-t1" placeholder="{% trans 'Sòti nan jaden' %}">
           </div>
           <div class="field">
-            <label>Titre ligne 2</label>
-            <input type="text" id="s-hero-t2" placeholder="rive lakay ou">
+            <label>{% trans "Titre ligne 2" %}</label>
+            <input type="text" id="s-hero-t2" placeholder="{% trans 'rive lakay ou' %}">
           </div>
           <div class="field full">
-            <label>Sous-titre</label>
+            <label>{% trans "Sous-titre" %}</label>
             <textarea id="s-hero-sub" rows="3"></textarea>
           </div>
         </div>
@@ -257,31 +258,31 @@
 
     <!-- À propos -->
     <div class="settings-card">
-      <div class="settings-header"><i class="fas fa-info-circle"></i><h3>Page À propos</h3></div>
+      <div class="settings-header"><i class="fas fa-info-circle"></i><h3>{% trans "Page À propos" %}</h3></div>
       <div class="settings-body">
         <div class="form-grid">
           <div class="field full">
-            <label>Titre</label>
+            <label>{% trans "Titre" %}</label>
             <input type="text" id="s-ap-titre">
           </div>
           <div class="field full">
-            <label>Présentation générale</label>
+            <label>{% trans "Présentation générale" %}</label>
             <textarea id="s-ap-contenu" rows="4"></textarea>
           </div>
           <div class="field">
-            <label>Notre mission</label>
+            <label>{% trans "Notre mission" %}</label>
             <textarea id="s-ap-mission" rows="3"></textarea>
           </div>
           <div class="field">
-            <label>Notre vision</label>
+            <label>{% trans "Notre vision" %}</label>
             <textarea id="s-ap-vision" rows="3"></textarea>
           </div>
           <div class="field">
-            <label>Année de fondation</label>
+            <label>{% trans "Année de fondation" %}</label>
             <input type="number" id="s-ap-annee" placeholder="2025" min="2000" max="2100">
           </div>
           <div class="field">
-            <label>Image À propos</label>
+            <label>{% trans "Image À propos" %}</label>
             <input type="file" id="s-ap-image" accept="image/*">
           </div>
         </div>
@@ -290,27 +291,27 @@
 
     <!-- Contact -->
     <div class="settings-card">
-      <div class="settings-header"><i class="fas fa-phone"></i><h3>Coordonnées &amp; Contact</h3></div>
+      <div class="settings-header"><i class="fas fa-phone"></i><h3>{% trans "Coordonnées &amp; Contact" %}</h3></div>
       <div class="settings-body">
         <div class="form-grid">
           <div class="field">
-            <label>Email de contact</label>
+            <label>{% trans "Email de contact" %}</label>
             <input type="email" id="s-email">
           </div>
           <div class="field">
-            <label>Téléphone</label>
+            <label>{% trans "Téléphone" %}</label>
             <input type="text" id="s-telephone">
           </div>
           <div class="field">
-            <label>WhatsApp</label>
+            <label>{% trans "WhatsApp" %}</label>
             <input type="text" id="s-whatsapp" placeholder="+509 ...">
           </div>
           <div class="field">
-            <label>Horaires</label>
-            <input type="text" id="s-horaires" placeholder="Lun–Ven 8h–17h">
+            <label>{% trans "Horaires" %}</label>
+            <input type="text" id="s-horaires" placeholder="{% trans 'Lun–Ven 8h–17h' %}">
           </div>
           <div class="field full">
-            <label>Adresse physique</label>
+            <label>{% trans "Adresse physique" %}</label>
             <textarea id="s-adresse" rows="2"></textarea>
           </div>
         </div>
@@ -319,23 +320,23 @@
 
     <!-- Réseaux sociaux -->
     <div class="settings-card">
-      <div class="settings-header"><i class="fas fa-share-alt"></i><h3>Réseaux sociaux</h3></div>
+      <div class="settings-header"><i class="fas fa-share-alt"></i><h3>{% trans "Réseaux sociaux" %}</h3></div>
       <div class="settings-body">
         <div class="form-grid">
           <div class="field">
-            <label><i class="fab fa-facebook" style="color:#3b5998"></i> Facebook URL</label>
+            <label><i class="fab fa-facebook" style="color:#3b5998"></i> {% trans "Facebook URL" %}</label>
             <input type="url" id="s-fb">
           </div>
           <div class="field">
-            <label><i class="fab fa-instagram" style="color:#e1306c"></i> Instagram URL</label>
+            <label><i class="fab fa-instagram" style="color:#e1306c"></i> {% trans "Instagram URL" %}</label>
             <input type="url" id="s-ig">
           </div>
           <div class="field">
-            <label><i class="fab fa-twitter" style="color:#1da1f2"></i> Twitter / X URL</label>
+            <label><i class="fab fa-twitter" style="color:#1da1f2"></i> {% trans "Twitter / X URL" %}</label>
             <input type="url" id="s-tw">
           </div>
           <div class="field">
-            <label><i class="fab fa-youtube" style="color:#ff0000"></i> YouTube URL</label>
+            <label><i class="fab fa-youtube" style="color:#ff0000"></i> {% trans "YouTube URL" %}</label>
             <input type="url" id="s-yt">
           </div>
         </div>
@@ -344,18 +345,18 @@
 
     <!-- Pages d'authentification -->
     <div class="settings-card">
-      <div class="settings-header"><i class="fas fa-lock"></i><h3>Pages Connexion &amp; Inscription</h3></div>
+      <div class="settings-header"><i class="fas fa-lock"></i><h3>{% trans "Pages Connexion &amp; Inscription" %}</h3></div>
       <div class="settings-body">
         <div class="form-grid">
           <div class="field">
-            <label>Image page Connexion</label>
+            <label>{% trans "Image page Connexion" %}</label>
             <input type="file" id="s-login-img" accept="image/*">
-            <small>Panneau gauche de la page de connexion</small>
+            <small>{% trans "Panneau gauche de la page de connexion" %}</small>
           </div>
           <div class="field">
-            <label>Image page Inscription</label>
+            <label>{% trans "Image page Inscription" %}</label>
             <input type="file" id="s-register-img" accept="image/*">
-            <small>Panneau gauche de la page d'inscription</small>
+            <small>{% trans "Panneau gauche de la page d'inscription" %}</small>
           </div>
         </div>
       </div>
@@ -363,21 +364,21 @@
 
     <!-- Footer & SEO -->
     <div class="settings-card">
-      <div class="settings-header"><i class="fas fa-file-alt"></i><h3>Footer &amp; SEO</h3></div>
+      <div class="settings-header"><i class="fas fa-file-alt"></i><h3>{% trans "Footer &amp; SEO" %}</h3></div>
       <div class="settings-body">
         <div class="form-grid">
           <div class="field full">
-            <label>Texte copyright</label>
+            <label>{% trans "Texte copyright" %}</label>
             <input type="text" id="s-copyright">
           </div>
           <div class="field full">
-            <label>Meta description (SEO)</label>
+            <label>{% trans "Meta description (SEO)" %}</label>
             <textarea id="s-meta" rows="2"></textarea>
-            <small>160 caractères max recommandé</small>
+            <small>{% trans "160 caractères max recommandé" %}</small>
           </div>
           <div class="field">
-            <label>Google Analytics ID</label>
-            <input type="text" id="s-ga" placeholder="G-XXXXXXXXXX">
+            <label>{% trans "Google Analytics ID" %}</label>
+            <input type="text" id="s-ga" placeholder="{% trans 'G-XXXXXXXXXX' %}">
           </div>
         </div>
       </div>
@@ -385,7 +386,7 @@
 
     <!-- Maintenance -->
     <div class="settings-card">
-      <div class="settings-header"><i class="fas fa-tools" style="color:var(--orange)"></i><h3>Maintenance</h3></div>
+      <div class="settings-header"><i class="fas fa-tools" style="color:var(--orange)"></i><h3>{% trans "Maintenance" %}</h3></div>
       <div class="settings-body">
         <div class="form-grid">
           <div class="field full">
@@ -394,7 +395,7 @@
             </label>
           </div>
           <div class="field full">
-            <label>Message de maintenance</label>
+            <label>{% trans "Message de maintenance" %}</label>
             <textarea id="s-maintenance-msg" rows="2"></textarea>
           </div>
         </div>
@@ -405,51 +406,51 @@
     <div class="settings-card" id="apk-card">
       <div class="settings-header">
         <i class="fab fa-android" style="color:#3ddc84"></i>
-        <h3>Application Android</h3>
-        <span style="margin-left:auto;font-size:11px;color:var(--text-muted);font-weight:400">Fichier .apk uniquement</span>
+        <h3>{% trans "Application Android" %}</h3>
+        <span style="margin-left:auto;font-size:11px;color:var(--text-muted);font-weight:400">{% trans "Fichier .apk uniquement" %}</span>
       </div>
       <div class="settings-body">
         <!-- État actuel -->
         <div id="apk-current" style="display:none;margin-bottom:16px;padding:12px 16px;background:var(--green-light);border-radius:8px;border:1px solid var(--green-mid);display:flex;align-items:center;gap:12px">
           <i class="fas fa-check-circle" style="color:var(--green-mid);font-size:18px;flex-shrink:0"></i>
           <div style="flex:1;min-width:0">
-            <div style="font-size:12px;font-weight:700;color:var(--green-mid)">APK actuel</div>
+            <div style="font-size:12px;font-weight:700;color:var(--green-mid)">{% trans "APK actuel" %}</div>
             <div id="apk-current-name" style="font-size:13px;font-family:monospace;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"></div>
           </div>
           <a id="apk-current-link" href="#" download style="flex-shrink:0;padding:5px 12px;border-radius:6px;background:var(--green-mid);color:#fff;font-size:11px;font-weight:700;text-decoration:none">
-            <i class="fas fa-download"></i> Télécharger
+            <i class="fas fa-download"></i> {% trans "Télécharger" %}
           </a>
           <button type="button" onclick="deleteApk()" style="flex-shrink:0;padding:5px 10px;border-radius:6px;background:#fdecea;border:1px solid #e74c3c;color:#e74c3c;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit">
-            <i class="fas fa-trash"></i> Supprimer
+            <i class="fas fa-trash"></i> {% trans "Supprimer" %}
           </button>
         </div>
 
         <!-- Upload -->
         <div class="field">
-          <label><i class="fas fa-upload" style="color:var(--green-mid)"></i> Uploader un nouveau fichier .apk</label>
+          <label><i class="fas fa-upload" style="color:var(--green-mid)"></i> {% trans "Uploader un nouveau fichier .apk" %}</label>
           <div id="apk-drop-zone" style="border:2px dashed var(--border);border-radius:10px;padding:28px 20px;text-align:center;cursor:pointer;transition:border-color .18s,background .18s;position:relative">
             <input type="file" id="apk-file-input" accept=".apk" style="position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%">
             <div id="apk-drop-content">
               <i class="fab fa-android" style="font-size:32px;color:#3ddc84;margin-bottom:8px;display:block"></i>
-              <div style="font-size:13px;font-weight:600;color:var(--text)">Glissez-déposez votre fichier .apk ici</div>
-              <div style="font-size:11px;color:var(--text-muted);margin-top:4px">ou cliquez pour sélectionner</div>
+              <div style="font-size:13px;font-weight:600;color:var(--text)">{% trans "Glissez-déposez votre fichier .apk ici" %}</div>
+              <div style="font-size:11px;color:var(--text-muted);margin-top:4px">{% trans "ou cliquez pour sélectionner" %}</div>
             </div>
             <div id="apk-selected-name" style="display:none;font-size:13px;font-family:monospace;color:var(--green-mid);font-weight:700"></div>
           </div>
-          <small style="color:var(--text-muted)">Seuls les fichiers .apk sont acceptés. La bannière de téléchargement s'affiche automatiquement sur le site.</small>
+          <small style="color:var(--text-muted)">{% trans "Seuls les fichiers .apk sont acceptés. La bannière de téléchargement s'affiche automatiquement sur le site." %}</small>
         </div>
 
         <div style="display:flex;justify-content:flex-end;margin-top:14px">
           <button type="button" id="apk-upload-btn" onclick="uploadApk()" disabled
             style="padding:9px 22px;border-radius:8px;font-size:13px;font-weight:700;border:none;cursor:pointer;background:var(--green-mid);color:#fff;font-family:inherit;opacity:.5;transition:opacity .18s">
-            <i class="fas fa-upload"></i> Mettre en ligne l'APK
+            <i class="fas fa-upload"></i> {% trans "Mettre en ligne l'APK" %}
           </button>
         </div>
       </div>
     </div>
 
     <div class="save-bar">
-      <button type="submit" class="btn-save" id="save-btn"><i class="fas fa-save"></i> Enregistrer tous les paramètres</button>
+      <button type="submit" class="btn-save" id="save-btn"><i class="fas fa-save"></i> {% trans "Enregistrer tous les paramètres" %}</button>
     </div>
   </form>
 </div>
@@ -461,8 +462,8 @@
     <div>
       <div class="faq-cats">
         <div class="faq-cats-header">
-          <h4>Catégories</h4>
-          <button class="btn-xs" style="background:var(--green-mid);color:#fff" onclick="openFaqCatCreate()"><i class="fas fa-plus"></i> Ajouter</button>
+          <h4>{% trans "Catégories" %}</h4>
+          <button class="btn-xs" style="background:var(--green-mid);color:#fff" onclick="openFaqCatCreate()"><i class="fas fa-plus"></i> {% trans "Ajouter" %}</button>
         </div>
         <div id="faq-cats-list">
           <div class="empty-panel"><i class="fas fa-spinner fa-spin"></i></div>
@@ -473,11 +474,11 @@
     <div>
       <div class="faq-items-panel">
         <div class="faq-items-header">
-          <h4 id="faq-items-title">Sélectionner une catégorie</h4>
-          <button class="btn-xs" style="background:var(--green-mid);color:#fff" onclick="openFaqItemCreate()" id="btn-add-item" style="display:none"><i class="fas fa-plus"></i> Ajouter une question</button>
+          <h4 id="faq-items-title">{% trans "Sélectionner une catégorie" %}</h4>
+          <button class="btn-xs" style="background:var(--green-mid);color:#fff" onclick="openFaqItemCreate()" id="btn-add-item" style="display:none"><i class="fas fa-plus"></i> {% trans "Ajouter une question" %}</button>
         </div>
         <div id="faq-items-list">
-          <div class="empty-panel">Sélectionnez une catégorie pour voir ses questions</div>
+          <div class="empty-panel">{% trans "Sélectionnez une catégorie pour voir ses questions" %}</div>
         </div>
       </div>
     </div>
@@ -487,13 +488,13 @@
 <!-- ═══ ONGLET CONTACT ══════════════════════════════════════════════════════ -->
 <div class="tab-panel" id="tab-contact">
   <div class="toolbar-msg">
-    <button class="filter-btn active" id="f-tous" onclick="filterMsgs('',this)">Tous</button>
-    <button class="filter-btn" id="f-non-lu" onclick="filterMsgs('false',this)">Non lus</button>
-    <button class="filter-btn" id="f-lu" onclick="filterMsgs('true',this)">Lus</button>
+    <button class="filter-btn active" id="f-tous" onclick="filterMsgs('',this)">{% trans "Tous" %}</button>
+    <button class="filter-btn" id="f-non-lu" onclick="filterMsgs('false',this)">{% trans "Non lus" %}</button>
+    <button class="filter-btn" id="f-lu" onclick="filterMsgs('true',this)">{% trans "Lus" %}</button>
   </div>
-  <div id="msgs-loading" style="text-align:center;padding:40px;color:var(--text-muted)"><i class="fas fa-spinner fa-spin"></i> Chargement...</div>
+  <div id="msgs-loading" style="text-align:center;padding:40px;color:var(--text-muted)"><i class="fas fa-spinner fa-spin"></i> {% trans "Chargement..." %}</div>
   <div id="msgs-list"></div>
-  <div id="msgs-empty" class="empty-panel" style="display:none">Aucun message trouvé.</div>
+  <div id="msgs-empty" class="empty-panel" style="display:none">{% trans "Aucun message trouvé." %}</div>
 </div>
 
 {% endblock %}
@@ -659,7 +660,7 @@ async function uploadApk() {
   }
 
   btn.disabled = true;
-  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Envoi en cours...';
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> {% trans "Envoi en cours...';" %}
 
   const fd = new FormData();
   fd.append('android_apk', file);
@@ -685,7 +686,7 @@ async function uploadApk() {
   }
 
   btn.disabled = false;
-  btn.innerHTML = '<i class="fas fa-upload"></i> Mettre en ligne l\'APK';
+  btn.innerHTML = '<i class="fas fa-upload"></i> {% trans "Mettre en ligne l\'APK';" %}
   btn.style.opacity = '.5';
 }
 
@@ -706,7 +707,7 @@ async function saveSettings(e) {
   e.preventDefault();
   const btn = document.getElementById('save-btn');
   btn.disabled = true;
-  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enregistrement...';
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> {% trans "Enregistrement...';" %}
 
   // Champs texte
   const textData = {
@@ -760,7 +761,7 @@ async function saveSettings(e) {
   }
 
   btn.disabled = false;
-  btn.innerHTML = '<i class="fas fa-save"></i> Enregistrer tous les paramètres';
+  btn.innerHTML = '<i class="fas fa-save"></i> {% trans "Enregistrer tous les paramètres';" %}
   if (r.ok) { showToast('Paramètres enregistrés !'); loadSettings(); }
   else showToast('Erreur lors de la sauvegarde', 'error');
 }
@@ -773,18 +774,18 @@ async function loadFaqCats() {
 
   // Mettre à jour le select items modal
   const sel = document.getElementById('fi-cat');
-  sel.innerHTML = '<option value="">-- Sélectionner --</option>';
-  _faqCats.forEach(c => sel.innerHTML += `<option value="${c.id}">${c.titre}</option>`);
+  sel.innerHTML = '<option value="">{% trans "-- Sélectionner --" %}</option>';
+  _faqCats.forEach(c => sel.innerHTML += `<option value="${c.id}">{% trans "${c.titre}" %}</option>`);
 
   const list = document.getElementById('faq-cats-list');
-  if (!_faqCats.length) { list.innerHTML = '<div class="empty-panel">Aucune catégorie.</div>'; return; }
+  if (!_faqCats.length) { list.innerHTML = '<div class="empty-panel">{% trans "Aucune catégorie." %}</div>'; return; }
   list.innerHTML = '';
   _faqCats.forEach(c => {
     list.innerHTML += `
       <div class="faq-cat-item ${_faqCatId===c.id?'active':''}" onclick="selectFaqCat(${c.id},'${c.titre.replace(/'/g,"\\'")}')">
         <span><i class="${c.icone||'fas fa-folder'}" style="margin-right:6px;color:var(--green-mid)"></i>${c.titre}</span>
         <span style="display:flex;align-items:center;gap:4px">
-          <span class="cat-cnt">${c.nb_items}</span>
+          <span class="cat-cnt">{% trans "${c.nb_items}" %}</span>
           <button class="btn-xs" style="background:var(--bg);border:1px solid var(--border);color:var(--text-muted);padding:2px 7px" onclick="event.stopPropagation();openFaqCatEdit(${c.id})"><i class="fas fa-edit"></i></button>
           <button class="btn-xs" style="background:#fde8e8;color:#e74c3c;padding:2px 7px" onclick="event.stopPropagation();deleteFaqCat(${c.id})"><i class="fas fa-trash"></i></button>
         </span>
@@ -807,16 +808,16 @@ async function loadFaqItems(catId) {
   if (!r.ok) return;
   const items = (await r.json()).data || [];
   const list = document.getElementById('faq-items-list');
-  if (!items.length) { list.innerHTML = '<div class="empty-panel">Aucune question dans cette catégorie.</div>'; return; }
+  if (!items.length) { list.innerHTML = '<div class="empty-panel">{% trans "Aucune question dans cette catégorie." %}</div>'; return; }
   list.innerHTML = '';
   items.forEach(item => {
     list.innerHTML += `
       <div class="faq-item-row" id="faqitem-${item.id}">
-        <div class="faq-item-q">${item.is_active?'':'<span style="opacity:.5">[Inactive] </span>'}${item.question}</div>
-        <div class="faq-item-r">${item.reponse.substring(0,120)}${item.reponse.length>120?'…':''}</div>
+        <div class="faq-item-q">${item.is_active?'':'<span style="opacity:.5">{% trans "[Inactive]" %} </span>'}${item.question}</div>
+        <div class="faq-item-r">{% trans "${item.reponse.substring(0,120)}${item.reponse.length>120?'…':''}" %}</div>
         <div class="faq-actions">
-          <button class="btn-xs" style="background:var(--bg);border:1px solid var(--border);color:var(--text-muted)" onclick="openFaqItemEdit(${item.id})"><i class="fas fa-edit"></i> Modifier</button>
-          <button class="btn-xs" style="background:${item.is_active?'#fde8e8':'#e8f8ee'};color:${item.is_active?'#e74c3c':'#27ae60'}" onclick="toggleFaqItem(${item.id},${item.is_active})">${item.is_active?'Désactiver':'Activer'}</button>
+          <button class="btn-xs" style="background:var(--bg);border:1px solid var(--border);color:var(--text-muted)" onclick="openFaqItemEdit(${item.id})"><i class="fas fa-edit"></i> {% trans "Modifier" %}</button>
+          <button class="btn-xs" style="background:${item.is_active?'#fde8e8':'#e8f8ee'};color:${item.is_active?'#e74c3c':'#27ae60'}" onclick="toggleFaqItem(${item.id},${item.is_active})">{% trans "${item.is_active?'Désactiver':'Activer'}" %}</button>
           <button class="btn-xs" style="background:#fde8e8;color:#e74c3c" onclick="deleteFaqItem(${item.id})"><i class="fas fa-trash"></i></button>
         </div>
       </div>`;
@@ -827,7 +828,7 @@ async function loadFaqItems(catId) {
 function openFaqCatCreate() {
   _faqCatEditId = null;
   document.getElementById('faqcat-modal-title').textContent = 'Nouvelle catégorie FAQ';
-  document.getElementById('faqcat-submit').innerHTML = '<i class="fas fa-plus"></i> Créer';
+  document.getElementById('faqcat-submit').innerHTML = '<i class="fas fa-plus"></i> {% trans "Créer';" %}
   document.getElementById('fc-titre').value = '';
   document.getElementById('fc-icone').value = 'fas fa-question-circle';
   document.getElementById('fc-ordre').value = '0';
@@ -839,7 +840,7 @@ async function openFaqCatEdit(id) {
   _faqCatEditId = id;
   const cat = _faqCats.find(c => c.id === id); if (!cat) return;
   document.getElementById('faqcat-modal-title').textContent = 'Modifier catégorie FAQ';
-  document.getElementById('faqcat-submit').innerHTML = '<i class="fas fa-save"></i> Enregistrer';
+  document.getElementById('faqcat-submit').innerHTML = '<i class="fas fa-save"></i> {% trans "Enregistrer';" %}
   document.getElementById('fc-titre').value = cat.titre;
   document.getElementById('fc-icone').value = cat.icone;
   document.getElementById('fc-ordre').value = cat.ordre;
@@ -859,7 +860,7 @@ async function deleteFaqCat(id) {
   const r = await fetch(`/api/admin/config/faq/categories/${id}/`, { method:'DELETE', headers:H });
   if (r.ok) {
     showToast('Catégorie supprimée');
-    if (_faqCatId === id) { _faqCatId = null; document.getElementById('faq-items-list').innerHTML = '<div class="empty-panel">Sélectionnez une catégorie pour voir ses questions</div>'; document.getElementById('faq-items-title').textContent = 'Sélectionner une catégorie'; document.getElementById('btn-add-item').style.display = 'none'; }
+    if (_faqCatId === id) { _faqCatId = null; document.getElementById('faq-items-list').innerHTML = '<div class="empty-panel">{% trans "Sélectionnez une catégorie pour voir ses questions" %}</div>'; document.getElementById('faq-items-title').textContent = 'Sélectionner une catégorie'; document.getElementById('btn-add-item').style.display = 'none'; }
     loadFaqCats();
   } else showToast('Erreur lors de la suppression', 'error');
 }
@@ -880,7 +881,7 @@ async function submitFaqCat(e) {
 function openFaqItemCreate() {
   _faqItemEditId = null;
   document.getElementById('faqitem-modal-title').textContent = 'Nouvelle question';
-  document.getElementById('faqitem-submit').innerHTML = '<i class="fas fa-plus"></i> Créer';
+  document.getElementById('faqitem-submit').innerHTML = '<i class="fas fa-plus"></i> {% trans "Créer';" %}
   document.getElementById('fi-question').value = '';
   document.getElementById('fi-reponse').value = '';
   document.getElementById('fi-ordre').value = '0';
@@ -895,7 +896,7 @@ async function openFaqItemEdit(id) {
   const items = (await r.json()).data || [];
   const item = items.find(x => x.id === id); if (!item) return;
   document.getElementById('faqitem-modal-title').textContent = 'Modifier question';
-  document.getElementById('faqitem-submit').innerHTML = '<i class="fas fa-save"></i> Enregistrer';
+  document.getElementById('faqitem-submit').innerHTML = '<i class="fas fa-save"></i> {% trans "Enregistrer';" %}
   document.getElementById('fi-cat').value      = item.categorie_id;
   document.getElementById('fi-question').value = item.question;
   document.getElementById('fi-reponse').value  = item.reponse;
@@ -965,9 +966,9 @@ async function loadMsgs(est_lu) {
     const estLu     = m.est_lu;
     const cardClass = statut === 'repondu' ? 'repondu-card' : (estLu ? '' : 'non-lu');
     let badgeHtml;
-    if (statut === 'repondu')       badgeHtml = `<span class="badge-repondu">Répondu</span>`;
-    else if (estLu)                  badgeHtml = `<span class="badge-lu">Lu</span>`;
-    else                             badgeHtml = `<span class="badge-non-lu">Non lu</span>`;
+    if (statut === 'repondu')       badgeHtml = `<span class="badge-repondu">{% trans "Répondu" %}</span>`;
+    else if (estLu)                  badgeHtml = `<span class="badge-lu">{% trans "Lu" %}</span>`;
+    else                             badgeHtml = `<span class="badge-non-lu">{% trans "Non lu" %}</span>`;
 
     // Historique des réponses existantes
     let repliesHtml = '';
@@ -979,8 +980,8 @@ async function loadMsgs(est_lu) {
       m.reponses.forEach(r => {
         const d = new Date(r.envoye_le).toLocaleDateString('fr-FR',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'});
         repliesHtml += `<div class="reply-item">
-          <div class="reply-item-meta">${r.envoye_par} · ${d}</div>
-          <div class="reply-item-text">${escHtml(r.contenu)}</div>
+          <div class="reply-item-meta">{% trans "${r.envoye_par} · ${d}" %}</div>
+          <div class="reply-item-text">{% trans "${escHtml(r.contenu)}" %}</div>
         </div>`;
       });
       repliesHtml += `</div>`;
@@ -990,24 +991,24 @@ async function loadMsgs(est_lu) {
       <div class="msg-card ${cardClass}" id="msg-${m.id}" data-id="${m.id}" data-lu="${estLu}" data-email="${escHtml(m.email)}" data-nom="${escHtml(m.nom)}">
         <div class="msg-card-header" onclick="toggleMsg(${m.id},${estLu},this.closest('.msg-card'))">
           <div>
-            <span class="msg-nom">${escHtml(m.nom)}</span>
-            <span style="font-size:12px;color:var(--text-muted);margin-left:8px">${escHtml(m.email)} ${m.telephone?'· '+escHtml(m.telephone):''}</span>
+            <span class="msg-nom">{% trans "${escHtml(m.nom)}" %}</span>
+            <span style="font-size:12px;color:var(--text-muted);margin-left:8px">{% trans "${escHtml(m.email)} ${m.telephone?'· '+escHtml(m.telephone):''}" %}</span>
           </div>
           <div style="display:flex;align-items:center;gap:10px">
             ${badgeHtml}
-            <span class="msg-date">${new Date(m.created_at).toLocaleDateString('fr-FR',{day:'2-digit',month:'short',year:'numeric'})}</span>
+            <span class="msg-date">{% trans "${new Date(m.created_at).toLocaleDateString('fr-FR',{day:'2-digit',month:'short',year:'numeric'})}" %}</span>
             <i class="fas fa-chevron-down" style="font-size:11px;color:var(--text-muted);transition:transform .2s" id="chev-${m.id}"></i>
           </div>
         </div>
-        <div class="msg-sujet" onclick="toggleMsg(${m.id},${estLu},this.closest('.msg-card'))">${escHtml(m.sujet)}</div>
+        <div class="msg-sujet" onclick="toggleMsg(${m.id},${estLu},this.closest('.msg-card'))">{% trans "${escHtml(m.sujet)}" %}</div>
         <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:6px">
-          <div class="msg-preview" onclick="toggleMsg(${m.id},${estLu},this.closest('.msg-card'))" style="flex:1">${escHtml(m.message.substring(0,120))}${m.message.length>120?'…':''}</div>
-          <button class="btn-reply-inline" onclick="ouvrirReplyInline(event,${m.id})" title="Répondre à ce message">
-            <i class="fas fa-reply"></i> Répondre
+          <div class="msg-preview" onclick="toggleMsg(${m.id},${estLu},this.closest('.msg-card'))" style="flex:1">{% trans "${escHtml(m.message.substring(0,120))}${m.message.length>120?'…':''}" %}</div>
+          <button class="btn-reply-inline" onclick="ouvrirReplyInline(event,${m.id})" title="{% trans 'Répondre à ce message' %}">
+            <i class="fas fa-reply"></i> {% trans "Répondre" %}
           </button>
         </div>
         <div class="msg-full">
-          <p style="white-space:pre-line">${escHtml(m.message)}</p>
+          <p style="white-space:pre-line">{% trans "${escHtml(m.message)}" %}</p>
           <!-- Zone de réponse -->
           <div class="reply-zone" id="reply-zone-${m.id}">
             ${repliesHtml}
@@ -1015,10 +1016,10 @@ async function loadMsgs(est_lu) {
               <label style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:#888;display:block;margin-bottom:6px">
                 <i class="fas fa-reply" style="color:#27ae60"></i> Répondre à ${escHtml(m.nom)}
               </label>
-              <textarea id="reply-txt-${m.id}" placeholder="Écrivez votre réponse ici…"></textarea>
+              <textarea id="reply-txt-${m.id}" placeholder="{% trans 'Écrivez votre réponse ici…' %}"></textarea>
               <div class="reply-actions">
                 <button class="btn-reply" onclick="ouvrirConfirmReply(${m.id})">
-                  <i class="fas fa-paper-plane"></i> Envoyer la réponse
+                  <i class="fas fa-paper-plane"></i> {% trans "Envoyer la réponse" %}
                 </button>
               </div>
             </div>
@@ -1087,7 +1088,7 @@ async function confirmerEnvoi() {
   const btn = document.getElementById('reply-confirm-btn');
   const txt = document.getElementById('reply-txt-' + _replyMsgId);
   btn.disabled = true;
-  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Envoi…';
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> {% trans "Envoi…';" %}
 
   const r = await fetch(`/api/admin/config/contact/${_replyMsgId}/repondre/`, {
     method: 'POST',
@@ -1095,7 +1096,7 @@ async function confirmerEnvoi() {
     body: JSON.stringify({ reponse: txt.value.trim() }),
   });
   btn.disabled = false;
-  btn.innerHTML = '<i class="fas fa-paper-plane"></i> Envoyer';
+  btn.innerHTML = '<i class="fas fa-paper-plane"></i> {% trans "Envoyer';" %}
 
   if (r.ok) {
     closeReplyModal();

@@ -1,19 +1,20 @@
 {% extends 'dashboard/base.html' %}
+{% load i18n %}
 
 {% block title %}Compte en attente — Producteur{% endblock %}
 
 {% block sidebar_nav %}
-  <div class="nav-section-label">Navigation</div>
+  <div class="nav-section-label">{% trans "Navigation" %}</div>
   <a href="/dashboard/producteur/en-attente/" class="nav-item active">
-    <i class="fas fa-hourglass-half"></i> Mon statut
+    <i class="fas fa-hourglass-half"></i> {% trans "Mon statut" %}
   </a>
   <a href="/" class="nav-item">
-    <i class="fas fa-store"></i> Catalogue public
+    <i class="fas fa-store"></i> {% trans "Catalogue public" %}
   </a>
 
-  <div class="nav-section-label">Compte</div>
+  <div class="nav-section-label">{% trans "Compte" %}</div>
   <a href="/dashboard/producteur/profil/" class="nav-item">
-    <i class="fas fa-user-edit"></i> Mon profil
+    <i class="fas fa-user-edit"></i> {% trans "Mon profil" %}
   </a>
 {% endblock %}
 
@@ -144,8 +145,8 @@
 
     <div class="pending-top">
       <div class="icon-circle"><i class="fas fa-hourglass-half"></i></div>
-      <h2>Compte en attente de validation</h2>
-      <p>Votre dossier est en cours d'examen par notre équipe</p>
+      <h2>{% trans "Compte en attente de validation" %}</h2>
+      <p>{% trans "Votre dossier est en cours d'examen par notre équipe" %}</p>
     </div>
 
     <div class="pending-body">
@@ -153,8 +154,8 @@
       <div class="delay-box">
         <i class="fas fa-clock"></i>
         <div>
-          <strong>Délai de traitement : 24 à 48 heures</strong>
-          <span>Vous serez notifié par email dès la validation de votre compte.</span>
+          <strong>{% trans "Délai de traitement : 24 à 48 heures" %}</strong>
+          <span>{% trans "Vous serez notifié par email dès la validation de votre compte." %}</span>
         </div>
       </div>
 
@@ -163,35 +164,35 @@
       </div>
 
       <div class="steps">
-        <div class="steps-title">Prochaines étapes</div>
+        <div class="steps-title">{% trans "Prochaines étapes" %}</div>
         <div class="step">
           <div class="step-num active">1</div>
           <div class="step-text">
-            <strong>Dossier en examen</strong>
-            <span>Notre équipe vérifie vos informations</span>
+            <strong>{% trans "Dossier en examen" %}</strong>
+            <span>{% trans "Notre équipe vérifie vos informations" %}</span>
           </div>
         </div>
         <div class="step">
           <div class="step-num">2</div>
           <div class="step-text">
-            <strong>Notification par email</strong>
-            <span>Vous recevrez une réponse sous 24-48h</span>
+            <strong>{% trans "Notification par email" %}</strong>
+            <span>{% trans "Vous recevrez une réponse sous 24-48h" %}</span>
           </div>
         </div>
         <div class="step">
           <div class="step-num">3</div>
           <div class="step-text">
-            <strong>Accès complet à votre espace</strong>
-            <span>Publiez vos produits et recevez vos premières commandes</span>
+            <strong>{% trans "Accès complet à votre espace" %}</strong>
+            <span>{% trans "Publiez vos produits et recevez vos premières commandes" %}</span>
           </div>
         </div>
       </div>
 
       <a href="/dashboard/producteur/profil/" class="btn-primary">
-        <i class="fas fa-user-edit"></i> Compléter mon profil
+        <i class="fas fa-user-edit"></i> {% trans "Compléter mon profil" %}
       </a>
       <a href="/" class="btn-ghost">
-        <i class="fas fa-store"></i> Retour au catalogue
+        <i class="fas fa-store"></i> {% trans "Retour au catalogue" %}
       </a>
 
     </div>
@@ -222,16 +223,16 @@
     } catch (_) {}
 
     document.getElementById('account-box').innerHTML = `
-      <div class="account-row"><span class="label">Nom</span>
-        <span class="value">${[user.first_name, user.last_name].filter(Boolean).join(' ') || user.username}</span></div>
-      <div class="account-row"><span class="label">Code producteur</span>
-        <span class="value">${code}</span></div>
-      <div class="account-row"><span class="label">Localisation</span>
-        <span class="value">${commune}</span></div>
-      <div class="account-row"><span class="label">Email</span>
-        <span class="value">${user.email || '—'}</span></div>
-      <div class="account-row"><span class="label">Statut</span>
-        <span class="value" style="color:#e67e22">En attente de validation</span></div>
+      <div class="account-row"><span class="label">{% trans "Nom" %}</span>
+        <span class="value">{% trans "${[user.first_name, user.last_name].filter(Boolean).join(' ') || user.username}" %}</span></div>
+      <div class="account-row"><span class="label">{% trans "Code producteur" %}</span>
+        <span class="value">{% trans "${code}" %}</span></div>
+      <div class="account-row"><span class="label">{% trans "Localisation" %}</span>
+        <span class="value">{% trans "${commune}" %}</span></div>
+      <div class="account-row"><span class="label">{% trans "Email" %}</span>
+        <span class="value">{% trans "${user.email || '—'}" %}</span></div>
+      <div class="account-row"><span class="label">{% trans "Statut" %}</span>
+        <span class="value" style="color:#e67e22">{% trans "En attente de validation" %}</span></div>
     `;
   }
 

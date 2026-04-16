@@ -1,6 +1,7 @@
 {% load static %}
+{% load i18n %}
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="{{ LANGUAGE_CODE }}">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -477,29 +478,29 @@
       </div>
 
       <div class="auth-left-welcome">
-        <div class="welcome-eyebrow">Bienvenou</div>
+        <div class="welcome-eyebrow">{% trans "Bienvenou" %}</div>
         <h2 class="welcome-title">
           Rejoignez la<br>
           communauté<br>
-          <em>agricole haïtienne</em>
+          <em>{% trans "agricole haïtienne" %}</em>
         </h2>
 
         <ul class="benefits">
           <li>
             <div class="benefit-icon"><i class="fas fa-store"></i></div>
-            <div>Accédez directement aux produits frais des producteurs locaux</div>
+            <div>{% trans "Accédez directement aux produits frais des producteurs locaux" %}</div>
           </li>
           <li>
             <div class="benefit-icon"><i class="fas fa-tractor"></i></div>
-            <div>Vendez vos récoltes et touchez des acheteurs partout en Haïti</div>
+            <div>{% trans "Vendez vos récoltes et touchez des acheteurs partout en Haïti" %}</div>
           </li>
           <li>
             <div class="benefit-icon"><i class="fas fa-shield-alt"></i></div>
-            <div>Paiements sécurisés et traçabilité garantie</div>
+            <div>{% trans "Paiements sécurisés et traçabilité garantie" %}</div>
           </li>
           <li>
             <div class="benefit-icon"><i class="fas fa-bell"></i></div>
-            <div>Notifications en temps réel sur vos commandes</div>
+            <div>{% trans "Notifications en temps réel sur vos commandes" %}</div>
           </li>
         </ul>
       </div>
@@ -518,9 +519,25 @@
   <div class="auth-right">
     <div class="auth-form-wrap">
 
+      <!-- Sélecteur de langue -->
+      <div style="display:flex;justify-content:flex-end;margin-bottom:16px;">
+        <form action="{% url 'set_language' %}" method="post" style="display:inline-flex;align-items:center;gap:6px;">
+          {% csrf_token %}
+          <input name="next" type="hidden" value="{{ request.get_full_path }}">
+          {% get_current_language as LANGUAGE_CODE %}
+          {% get_available_languages as LANGUAGES %}
+          <i class="fas fa-globe" style="color:#27ae60;font-size:13px;"></i>
+          <select name="language" onchange="this.form.submit()" style="border:1.5px solid #d1fae5;border-radius:8px;padding:5px 10px;font-size:12px;font-weight:600;font-family:'DM Sans',sans-serif;background:#f0faf4;color:#1a6b2f;cursor:pointer;outline:none;">
+            {% for lang_code, lang_name in LANGUAGES %}
+              <option value="{{ lang_code }}" {% if lang_code == LANGUAGE_CODE %}selected{% endif %}>{{ lang_code|upper }}</option>
+            {% endfor %}
+          </select>
+        </form>
+      </div>
+
       <div class="form-head">
-        <h1>Créer un compte</h1>
-        <p>Déjà inscrit ? <a href="/connexion/">Se connecter</a></p>
+        <h1>{% trans "Créer un compte" %}</h1>
+        <p>Déjà inscrit ? <a href="/connexion/">{% trans "Se connecter" %}</a></p>
       </div>
 
       <!-- Onglets rôle -->
@@ -528,43 +545,43 @@
         <button type="button" class="role-tab active" id="tab-acheteur" onclick="switchRole('acheteur')">
           <i class="fas fa-shopping-basket"></i>
           Acheteur
-          <span class="chip">Particulier</span>
+          <span class="chip">{% trans "Particulier" %}</span>
         </button>
         <button type="button" class="role-tab" id="tab-producteur" onclick="switchRole('producteur')">
           <i class="fas fa-tractor"></i>
           Producteur
-          <span class="chip">Agriculteur</span>
+          <span class="chip">{% trans "Agriculteur" %}</span>
         </button>
       </div>
 
       <div class="alert alert-error" id="alertError">
         <i class="fas fa-exclamation-circle" style="flex-shrink:0;margin-top:1px"></i>
-        <span id="alertErrorMsg">Une erreur est survenue.</span>
+        <span id="alertErrorMsg">{% trans "Une erreur est survenue." %}</span>
       </div>
       <div class="alert alert-success" id="alertSuccess">
         <i class="fas fa-check-circle" style="flex-shrink:0;margin-top:1px"></i>
-        <span>Inscription réussie ! Redirection...</span>
+        <span>{% trans "Inscription réussie ! Redirection..." %}</span>
       </div>
 
       <form id="registerForm" novalidate>
         <input type="hidden" id="role" value="acheteur">
 
         <!-- Infos personnelles -->
-        <div class="section-label"><i class="fas fa-user"></i> Informations personnelles</div>
+        <div class="section-label"><i class="fas fa-user"></i> {% trans "Informations personnelles" %}</div>
 
         <div class="form-row">
           <div class="form-group">
-            <label for="first_name">Prénom</label>
+            <label for="first_name">{% trans "Prénom" %}</label>
             <div class="input-wrap">
               <i class="fas fa-user ico"></i>
-              <input type="text" id="first_name" placeholder="Jean">
+              <input type="text" id="first_name" placeholder="{% trans 'Jean' %}">
             </div>
           </div>
           <div class="form-group">
-            <label for="last_name">Nom</label>
+            <label for="last_name">{% trans "Nom" %}</label>
             <div class="input-wrap">
               <i class="fas fa-user ico"></i>
-              <input type="text" id="last_name" placeholder="Pierre">
+              <input type="text" id="last_name" placeholder="{% trans 'Pierre' %}">
             </div>
           </div>
         </div>
@@ -573,7 +590,7 @@
           <label for="username">Nom d'utilisateur <span class="req">*</span></label>
           <div class="input-wrap">
             <i class="fas fa-at ico"></i>
-            <input type="text" id="username" placeholder="jean.pierre" autocomplete="username" required>
+            <input type="text" id="username" placeholder="{% trans 'jean.pierre' %}" autocomplete="username" required>
           </div>
         </div>
 
@@ -581,12 +598,12 @@
           <label for="email">Email <span class="req">*</span></label>
           <div class="input-wrap">
             <i class="fas fa-envelope ico"></i>
-            <input type="email" id="email" placeholder="jean@exemple.ht" autocomplete="email" required>
+            <input type="email" id="email" placeholder="{% trans 'jean@exemple.ht' %}" autocomplete="email" required>
           </div>
         </div>
 
         <div class="form-group">
-          <label for="telephone">Téléphone</label>
+          <label for="telephone">{% trans "Téléphone" %}</label>
           <div class="input-wrap">
             <i class="fas fa-phone ico"></i>
             <input type="tel" id="telephone" placeholder="+509 3700 0000">
@@ -598,7 +615,7 @@
             <label for="password">Mot de passe <span class="req">*</span></label>
             <div class="input-wrap">
               <i class="fas fa-lock ico"></i>
-              <input type="password" id="password" placeholder="8 caract. min." autocomplete="new-password" required>
+              <input type="password" id="password" placeholder="{% trans '8 caract. min.' %}" autocomplete="new-password" required>
               <button type="button" class="toggle-pwd" onclick="togglePwd('password',this)"><i class="fas fa-eye"></i></button>
             </div>
           </div>
@@ -614,37 +631,37 @@
 
         <!-- ══ PANEL ACHETEUR ══ -->
         <div class="role-panel active" id="panel-acheteur">
-          <div class="section-label"><i class="fas fa-shopping-basket"></i> Profil acheteur</div>
+          <div class="section-label"><i class="fas fa-shopping-basket"></i> {% trans "Profil acheteur" %}</div>
 
           <div class="form-group">
-            <label for="type_acheteur">Type d'acheteur</label>
+            <label for="type_acheteur">{% trans "Type d'acheteur" %}</label>
             <div class="input-wrap">
               <i class="fas fa-tag ico"></i>
               <select id="type_acheteur">
-                <option value="particulier">Particulier</option>
-                <option value="grossiste">Grossiste</option>
-                <option value="detaillant">Détaillant</option>
-                <option value="cooperative">Coopérative</option>
-                <option value="institution">Institution / ONG</option>
-                <option value="restaurant">Restaurant / Hôtel</option>
+                <option value="particulier">{% trans "Particulier" %}</option>
+                <option value="grossiste">{% trans "Grossiste" %}</option>
+                <option value="detaillant">{% trans "Détaillant" %}</option>
+                <option value="cooperative">{% trans "Coopérative" %}</option>
+                <option value="institution">{% trans "Institution / ONG" %}</option>
+                <option value="restaurant">{% trans "Restaurant / Hôtel" %}</option>
               </select>
             </div>
           </div>
 
           <div class="form-row">
             <div class="form-group">
-              <label for="nom_organisation">Organisation <span style="font-weight:400;color:#aaa;font-size:11px">(optionnel)</span></label>
+              <label for="nom_organisation">Organisation <span style="font-weight:400;color:#aaa;font-size:11px">{% trans "(optionnel)" %}</span></label>
               <div class="input-wrap">
                 <i class="fas fa-building ico"></i>
-                <input type="text" id="nom_organisation" placeholder="Nom (si applicable)">
+                <input type="text" id="nom_organisation" placeholder="{% trans 'Nom (si applicable)' %}">
               </div>
             </div>
             <div class="form-group">
-              <label for="a-departement">Département</label>
+              <label for="a-departement">{% trans "Département" %}</label>
               <div class="input-wrap">
                 <i class="fas fa-map ico"></i>
                 <select id="a-departement">
-                  <option value="">-- Choisir --</option>
+                  <option value="">{% trans "-- Choisir --" %}</option>
                 </select>
               </div>
             </div>
@@ -653,11 +670,11 @@
 
         <!-- ══ PANEL PRODUCTEUR ══ -->
         <div class="role-panel" id="panel-producteur">
-          <div class="section-label"><i class="fas fa-tractor"></i> Profil producteur</div>
+          <div class="section-label"><i class="fas fa-tractor"></i> {% trans "Profil producteur" %}</div>
 
           <div class="info-box">
             <i class="fas fa-clock"></i>
-            <div>Votre profil sera vérifié par notre équipe avant activation. Vous serez notifié par email.</div>
+            <div>{% trans "Votre profil sera vérifié par notre équipe avant activation. Vous serez notifié par email." %}</div>
           </div>
 
           <div class="form-row">
@@ -666,7 +683,7 @@
               <div class="input-wrap">
                 <i class="fas fa-map ico"></i>
                 <select id="departement">
-                  <option value="">-- Choisir --</option>
+                  <option value="">{% trans "-- Choisir --" %}</option>
                 </select>
               </div>
             </div>
@@ -674,41 +691,41 @@
               <label for="commune">Commune <span class="req">*</span></label>
               <div class="input-wrap">
                 <i class="fas fa-map-marker-alt ico"></i>
-                <input type="text" id="commune" placeholder="Ex : Léogâne">
+                <input type="text" id="commune" placeholder="{% trans 'Ex : Léogâne' %}">
               </div>
             </div>
           </div>
 
           <div class="form-row">
             <div class="form-group">
-              <label for="localite">Localité / Section</label>
+              <label for="localite">{% trans "Localité / Section" %}</label>
               <div class="input-wrap">
                 <i class="fas fa-location-arrow ico"></i>
-                <input type="text" id="localite" placeholder="Ex : Laplaine">
+                <input type="text" id="localite" placeholder="{% trans 'Ex : Laplaine' %}">
               </div>
             </div>
             <div class="form-group">
-              <label for="superficie_ha">Superficie (ha)</label>
+              <label for="superficie_ha">{% trans "Superficie (ha)" %}</label>
               <div class="input-wrap">
                 <i class="fas fa-ruler-combined ico"></i>
-                <input type="number" id="superficie_ha" placeholder="Ex : 2.5" step="0.01" min="0">
+                <input type="number" id="superficie_ha" placeholder="{% trans 'Ex : 2.5' %}" step="0.01" min="0">
               </div>
             </div>
           </div>
 
           <div class="form-group">
-            <label for="num_identification">N° d'identification</label>
+            <label for="num_identification">{% trans "N° d'identification" %}</label>
             <div class="input-wrap">
               <i class="fas fa-id-card ico"></i>
-              <input type="text" id="num_identification" placeholder="NIF ou autre identifiant">
+              <input type="text" id="num_identification" placeholder="{% trans 'NIF ou autre identifiant' %}">
             </div>
           </div>
 
           <div class="form-group">
-            <label for="description">Description de votre exploitation</label>
+            <label for="description">{% trans "Description de votre exploitation" %}</label>
             <div class="input-wrap">
               <i class="fas fa-leaf ico" style="top:13px;transform:none"></i>
-              <textarea id="description" placeholder="Décrivez vos cultures principales, vos méthodes agricoles..."></textarea>
+              <textarea id="description" placeholder="{% trans 'Décrivez vos cultures principales, vos méthodes agricoles...' %}"></textarea>
             </div>
           </div>
         </div>
@@ -716,13 +733,13 @@
         <button type="submit" class="btn-submit" id="submitBtn">
           <div class="spinner" id="spinner"></div>
           <i class="fas fa-user-plus" id="submitIcon"></i>
-          <span id="submitText">Créer mon compte</span>
+          <span id="submitText">{% trans "Créer mon compte" %}</span>
         </button>
 
       </form>
 
       <div class="auth-footer">
-        Déjà inscrit ? <a href="/connexion/">Se connecter</a>
+        Déjà inscrit ? <a href="/connexion/">{% trans "Se connecter" %}</a>
       </div>
 
     </div>

@@ -1,38 +1,39 @@
 {% extends 'dashboard/base.html' %}
+{% load i18n %}
 
 {% block title %}Dashboard — Administrateur{% endblock %}
 
 {% block sidebar_nav %}
-  <div class="nav-section-label">Principal</div>
+  <div class="nav-section-label">{% trans "Principal" %}</div>
   <a href="/dashboard/admin/" class="nav-item active">
-    <i class="fas fa-th-large"></i> Tableau de bord
+    <i class="fas fa-th-large"></i> {% trans "Tableau de bord" %}
   </a>
   <a href="#" class="nav-item">
-    <i class="fas fa-users"></i> Utilisateurs
+    <i class="fas fa-users"></i> {% trans "Utilisateurs" %}
   </a>
   <a href="#" class="nav-item">
-    <i class="fas fa-tractor"></i> Producteurs
+    <i class="fas fa-tractor"></i> {% trans "Producteurs" %}
   </a>
   <a href="#" class="nav-item">
-    <i class="fas fa-clipboard-list"></i> Commandes
+    <i class="fas fa-clipboard-list"></i> {% trans "Commandes" %}
   </a>
   <a href="#" class="nav-item">
-    <i class="fas fa-box-open"></i> Catalogue
+    <i class="fas fa-box-open"></i> {% trans "Catalogue" %}
   </a>
   <a href="#" class="nav-item">
-    <i class="fas fa-chart-bar"></i> Analytiques
+    <i class="fas fa-chart-bar"></i> {% trans "Analytiques" %}
   </a>
 
-  <div class="nav-section-label">Gestion</div>
+  <div class="nav-section-label">{% trans "Gestion" %}</div>
   <a href="#" class="nav-item">
-    <i class="fas fa-check-circle"></i> Validations
+    <i class="fas fa-check-circle"></i> {% trans "Validations" %}
     <span class="nav-badge" id="badge-validations">0</span>
   </a>
   <a href="#" class="nav-item">
-    <i class="fas fa-credit-card"></i> Paiements
+    <i class="fas fa-credit-card"></i> {% trans "Paiements" %}
   </a>
   <a href="/admin/" class="nav-item">
-    <i class="fas fa-shield-alt"></i> Interface admin
+    <i class="fas fa-shield-alt"></i> {% trans "Interface admin" %}
   </a>
 {% endblock %}
 
@@ -42,8 +43,8 @@
 {% block content %}
   <div class="page-placeholder">
     <i class="fas fa-user-shield"></i>
-    <h3>Espace Administrateur</h3>
-    <p>Le contenu de ce dashboard sera ajouté prochainement.</p>
+    <h3>{% trans "Espace Administrateur" %}</h3>
+    <p>{% trans "Le contenu de ce dashboard sera ajouté prochainement." %}</p>
   </div>
 {% endblock %}
 

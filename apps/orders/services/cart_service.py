@@ -25,6 +25,7 @@ Structure session (inchangée, rétrocompatible) :
 """
 
 from decimal import Decimal
+from django.utils.translation import gettext as _
 
 CART_SESSION_KEY = 'mp_cart'
 

@@ -1,5 +1,6 @@
 import requests
 from django.conf import settings
+from django.utils.translation import gettext as _
 
 
 class PlopplopService:

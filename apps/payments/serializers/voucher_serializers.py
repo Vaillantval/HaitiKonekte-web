@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from apps.payments.models import Voucher, ProgrammeVoucher
+from django.utils.translation import gettext_lazy as _
 
 
 class ValiderVoucherSerializer(serializers.Serializer):

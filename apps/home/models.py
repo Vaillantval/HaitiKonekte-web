@@ -1,5 +1,6 @@
 from django.db import models
 from django.conf import settings
+from django.utils.translation import gettext_lazy as _
 
 
 class SiteConfig(models.Model):
@@ -16,8 +17,8 @@ class SiteConfig(models.Model):
     updated_at       = models.DateTimeField(auto_now=True)
 
     class Meta:
-        verbose_name        = 'Configuration site'
-        verbose_name_plural = 'Configurations site'
+        verbose_name        = _('Configuration site')
+        verbose_name_plural = _('Configurations site')
 
     def __str__(self):
         return self.nom_site
@@ -35,8 +36,8 @@ class FAQCategorie(models.Model):
     is_active = models.BooleanField(default=True)
 
     class Meta:
-        verbose_name        = 'Catégorie FAQ'
-        verbose_name_plural = 'Catégories FAQ'
+        verbose_name        = _('Catégorie FAQ')
+        verbose_name_plural = _('Catégories FAQ')
         ordering            = ['ordre', 'titre']
 
     def __str__(self):
@@ -56,8 +57,8 @@ class FAQItem(models.Model):
     is_active = models.BooleanField(default=True)
 
     class Meta:
-        verbose_name        = 'Item FAQ'
-        verbose_name_plural = 'Items FAQ'
+        verbose_name        = _('Item FAQ')
+        verbose_name_plural = _('Items FAQ')
         ordering            = ['ordre']
 
     def __str__(self):
@@ -69,15 +70,15 @@ class SliderImage(models.Model):
     titre        = models.CharField(max_length=120, blank=True)
     sous_titre   = models.CharField(max_length=220, blank=True)
     texte_bouton = models.CharField(max_length=50, blank=True, default='Découvrir')
-    lien         = models.CharField(max_length=255, blank=True, help_text='URL ou ancre (#catalogue)')
-    image        = models.ImageField(upload_to='slider/', help_text='Résolution recommandée : 1600 × 700 px')
+    lien         = models.CharField(max_length=255, blank=True, help_text=_('URL ou ancre (#catalogue)'))
+    image        = models.ImageField(upload_to='slider/', help_text=_('Résolution recommandée : 1600 × 700 px'))
     ordre        = models.PositiveSmallIntegerField(default=0)
     is_active    = models.BooleanField(default=True)
     created_at   = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        verbose_name        = 'Slide'
-        verbose_name_plural = 'Slides'
+        verbose_name        = _('Slide')
+        verbose_name_plural = _('Slides')
         ordering            = ['ordre', 'created_at']
 
     def __str__(self):
@@ -87,10 +88,10 @@ class SliderImage(models.Model):
 class ContactMessage(models.Model):
     """Message envoyé via le formulaire de contact."""
     class Statut(models.TextChoices):
-        NOUVEAU  = 'nouveau',  'Nouveau'
-        LU       = 'lu',       'Lu'
-        REPONDU  = 'repondu',  'Répondu'
-        ARCHIVE  = 'archive',  'Archivé'
+        NOUVEAU  = 'nouveau',  _('Nouveau')
+        LU       = 'lu',       _('Lu')
+        REPONDU  = 'repondu',  _('Répondu')
+        ARCHIVE  = 'archive',  _('Archivé')
 
     nom        = models.CharField(max_length=100)
     email      = models.EmailField()
@@ -104,8 +105,8 @@ class ContactMessage(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        verbose_name        = 'Message de contact'
-        verbose_name_plural = 'Messages de contact'
+        verbose_name        = _('Message de contact')
+        verbose_name_plural = _('Messages de contact')
         ordering            = ['-created_at']
 
     def __str__(self):
@@ -119,7 +120,7 @@ class ContactReponse(models.Model):
                    on_delete=models.CASCADE,
                    related_name='reponses',
                  )
-    contenu    = models.TextField(verbose_name='Contenu de la réponse')
+    contenu    = models.TextField(verbose_name=_('Contenu de la réponse'))
     envoye_par = models.ForeignKey(
                    settings.AUTH_USER_MODEL,
                    on_delete=models.SET_NULL,
@@ -129,8 +130,8 @@ class ContactReponse(models.Model):
     envoye_le  = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        verbose_name        = 'Réponse contact'
-        verbose_name_plural = 'Réponses contact'
+        verbose_name        = _('Réponse contact')
+        verbose_name_plural = _('Réponses contact')
         ordering            = ['envoye_le']
 
     def __str__(self):

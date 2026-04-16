@@ -1,27 +1,28 @@
 {% extends 'dashboard/base.html' %}
+{% load i18n %}
 
 {% block title %}Mes commandes{% endblock %}
 
 {% block sidebar_nav %}
-  <div class="nav-section-label">Navigation</div>
+  <div class="nav-section-label">{% trans "Navigation" %}</div>
   <a href="/dashboard/acheteur/" class="nav-item">
-    <i class="fas fa-th-large"></i> Vue d'ensemble
+    <i class="fas fa-th-large"></i> {% trans "Vue d'ensemble" %}
   </a>
   <a href="/dashboard/acheteur/commandes/" class="nav-item active">
-    <i class="fas fa-clipboard-list"></i> Mes commandes
+    <i class="fas fa-clipboard-list"></i> {% trans "Mes commandes" %}
   </a>
   <a href="/dashboard/acheteur/adresses/" class="nav-item">
-    <i class="fas fa-map-marker-alt"></i> Mes adresses
+    <i class="fas fa-map-marker-alt"></i> {% trans "Mes adresses" %}
   </a>
   <a href="/dashboard/acheteur/vouchers/" class="nav-item">
-    <i class="fas fa-ticket-alt"></i> Mes vouchers
+    <i class="fas fa-ticket-alt"></i> {% trans "Mes vouchers" %}
   </a>
   <a href="/" class="nav-item">
-    <i class="fas fa-store"></i> Catalogue
+    <i class="fas fa-store"></i> {% trans "Catalogue" %}
   </a>
-  <div class="nav-section-label">Compte</div>
+  <div class="nav-section-label">{% trans "Compte" %}</div>
   <a href="/dashboard/acheteur/profil/" class="nav-item">
-    <i class="fas fa-user-edit"></i> Mon profil
+    <i class="fas fa-user-edit"></i> {% trans "Mon profil" %}
   </a>
 {% endblock %}
 
@@ -135,31 +136,31 @@
 
   <!-- Filtres -->
   <div class="filters" id="filters">
-    <button class="filter-btn active" data-filter="all">Toutes</button>
-    <button class="filter-btn" data-filter="en_attente">En attente</button>
-    <button class="filter-btn" data-filter="en_cours">En cours</button>
-    <button class="filter-btn" data-filter="livree">Livrées</button>
-    <button class="filter-btn" data-filter="annulee">Annulées</button>
+    <button class="filter-btn active" data-filter="all">{% trans "Toutes" %}</button>
+    <button class="filter-btn" data-filter="en_attente">{% trans "En attente" %}</button>
+    <button class="filter-btn" data-filter="en_cours">{% trans "En cours" %}</button>
+    <button class="filter-btn" data-filter="livree">{% trans "Livrées" %}</button>
+    <button class="filter-btn" data-filter="annulee">{% trans "Annulées" %}</button>
   </div>
 
   <div class="table-wrap">
     <table>
       <thead>
         <tr>
-          <th>N° Commande</th>
-          <th>Producteur</th>
-          <th>Articles</th>
-          <th>Total</th>
-          <th>Paiement</th>
-          <th>Statut</th>
-          <th>Date</th>
+          <th>{% trans "N° Commande" %}</th>
+          <th>{% trans "Producteur" %}</th>
+          <th>{% trans "Articles" %}</th>
+          <th>{% trans "Total" %}</th>
+          <th>{% trans "Paiement" %}</th>
+          <th>{% trans "Statut" %}</th>
+          <th>{% trans "Date" %}</th>
           <th></th>
         </tr>
       </thead>
       <tbody id="cmd-tbody">
         <tr>
           <td colspan="8" class="spinner-cell">
-            <i class="fas fa-spinner fa-spin"></i> Chargement...
+            <i class="fas fa-spinner fa-spin"></i> {% trans "Chargement..." %}
           </td>
         </tr>
       </tbody>
@@ -168,7 +169,7 @@
   <div class="empty-state" id="cmd-empty" style="display:none">
     <i class="fas fa-clipboard-list"></i>
     <p>Vous n'avez pas encore passé de commande.<br>
-      <a href="/">Découvrir le catalogue</a>
+      <a href="/">{% trans "Découvrir le catalogue" %}</a>
     </p>
   </div>
 
@@ -176,7 +177,7 @@
   <div class="drawer-overlay" id="drawer-overlay" onclick="closeDrawer()"></div>
   <div class="drawer" id="drawer">
     <div class="drawer-header">
-      <h3 id="drawer-title">Détail commande</h3>
+      <h3 id="drawer-title">{% trans "Détail commande" %}</h3>
       <button class="drawer-close" onclick="closeDrawer()"><i class="fas fa-times"></i></button>
     </div>
     <div class="drawer-body" id="drawer-body">
@@ -221,7 +222,7 @@
   }
   function paiementBadge(statut, label) {
     const s = PAIEMENT_STYLES[statut] || { bg: '#eee', color: '#888' };
-    return `<span class="paiement-badge" style="background:${s.bg};color:${s.color}">${label}</span>`;
+    return `<span class="paiement-badge" style="background:${s.bg};color:${s.color}">{% trans "${label}" %}</span>`;
   }
   function formatDate(iso) {
     return new Date(iso).toLocaleDateString('fr-FR', { day:'2-digit', month:'short', year:'numeric' });
@@ -244,19 +245,19 @@
     const tbody = document.getElementById('cmd-tbody');
     tbody.innerHTML = '';
     if (list.length === 0) {
-      tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;padding:40px;color:var(--text-muted)">Aucune commande dans cette catégorie.</td></tr>`;
+      tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;padding:40px;color:var(--text-muted)">{% trans "Aucune commande dans cette catégorie." %}</td></tr>`;
       return;
     }
     list.forEach(c => {
       tbody.innerHTML += `
         <tr>
-          <td><strong style="color:var(--green-mid)">${c.numero_commande}</strong></td>
-          <td>${c.producteur_nom || '—'}<br><small style="color:var(--text-muted)">${c.producteur_commune || ''}</small></td>
-          <td style="text-align:center">${c.details.length}</td>
-          <td style="font-weight:700">${Number(c.total).toLocaleString('fr-FR')} HTG</td>
-          <td>${paiementBadge(c.statut_paiement, c.paiement_label)}</td>
-          <td>${statutBadge(c.statut, c.statut_label)}</td>
-          <td style="color:var(--text-muted);white-space:nowrap">${formatDate(c.created_at)}</td>
+          <td><strong style="color:var(--green-mid)">{% trans "${c.numero_commande}" %}</strong></td>
+          <td>${c.producteur_nom || '—'}<br><small style="color:var(--text-muted)">{% trans "${c.producteur_commune || ''}" %}</small></td>
+          <td style="text-align:center">{% trans "${c.details.length}" %}</td>
+          <td style="font-weight:700">{% trans "${Number(c.total).toLocaleString('fr-FR')} HTG" %}</td>
+          <td>{% trans "${paiementBadge(c.statut_paiement, c.paiement_label)}" %}</td>
+          <td>{% trans "${statutBadge(c.statut, c.statut_label)}" %}</td>
+          <td style="color:var(--text-muted);white-space:nowrap">{% trans "${formatDate(c.created_at)}" %}</td>
           <td>
             <button onclick="openDrawer('${c.numero_commande}')"
               style="background:none;border:1.5px solid var(--border);border-radius:6px;
@@ -286,45 +287,45 @@
       if (!r.ok) throw new Error();
       const c = (await r.json()).data;
       document.getElementById('drawer-body').innerHTML = `
-        <div class="detail-section">Résumé</div>
-        <div class="detail-row"><span class="lbl">Statut</span><span class="val">${statutBadge(c.statut, c.statut_label)}</span></div>
-        <div class="detail-row"><span class="lbl">Paiement</span><span class="val">${paiementBadge(c.statut_paiement, c.paiement_label)}</span></div>
-        <div class="detail-row"><span class="lbl">Méthode</span><span class="val">${c.methode_paiement_label || c.methode_paiement}</span></div>
-        <div class="detail-row"><span class="lbl">Mode de livraison</span><span class="val">${c.mode_livraison}</span></div>
-        <div class="detail-row"><span class="lbl">Date</span><span class="val">${formatDate(c.created_at)}</span></div>
-        ${c.date_livraison_prevue ? `<div class="detail-row"><span class="lbl">Livraison prévue</span><span class="val">${new Date(c.date_livraison_prevue).toLocaleDateString('fr-FR')}</span></div>` : ''}
+        <div class="detail-section">{% trans "Résumé" %}</div>
+        <div class="detail-row"><span class="lbl">{% trans "Statut" %}</span><span class="val">{% trans "${statutBadge(c.statut, c.statut_label)}" %}</span></div>
+        <div class="detail-row"><span class="lbl">{% trans "Paiement" %}</span><span class="val">{% trans "${paiementBadge(c.statut_paiement, c.paiement_label)}" %}</span></div>
+        <div class="detail-row"><span class="lbl">{% trans "Méthode" %}</span><span class="val">{% trans "${c.methode_paiement_label || c.methode_paiement}" %}</span></div>
+        <div class="detail-row"><span class="lbl">{% trans "Mode de livraison" %}</span><span class="val">{% trans "${c.mode_livraison}" %}</span></div>
+        <div class="detail-row"><span class="lbl">{% trans "Date" %}</span><span class="val">{% trans "${formatDate(c.created_at)}" %}</span></div>
+        ${c.date_livraison_prevue ? `<div class="detail-row"><span class="lbl">{% trans "Livraison prévue" %}</span><span class="val">{% trans "${new Date(c.date_livraison_prevue).toLocaleDateString('fr-FR')}" %}</span></div>` : ''}
         ${c.adresse_livraison ? `
-        <div class="detail-section">Adresse de livraison</div>
-        <div class="detail-row"><span class="lbl">Adresse</span><span class="val">${c.adresse_livraison}</span></div>
-        <div class="detail-row"><span class="lbl">Ville / Commune</span><span class="val">${c.ville_livraison || c.departement_livraison || '—'}</span></div>
+        <div class="detail-section">{% trans "Adresse de livraison" %}</div>
+        <div class="detail-row"><span class="lbl">{% trans "Adresse" %}</span><span class="val">{% trans "${c.adresse_livraison}" %}</span></div>
+        <div class="detail-row"><span class="lbl">{% trans "Ville / Commune" %}</span><span class="val">{% trans "${c.ville_livraison || c.departement_livraison || '—'}" %}</span></div>
         ` : ''}
-        <div class="detail-section">Producteur</div>
-        <div class="detail-row"><span class="lbl">Nom</span><span class="val">${c.producteur_nom || '—'}</span></div>
-        <div class="detail-row"><span class="lbl">Commune</span><span class="val">${c.producteur_commune || '—'}</span></div>
-        <div class="detail-section">Articles</div>
+        <div class="detail-section">{% trans "Producteur" %}</div>
+        <div class="detail-row"><span class="lbl">{% trans "Nom" %}</span><span class="val">{% trans "${c.producteur_nom || '—'}" %}</span></div>
+        <div class="detail-row"><span class="lbl">{% trans "Commune" %}</span><span class="val">{% trans "${c.producteur_commune || '—'}" %}</span></div>
+        <div class="detail-section">{% trans "Articles" %}</div>
         <table class="items-table">
-          <thead><tr><th>Produit</th><th>Qté</th><th style="text-align:right">Prix unit.</th><th style="text-align:right">Sous-total</th></tr></thead>
+          <thead><tr><th>{% trans "Produit" %}</th><th>{% trans "Qté" %}</th><th style="text-align:right">{% trans "Prix unit." %}</th><th style="text-align:right">{% trans "Sous-total" %}</th></tr></thead>
           <tbody>
             ${c.details.map(d => `
               <tr>
-                <td>${d.produit}</td>
-                <td>${d.quantite} ${d.unite_vente}</td>
-                <td style="text-align:right">${Number(d.prix_unitaire).toLocaleString('fr-FR')}</td>
-                <td style="text-align:right;font-weight:600">${Number(d.sous_total).toLocaleString('fr-FR')}</td>
+                <td>{% trans "${d.produit}" %}</td>
+                <td>{% trans "${d.quantite} ${d.unite_vente}" %}</td>
+                <td style="text-align:right">{% trans "${Number(d.prix_unitaire).toLocaleString('fr-FR')}" %}</td>
+                <td style="text-align:right;font-weight:600">{% trans "${Number(d.sous_total).toLocaleString('fr-FR')}" %}</td>
               </tr>`).join('')}
           </tbody>
         </table>
         <div style="margin-top:12px">
-          <div style="display:flex;justify-content:space-between;padding:6px 0;font-size:13px;color:var(--text-muted)"><span>Sous-total</span><span>${Number(c.sous_total).toLocaleString('fr-FR')} HTG</span></div>
-          <div style="display:flex;justify-content:space-between;padding:6px 0;font-size:13px;color:var(--text-muted)"><span>Frais de livraison</span><span>${Number(c.frais_livraison).toLocaleString('fr-FR')} HTG</span></div>
-          ${Number(c.remise) > 0 ? `<div style="display:flex;justify-content:space-between;padding:6px 0;font-size:13px;color:#27ae60"><span>Remise</span><span>−${Number(c.remise).toLocaleString('fr-FR')} HTG</span></div>` : ''}
+          <div style="display:flex;justify-content:space-between;padding:6px 0;font-size:13px;color:var(--text-muted)"><span>{% trans "Sous-total" %}</span><span>{% trans "${Number(c.sous_total).toLocaleString('fr-FR')} HTG" %}</span></div>
+          <div style="display:flex;justify-content:space-between;padding:6px 0;font-size:13px;color:var(--text-muted)"><span>{% trans "Frais de livraison" %}</span><span>{% trans "${Number(c.frais_livraison).toLocaleString('fr-FR')} HTG" %}</span></div>
+          ${Number(c.remise) > 0 ? `<div style="display:flex;justify-content:space-between;padding:6px 0;font-size:13px;color:#27ae60"><span>{% trans "Remise" %}</span><span>{% trans "−${Number(c.remise).toLocaleString('fr-FR')} HTG" %}</span></div>` : ''}
         </div>
-        <div class="total-row"><span>Total</span><span style="color:var(--green)">${Number(c.total).toLocaleString('fr-FR')} HTG</span></div>
-        ${c.notes_acheteur ? `<div class="detail-section">Notes</div><p style="font-size:13px;color:var(--text-muted)">${c.notes_acheteur}</p>` : ''}
+        <div class="total-row"><span>{% trans "Total" %}</span><span style="color:var(--green)">{% trans "${Number(c.total).toLocaleString('fr-FR')} HTG" %}</span></div>
+        ${c.notes_acheteur ? `<div class="detail-section">{% trans "Notes" %}</div><p style="font-size:13px;color:var(--text-muted)">{% trans "${c.notes_acheteur}" %}</p>` : ''}
       `;
     } catch (_) {
       document.getElementById('drawer-body').innerHTML =
-        '<p style="text-align:center;color:var(--text-muted);padding:40px">Impossible de charger le détail.</p>';
+        '<p style="text-align:center;color:var(--text-muted);padding:40px">{% trans "Impossible de charger le détail." %}</p>';
     }
   }
 

@@ -1,7 +1,8 @@
 {% extends "emails/base.html" %}
+{% load i18n %}
 {% block content %}
 
-<p class="greeting">Bonjour {{ prenom }} 👋</p>
+<p class="greeting">{% blocktrans with prenom=prenom %}Bonjour {{ prenom }} 👋{% endblocktrans %}</p>
 
 <div class="success-box">
   🛒 Vous avez reçu une nouvelle commande !
@@ -10,29 +11,29 @@
 
 <div class="card">
   <div class="card-row">
-    <span class="card-label">N° commande</span>
+    <span class="card-label">{% trans "N° commande" %}</span>
     <span class="card-value">{{ commande.numero_commande }}</span>
   </div>
   <div class="card-row">
-    <span class="card-label">Acheteur</span>
+    <span class="card-label">{% trans "Acheteur" %}</span>
     <span class="card-value">{{ commande.acheteur.user.get_full_name }}</span>
   </div>
   <div class="card-row">
-    <span class="card-label">Téléphone</span>
+    <span class="card-label">{% trans "Téléphone" %}</span>
     <span class="card-value">
       {{ commande.acheteur.user.telephone|default:"—" }}
     </span>
   </div>
   <div class="card-row">
-    <span class="card-label">Type acheteur</span>
+    <span class="card-label">{% trans "Type acheteur" %}</span>
     <span class="card-value">{{ commande.acheteur.get_type_acheteur_display }}</span>
   </div>
   <div class="card-row">
-    <span class="card-label">Mode de livraison</span>
+    <span class="card-label">{% trans "Mode de livraison" %}</span>
     <span class="card-value">{{ commande.get_mode_livraison_display }}</span>
   </div>
   <div class="card-row">
-    <span class="card-label">Adresse de livraison</span>
+    <span class="card-label">{% trans "Adresse de livraison" %}</span>
     <span class="card-value">
       {{ commande.adresse_livraison|default:"—" }}
     </span>
@@ -42,9 +43,9 @@
 <table class="table-produits">
   <thead>
     <tr>
-      <th>Produit</th>
-      <th>Quantité</th>
-      <th>Total</th>
+      <th>{% trans "Produit" %}</th>
+      <th>{% trans "Quantité" %}</th>
+      <th>{% trans "Total" %}</th>
     </tr>
   </thead>
   <tbody>
@@ -52,19 +53,19 @@
     <tr>
       <td>{{ detail.produit.nom }}</td>
       <td>{{ detail.quantite }} {{ detail.unite_vente }}</td>
-      <td><strong>{{ detail.sous_total }} HTG</strong></td>
+      <td><strong>{% blocktrans with detail=detail.sous_total %}{{ detail }} HTG{% endblocktrans %}</strong></td>
     </tr>
     {% endfor %}
     <tr class="total-row">
-      <td colspan="2" style="text-align:right">Total commande</td>
-      <td>{{ commande.total }} HTG</td>
+      <td colspan="2" style="text-align:right">{% trans "Total commande" %}</td>
+      <td>{% blocktrans with commande=commande.total %}{{ commande }} HTG{% endblocktrans %}</td>
     </tr>
   </tbody>
 </table>
 
 {% if commande.notes_acheteur %}
 <div class="info-box">
-  📝 <strong>Note de l'acheteur :</strong> {{ commande.notes_acheteur }}
+  📝 <strong>{% trans "Note de l'acheteur :" %}</strong> {{ commande.notes_acheteur }}
 </div>
 {% endif %}
 

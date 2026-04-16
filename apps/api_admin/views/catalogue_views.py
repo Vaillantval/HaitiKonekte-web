@@ -14,6 +14,7 @@ from apps.catalog.serializers import (
     CategorieSerializer,
 )
 from apps.accounts.models import Producteur
+from django.utils.translation import gettext as _
 
 
 # ── GET /api/admin/catalogue/ ────────────────────────────────────
@@ -150,7 +151,7 @@ def catalogue_toggle(request, pk):
 
     if champ not in ['is_active', 'is_featured']:
         return Response(
-            {'success': False, 'error': "Champ : 'is_active' ou 'is_featured'."},
+            {'success': False, 'error': _("Champ : 'is_active' ou 'is_featured'.")},
             status=status.HTTP_400_BAD_REQUEST
         )
 

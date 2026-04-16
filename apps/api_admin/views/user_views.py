@@ -7,6 +7,7 @@ from django.db.models import Q
 from apps.accounts.permissions import IsSuperAdmin
 from apps.accounts.models import CustomUser
 from apps.accounts.serializers import RegisterSerializer, UserProfileSerializer
+from django.utils.translation import gettext as _
 
 
 # ── GET /api/admin/users/ ────────────────────────────────────────

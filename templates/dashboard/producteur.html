@@ -1,29 +1,30 @@
 {% extends 'dashboard/base.html' %}
+{% load i18n %}
 
 {% block title %}Mon espace — Producteur{% endblock %}
 
 {% block sidebar_nav %}
-  <div class="nav-section-label">Navigation</div>
+  <div class="nav-section-label">{% trans "Navigation" %}</div>
   <a href="/dashboard/producteur/" class="nav-item active">
-    <i class="fas fa-th-large"></i> Vue d'ensemble
+    <i class="fas fa-th-large"></i> {% trans "Vue d'ensemble" %}
   </a>
   <a href="/dashboard/producteur/collectes/" class="nav-item">
-    <i class="fas fa-truck"></i> Mes collectes
+    <i class="fas fa-truck"></i> {% trans "Mes collectes" %}
     <span class="nav-badge" id="sb-badge-collectes" style="display:none"></span>
   </a>
   <a href="/dashboard/producteur/catalogue/" class="nav-item">
-    <i class="fas fa-seedling"></i> Mon catalogue
+    <i class="fas fa-seedling"></i> {% trans "Mon catalogue" %}
   </a>
   <a href="/" class="nav-item">
-    <i class="fas fa-store"></i> Catalogue public
+    <i class="fas fa-store"></i> {% trans "Catalogue public" %}
   </a>
 
-  <div class="nav-section-label">Compte</div>
+  <div class="nav-section-label">{% trans "Compte" %}</div>
   <a href="/dashboard/producteur/profil/" class="nav-item">
-    <i class="fas fa-user-edit"></i> Mon profil
+    <i class="fas fa-user-edit"></i> {% trans "Mon profil" %}
   </a>
   <a href="/dashboard/producteur/rapport/" class="nav-item">
-    <i class="fas fa-file-alt"></i> Mon rapport
+    <i class="fas fa-file-alt"></i> {% trans "Mon rapport" %}
   </a>
 {% endblock %}
 
@@ -155,7 +156,7 @@
   <div class="alert-card" id="alert-validation" style="display:none">
     <i class="fas fa-clock"></i>
     <div>
-      <strong>Compte en attente de validation</strong><br>
+      <strong>{% trans "Compte en attente de validation" %}</strong><br>
       Votre profil producteur est en cours de vérification. Vous serez notifié dès son activation.
     </div>
   </div>
@@ -163,11 +164,11 @@
   <!-- Bannière -->
   <div class="welcome-banner">
     <div>
-      <h2 id="welcome-name">Bonjour !</h2>
-      <p>Voici l'activité de votre espace producteur.</p>
+      <h2 id="welcome-name">{% trans "Bonjour !" %}</h2>
+      <p>{% trans "Voici l'activité de votre espace producteur." %}</p>
       <div class="statut-producteur statut-actif" id="statut-badge" style="display:none">
         <i class="fas fa-circle" style="font-size:8px"></i>
-        <span id="statut-label">Actif</span>
+        <span id="statut-label">{% trans "Actif" %}</span>
       </div>
     </div>
   </div>
@@ -178,28 +179,28 @@
       <div class="stat-icon orange"><i class="fas fa-inbox"></i></div>
       <div>
         <div class="stat-value" id="stat-en-attente">—</div>
-        <div class="stat-label">En attente</div>
+        <div class="stat-label">{% trans "En attente" %}</div>
       </div>
     </div>
     <div class="stat-card">
       <div class="stat-icon blue"><i class="fas fa-truck"></i></div>
       <div>
         <div class="stat-value" id="stat-en-cours">—</div>
-        <div class="stat-label">En cours</div>
+        <div class="stat-label">{% trans "En cours" %}</div>
       </div>
     </div>
     <div class="stat-card">
       <div class="stat-icon green"><i class="fas fa-seedling"></i></div>
       <div>
         <div class="stat-value" id="stat-produits">—</div>
-        <div class="stat-label">Produits actifs</div>
+        <div class="stat-label">{% trans "Produits actifs" %}</div>
       </div>
     </div>
     <div class="stat-card">
       <div class="stat-icon yellow"><i class="fas fa-coins"></i></div>
       <div>
         <div class="stat-value" id="stat-revenus">—</div>
-        <div class="stat-label">Revenus ce mois (HTG)</div>
+        <div class="stat-label">{% trans "Revenus ce mois (HTG)" %}</div>
       </div>
     </div>
   </div>
@@ -210,7 +211,7 @@
       <i class="fas fa-exclamation-triangle" style="color:#e74c3c"></i>
       <div>
         <strong><span id="stock-faible-nb">0</span> produit(s) en stock faible</strong> —
-        <a href="/dashboard/producteur/catalogue/" style="color:#e74c3c;font-weight:700">Gérer le stock</a>
+        <a href="/dashboard/producteur/catalogue/" style="color:#e74c3c;font-weight:700">{% trans "Gérer le stock" %}</a>
       </div>
     </div>
   </div>
@@ -224,24 +225,24 @@
   <div class="table-wrap">
     <div class="empty-state" id="orders-loading">
       <i class="fas fa-spinner fa-spin"></i>
-      <p>Chargement...</p>
+      <p>{% trans "Chargement..." %}</p>
     </div>
     <table id="orders-table" style="display:none">
       <thead>
         <tr>
-          <th>Référence</th>
-          <th>Zone</th>
-          <th>Date planifiée</th>
-          <th>Point de collecte</th>
-          <th>Ma participation</th>
-          <th>Statut collecte</th>
+          <th>{% trans "Référence" %}</th>
+          <th>{% trans "Zone" %}</th>
+          <th>{% trans "Date planifiée" %}</th>
+          <th>{% trans "Point de collecte" %}</th>
+          <th>{% trans "Ma participation" %}</th>
+          <th>{% trans "Statut collecte" %}</th>
         </tr>
       </thead>
       <tbody id="orders-tbody"></tbody>
     </table>
     <div class="empty-state" id="orders-empty" style="display:none">
       <i class="fas fa-truck"></i>
-      <p>Aucune collecte planifiée pour l'instant.</p>
+      <p>{% trans "Aucune collecte planifiée pour l'instant." %}</p>
     </div>
   </div>
 
@@ -266,12 +267,12 @@
 
   function partBadge(statut) {
     const s = PART_STATUT[statut] || { bg:'#eee', color:'#888', label: statut };
-    return `<span style="display:inline-block;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;background:${s.bg};color:${s.color}">${s.label}</span>`;
+    return `<span style="display:inline-block;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;background:${s.bg};color:${s.color}">{% trans "${s.label}" %}</span>`;
   }
 
   function colBadge(statut, label) {
     const s = COL_STATUT[statut] || { bg:'#eee', color:'#888' };
-    return `<span style="display:inline-block;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;background:${s.bg};color:${s.color}">${label}</span>`;
+    return `<span style="display:inline-block;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;background:${s.bg};color:${s.color}">{% trans "${label}" %}</span>`;
   }
 
   function formatDate(iso) {
@@ -333,12 +334,12 @@
             const ptComm  = c.point_collecte?.commune || '';
             tbody.innerHTML += `
               <tr>
-                <td><a href="/dashboard/producteur/collectes/" style="color:var(--green-mid);font-weight:600">${c.reference}</a></td>
-                <td>${zonNom}<br><small style="color:var(--text-muted)">${zonDept}</small></td>
-                <td style="color:var(--text-muted)">${formatDate(c.date_planifiee)}</td>
+                <td><a href="/dashboard/producteur/collectes/" style="color:var(--green-mid);font-weight:600">{% trans "${c.reference}" %}</a></td>
+                <td>${zonNom}<br><small style="color:var(--text-muted)">{% trans "${zonDept}" %}</small></td>
+                <td style="color:var(--text-muted)">{% trans "${formatDate(c.date_planifiee)}" %}</td>
                 <td>${ptNom ? ptNom + (ptComm ? ', ' + ptComm : '') : '<span style="color:var(--text-muted)">—</span>'}</td>
-                <td>${partBadge(p.statut)}</td>
-                <td>${colBadge(c.statut, c.statut_label)}</td>
+                <td>{% trans "${partBadge(p.statut)}" %}</td>
+                <td>{% trans "${colBadge(c.statut, c.statut_label)}" %}</td>
               </tr>`;
           });
           document.getElementById('orders-table').style.display = 'table';

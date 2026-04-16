@@ -251,36 +251,36 @@
 
       <!-- Filtres -->
       <div class="card-panel">
-        <h3>🔍 Filtres</h3>
+        <h3>{% trans "🔍 Filtres" %}</h3>
 
         <div class="filter-group">
-          <label>Rôle</label>
+          <label>{% trans "Rôle" %}</label>
           <select id="filterRole">
-            <option value="">Tous les rôles</option>
-            <option value="acheteur">🛒 Acheteur</option>
-            <option value="producteur">🌾 Producteur</option>
-            <option value="collecteur">🚛 Collecteur</option>
-            <option value="admin">👑 Admin</option>
+            <option value="">{% trans "Tous les rôles" %}</option>
+            <option value="acheteur">{% trans "🛒 Acheteur" %}</option>
+            <option value="producteur">{% trans "🌾 Producteur" %}</option>
+            <option value="collecteur">{% trans "🚛 Collecteur" %}</option>
+            <option value="admin">{% trans "👑 Admin" %}</option>
           </select>
         </div>
 
         <div class="filter-group">
-          <label>Statut producteur</label>
+          <label>{% trans "Statut producteur" %}</label>
           <select id="filterStatut">
-            <option value="">Tous statuts</option>
-            <option value="actif">✅ Actif</option>
-            <option value="en_attente">⏳ En attente</option>
-            <option value="suspendu">🚫 Suspendu</option>
+            <option value="">{% trans "Tous statuts" %}</option>
+            <option value="actif">{% trans "✅ Actif" %}</option>
+            <option value="en_attente">{% trans "⏳ En attente" %}</option>
+            <option value="suspendu">{% trans "🚫 Suspendu" %}</option>
           </select>
         </div>
 
         <div class="filter-group">
-          <label>Inscrit après</label>
+          <label>{% trans "Inscrit après" %}</label>
           <input type="date" id="filterDateDebut">
         </div>
 
         <div class="filter-group">
-          <label>Inscrit avant</label>
+          <label>{% trans "Inscrit avant" %}</label>
           <input type="date" id="filterDateFin">
         </div>
 
@@ -294,74 +294,74 @@
 
       <!-- Stats compteurs -->
       <div class="card-panel">
-        <h3>📊 Statistiques</h3>
+        <h3>{% trans "📊 Statistiques" %}</h3>
         <div class="stats-grid">
           <div class="stat-item">
             <div class="stat-val" id="statTotal">—</div>
-            <div class="stat-lbl">Total</div>
+            <div class="stat-lbl">{% trans "Total" %}</div>
           </div>
           <div class="stat-item">
             <div class="stat-val" id="statProducteurs"
                  style="color:#27ae60">—</div>
-            <div class="stat-lbl">Producteurs</div>
+            <div class="stat-lbl">{% trans "Producteurs" %}</div>
           </div>
           <div class="stat-item">
             <div class="stat-val" id="statAcheteurs"
                  style="color:#2980b9">—</div>
-            <div class="stat-lbl">Acheteurs</div>
+            <div class="stat-lbl">{% trans "Acheteurs" %}</div>
           </div>
           <div class="stat-item">
             <div class="stat-val" id="statCollecteurs"
                  style="color:#8e44ad">—</div>
-            <div class="stat-lbl">Collecteurs</div>
+            <div class="stat-lbl">{% trans "Collecteurs" %}</div>
           </div>
         </div>
       </div>
 
       <!-- Graphe donut -->
       <div class="card-panel">
-        <h3>🥧 Répartition</h3>
+        <h3>{% trans "🥧 Répartition" %}</h3>
         <canvas id="chartDonut"></canvas>
       </div>
 
       <!-- Légende -->
       <div class="card-panel">
-        <h3>🎨 Légende</h3>
+        <h3>{% trans "🎨 Légende" %}</h3>
         <div class="legende-item">
           <div class="legende-dot" style="background:#27ae60"></div>
-          <span>Producteur actif</span>
+          <span>{% trans "Producteur actif" %}</span>
         </div>
         <div class="legende-item">
           <div class="legende-dot" style="background:#f39c12"></div>
-          <span>Producteur en attente</span>
+          <span>{% trans "Producteur en attente" %}</span>
         </div>
         <div class="legende-item">
           <div class="legende-dot" style="background:#2980b9"></div>
-          <span>Acheteur</span>
+          <span>{% trans "Acheteur" %}</span>
         </div>
         <div class="legende-item">
           <div class="legende-dot" style="background:#8e44ad"></div>
-          <span>Collecteur</span>
+          <span>{% trans "Collecteur" %}</span>
         </div>
         <div class="legende-item">
           <div class="legende-dot" style="background:#e74c3c"></div>
-          <span>Suspendu</span>
+          <span>{% trans "Suspendu" %}</span>
         </div>
         <div class="legende-item">
           <div class="legende-dot" style="background:#1a1a1a"></div>
-          <span>Admin / Superadmin</span>
+          <span>{% trans "Admin / Superadmin" %}</span>
         </div>
         <hr style="margin:10px 0; border:none; border-top:1px solid #eee">
         <div class="legende-item">
           <div class="legende-dot"
                style="background:#ccc; border:2px solid #999"></div>
-          <span style="color:#aaa">Localisation département</span>
+          <span style="color:#aaa">{% trans "Localisation département" %}</span>
         </div>
         <div class="legende-item">
           <div class="legende-dot"
                style="background:#27ae60; border:2px solid white;
                       box-shadow:0 0 0 2px #27ae60"></div>
-          <span>Localisation commune</span>
+          <span>{% trans "Localisation commune" %}</span>
         </div>
       </div>
 

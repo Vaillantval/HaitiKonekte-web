@@ -1,27 +1,28 @@
 {% extends 'dashboard/base.html' %}
+{% load i18n %}
 
 {% block title %}Mes adresses{% endblock %}
 
 {% block sidebar_nav %}
-  <div class="nav-section-label">Navigation</div>
+  <div class="nav-section-label">{% trans "Navigation" %}</div>
   <a href="/dashboard/acheteur/" class="nav-item">
-    <i class="fas fa-th-large"></i> Vue d'ensemble
+    <i class="fas fa-th-large"></i> {% trans "Vue d'ensemble" %}
   </a>
   <a href="/dashboard/acheteur/commandes/" class="nav-item">
-    <i class="fas fa-clipboard-list"></i> Mes commandes
+    <i class="fas fa-clipboard-list"></i> {% trans "Mes commandes" %}
   </a>
   <a href="/dashboard/acheteur/adresses/" class="nav-item active">
-    <i class="fas fa-map-marker-alt"></i> Mes adresses
+    <i class="fas fa-map-marker-alt"></i> {% trans "Mes adresses" %}
   </a>
   <a href="/dashboard/acheteur/vouchers/" class="nav-item">
-    <i class="fas fa-ticket-alt"></i> Mes vouchers
+    <i class="fas fa-ticket-alt"></i> {% trans "Mes vouchers" %}
   </a>
   <a href="/" class="nav-item">
-    <i class="fas fa-store"></i> Catalogue
+    <i class="fas fa-store"></i> {% trans "Catalogue" %}
   </a>
-  <div class="nav-section-label">Compte</div>
+  <div class="nav-section-label">{% trans "Compte" %}</div>
   <a href="/dashboard/acheteur/profil/" class="nav-item">
-    <i class="fas fa-user-edit"></i> Mon profil
+    <i class="fas fa-user-edit"></i> {% trans "Mon profil" %}
   </a>
 {% endblock %}
 
@@ -148,7 +149,7 @@
 
   <div class="page-actions">
     <button class="btn-primary" onclick="openModal()">
-      <i class="fas fa-plus"></i> Ajouter une adresse
+      <i class="fas fa-plus"></i> {% trans "Ajouter une adresse" %}
     </button>
   </div>
 
@@ -165,7 +166,7 @@
   <div class="modal-overlay" id="modal-overlay" onclick="if(event.target===this)closeModal()">
     <div class="modal">
       <div class="modal-header">
-        <h3 id="modal-title">Nouvelle adresse</h3>
+        <h3 id="modal-title">{% trans "Nouvelle adresse" %}</h3>
         <button class="modal-close" onclick="closeModal()"><i class="fas fa-times"></i></button>
       </div>
       <form id="addr-form">
@@ -176,62 +177,62 @@
             <div class="form-group">
               <label for="f-libelle">Libellé <span class="req">*</span></label>
               <select id="f-libelle" class="ds-input ds-select">
-                <option value="Domicile">Domicile</option>
-                <option value="Bureau">Bureau</option>
-                <option value="Marché">Marché</option>
-                <option value="Exploitation agricole">Exploitation agricole</option>
-                <option value="Point de collecte">Point de collecte</option>
-                <option value="Boutique / Dépôt">Boutique / Dépôt</option>
-                <option value="Famille">Famille</option>
-                <option value="Autre">Autre</option>
+                <option value="Domicile">{% trans "Domicile" %}</option>
+                <option value="Bureau">{% trans "Bureau" %}</option>
+                <option value="Marché">{% trans "Marché" %}</option>
+                <option value="Exploitation agricole">{% trans "Exploitation agricole" %}</option>
+                <option value="Point de collecte">{% trans "Point de collecte" %}</option>
+                <option value="Boutique / Dépôt">{% trans "Boutique / Dépôt" %}</option>
+                <option value="Famille">{% trans "Famille" %}</option>
+                <option value="Autre">{% trans "Autre" %}</option>
               </select>
             </div>
             <div class="form-group">
               <label for="f-type">Type <span class="req">*</span></label>
               <select id="f-type" class="ds-input ds-select">
-                <option value="livraison">Livraison</option>
-                <option value="facturation">Facturation</option>
+                <option value="livraison">{% trans "Livraison" %}</option>
+                <option value="facturation">{% trans "Facturation" %}</option>
               </select>
             </div>
           </div>
 
           <div class="form-group">
             <label for="f-nom">Nom complet du destinataire <span class="req">*</span></label>
-            <input type="text" id="f-nom" class="ds-input" placeholder="Prénom et nom">
+            <input type="text" id="f-nom" class="ds-input" placeholder="{% trans 'Prénom et nom' %}">
           </div>
 
           <div class="form-group">
-            <label for="f-tel">Téléphone</label>
+            <label for="f-tel">{% trans "Téléphone" %}</label>
             <input type="tel" id="f-tel" class="ds-input" placeholder="+509 3700 0000">
           </div>
 
           <div class="form-group">
             <label for="f-rue">Rue / Adresse <span class="req">*</span></label>
-            <input type="text" id="f-rue" class="ds-input" placeholder="Numéro et nom de rue">
+            <input type="text" id="f-rue" class="ds-input" placeholder="{% trans 'Numéro et nom de rue' %}">
           </div>
 
           <div class="form-row">
             <div class="form-group">
               <label for="f-dept">Département <span class="req">*</span></label>
               <select id="f-dept" class="ds-input ds-select">
-                <option value="">-- Choisir --</option>
+                <option value="">{% trans "-- Choisir --" %}</option>
               </select>
             </div>
             <div class="form-group">
               <label for="f-commune">Commune <span class="req">*</span></label>
-              <input type="text" id="f-commune" class="ds-input" placeholder="Ex : Léogâne">
+              <input type="text" id="f-commune" class="ds-input" placeholder="{% trans 'Ex : Léogâne' %}">
             </div>
           </div>
 
           <div class="form-group">
-            <label for="f-section">Section communale</label>
-            <input type="text" id="f-section" class="ds-input" placeholder="Section communale">
+            <label for="f-section">{% trans "Section communale" %}</label>
+            <input type="text" id="f-section" class="ds-input" placeholder="{% trans 'Section communale' %}">
           </div>
 
           <div class="form-group">
-            <label for="f-details">Instructions de livraison</label>
+            <label for="f-details">{% trans "Instructions de livraison" %}</label>
             <textarea id="f-details" class="ds-input ds-textarea"
-              placeholder="Appartement, étage, point de repère…"></textarea>
+              placeholder="{% trans 'Appartement, étage, point de repère…' %}"></textarea>
           </div>
 
           <div class="form-group" style="display:flex;align-items:center;gap:10px">
@@ -245,9 +246,9 @@
             padding:10px 14px;border-radius:8px;font-size:13px;margin-top:4px"></div>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn-cancel" onclick="closeModal()">Annuler</button>
+          <button type="button" class="btn-cancel" onclick="closeModal()">{% trans "Annuler" %}</button>
           <button type="submit" class="btn-primary" id="save-btn">
-            <i class="fas fa-save"></i> Enregistrer
+            <i class="fas fa-save"></i> {% trans "Enregistrer" %}
           </button>
         </div>
       </form>
@@ -321,7 +322,7 @@
     // Bloquer le bouton save pendant le chargement des données géo
     const saveBtn = document.getElementById('save-btn');
     saveBtn.disabled = true;
-    saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Chargement…';
+    saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> {% trans "Chargement…';" %}
 
     await _geoAddr.prefill({
       deptSlug:   addr?.departement       || '',
@@ -330,7 +331,7 @@
     });
 
     saveBtn.disabled = false;
-    saveBtn.innerHTML = '<i class="fas fa-save"></i> Enregistrer';
+    saveBtn.innerHTML = '<i class="fas fa-save"></i> {% trans "Enregistrer';" %}
   }
 
   function closeModal() { document.getElementById('modal-overlay').classList.remove('open'); }
@@ -373,26 +374,26 @@
       const typeClass = a.type_adresse === 'livraison' ? 'addr-type-livraison' : 'addr-type-facturation';
       grid.innerHTML += `
         <div class="addr-card ${a.is_default ? 'default' : ''}" id="card-${a.id}">
-          ${a.is_default ? '<span class="default-badge"><i class="fas fa-star" style="font-size:8px"></i> Défaut</span>' : ''}
+          ${a.is_default ? '<span class="default-badge"><i class="fas fa-star" style="font-size:8px"></i> {% trans "Défaut" %}</span>' : ''}
           <div class="addr-card-header">
             <div class="addr-libelle">
               <i class="fas fa-map-marker-alt"></i> ${_esc(a.libelle)}
             </div>
-            <span class="addr-type-badge ${typeClass}">${_esc(a.type_adresse_display)}</span>
+            <span class="addr-type-badge ${typeClass}">{% trans "${_esc(a.type_adresse_display)}" %}</span>
           </div>
           <div class="addr-info">
-            <strong>${_esc(a.nom_complet)}</strong><br>
+            <strong>{% trans "${_esc(a.nom_complet)}" %}</strong><br>
             ${a.telephone ? _esc(a.telephone) + '<br>' : ''}
             ${_esc(a.rue)}<br>
             ${_esc(a.commune)}${a.section_communale ? ', ' + _esc(a.section_communale) : ''}, ${_esc(a.departement_display)}<br>
-            ${a.details ? '<em style="font-size:12px">' + _esc(a.details) + '</em>' : ''}
+            ${a.details ? '<em style="font-size:12px">{% trans "' + _esc(a.details) + '" %}</em>' : ''}
           </div>
           <div class="addr-actions">
             ${!a.is_default ? `<button class="btn-icon success" onclick="setDefault(${a.id})">
-              <i class="fas fa-star"></i> Défaut
+              <i class="fas fa-star"></i> {% trans "Défaut" %}
             </button>` : ''}
             <button class="btn-icon" onclick='openModal(JSON.parse(decodeURIComponent("${encodeURIComponent(JSON.stringify(a))}")))'>
-              <i class="fas fa-edit"></i> Modifier
+              <i class="fas fa-edit"></i> {% trans "Modifier" %}
             </button>
             <button class="btn-icon danger" onclick="deleteAddr(${a.id})">
               <i class="fas fa-trash"></i>
@@ -441,7 +442,7 @@
     }
 
     saveBtn.disabled = true;
-    saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enregistrement…';
+    saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> {% trans "Enregistrement…';" %}
 
     const url    = editingId ? `/api/auth/adresses/${editingId}/` : '/api/auth/adresses/';
     const method = editingId ? 'PUT' : 'POST';
@@ -476,7 +477,7 @@
       errEl.style.display = 'block';
     } finally {
       saveBtn.disabled = false;
-      saveBtn.innerHTML = '<i class="fas fa-save"></i> Enregistrer';
+      saveBtn.innerHTML = '<i class="fas fa-save"></i> {% trans "Enregistrer';" %}
     }
   });
 

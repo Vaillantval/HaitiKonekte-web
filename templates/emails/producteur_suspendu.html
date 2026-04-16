@@ -1,21 +1,22 @@
 {% extends "emails/base.html" %}
+{% load i18n %}
 {% block content %}
 
-<p class="greeting">Bonjour {{ prenom }},</p>
+<p class="greeting">{% blocktrans with prenom=prenom %}Bonjour {{ prenom }},{% endblocktrans %}</p>
 
 <div class="alert-box">
-  ⚠️ Votre compte producteur a été temporairement <strong>suspendu</strong>.
+  ⚠️ Votre compte producteur a été temporairement <strong>{% trans "suspendu" %}</strong>.
 </div>
 
 <p class="message">
-  Votre accès à la plateforme <strong>Makèt Peyizan</strong> est momentanément suspendu.
+  Votre accès à la plateforme <strong>{% trans "Makèt Peyizan" %}</strong> est momentanément suspendu.
   Pour obtenir plus d'informations ou contester cette décision, veuillez nous contacter.
 </p>
 
 {% if motif %}
 <div class="card">
   <div class="card-row">
-    <span class="card-label">Motif</span>
+    <span class="card-label">{% trans "Motif" %}</span>
     <span class="card-value">{{ motif }}</span>
   </div>
 </div>
@@ -24,7 +25,7 @@
 <hr class="divider">
 <p style="font-size:13px; color:#aaa; text-align:center">
   Pour toute question, contactez-nous à
-  <a href="mailto:info@maketpeyizan.ht" style="color:#27ae60">info@maketpeyizan.ht</a>
+  <a href="mailto:info@maketpeyizan.ht" style="color:#27ae60">{% trans "info@maketpeyizan.ht" %}</a>
 </p>
 
 {% endblock %}

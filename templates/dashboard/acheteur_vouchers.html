@@ -1,27 +1,28 @@
 {% extends 'dashboard/base.html' %}
+{% load i18n %}
 
 {% block title %}Mes vouchers{% endblock %}
 
 {% block sidebar_nav %}
-  <div class="nav-section-label">Navigation</div>
+  <div class="nav-section-label">{% trans "Navigation" %}</div>
   <a href="/dashboard/acheteur/" class="nav-item">
-    <i class="fas fa-th-large"></i> Vue d'ensemble
+    <i class="fas fa-th-large"></i> {% trans "Vue d'ensemble" %}
   </a>
   <a href="/dashboard/acheteur/commandes/" class="nav-item">
-    <i class="fas fa-clipboard-list"></i> Mes commandes
+    <i class="fas fa-clipboard-list"></i> {% trans "Mes commandes" %}
   </a>
   <a href="/dashboard/acheteur/adresses/" class="nav-item">
-    <i class="fas fa-map-marker-alt"></i> Mes adresses
+    <i class="fas fa-map-marker-alt"></i> {% trans "Mes adresses" %}
   </a>
   <a href="/dashboard/acheteur/vouchers/" class="nav-item active">
-    <i class="fas fa-ticket-alt"></i> Mes vouchers
+    <i class="fas fa-ticket-alt"></i> {% trans "Mes vouchers" %}
   </a>
   <a href="/" class="nav-item">
-    <i class="fas fa-store"></i> Catalogue
+    <i class="fas fa-store"></i> {% trans "Catalogue" %}
   </a>
-  <div class="nav-section-label">Compte</div>
+  <div class="nav-section-label">{% trans "Compte" %}</div>
   <a href="/dashboard/acheteur/profil/" class="nav-item">
-    <i class="fas fa-user-edit"></i> Mon profil
+    <i class="fas fa-user-edit"></i> {% trans "Mon profil" %}
   </a>
 {% endblock %}
 
@@ -210,8 +211,8 @@
   <div class="info-banner">
     <i class="fas fa-ticket-alt"></i>
     <div>
-      <h3>Vos codes de réduction</h3>
-      <p>Retrouvez ici tous vos vouchers. Copiez le code et saisissez-le dans le champ <em>« Code de réduction »</em> au moment de passer commande.</p>
+      <h3>{% trans "Vos codes de réduction" %}</h3>
+      <p>Retrouvez ici tous vos vouchers. Copiez le code et saisissez-le dans le champ <em>{% trans "« Code de réduction »" %}</em> au moment de passer commande.</p>
     </div>
   </div>
 
@@ -221,44 +222,44 @@
       <div class="v-stat-icon green"><i class="fas fa-check-circle"></i></div>
       <div>
         <div class="v-stat-value" id="vs-actifs">—</div>
-        <div class="v-stat-label">Actifs</div>
+        <div class="v-stat-label">{% trans "Actifs" %}</div>
       </div>
     </div>
     <div class="v-stat">
       <div class="v-stat-icon blue"><i class="fas fa-check"></i></div>
       <div>
         <div class="v-stat-value" id="vs-utilises">—</div>
-        <div class="v-stat-label">Utilisés</div>
+        <div class="v-stat-label">{% trans "Utilisés" %}</div>
       </div>
     </div>
     <div class="v-stat">
       <div class="v-stat-icon grey"><i class="fas fa-clock"></i></div>
       <div>
         <div class="v-stat-value" id="vs-expires">—</div>
-        <div class="v-stat-label">Expirés</div>
+        <div class="v-stat-label">{% trans "Expirés" %}</div>
       </div>
     </div>
     <div class="v-stat">
       <div class="v-stat-icon green" style="background:#fdfbe8;color:#c9a007"><i class="fas fa-coins"></i></div>
       <div>
         <div class="v-stat-value" id="vs-remises">—</div>
-        <div class="v-stat-label">HTG économisés</div>
+        <div class="v-stat-label">{% trans "HTG économisés" %}</div>
       </div>
     </div>
   </div>
 
   <!-- Filtres -->
   <div class="filter-tabs">
-    <button class="filter-tab active" data-filter="all"    onclick="setFilter('all',   this)">Tous</button>
-    <button class="filter-tab"        data-filter="actif"  onclick="setFilter('actif', this)">Actifs</button>
-    <button class="filter-tab"        data-filter="utilise"onclick="setFilter('utilise',this)">Utilisés</button>
-    <button class="filter-tab"        data-filter="expire" onclick="setFilter('expire',this)">Expirés</button>
+    <button class="filter-tab active" data-filter="all"    onclick="setFilter('all',   this)">{% trans "Tous" %}</button>
+    <button class="filter-tab"        data-filter="actif"  onclick="setFilter('actif', this)">{% trans "Actifs" %}</button>
+    <button class="filter-tab"        data-filter="utilise"onclick="setFilter('utilise',this)">{% trans "Utilisés" %}</button>
+    <button class="filter-tab"        data-filter="expire" onclick="setFilter('expire',this)">{% trans "Expirés" %}</button>
   </div>
 
   <!-- Loading -->
   <div class="empty-state" id="v-loading">
     <i class="fas fa-spinner fa-spin"></i>
-    <p>Chargement de vos vouchers…</p>
+    <p>{% trans "Chargement de vos vouchers…" %}</p>
   </div>
 
   <!-- Grid -->
@@ -267,7 +268,7 @@
   <!-- Empty -->
   <div class="empty-state" id="v-empty" style="display:none">
     <i class="fas fa-ticket-alt"></i>
-    <p id="v-empty-msg">Aucun voucher pour l'instant.</p>
+    <p id="v-empty-msg">{% trans "Aucun voucher pour l'instant." %}</p>
   </div>
 
 {% endblock %}
@@ -297,25 +298,25 @@
     }
     if (!v.est_valide) {
       return `<div class="voucher-usage dead">
-        <i class="fas fa-ban"></i> Ce code n'est plus valide.
+        <i class="fas fa-ban"></i> {% trans "Ce code n'est plus valide." %}
       </div>`;
     }
     const minTxt = parseFloat(v.montant_commande_min) > 0
-      ? ` pour une commande d'au moins <strong>${Number(v.montant_commande_min).toLocaleString('fr-FR')} HTG</strong>`
+      ? ` pour une commande d'au moins <strong>{% trans "${Number(v.montant_commande_min).toLocaleString('fr-FR')} HTG" %}</strong>`
       : '';
     if (v.type_valeur === 'fixe') {
       return `<div class="voucher-usage">
-        <strong><i class="fas fa-info-circle"></i> Comment l'utiliser :</strong><br>
-        Ce code vous donne <strong>${Number(v.valeur).toLocaleString('fr-FR')} HTG de réduction</strong>${minTxt}.<br>
-        Au moment du paiement, saisissez ce code dans le champ <em>« Code de réduction »</em> du récapitulatif.
+        <strong><i class="fas fa-info-circle"></i> {% trans "Comment l'utiliser :" %}</strong><br>
+        Ce code vous donne <strong>{% trans "${Number(v.valeur).toLocaleString('fr-FR')} HTG de réduction" %}</strong>${minTxt}.<br>
+        Au moment du paiement, saisissez ce code dans le champ <em>{% trans "« Code de réduction »" %}</em> du récapitulatif.
       </div>`;
     } else {
       const maxTxt = v.montant_max
         ? ` (max ${Number(v.montant_max).toLocaleString('fr-FR')} HTG)` : '';
       return `<div class="voucher-usage">
-        <strong><i class="fas fa-info-circle"></i> Comment l'utiliser :</strong><br>
-        Ce code donne <strong>${Number(v.valeur).toLocaleString('fr-FR')}% de réduction</strong>${maxTxt}${minTxt}.<br>
-        La réduction est calculée sur le total de votre panier. Saisissez ce code dans le champ <em>« Code de réduction »</em> au moment du paiement.
+        <strong><i class="fas fa-info-circle"></i> {% trans "Comment l'utiliser :" %}</strong><br>
+        Ce code donne <strong>{% trans "${Number(v.valeur).toLocaleString('fr-FR')}% de réduction" %}</strong>${maxTxt}${minTxt}.<br>
+        La réduction est calculée sur le total de votre panier. Saisissez ce code dans le champ <em>{% trans "« Code de réduction »" %}</em> au moment du paiement.
       </div>`;
     }
   }
@@ -347,12 +348,12 @@
 
       grid.innerHTML += `
         <div class="voucher-card ${cardClass}">
-          ${v.est_valide ? `<button class="voucher-copy" id="${btnId}" onclick="copyCode('${v.code}', this)">Copier</button>` : ''}
+          ${v.est_valide ? `<button class="voucher-copy" id="${btnId}" onclick="copyCode('${v.code}', this)">{% trans "Copier" %}</button>` : ''}
           <div class="voucher-badge ${badgeClass}">
             <i class="fas ${badgeIcon}" style="font-size:9px"></i> ${v.statut_label}
           </div>
-          <div class="voucher-code">${v.code}</div>
-          <div class="voucher-valeur">${valeurTxt}</div>
+          <div class="voucher-code">{% trans "${v.code}" %}</div>
+          <div class="voucher-valeur">{% trans "${valeurTxt}" %}</div>
           <div class="voucher-meta">
             <i class="fas fa-tag"></i>${v.programme_nom}<br>
             <i class="fas fa-calendar-alt"></i>Expire le ${fmtDate(v.date_expiration)}

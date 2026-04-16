@@ -1,4 +1,5 @@
 {% extends 'dashboard/base.html' %}
+{% load i18n %}
 {% block title %}Acheteurs — Superadmin{% endblock %}
 {% block sidebar_nav %}{% include 'dashboard/superadmin_sidebar.html' with active='acheteurs' %}{% endblock %}
 {% block page_title %}Acheteurs{% endblock %}
@@ -74,10 +75,10 @@
 <!-- Modal détail acheteur -->
 <div class="modal-overlay" id="acheteur-modal">
   <div class="modal-box">
-    <h3 id="modal-title">Profil acheteur</h3>
+    <h3 id="modal-title">{% trans "Profil acheteur" %}</h3>
     <div id="modal-detail"></div>
     <div class="modal-actions">
-      <button type="button" class="btn-cancel" onclick="closeModal()">Fermer</button>
+      <button type="button" class="btn-cancel" onclick="closeModal()">{% trans "Fermer" %}</button>
       <button type="button" class="btn-save" id="btn-toggle-actif" onclick="toggleActif()"></button>
     </div>
   </div>
@@ -86,38 +87,38 @@
 <div class="toolbar">
   <div class="search-box">
     <i class="fas fa-search" style="color:var(--text-muted)"></i>
-    <input type="text" id="search-input" placeholder="Nom, email, organisation..." oninput="debouncedSearch()">
+    <input type="text" id="search-input" placeholder="{% trans 'Nom, email, organisation...' %}" oninput="debouncedSearch()">
   </div>
   <select id="type-filter" class="filter-btn" style="appearance:none;padding-right:24px" onchange="load()">
-    <option value="">Tous les types</option>
-    <option value="particulier">Particulier</option>
-    <option value="grossiste">Grossiste</option>
-    <option value="detaillant">Détaillant</option>
-    <option value="cooperative">Coopérative</option>
-    <option value="institution">Institution / ONG</option>
-    <option value="restaurant">Restaurant / Hôtel</option>
+    <option value="">{% trans "Tous les types" %}</option>
+    <option value="particulier">{% trans "Particulier" %}</option>
+    <option value="grossiste">{% trans "Grossiste" %}</option>
+    <option value="detaillant">{% trans "Détaillant" %}</option>
+    <option value="cooperative">{% trans "Coopérative" %}</option>
+    <option value="institution">{% trans "Institution / ONG" %}</option>
+    <option value="restaurant">{% trans "Restaurant / Hôtel" %}</option>
   </select>
 </div>
 
 <div class="table-wrap">
-  <div class="empty-state" id="tbl-loading"><i class="fas fa-spinner fa-spin"></i> Chargement...</div>
+  <div class="empty-state" id="tbl-loading"><i class="fas fa-spinner fa-spin"></i> {% trans "Chargement..." %}</div>
   <table id="tbl" style="display:none">
     <thead>
       <tr>
-        <th>Acheteur</th>
-        <th>Type</th>
-        <th>Organisation</th>
-        <th>Département</th>
-        <th>Commandes</th>
-        <th>Total dépensé</th>
-        <th>Statut</th>
-        <th>Inscrit le</th>
-        <th>Actions</th>
+        <th>{% trans "Acheteur" %}</th>
+        <th>{% trans "Type" %}</th>
+        <th>{% trans "Organisation" %}</th>
+        <th>{% trans "Département" %}</th>
+        <th>{% trans "Commandes" %}</th>
+        <th>{% trans "Total dépensé" %}</th>
+        <th>{% trans "Statut" %}</th>
+        <th>{% trans "Inscrit le" %}</th>
+        <th>{% trans "Actions" %}</th>
       </tr>
     </thead>
     <tbody id="tbody"></tbody>
   </table>
-  <div class="empty-state" id="tbl-empty" style="display:none">Aucun acheteur trouvé.</div>
+  <div class="empty-state" id="tbl-empty" style="display:none">{% trans "Aucun acheteur trouvé." %}</div>
 </div>
 {% endblock %}
 
@@ -166,19 +167,19 @@ async function load() {
     tbody.innerHTML += `
       <tr id="row-${a.id}">
         <td style="display:flex;align-items:center;gap:10px">
-          <div class="user-avatar">${initiale}</div>
-          <div><div style="font-weight:600">${a.full_name}</div><div style="font-size:11px;color:var(--text-muted)">${a.email}</div></div>
+          <div class="user-avatar">{% trans "${initiale}" %}</div>
+          <div><div style="font-weight:600">{% trans "${a.full_name}" %}</div><div style="font-size:11px;color:var(--text-muted)">{% trans "${a.email}" %}</div></div>
         </td>
-        <td><span class="badge ${TYPE_BADGES[a.type_acheteur]||'badge-particulier'}">${a.type_label}</span></td>
-        <td style="color:var(--text-muted)">${a.nom_organisation||'—'}</td>
-        <td style="color:var(--text-muted)">${a.departement||'—'}</td>
-        <td><strong>${a.total_commandes}</strong></td>
-        <td style="font-weight:600">${fmt(a.total_depense)} HTG</td>
+        <td><span class="badge ${TYPE_BADGES[a.type_acheteur]||'badge-particulier'}">{% trans "${a.type_label}" %}</span></td>
+        <td style="color:var(--text-muted)">{% trans "${a.nom_organisation||'—'}" %}</td>
+        <td style="color:var(--text-muted)">{% trans "${a.departement||'—'}" %}</td>
+        <td><strong>{% trans "${a.total_commandes}" %}</strong></td>
+        <td style="font-weight:600">{% trans "${fmt(a.total_depense)} HTG" %}</td>
         <td><span class="status-dot ${a.is_active?'dot-green':'dot-red'}"></span>${a.is_active?'Actif':'Inactif'}</td>
-        <td style="font-size:12px;color:var(--text-muted)">${fdate(a.created_at)}</td>
+        <td style="font-size:12px;color:var(--text-muted)">{% trans "${fdate(a.created_at)}" %}</td>
         <td>
           <button class="action-btn" style="padding:5px 12px;border-radius:6px;font-size:11px;font-weight:700;border:1px solid var(--border);background:var(--bg);cursor:pointer" onclick="openDetail(${a.id})">
-            <i class="fas fa-eye"></i> Détail
+            <i class="fas fa-eye"></i> {% trans "Détail" %}
           </button>
         </td>
       </tr>`;
@@ -196,14 +197,14 @@ async function openDetail(id) {
 
   document.getElementById('modal-detail').innerHTML = `
     <div class="detail-grid">
-      <div class="detail-item"><div class="lbl">Nom complet</div>${a.full_name}</div>
-      <div class="detail-item"><div class="lbl">Email</div>${a.email}</div>
-      <div class="detail-item"><div class="lbl">Téléphone</div>${a.telephone||'—'}</div>
-      <div class="detail-item"><div class="lbl">Type</div>${TYPE_LABELS[a.type_acheteur]||a.type_acheteur}</div>
-      <div class="detail-item"><div class="lbl">Organisation</div>${a.nom_organisation||'—'}</div>
-      <div class="detail-item"><div class="lbl">Département</div>${a.departement||'—'}</div>
-      <div class="detail-item"><div class="lbl">Total commandes</div><strong>${a.total_commandes}</strong></div>
-      <div class="detail-item"><div class="lbl">Total dépensé</div><strong>${Number(a.total_depense).toLocaleString('fr-FR')} HTG</strong></div>
+      <div class="detail-item"><div class="lbl">{% trans "Nom complet" %}</div>${a.full_name}</div>
+      <div class="detail-item"><div class="lbl">{% trans "Email" %}</div>${a.email}</div>
+      <div class="detail-item"><div class="lbl">{% trans "Téléphone" %}</div>${a.telephone||'—'}</div>
+      <div class="detail-item"><div class="lbl">{% trans "Type" %}</div>${TYPE_LABELS[a.type_acheteur]||a.type_acheteur}</div>
+      <div class="detail-item"><div class="lbl">{% trans "Organisation" %}</div>${a.nom_organisation||'—'}</div>
+      <div class="detail-item"><div class="lbl">{% trans "Département" %}</div>${a.departement||'—'}</div>
+      <div class="detail-item"><div class="lbl">{% trans "Total commandes" %}</div><strong>{% trans "${a.total_commandes}" %}</strong></div>
+      <div class="detail-item"><div class="lbl">{% trans "Total dépensé" %}</div><strong>{% trans "${Number(a.total_depense).toLocaleString('fr-FR')} HTG" %}</strong></div>
     </div>`;
 
   const btn = document.getElementById('btn-toggle-actif');

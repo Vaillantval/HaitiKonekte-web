@@ -1,4 +1,5 @@
 {% extends 'dashboard/base.html' %}
+{% load i18n %}
 {% block title %}Commandes — Superadmin{% endblock %}
 {% block sidebar_nav %}{% include 'dashboard/superadmin_sidebar.html' with active='commandes' %}{% endblock %}
 {% block page_title %}Commandes{% endblock %}
@@ -86,7 +87,7 @@
 <div class="drawer-overlay" id="overlay" onclick="closeDrawer()"></div>
 <div class="drawer" id="drawer">
   <div class="drawer-header">
-    <h3 id="drawer-title">Commande</h3>
+    <h3 id="drawer-title">{% trans "Commande" %}</h3>
     <button class="drawer-close" onclick="closeDrawer()"><i class="fas fa-times"></i></button>
   </div>
   <div class="drawer-body" id="drawer-body"><div style="text-align:center;padding:40px;color:var(--text-muted)"><i class="fas fa-spinner fa-spin" style="font-size:24px"></i></div></div>
@@ -96,36 +97,36 @@
 <div class="toolbar">
   <div class="search-box">
     <i class="fas fa-search" style="color:var(--text-muted)"></i>
-    <input type="text" id="search-input" placeholder="N° commande, acheteur..." oninput="debouncedSearch()">
+    <input type="text" id="search-input" placeholder="{% trans 'N° commande, acheteur...' %}" oninput="debouncedSearch()">
   </div>
-  <button class="filter-btn active" data-statut="" onclick="setFilter(this)">Toutes</button>
-  <button class="filter-btn" data-statut="en_attente" onclick="setFilter(this)">En attente</button>
-  <button class="filter-btn" data-statut="confirmee" onclick="setFilter(this)">Confirmées</button>
-  <button class="filter-btn" data-statut="en_preparation" onclick="setFilter(this)">Préparation</button>
-  <button class="filter-btn" data-statut="prete" onclick="setFilter(this)">Prêtes</button>
-  <button class="filter-btn" data-statut="en_collecte" onclick="setFilter(this)">Collecte</button>
-  <button class="filter-btn" data-statut="livree" onclick="setFilter(this)">Livrées</button>
-  <button class="filter-btn" data-statut="annulee" onclick="setFilter(this)">Annulées</button>
+  <button class="filter-btn active" data-statut="" onclick="setFilter(this)">{% trans "Toutes" %}</button>
+  <button class="filter-btn" data-statut="en_attente" onclick="setFilter(this)">{% trans "En attente" %}</button>
+  <button class="filter-btn" data-statut="confirmee" onclick="setFilter(this)">{% trans "Confirmées" %}</button>
+  <button class="filter-btn" data-statut="en_preparation" onclick="setFilter(this)">{% trans "Préparation" %}</button>
+  <button class="filter-btn" data-statut="prete" onclick="setFilter(this)">{% trans "Prêtes" %}</button>
+  <button class="filter-btn" data-statut="en_collecte" onclick="setFilter(this)">{% trans "Collecte" %}</button>
+  <button class="filter-btn" data-statut="livree" onclick="setFilter(this)">{% trans "Livrées" %}</button>
+  <button class="filter-btn" data-statut="annulee" onclick="setFilter(this)">{% trans "Annulées" %}</button>
 </div>
 
 <div class="table-wrap">
-  <div class="empty-state" id="tbl-loading"><i class="fas fa-spinner fa-spin"></i> Chargement...</div>
+  <div class="empty-state" id="tbl-loading"><i class="fas fa-spinner fa-spin"></i> {% trans "Chargement..." %}</div>
   <table id="tbl" style="display:none">
     <thead>
       <tr>
-        <th>N° Commande</th>
-        <th>Acheteur</th>
-        <th>Producteur</th>
-        <th>Total</th>
-        <th>Paiement</th>
-        <th>Statut</th>
-        <th>Date</th>
-        <th>Actions</th>
+        <th>{% trans "N° Commande" %}</th>
+        <th>{% trans "Acheteur" %}</th>
+        <th>{% trans "Producteur" %}</th>
+        <th>{% trans "Total" %}</th>
+        <th>{% trans "Paiement" %}</th>
+        <th>{% trans "Statut" %}</th>
+        <th>{% trans "Date" %}</th>
+        <th>{% trans "Actions" %}</th>
       </tr>
     </thead>
     <tbody id="tbody"></tbody>
   </table>
-  <div class="empty-state" id="tbl-empty" style="display:none">Aucune commande trouvée.</div>
+  <div class="empty-state" id="tbl-empty" style="display:none">{% trans "Aucune commande trouvée." %}</div>
 </div>
 {% endblock %}
 
@@ -167,7 +168,7 @@ function sBadge(statut, label) {
 }
 function pBadge(statut, label) {
   const s = PAIEMENT_S[statut] || { bg:'#eee', color:'#888' };
-  return `<span style="display:inline-block;padding:2px 8px;border-radius:12px;font-size:11px;font-weight:700;background:${s.bg};color:${s.color}">${label}</span>`;
+  return `<span style="display:inline-block;padding:2px 8px;border-radius:12px;font-size:11px;font-weight:700;background:${s.bg};color:${s.color}">{% trans "${label}" %}</span>`;
 }
 function fmt(n) { return Number(n).toLocaleString('fr-FR'); }
 function fdate(iso) { return new Date(iso).toLocaleDateString('fr-FR', {day:'2-digit',month:'short',year:'numeric'}); }
@@ -201,17 +202,17 @@ async function load() {
   tbody.innerHTML = '';
   data.forEach(c => {
     const actions = (ACTIONS_MAP[c.statut] || []).map(a =>
-      `<button class="action-btn ${ACTION_CLASSES[a]}" onclick="doAction('${c.numero_commande}','${a}')">${ACTION_LABELS[a]}</button>`
+      `<button class="action-btn ${ACTION_CLASSES[a]}" onclick="doAction('${c.numero_commande}','${a}')">{% trans "${ACTION_LABELS[a]}" %}</button>`
     ).join(' ');
     tbody.innerHTML += `
       <tr id="row-${c.numero_commande}">
-        <td><strong style="color:var(--green-mid)">${c.numero_commande}</strong></td>
-        <td>${c.acheteur_nom}<br><small style="color:var(--text-muted)">${c.acheteur_tel || ''}</small></td>
-        <td style="color:var(--text-muted)">${c.producteur_nom || '—'}</td>
-        <td style="font-weight:600">${fmt(c.total)} HTG</td>
-        <td>${pBadge(c.statut_paiement, c.paiement_label)}</td>
-        <td>${sBadge(c.statut, c.statut_label)}</td>
-        <td style="color:var(--text-muted);font-size:12px">${fdate(c.created_at)}</td>
+        <td><strong style="color:var(--green-mid)">{% trans "${c.numero_commande}" %}</strong></td>
+        <td>${c.acheteur_nom}<br><small style="color:var(--text-muted)">{% trans "${c.acheteur_tel || ''}" %}</small></td>
+        <td style="color:var(--text-muted)">{% trans "${c.producteur_nom || '—'}" %}</td>
+        <td style="font-weight:600">{% trans "${fmt(c.total)} HTG" %}</td>
+        <td>{% trans "${pBadge(c.statut_paiement, c.paiement_label)}" %}</td>
+        <td>{% trans "${sBadge(c.statut, c.statut_label)}" %}</td>
+        <td style="color:var(--text-muted);font-size:12px">{% trans "${fdate(c.created_at)}" %}</td>
         <td><div style="display:flex;gap:4px;flex-wrap:wrap">
           ${actions}
           <button class="action-btn btn-detail" onclick="openDrawer('${c.numero_commande}')"><i class="fas fa-eye"></i></button>
@@ -235,67 +236,67 @@ async function openDrawer(numero) {
   document.getElementById('drawer').classList.add('open');
 
   const r = await fetch(`/api/admin/commandes/${numero}/`, { headers: H });
-  if (!r.ok) { document.getElementById('drawer-body').innerHTML = '<p style="color:var(--red);padding:20px">Erreur.</p>'; return; }
+  if (!r.ok) { document.getElementById('drawer-body').innerHTML = '<p style="color:var(--red);padding:20px">{% trans "Erreur." %}</p>'; return; }
   const c = (await r.json()).data;
 
-  const items = c.details.map(d => `<tr><td>${d.produit}</td><td style="text-align:center">${d.quantite} ${d.unite_vente}</td><td style="text-align:right">${fmt(d.prix_unitaire)} HTG</td><td style="text-align:right;font-weight:600">${fmt(d.sous_total)} HTG</td></tr>`).join('');
-  const hist  = (c.historique || []).map(h => `<div class="hist-item"><strong>${h.statut_avant} → ${h.statut_apres}</strong> · ${h.effectue_par} · ${new Date(h.created_at).toLocaleDateString('fr-FR')}<br><span style="color:var(--text-muted)">${h.commentaire || ''}</span></div>`).join('');
+  const items = c.details.map(d => `<tr><td>{% trans "${d.produit}" %}</td><td style="text-align:center">{% trans "${d.quantite} ${d.unite_vente}" %}</td><td style="text-align:right">{% trans "${fmt(d.prix_unitaire)} HTG" %}</td><td style="text-align:right;font-weight:600">{% trans "${fmt(d.sous_total)} HTG" %}</td></tr>`).join('');
+  const hist  = (c.historique || []).map(h => `<div class="hist-item"><strong>{% trans "${h.statut_avant} → ${h.statut_apres}" %}</strong> · ${h.effectue_par} · ${new Date(h.created_at).toLocaleDateString('fr-FR')}<br><span style="color:var(--text-muted)">{% trans "${h.commentaire || ''}" %}</span></div>`).join('');
 
   document.getElementById('drawer-body').innerHTML = `
     <div class="drawer-section">
-      <div class="drawer-section-title">Statut</div>
-      <div style="display:flex;gap:8px;flex-wrap:wrap">${sBadge(c.statut, c.statut_label)} ${pBadge(c.statut_paiement, c.paiement_label)}</div>
+      <div class="drawer-section-title">{% trans "Statut" %}</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">{% trans "${sBadge(c.statut, c.statut_label)} ${pBadge(c.statut_paiement, c.paiement_label)}" %}</div>
     </div>
     <div class="drawer-section">
-      <div class="drawer-section-title">Acheteur</div>
-      <div class="drawer-row"><span class="label">Nom</span><span>${c.acheteur_nom}</span></div>
-      <div class="drawer-row"><span class="label">Email</span><span>${c.acheteur_email}</span></div>
-      <div class="drawer-row"><span class="label">Téléphone</span><span>${c.acheteur_tel || '—'}</span></div>
+      <div class="drawer-section-title">{% trans "Acheteur" %}</div>
+      <div class="drawer-row"><span class="label">{% trans "Nom" %}</span><span>{% trans "${c.acheteur_nom}" %}</span></div>
+      <div class="drawer-row"><span class="label">{% trans "Email" %}</span><span>{% trans "${c.acheteur_email}" %}</span></div>
+      <div class="drawer-row"><span class="label">{% trans "Téléphone" %}</span><span>{% trans "${c.acheteur_tel || '—'}" %}</span></div>
     </div>
     <div class="drawer-section">
-      <div class="drawer-section-title">Producteur</div>
-      <div class="drawer-row"><span class="label">Nom</span><span>${c.producteur_nom || '—'}</span></div>
-      <div class="drawer-row"><span class="label">Commune</span><span>${c.producteur_commune || '—'}</span></div>
+      <div class="drawer-section-title">{% trans "Producteur" %}</div>
+      <div class="drawer-row"><span class="label">{% trans "Nom" %}</span><span>{% trans "${c.producteur_nom || '—'}" %}</span></div>
+      <div class="drawer-row"><span class="label">{% trans "Commune" %}</span><span>{% trans "${c.producteur_commune || '—'}" %}</span></div>
     </div>
     <div class="drawer-section">
-      <div class="drawer-section-title">Articles</div>
-      <table class="detail-table"><thead><tr><th>Produit</th><th style="text-align:center">Qté</th><th style="text-align:right">Prix</th><th style="text-align:right">Total</th></tr></thead><tbody>${items}</tbody></table>
+      <div class="drawer-section-title">{% trans "Articles" %}</div>
+      <table class="detail-table"><thead><tr><th>{% trans "Produit" %}</th><th style="text-align:center">{% trans "Qté" %}</th><th style="text-align:right">{% trans "Prix" %}</th><th style="text-align:right">{% trans "Total" %}</th></tr></thead><tbody>${items}</tbody></table>
     </div>
     <div class="drawer-section">
-      <div class="drawer-section-title">Totaux</div>
-      <div class="drawer-row"><span class="label">Sous-total</span><span>${fmt(c.sous_total)} HTG</span></div>
-      <div class="drawer-row"><span class="label">Frais livraison</span><span>${fmt(c.frais_livraison)} HTG</span></div>
-      <div class="drawer-row"><span class="label">Remise</span><span>${fmt(c.remise)} HTG</span></div>
-      <div class="drawer-row" style="font-weight:700;border-top:1px solid var(--border);padding-top:8px;margin-top:4px"><span>Total</span><span>${fmt(c.total)} HTG</span></div>
+      <div class="drawer-section-title">{% trans "Totaux" %}</div>
+      <div class="drawer-row"><span class="label">{% trans "Sous-total" %}</span><span>{% trans "${fmt(c.sous_total)} HTG" %}</span></div>
+      <div class="drawer-row"><span class="label">{% trans "Frais livraison" %}</span><span>{% trans "${fmt(c.frais_livraison)} HTG" %}</span></div>
+      <div class="drawer-row"><span class="label">{% trans "Remise" %}</span><span>{% trans "${fmt(c.remise)} HTG" %}</span></div>
+      <div class="drawer-row" style="font-weight:700;border-top:1px solid var(--border);padding-top:8px;margin-top:4px"><span>{% trans "Total" %}</span><span>{% trans "${fmt(c.total)} HTG" %}</span></div>
     </div>
     <div class="drawer-section preuve-section ${c.preuve_paiement ? '' : 'preuve-section--absent'}">
-      <div class="drawer-section-title"><i class="fas fa-receipt" style="margin-right:6px"></i>Preuve de paiement</div>
+      <div class="drawer-section-title"><i class="fas fa-receipt" style="margin-right:6px"></i>{% trans "Preuve de paiement" %}</div>
       ${c.preuve_paiement ? `
-        <p class="preuve-hint">L'acheteur a soumis une preuve de paiement. Cliquez pour l'agrandir.</p>
-        <a href="${c.preuve_paiement}" target="_blank" class="preuve-thumb-link" title="Voir la preuve en plein écran">
-          <img src="${c.preuve_paiement}" class="preuve-thumb" alt="Preuve de paiement">
-          <span class="preuve-overlay"><i class="fas fa-expand-alt"></i> Voir la preuve</span>
+        <p class="preuve-hint">{% trans "L'acheteur a soumis une preuve de paiement. Cliquez pour l'agrandir." %}</p>
+        <a href="${c.preuve_paiement}" target="_blank" class="preuve-thumb-link" title="{% trans 'Voir la preuve en plein écran' %}">
+          <img src="${c.preuve_paiement}" class="preuve-thumb" alt="{% trans 'Preuve de paiement' %}">
+          <span class="preuve-overlay"><i class="fas fa-expand-alt"></i> {% trans "Voir la preuve" %}</span>
         </a>
       ` : `
         <div class="preuve-absent">
           <i class="fas fa-image" style="font-size:28px;color:var(--text-muted);margin-bottom:8px"></i>
-          <p>Aucune preuve de paiement soumise pour cette commande.</p>
+          <p>{% trans "Aucune preuve de paiement soumise pour cette commande." %}</p>
         </div>
       `}
     </div>
     <div class="drawer-section">
-      <div class="drawer-section-title">Paiement & Livraison</div>
-      <div class="drawer-row"><span class="label">Méthode</span><span>${c.methode_paiement_label}</span></div>
-      <div class="drawer-row"><span class="label">Mode livraison</span><span>${c.mode_livraison}</span></div>
-      ${c.adresse_livraison ? `<div class="drawer-row"><span class="label">Adresse</span><span>${c.adresse_livraison}${c.ville_livraison ? ', '+c.ville_livraison : ''}</span></div>` : ''}
+      <div class="drawer-section-title">{% trans "Paiement & Livraison" %}</div>
+      <div class="drawer-row"><span class="label">{% trans "Méthode" %}</span><span>{% trans "${c.methode_paiement_label}" %}</span></div>
+      <div class="drawer-row"><span class="label">{% trans "Mode livraison" %}</span><span>{% trans "${c.mode_livraison}" %}</span></div>
+      ${c.adresse_livraison ? `<div class="drawer-row"><span class="label">{% trans "Adresse" %}</span><span>{% trans "${c.adresse_livraison}${c.ville_livraison ? ', '+c.ville_livraison : ''}" %}</span></div>` : ''}
     </div>
-    ${hist ? `<div class="drawer-section"><div class="drawer-section-title">Historique</div>${hist}</div>` : ''}
+    ${hist ? `<div class="drawer-section"><div class="drawer-section-title">{% trans "Historique" %}</div>${hist}</div>` : ''}
   `;
 
   const aa = document.getElementById('drawer-actions');
   aa.innerHTML = '';
   (ACTIONS_MAP[c.statut] || []).forEach(a => {
-    aa.innerHTML += `<button class="action-btn ${ACTION_CLASSES[a]}" onclick="doAction('${c.numero_commande}','${a}')">${ACTION_LABELS[a]}</button>`;
+    aa.innerHTML += `<button class="action-btn ${ACTION_CLASSES[a]}" onclick="doAction('${c.numero_commande}','${a}')">{% trans "${ACTION_LABELS[a]}" %}</button>`;
   });
 }
 

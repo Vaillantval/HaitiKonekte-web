@@ -1,31 +1,32 @@
 {% extends 'dashboard/base.html' %}
+{% load i18n %}
 
 {% block title %}Mon Rapport — Producteur{% endblock %}
 
 {% block sidebar_nav %}
-  <div class="nav-section-label">Navigation</div>
+  <div class="nav-section-label">{% trans "Navigation" %}</div>
   <a href="/dashboard/producteur/" class="nav-item">
-    <i class="fas fa-th-large"></i> Vue d'ensemble
+    <i class="fas fa-th-large"></i> {% trans "Vue d'ensemble" %}
   </a>
   <a href="/dashboard/producteur/commandes/" class="nav-item">
-    <i class="fas fa-inbox"></i> Commandes reçues
+    <i class="fas fa-inbox"></i> {% trans "Commandes reçues" %}
   </a>
   <a href="/dashboard/producteur/collectes/" class="nav-item">
-    <i class="fas fa-truck"></i> Mes collectes
+    <i class="fas fa-truck"></i> {% trans "Mes collectes" %}
   </a>
   <a href="/dashboard/producteur/catalogue/" class="nav-item">
-    <i class="fas fa-seedling"></i> Mon catalogue
+    <i class="fas fa-seedling"></i> {% trans "Mon catalogue" %}
   </a>
   <a href="/" class="nav-item">
-    <i class="fas fa-store"></i> Catalogue public
+    <i class="fas fa-store"></i> {% trans "Catalogue public" %}
   </a>
 
-  <div class="nav-section-label">Compte</div>
+  <div class="nav-section-label">{% trans "Compte" %}</div>
   <a href="/dashboard/producteur/profil/" class="nav-item">
-    <i class="fas fa-user-edit"></i> Mon profil
+    <i class="fas fa-user-edit"></i> {% trans "Mon profil" %}
   </a>
   <a href="/dashboard/producteur/rapport/" class="nav-item active">
-    <i class="fas fa-file-alt"></i> Mon rapport
+    <i class="fas fa-file-alt"></i> {% trans "Mon rapport" %}
   </a>
 {% endblock %}
 
@@ -64,38 +65,38 @@
 {% block content %}
 <div class="export-grid">
   <div class="exp-card">
-    <h2><i class="fas fa-file-export" style="color:#27ae60; margin-right:8px;"></i>Paramètres d'Export</h2>
+    <h2><i class="fas fa-file-export" style="color:#27ae60; margin-right:8px;"></i>{% trans "Paramètres d'Export" %}</h2>
     <form method="post" action="/dashboard/producteur/rapport/" id="export-form">
       {% csrf_token %}
       <input type="hidden" name="_jwt" id="jwt-field">
 
       <div class="form-group">
-        <label for="start_date">Date de début</label>
+        <label for="start_date">{% trans "Date de début" %}</label>
         <input type="date" id="start_date" name="start_date" value="{{ default_start|date:'Y-m-d' }}" required>
-        <small>Par défaut : 30 jours avant aujourd'hui</small>
+        <small>{% trans "Par défaut : 30 jours avant aujourd'hui" %}</small>
       </div>
 
       <div class="form-group">
-        <label for="end_date">Date de fin</label>
+        <label for="end_date">{% trans "Date de fin" %}</label>
         <input type="date" id="end_date" name="end_date" value="{{ today|date:'Y-m-d' }}" required>
-        <small>Par défaut : Aujourd'hui</small>
+        <small>{% trans "Par défaut : Aujourd'hui" %}</small>
       </div>
 
       <div class="form-group">
-        <label>Format d'export</label>
+        <label>{% trans "Format d'export" %}</label>
         <div class="radio-group">
           <label class="radio-option">
             <input type="radio" name="format" value="pdf" checked>
             <span class="radio-label">
-              <strong><i class="fas fa-file-pdf" style="color:#e74c3c; margin-right:6px;"></i>PDF</strong>
-              <small>Rapport professionnel avec graphiques</small>
+              <strong><i class="fas fa-file-pdf" style="color:#e74c3c; margin-right:6px;"></i>{% trans "PDF" %}</strong>
+              <small>{% trans "Rapport professionnel avec graphiques" %}</small>
             </span>
           </label>
           <label class="radio-option">
             <input type="radio" name="format" value="csv">
             <span class="radio-label">
-              <strong><i class="fas fa-file-csv" style="color:#27ae60; margin-right:6px;"></i>CSV</strong>
-              <small>Données brutes, compatible Excel</small>
+              <strong><i class="fas fa-file-csv" style="color:#27ae60; margin-right:6px;"></i>{% trans "CSV" %}</strong>
+              <small>{% trans "Données brutes, compatible Excel" %}</small>
             </span>
           </label>
         </div>
@@ -103,48 +104,48 @@
 
       <div class="form-actions">
         <button type="submit" class="btn btn-primary" id="btn-export">
-          <i class="fas fa-download"></i> Télécharger mon Rapport
+          <i class="fas fa-download"></i> {% trans "Télécharger mon Rapport" %}
         </button>
         <a href="/dashboard/producteur/" class="btn btn-secondary">
-          <i class="fas fa-arrow-left"></i> Retour
+          <i class="fas fa-arrow-left"></i> {% trans "Retour" %}
         </a>
       </div>
       <div id="export-loading">
         <div class="spinner"></div>
-        <span>Génération en cours…</span>
+        <span>{% trans "Génération en cours…" %}</span>
       </div>
     </form>
   </div>
 
   <div class="exp-card" style="align-self: start; position: sticky; top: 80px;">
-    <h2><i class="fas fa-info-circle" style="color:#27ae60; margin-right:8px;"></i>Contenu du rapport</h2>
+    <h2><i class="fas fa-info-circle" style="color:#27ae60; margin-right:8px;"></i>{% trans "Contenu du rapport" %}</h2>
     <div class="info-section">
-      <h3><i class="fas fa-tachometer-alt"></i> Tableau de bord</h3>
+      <h3><i class="fas fa-tachometer-alt"></i> {% trans "Tableau de bord" %}</h3>
       <ul>
-        <li>Commandes totales sur la période</li>
-        <li>Chiffre d'affaires encaissé</li>
-        <li>Commandes par statut (livrées, en cours…)</li>
-        <li>Produits actifs &amp; alertes stock</li>
+        <li>{% trans "Commandes totales sur la période" %}</li>
+        <li>{% trans "Chiffre d'affaires encaissé" %}</li>
+        <li>{% trans "Commandes par statut (livrées, en cours…)" %}</li>
+        <li>{% trans "Produits actifs &amp; alertes stock" %}</li>
       </ul>
     </div>
     <div class="info-section">
-      <h3><i class="fas fa-chart-bar"></i> Graphiques</h3>
+      <h3><i class="fas fa-chart-bar"></i> {% trans "Graphiques" %}</h3>
       <ul>
-        <li>CA mensuel sur 12 mois</li>
-        <li>Répartition des statuts de commandes</li>
+        <li>{% trans "CA mensuel sur 12 mois" %}</li>
+        <li>{% trans "Répartition des statuts de commandes" %}</li>
       </ul>
     </div>
     <div class="info-section">
-      <h3><i class="fas fa-boxes"></i> Catalogue &amp; Stock</h3>
+      <h3><i class="fas fa-boxes"></i> {% trans "Catalogue &amp; Stock" %}</h3>
       <ul>
-        <li>Top 10 produits par CA</li>
-        <li>État du stock (disponible / seuil alerte)</li>
+        <li>{% trans "Top 10 produits par CA" %}</li>
+        <li>{% trans "État du stock (disponible / seuil alerte)" %}</li>
       </ul>
     </div>
     <div class="info-section">
-      <h3><i class="fas fa-clipboard-list"></i> Commandes récentes</h3>
+      <h3><i class="fas fa-clipboard-list"></i> {% trans "Commandes récentes" %}</h3>
       <ul>
-        <li>15 dernières commandes avec statut</li>
+        <li>{% trans "15 dernières commandes avec statut" %}</li>
       </ul>
     </div>
   </div>

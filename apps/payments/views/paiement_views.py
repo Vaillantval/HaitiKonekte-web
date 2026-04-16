@@ -18,6 +18,7 @@ from apps.payments.serializers import (
 from apps.payments.services.paiement_service import PaiementService
 from apps.payments.services.plopplop_service import PlopplopService
 from apps.orders.models import Commande
+from django.utils.translation import gettext as _
 
 
 # ── POST /api/payments/initier/ ─────────────────────────────────
@@ -46,19 +47,19 @@ def initier_paiement(request):
         acheteur = request.user.profil_acheteur
         if commande.acheteur != acheteur:
             return Response(
-                {'success': False, 'error': "Commande non autorisée."},
+                {'success': False, 'error': _("Commande non autorisée.")},
                 status=status.HTTP_403_FORBIDDEN,
             )
     except Exception:
         return Response(
-            {'success': False, 'error': "Profil acheteur requis."},
+            {'success': False, 'error': _("Profil acheteur requis.")},
             status=status.HTTP_403_FORBIDDEN,
         )
 
     # Vérifier que la commande n'est pas déjà payée
     if commande.statut_paiement == Commande.StatutPaiement.PAYE:
         return Response(
-            {'success': False, 'error': "Cette commande est déjà payée."},
+            {'success': False, 'error': _("Cette commande est déjà payée.")},
             status=status.HTTP_400_BAD_REQUEST,
         )
 
@@ -84,7 +85,7 @@ def initier_paiement(request):
         plopplop = PlopplopService()
         if not plopplop.is_configured():
             return Response(
-                {'success': False, 'error': 'Passerelle de paiement non configurée.'},
+                {'success': False, 'error': _('Passerelle de paiement non configurée.')},
                 status=status.HTTP_503_SERVICE_UNAVAILABLE,
             )
         try:
@@ -136,13 +137,13 @@ def soumettre_preuve(request):
         ).get(pk=paiement_id)
     except Paiement.DoesNotExist:
         return Response(
-            {'success': False, 'error': "Paiement introuvable."},
+            {'success': False, 'error': _("Paiement introuvable.")},
             status=status.HTTP_404_NOT_FOUND,
         )
 
     if paiement.commande.acheteur.user != request.user:
         return Response(
-            {'success': False, 'error': "Paiement non autorisé."},
+            {'success': False, 'error': _("Paiement non autorisé.")},
             status=status.HTTP_403_FORBIDDEN,
         )
 
@@ -202,7 +203,7 @@ def verifier_paiement(request):
         not request.user.is_staff
     ):
         return Response(
-            {'success': False, 'error': "Paiement non autorisé."},
+            {'success': False, 'error': _("Paiement non autorisé.")},
             status=status.HTTP_403_FORBIDDEN,
         )
 
@@ -234,20 +235,20 @@ def mes_paiements(request):
 def plopplop_verify(request):
     """
     Vérifie le statut d'un paiement MonCash/NatCash via Plopplop.
-    Body: { "commande_ref": "CMD-XXXX-XXXXX" }
+    Body: { "commande_ref": _("CMD-XXXX-XXXXX") }
     Appelé depuis la page de retour (JS frontend).
     """
     commande_ref = request.data.get('commande_ref', '').strip()
     if not commande_ref:
         return Response(
-            {'success': False, 'error': 'Référence de commande manquante.'},
+            {'success': False, 'error': _('Référence de commande manquante.')},
             status=status.HTTP_400_BAD_REQUEST,
         )
 
     plopplop = PlopplopService()
     if not plopplop.is_configured():
         return Response(
-            {'success': False, 'error': 'Passerelle de paiement non configurée.'},
+            {'success': False, 'error': _('Passerelle de paiement non configurée.')},
             status=status.HTTP_503_SERVICE_UNAVAILABLE,
         )
 

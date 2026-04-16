@@ -1,6 +1,7 @@
 {% load static %}
+{% load i18n %}
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="{{ LANGUAGE_CODE }}">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -151,10 +152,10 @@
     <div class="container">
       <div class="page-header-inner">
         <div class="breadcrumb">
-          <a href="/">Accueil</a><span>›</span><span>Contact</span>
+          <a href="/">{% trans "Accueil" %}</a><span>›</span><span>{% trans "Contact" %}</span>
         </div>
-        <h1 class="page-title">Contactez-nous</h1>
-        <p class="page-subtitle">Nous sommes là pour répondre à toutes vos questions</p>
+        <h1 class="page-title">{% trans "Contactez-nous" %}</h1>
+        <p class="page-subtitle">{% trans "Nous sommes là pour répondre à toutes vos questions" %}</p>
       </div>
     </div>
   </div>
@@ -183,7 +184,7 @@
 
       <!-- Infos de contact -->
       <div>
-        <h2 class="contact-info-title">Parlons-nous</h2>
+        <h2 class="contact-info-title">{% trans "Parlons-nous" %}</h2>
         <p class="contact-info-desc">
           Vous avez une question sur une commande, un produit, ou souhaitez
           rejoindre la plateforme en tant que producteur ? Notre équipe vous répondra
@@ -194,7 +195,7 @@
         <div class="contact-info-item">
           <div class="contact-info-icon"><i class="fas fa-envelope"></i></div>
           <div>
-            <div class="contact-info-label">Email</div>
+            <div class="contact-info-label">{% trans "Email" %}</div>
             <div class="contact-info-value">
               <a href="mailto:{{ site_settings.email_contact }}">
                 {{ site_settings.email_contact }}
@@ -208,7 +209,7 @@
         <div class="contact-info-item">
           <div class="contact-info-icon"><i class="fas fa-phone"></i></div>
           <div>
-            <div class="contact-info-label">Téléphone</div>
+            <div class="contact-info-label">{% trans "Téléphone" %}</div>
             <div class="contact-info-value">
               <a href="tel:{{ site_settings.telephone }}">{{ site_settings.telephone }}</a>
             </div>
@@ -220,7 +221,7 @@
         <div class="contact-info-item">
           <div class="contact-info-icon" style="background:#25d366"><i class="fab fa-whatsapp"></i></div>
           <div>
-            <div class="contact-info-label">WhatsApp</div>
+            <div class="contact-info-label">{% trans "WhatsApp" %}</div>
             <div class="contact-info-value">
               <a href="https://wa.me/{{ site_settings.whatsapp|cut:' '|cut:'+' }}" target="_blank">
                 {{ site_settings.whatsapp }}
@@ -234,7 +235,7 @@
         <div class="contact-info-item">
           <div class="contact-info-icon"><i class="fas fa-map-marker-alt"></i></div>
           <div>
-            <div class="contact-info-label">Adresse</div>
+            <div class="contact-info-label">{% trans "Adresse" %}</div>
             <div class="contact-info-value">{{ site_settings.adresse }}</div>
           </div>
         </div>
@@ -244,7 +245,7 @@
         <div class="contact-info-item">
           <div class="contact-info-icon"><i class="fas fa-clock"></i></div>
           <div>
-            <div class="contact-info-label">Horaires</div>
+            <div class="contact-info-label">{% trans "Horaires" %}</div>
             <div class="contact-info-value">{{ site_settings.horaires }}</div>
           </div>
         </div>
@@ -252,7 +253,7 @@
 
         <!-- Réseaux sociaux -->
         {% if site_settings.facebook_url or site_settings.instagram_url or site_settings.twitter_url or site_settings.whatsapp %}
-        <div class="social-title">Suivez-nous</div>
+        <div class="social-title">{% trans "Suivez-nous" %}</div>
         <div class="social-links">
           {% if site_settings.facebook_url %}
             <a href="{{ site_settings.facebook_url }}" target="_blank" class="social-btn fb">
@@ -280,8 +281,8 @@
 
       <!-- Formulaire -->
       <div class="contact-form-card">
-        <div class="form-title">Envoyez-nous un message</div>
-        <div class="form-subtitle">Votre message sera enregistré et traité par notre équipe.</div>
+        <div class="form-title">{% trans "Envoyez-nous un message" %}</div>
+        <div class="form-subtitle">{% trans "Votre message sera enregistré et traité par notre équipe." %}</div>
 
         <form method="POST" novalidate>
           {% csrf_token %}
@@ -289,34 +290,34 @@
             <div>
               <label class="form-label">Nom complet <span class="req">*</span></label>
               <input type="text" name="nom" class="form-control"
-                     placeholder="Jean Dupont"
+                     placeholder="{% trans 'Jean Dupont' %}"
                      value="{{ request.POST.nom|default:'' }}" required>
             </div>
             <div>
               <label class="form-label">Email <span class="req">*</span></label>
               <input type="email" name="email" class="form-control"
-                     placeholder="jean@exemple.com"
+                     placeholder="{% trans 'jean@exemple.com' %}"
                      value="{{ request.POST.email|default:'' }}" required>
             </div>
           </div>
           <div class="form-row">
             <div>
-              <label class="form-label">Téléphone</label>
+              <label class="form-label">{% trans "Téléphone" %}</label>
               <input type="tel" name="telephone" class="form-control"
-                     placeholder="+509 XXXX-XXXX"
+                     placeholder="{% trans '+509 XXXX-XXXX' %}"
                      value="{{ request.POST.telephone|default:'' }}">
             </div>
             <div>
               <label class="form-label">Sujet <span class="req">*</span></label>
               <input type="text" name="sujet" class="form-control"
-                     placeholder="Ex: Question sur une commande"
+                     placeholder="{% trans 'Ex: Question sur une commande' %}"
                      value="{{ request.POST.sujet|default:'' }}" required>
             </div>
           </div>
           <div class="form-group">
             <label class="form-label">Message <span class="req">*</span></label>
             <textarea name="message" class="form-control"
-                      placeholder="Décrivez votre demande en détail..." required>{{ request.POST.message|default:'' }}</textarea>
+                      placeholder="{% trans 'Décrivez votre demande en détail...' %}" required>{{ request.POST.message|default:'' }}</textarea>
           </div>
           <button type="submit" class="btn-envoyer">
             <i class="fas fa-paper-plane"></i>
@@ -335,27 +336,27 @@
         <div class="footer-brand">
           <h3>🌾 {{ site_settings.nom_site|default:"Makèt Peyizan" }}</h3>
           <p>{{ site_settings.slogan|default:"Marketplace agricole haïtienne." }}</p>
-          <p class="slogan">« Sòti nan jaden rive lakay »</p>
+          <p class="slogan">{% trans "« Sòti nan jaden rive lakay »" %}</p>
         </div>
         <div class="footer-col">
-          <h4>Navigation</h4>
+          <h4>{% trans "Navigation" %}</h4>
           <ul>
-            <li><a href="/">Accueil</a></li>
-            <li><a href="/#catalogue">Catalogue</a></li>
-            <li><a href="{% url 'core:apropos' %}">À propos</a></li>
-            <li><a href="{% url 'core:faq' %}">FAQ</a></li>
-            <li><a href="{% url 'core:contact' %}">Contact</a></li>
+            <li><a href="/">{% trans "Accueil" %}</a></li>
+            <li><a href="/#catalogue">{% trans "Catalogue" %}</a></li>
+            <li><a href="{% url 'core:apropos' %}">{% trans "À propos" %}</a></li>
+            <li><a href="{% url 'core:faq' %}">{% trans "FAQ" %}</a></li>
+            <li><a href="{% url 'core:contact' %}">{% trans "Contact" %}</a></li>
           </ul>
         </div>
         <div class="footer-col">
-          <h4>Plateforme</h4>
+          <h4>{% trans "Plateforme" %}</h4>
           <ul>
-            <li><a href="/admin/">Administration</a></li>
-            <li><a href="/analytics/dashboard/">Dashboard BI</a></li>
+            <li><a href="/admin/">{% trans "Administration" %}</a></li>
+            <li><a href="/analytics/dashboard/">{% trans "Dashboard BI" %}</a></li>
           </ul>
         </div>
         <div class="footer-col">
-          <h4>Contact rapide</h4>
+          <h4>{% trans "Contact rapide" %}</h4>
           <ul>
             <li><a href="mailto:{{ site_settings.email_contact|default:'info@maketpeyizan.ht' }}"><i class="fas fa-envelope"></i> {{ site_settings.email_contact|default:"info@maketpeyizan.ht" }}</a></li>
             {% if site_settings.telephone %}<li><a href="tel:{{ site_settings.telephone }}"><i class="fas fa-phone"></i> {{ site_settings.telephone }}</a></li>{% endif %}

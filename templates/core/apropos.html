@@ -1,5 +1,6 @@
+{% load i18n %}
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="{{ LANGUAGE_CODE }}">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -226,9 +227,9 @@
     <div class="container">
       <div class="page-header-inner">
         <div class="breadcrumb">
-          <a href="/">Accueil</a>
+          <a href="/">{% trans "Accueil" %}</a>
           <span>›</span>
-          <span>À propos</span>
+          <span>{% trans "À propos" %}</span>
         </div>
         <h1 class="page-title">
           {{ site.a_propos_titre|default:"À propos de nous" }}
@@ -257,7 +258,7 @@
             Notre histoire
           </div>
           <h2 class="apropos-title">
-            La marketplace qui <em style="color:var(--vert-vif)">connecte</em><br>
+            La marketplace qui <em style="color:var(--vert-vif)">{% trans "connecte" %}</em><br>
             champs et foyers
           </h2>
           {% if site.a_propos_contenu %}
@@ -298,22 +299,22 @@
         <div class="stat-card">
           <div class="stat-icon">🌾</div>
           <div class="stat-val">{{ stats.nb_producteurs|default:"0" }}</div>
-          <div class="stat-lbl">Producteurs actifs</div>
+          <div class="stat-lbl">{% trans "Producteurs actifs" %}</div>
         </div>
         <div class="stat-card">
           <div class="stat-icon">🥬</div>
           <div class="stat-val">{{ stats.nb_produits|default:"0" }}</div>
-          <div class="stat-lbl">Produits disponibles</div>
+          <div class="stat-lbl">{% trans "Produits disponibles" %}</div>
         </div>
         <div class="stat-card">
           <div class="stat-icon">📍</div>
           <div class="stat-val">{{ stats.nb_communes|default:"10" }}</div>
-          <div class="stat-lbl">Communes couvertes</div>
+          <div class="stat-lbl">{% trans "Communes couvertes" %}</div>
         </div>
         <div class="stat-card">
           <div class="stat-icon">🏷️</div>
           <div class="stat-val">{{ stats.nb_categories|default:"0" }}</div>
-          <div class="stat-lbl">Catégories agricoles</div>
+          <div class="stat-lbl">{% trans "Catégories agricoles" %}</div>
         </div>
       </div>
     </div>
@@ -327,14 +328,14 @@
         {% if site.a_propos_mission %}
         <div class="mv-card">
           <div class="mv-card-icon">🎯</div>
-          <div class="mv-card-title">Notre mission</div>
+          <div class="mv-card-title">{% trans "Notre mission" %}</div>
           <p class="mv-card-text">{{ site.a_propos_mission }}</p>
         </div>
         {% endif %}
         {% if site.a_propos_vision %}
         <div class="mv-card vision">
           <div class="mv-card-icon">🔭</div>
-          <div class="mv-card-title">Notre vision</div>
+          <div class="mv-card-title">{% trans "Notre vision" %}</div>
           <p class="mv-card-text">{{ site.a_propos_vision }}</p>
         </div>
         {% endif %}
@@ -347,7 +348,7 @@
       <div class="mv-grid">
         <div class="mv-card">
           <div class="mv-card-icon">🎯</div>
-          <div class="mv-card-title">Notre mission</div>
+          <div class="mv-card-title">{% trans "Notre mission" %}</div>
           <p class="mv-card-text">
             Rendre accessible l'agriculture haïtienne en créant un pont
             numérique entre les producteurs des zones rurales et les
@@ -357,7 +358,7 @@
         </div>
         <div class="mv-card vision">
           <div class="mv-card-icon">🔭</div>
-          <div class="mv-card-title">Notre vision</div>
+          <div class="mv-card-title">{% trans "Notre vision" %}</div>
           <p class="mv-card-text">
             Un Haïti où chaque paysan peut vendre sa récolte au juste
             prix et où chaque famille peut accéder à des produits frais
@@ -373,39 +374,39 @@
   <section class="section section-yellow">
     <div class="container">
       <div style="text-align:center; margin-bottom:48px">
-        <span style="display:inline-block; background:var(--blanc); color:var(--vert-fonce); padding:5px 14px; border-radius:50px; font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:.8px; border:1px solid rgba(26,107,47,.15)">Nos valeurs</span>
-        <h2 style="font-family:'Playfair Display',serif; font-size:36px; font-weight:900; color:var(--vert-fonce); margin-top:12px">Ce qui nous guide</h2>
+        <span style="display:inline-block; background:var(--blanc); color:var(--vert-fonce); padding:5px 14px; border-radius:50px; font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:.8px; border:1px solid rgba(26,107,47,.15)">{% trans "Nos valeurs" %}</span>
+        <h2 style="font-family:'Playfair Display',serif; font-size:36px; font-weight:900; color:var(--vert-fonce); margin-top:12px">{% trans "Ce qui nous guide" %}</h2>
       </div>
       <div class="valeurs-grid">
         <div class="valeur-card">
           <div class="valeur-icon"><i class="fas fa-handshake"></i></div>
-          <div class="valeur-title">Équité</div>
-          <p class="valeur-text">Prix justes pour les producteurs, transparence totale pour les acheteurs.</p>
+          <div class="valeur-title">{% trans "Équité" %}</div>
+          <p class="valeur-text">{% trans "Prix justes pour les producteurs, transparence totale pour les acheteurs." %}</p>
         </div>
         <div class="valeur-card">
           <div class="valeur-icon"><i class="fas fa-seedling"></i></div>
-          <div class="valeur-title">Durabilité</div>
-          <p class="valeur-text">Soutien à l'agriculture locale et aux pratiques respectueuses de l'environnement.</p>
+          <div class="valeur-title">{% trans "Durabilité" %}</div>
+          <p class="valeur-text">{% trans "Soutien à l'agriculture locale et aux pratiques respectueuses de l'environnement." %}</p>
         </div>
         <div class="valeur-card">
           <div class="valeur-icon"><i class="fas fa-qrcode"></i></div>
-          <div class="valeur-title">Traçabilité</div>
-          <p class="valeur-text">QR code sur chaque produit pour connaître son origine exacte.</p>
+          <div class="valeur-title">{% trans "Traçabilité" %}</div>
+          <p class="valeur-text">{% trans "QR code sur chaque produit pour connaître son origine exacte." %}</p>
         </div>
         <div class="valeur-card">
           <div class="valeur-icon"><i class="fas fa-mobile-alt"></i></div>
-          <div class="valeur-title">Accessibilité</div>
-          <p class="valeur-text">Paiement MonCash, NatCash ou virement — adapté à la réalité haïtienne.</p>
+          <div class="valeur-title">{% trans "Accessibilité" %}</div>
+          <p class="valeur-text">{% trans "Paiement MonCash, NatCash ou virement — adapté à la réalité haïtienne." %}</p>
         </div>
         <div class="valeur-card">
           <div class="valeur-icon"><i class="fas fa-users"></i></div>
-          <div class="valeur-title">Communauté</div>
-          <p class="valeur-text">Un réseau de peyizan solidaires qui partagent savoirs et ressources.</p>
+          <div class="valeur-title">{% trans "Communauté" %}</div>
+          <p class="valeur-text">{% trans "Un réseau de peyizan solidaires qui partagent savoirs et ressources." %}</p>
         </div>
         <div class="valeur-card">
           <div class="valeur-icon"><i class="fas fa-chart-line"></i></div>
-          <div class="valeur-title">Impact</div>
-          <p class="valeur-text">Chaque commande contribue directement au revenu des familles rurales.</p>
+          <div class="valeur-title">{% trans "Impact" %}</div>
+          <p class="valeur-text">{% trans "Chaque commande contribue directement au revenu des familles rurales." %}</p>
         </div>
       </div>
     </div>
@@ -414,14 +415,14 @@
   <!-- CTA -->
   <section class="cta-banner">
     <div class="container">
-      <h2 class="cta-title">Rejoignez le mouvement <em>peyizan</em></h2>
-      <p class="cta-desc">Producteur ou acheteur — votre place est ici.</p>
+      <h2 class="cta-title">Rejoignez le mouvement <em>{% trans "peyizan" %}</em></h2>
+      <p class="cta-desc">{% trans "Producteur ou acheteur — votre place est ici." %}</p>
       <div class="cta-actions">
         <a href="/" class="btn-cta-primary">
-          <i class="fas fa-store"></i> Voir le catalogue
+          <i class="fas fa-store"></i> {% trans "Voir le catalogue" %}
         </a>
         <a href="{% url 'core:contact' %}" class="btn-cta-outline">
-          <i class="fas fa-envelope"></i> Nous contacter
+          <i class="fas fa-envelope"></i> {% trans "Nous contacter" %}
         </a>
       </div>
     </div>
@@ -434,28 +435,28 @@
         <div class="footer-brand">
           <h3>🌾 {{ site_settings.nom_site|default:"Makèt Peyizan" }}</h3>
           <p>{{ site_settings.slogan|default:"Marketplace agricole haïtienne." }}</p>
-          <p class="slogan">« Sòti nan jaden rive lakay »</p>
+          <p class="slogan">{% trans "« Sòti nan jaden rive lakay »" %}</p>
         </div>
         <div class="footer-col">
-          <h4>Navigation</h4>
+          <h4>{% trans "Navigation" %}</h4>
           <ul>
-            <li><a href="/">Accueil</a></li>
-            <li><a href="/#catalogue">Catalogue</a></li>
-            <li><a href="{% url 'core:apropos' %}">À propos</a></li>
-            <li><a href="{% url 'core:faq' %}">FAQ</a></li>
-            <li><a href="{% url 'core:contact' %}">Contact</a></li>
+            <li><a href="/">{% trans "Accueil" %}</a></li>
+            <li><a href="/#catalogue">{% trans "Catalogue" %}</a></li>
+            <li><a href="{% url 'core:apropos' %}">{% trans "À propos" %}</a></li>
+            <li><a href="{% url 'core:faq' %}">{% trans "FAQ" %}</a></li>
+            <li><a href="{% url 'core:contact' %}">{% trans "Contact" %}</a></li>
           </ul>
         </div>
         <div class="footer-col">
-          <h4>Plateforme</h4>
+          <h4>{% trans "Plateforme" %}</h4>
           <ul>
-            <li><a href="/admin/">Administration</a></li>
-            <li><a href="/analytics/dashboard/">Dashboard BI</a></li>
-            <li><a href="/api/schema/swagger-ui/">API Docs</a></li>
+            <li><a href="/admin/">{% trans "Administration" %}</a></li>
+            <li><a href="/analytics/dashboard/">{% trans "Dashboard BI" %}</a></li>
+            <li><a href="/api/schema/swagger-ui/">{% trans "API Docs" %}</a></li>
           </ul>
         </div>
         <div class="footer-col">
-          <h4>Contact</h4>
+          <h4>{% trans "Contact" %}</h4>
           <ul>
             <li><a href="mailto:{{ site_settings.email_contact|default:'info@maketpeyizan.ht' }}"><i class="fas fa-envelope"></i> {{ site_settings.email_contact|default:"info@maketpeyizan.ht" }}</a></li>
             {% if site_settings.telephone %}<li><a href="tel:{{ site_settings.telephone }}"><i class="fas fa-phone"></i> {{ site_settings.telephone }}</a></li>{% endif %}

@@ -1,26 +1,27 @@
 from django.db import models
 from django.conf import settings
+from django.utils.translation import gettext_lazy as _
 
 
 class Departement(models.TextChoices):
-    OUEST      = 'ouest',      'Ouest'
-    SUD_EST    = 'sud_est',    'Sud-Est'
-    NORD       = 'nord',       'Nord'
-    NORD_EST   = 'nord_est',   'Nord-Est'
-    ARTIBONITE = 'artibonite', 'Artibonite'
-    CENTRE     = 'centre',     'Centre'
-    SUD        = 'sud',        'Sud'
-    GRAND_ANSE = 'grand_anse', 'Grand-Anse'
-    NORD_OUEST = 'nord_ouest', 'Nord-Ouest'
-    NIPPES     = 'nippes',     'Nippes'
+    OUEST      = 'ouest',      _('Ouest')
+    SUD_EST    = 'sud_est',    _('Sud-Est')
+    NORD       = 'nord',       _('Nord')
+    NORD_EST   = 'nord_est',   _('Nord-Est')
+    ARTIBONITE = 'artibonite', _('Artibonite')
+    CENTRE     = 'centre',     _('Centre')
+    SUD        = 'sud',        _('Sud')
+    GRAND_ANSE = 'grand_anse', _('Grand-Anse')
+    NORD_OUEST = 'nord_ouest', _('Nord-Ouest')
+    NIPPES     = 'nippes',     _('Nippes')
 
 
 class Producteur(models.Model):
     class Statut(models.TextChoices):
-        EN_ATTENTE = 'en_attente', 'En attente de validation'
-        ACTIF      = 'actif',      'Actif'
-        SUSPENDU   = 'suspendu',   'Suspendu'
-        INACTIF    = 'inactif',    'Inactif'
+        EN_ATTENTE = 'en_attente', _('En attente de validation')
+        ACTIF      = 'actif',      _('Actif')
+        SUSPENDU   = 'suspendu',   _('Suspendu')
+        INACTIF    = 'inactif',    _('Inactif')
 
     user             = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='profil_producteur')
     departement      = models.CharField(max_length=20, choices=Departement.choices)
@@ -40,8 +41,8 @@ class Producteur(models.Model):
     updated_at       = models.DateTimeField(auto_now=True)
 
     class Meta:
-        verbose_name        = 'Producteur'
-        verbose_name_plural = 'Producteurs'
+        verbose_name        = _('Producteur')
+        verbose_name_plural = _('Producteurs')
         ordering            = ['-created_at']
 
     def __str__(self):

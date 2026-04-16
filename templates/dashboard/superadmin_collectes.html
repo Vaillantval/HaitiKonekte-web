@@ -1,4 +1,5 @@
 {% extends 'dashboard/base.html' %}
+{% load i18n %}
 {% block title %}Collectes — Superadmin{% endblock %}
 {% block sidebar_nav %}{% include 'dashboard/superadmin_sidebar.html' with active='collectes' %}{% endblock %}
 {% block page_title %}Collectes{% endblock %}
@@ -94,40 +95,40 @@
 <div class="drawer-overlay" id="drawer-overlay" onclick="closeDrawer()"></div>
 <div class="drawer" id="drawer">
   <button class="drawer-close" onclick="closeDrawer()"><i class="fas fa-times"></i></button>
-  <h3 id="drawer-title">Collecte</h3>
+  <h3 id="drawer-title">{% trans "Collecte" %}</h3>
   <div id="drawer-body">
     <div style="text-align:center;padding:32px;color:var(--text-muted)"><i class="fas fa-spinner fa-spin"></i></div>
   </div>
 </div>
 
 <div class="toolbar">
-  <button class="filter-btn active" data-statut="" onclick="setFilter(this)">Toutes</button>
-  <button class="filter-btn" data-statut="planifiee" onclick="setFilter(this)"><i class="fas fa-calendar"></i> Planifiées</button>
-  <button class="filter-btn" data-statut="en_cours" onclick="setFilter(this)"><i class="fas fa-truck"></i> En cours</button>
-  <button class="filter-btn" data-statut="terminee" onclick="setFilter(this)">Terminées</button>
-  <button class="filter-btn" data-statut="annulee" onclick="setFilter(this)">Annulées</button>
-  <button class="btn-new" onclick="openCreate()"><i class="fas fa-plus"></i> Nouvelle collecte</button>
+  <button class="filter-btn active" data-statut="" onclick="setFilter(this)">{% trans "Toutes" %}</button>
+  <button class="filter-btn" data-statut="planifiee" onclick="setFilter(this)"><i class="fas fa-calendar"></i> {% trans "Planifiées" %}</button>
+  <button class="filter-btn" data-statut="en_cours" onclick="setFilter(this)"><i class="fas fa-truck"></i> {% trans "En cours" %}</button>
+  <button class="filter-btn" data-statut="terminee" onclick="setFilter(this)">{% trans "Terminées" %}</button>
+  <button class="filter-btn" data-statut="annulee" onclick="setFilter(this)">{% trans "Annulées" %}</button>
+  <button class="btn-new" onclick="openCreate()"><i class="fas fa-plus"></i> {% trans "Nouvelle collecte" %}</button>
 </div>
 
 <div class="table-wrap">
-  <div class="empty-state" id="tbl-loading"><i class="fas fa-spinner fa-spin"></i> Chargement...</div>
+  <div class="empty-state" id="tbl-loading"><i class="fas fa-spinner fa-spin"></i> {% trans "Chargement..." %}</div>
   <table id="tbl" style="display:none">
     <thead>
       <tr>
-        <th>Référence</th>
-        <th>Zone</th>
-        <th>Point de collecte</th>
-        <th>Collecteur</th>
-        <th>Date planifiée</th>
-        <th>Producteurs</th>
-        <th>Montant</th>
-        <th>Statut</th>
-        <th>Actions</th>
+        <th>{% trans "Référence" %}</th>
+        <th>{% trans "Zone" %}</th>
+        <th>{% trans "Point de collecte" %}</th>
+        <th>{% trans "Collecteur" %}</th>
+        <th>{% trans "Date planifiée" %}</th>
+        <th>{% trans "Producteurs" %}</th>
+        <th>{% trans "Montant" %}</th>
+        <th>{% trans "Statut" %}</th>
+        <th>{% trans "Actions" %}</th>
       </tr>
     </thead>
     <tbody id="tbody"></tbody>
   </table>
-  <div class="empty-state" id="tbl-empty" style="display:none">Aucune collecte trouvée.</div>
+  <div class="empty-state" id="tbl-empty" style="display:none">{% trans "Aucune collecte trouvée." %}</div>
 </div>
 {% endblock %}
 
@@ -152,7 +153,7 @@ const STATUT_P = {
 
 function sBadge(s, label, map) {
   const st = (map||STATUT_C)[s] || { bg:'#eee', color:'#888' };
-  return `<span class="badge" style="background:${st.bg};color:${st.color}">${label}</span>`;
+  return `<span class="badge" style="background:${st.bg};color:${st.color}">{% trans "${label}" %}</span>`;
 }
 function fmt(n) { return Number(n).toLocaleString('fr-FR'); }
 function fdate(s) {
@@ -178,16 +179,16 @@ async function loadOptions() {
 }
 
 function zonesOptions(sel) {
-  return '<option value="">-- Choisir --</option>' + _zones.map(z => `<option value="${z.id}"${sel==z.id?' selected':''}>${z.label}</option>`).join('');
+  return '<option value="">{% trans "-- Choisir --" %}</option>' + _zones.map(z => `<option value="${z.id}"${sel==z.id?' selected':''}>{% trans "${z.label}" %}</option>`).join('');
 }
 function collecteursOptions(sel) {
-  return '<option value="">-- Aucun --</option>' + _collecteurs.map(c => `<option value="${c.id}"${sel==c.id?' selected':''}>${c.label}</option>`).join('');
+  return '<option value="">{% trans "-- Aucun --" %}</option>' + _collecteurs.map(c => `<option value="${c.id}"${sel==c.id?' selected':''}>{% trans "${c.label}" %}</option>`).join('');
 }
 
 async function pointsOptions(zoneId, selPt) {
-  if (!zoneId) return '<option value="">-- Choisir zone d\'abord --</option>';
+  if (!zoneId) return '<option value="">{% trans "-- Choisir zone d\'abord --" %}</option>';
   const pts = await fetch(`/api/admin/options/?type=points&zone_id=${zoneId}`, { headers: H }).then(r => r.json()).then(j => j.data || []);
-  return '<option value="">-- Aucun --</option>' + pts.map(p => `<option value="${p.id}"${selPt==p.id?' selected':''}>${p.label}</option>`).join('');
+  return '<option value="">{% trans "-- Aucun --" %}</option>' + pts.map(p => `<option value="${p.id}"${selPt==p.id?' selected':''}>{% trans "${p.label}" %}</option>`).join('');
 }
 
 // ── Liste ──────────────────────────────────────────────────────────────────
@@ -209,15 +210,15 @@ async function load() {
     tbody.innerHTML += `
       <tr id="row-${c.id}">
         <td style="font-family:monospace;font-size:12px;color:var(--green-mid)">
-          ${c.reference}${c.est_en_retard?'<span class="retard-badge">EN RETARD</span>':''}
+          ${c.reference}${c.est_en_retard?'<span class="retard-badge">{% trans "EN RETARD" %}</span>':''}
         </td>
-        <td><div style="font-weight:600">${c.zone}</div><div style="font-size:11px;color:var(--text-muted)">${c.departement}</div></td>
-        <td><div>${c.point||'—'}</div><div style="font-size:11px;color:var(--text-muted)">${c.commune||''}</div></td>
-        <td style="color:var(--text-muted)">${c.collecteur||'—'}</td>
-        <td style="font-weight:600;color:${c.est_en_retard?'#e74c3c':'var(--text)'}">${fdate(c.date_planifiee)}</td>
-        <td style="text-align:center;font-weight:600">${c.nb_producteurs}</td>
-        <td style="font-weight:600">${fmt(c.montant_total)} HTG</td>
-        <td>${sBadge(c.statut, c.statut_label)}</td>
+        <td><div style="font-weight:600">{% trans "${c.zone}" %}</div><div style="font-size:11px;color:var(--text-muted)">{% trans "${c.departement}" %}</div></td>
+        <td><div>{% trans "${c.point||'—'}" %}</div><div style="font-size:11px;color:var(--text-muted)">{% trans "${c.commune||''}" %}</div></td>
+        <td style="color:var(--text-muted)">{% trans "${c.collecteur||'—'}" %}</td>
+        <td style="font-weight:600;color:${c.est_en_retard?'#e74c3c':'var(--text)'}">{% trans "${fdate(c.date_planifiee)}" %}</td>
+        <td style="text-align:center;font-weight:600">{% trans "${c.nb_producteurs}" %}</td>
+        <td style="font-weight:600">{% trans "${fmt(c.montant_total)} HTG" %}</td>
+        <td>{% trans "${sBadge(c.statut, c.statut_label)}" %}</td>
         <td style="display:flex;gap:5px">
           <button class="action-btn" style="background:var(--bg);color:var(--text-muted);border:1px solid var(--border)" onclick="openDetail(${c.id})"><i class="fas fa-eye"></i></button>
           <button class="action-btn" style="background:var(--bg);color:var(--text-muted);border:1px solid var(--border)" onclick="openEdit(${c.id})"><i class="fas fa-edit"></i></button>
@@ -250,37 +251,37 @@ async function openCreate() {
   document.getElementById('drawer-body').innerHTML = `
     <div class="form-grid">
       <div class="field full">
-        <label>Zone *</label>
+        <label>{% trans "Zone *" %}</label>
         <select id="f-zone" required onchange="refreshPoints()" >${zonesOptions(null)}</select>
       </div>
       <div class="field full">
-        <label>Point de collecte</label>
+        <label>{% trans "Point de collecte" %}</label>
         <select id="f-point">${pointsHtml}</select>
       </div>
       <div class="field full">
-        <label>Collecteur assigné</label>
+        <label>{% trans "Collecteur assigné" %}</label>
         <select id="f-collecteur">${collecteursOptions(null)}</select>
       </div>
       <div class="field">
-        <label>Date planifiée *</label>
+        <label>{% trans "Date planifiée *" %}</label>
         <input type="date" id="f-date" required>
       </div>
       <div class="field">
-        <label>Heure début</label>
+        <label>{% trans "Heure début" %}</label>
         <input type="time" id="f-heure_debut">
       </div>
       <div class="field">
-        <label>Heure fin</label>
+        <label>{% trans "Heure fin" %}</label>
         <input type="time" id="f-heure_fin">
       </div>
       <div class="field full">
-        <label>Notes</label>
-        <textarea id="f-notes" placeholder="Instructions pour le collecteur..."></textarea>
+        <label>{% trans "Notes" %}</label>
+        <textarea id="f-notes" placeholder="{% trans 'Instructions pour le collecteur...' %}"></textarea>
       </div>
     </div>
     <div class="drawer-actions">
-      <button class="btn-cancel" onclick="closeDrawer()">Annuler</button>
-      <button class="btn-save" onclick="submitCreate()"><i class="fas fa-plus"></i> Créer la collecte</button>
+      <button class="btn-cancel" onclick="closeDrawer()">{% trans "Annuler" %}</button>
+      <button class="btn-save" onclick="submitCreate()"><i class="fas fa-plus"></i> {% trans "Créer la collecte" %}</button>
     </div>
   `;
 }
@@ -330,51 +331,51 @@ async function openEdit(id) {
   document.getElementById('drawer-body').innerHTML = `
     <div class="form-grid">
       <div class="field full">
-        <label>Zone *</label>
+        <label>{% trans "Zone *" %}</label>
         <select id="f-zone" onchange="refreshPoints()">${zonesOptions(c.zone_id)}</select>
       </div>
       <div class="field full">
-        <label>Point de collecte</label>
+        <label>{% trans "Point de collecte" %}</label>
         <select id="f-point">${pointsHtml}</select>
       </div>
       <div class="field full">
-        <label>Collecteur</label>
+        <label>{% trans "Collecteur" %}</label>
         <select id="f-collecteur">${collecteursOptions(c.collecteur_id)}</select>
       </div>
       <div class="field">
-        <label>Date planifiée *</label>
+        <label>{% trans "Date planifiée *" %}</label>
         <input type="date" id="f-date" value="${c.date_planifiee||''}">
       </div>
       <div class="field">
-        <label>Heure début</label>
+        <label>{% trans "Heure début" %}</label>
         <input type="time" id="f-heure_debut" value="${c.heure_debut||''}">
       </div>
       <div class="field">
-        <label>Heure fin</label>
+        <label>{% trans "Heure fin" %}</label>
         <input type="time" id="f-heure_fin" value="${c.heure_fin||''}">
       </div>
       <div class="field full">
-        <label>Notes</label>
+        <label>{% trans "Notes" %}</label>
         <textarea id="f-notes">${c.notes||''}</textarea>
       </div>
       <div class="field full">
-        <label>Rapport</label>
+        <label>{% trans "Rapport" %}</label>
         <textarea id="f-rapport">${c.rapport||''}</textarea>
       </div>
       <div class="field">
-        <label>Statut</label>
+        <label>{% trans "Statut" %}</label>
         <select id="f-statut">
-          <option value="planifiee">Planifiée</option>
-          <option value="en_cours">En cours</option>
-          <option value="terminee">Terminée</option>
-          <option value="annulee">Annulée</option>
-          <option value="reportee">Reportée</option>
+          <option value="planifiee">{% trans "Planifiée" %}</option>
+          <option value="en_cours">{% trans "En cours" %}</option>
+          <option value="terminee">{% trans "Terminée" %}</option>
+          <option value="annulee">{% trans "Annulée" %}</option>
+          <option value="reportee">{% trans "Reportée" %}</option>
         </select>
       </div>
     </div>
     <div class="drawer-actions">
-      <button class="btn-cancel" onclick="closeDrawer()">Annuler</button>
-      <button class="btn-save" onclick="submitEdit()"><i class="fas fa-save"></i> Enregistrer</button>
+      <button class="btn-cancel" onclick="closeDrawer()">{% trans "Annuler" %}</button>
+      <button class="btn-save" onclick="submitEdit()"><i class="fas fa-save"></i> {% trans "Enregistrer" %}</button>
     </div>
   `;
   document.getElementById('f-statut').value = c.statut;
@@ -420,57 +421,57 @@ async function openDetail(id) {
 
 async function renderDetail(id) {
   const r = await fetch(`/api/admin/collectes/${id}/`, { headers: H });
-  if (!r.ok) { document.getElementById('drawer-body').innerHTML = '<div style="text-align:center;padding:32px;color:#e74c3c">Erreur.</div>'; return; }
+  if (!r.ok) { document.getElementById('drawer-body').innerHTML = '<div style="text-align:center;padding:32px;color:#e74c3c">{% trans "Erreur." %}</div>'; return; }
   const c = (await r.json()).data;
   document.getElementById('drawer-title').textContent = c.reference;
 
   const partRows = c.participations.map(p => `
     <tr id="part-row-${p.id}">
-      <td><div style="font-weight:600">${p.producteur_nom}</div><div style="font-size:10px;color:var(--text-muted)">${p.producteur_code} · ${p.producteur_commune||''}</div></td>
-      <td style="text-align:right">${p.quantite_prevue||'—'}</td>
-      <td style="text-align:right">${p.quantite_collectee||'—'}</td>
-      <td>${sBadge(p.statut, p.statut_label, STATUT_P)}</td>
+      <td><div style="font-weight:600">{% trans "${p.producteur_nom}" %}</div><div style="font-size:10px;color:var(--text-muted)">{% trans "${p.producteur_code} · ${p.producteur_commune||''}" %}</div></td>
+      <td style="text-align:right">{% trans "${p.quantite_prevue||'—'}" %}</td>
+      <td style="text-align:right">{% trans "${p.quantite_collectee||'—'}" %}</td>
+      <td>{% trans "${sBadge(p.statut, p.statut_label, STATUT_P)}" %}</td>
       <td>
         <select class="statut-select-sm" id="pst-${p.id}">
-          <option value="inscrit">Inscrit</option>
-          <option value="confirme">Confirmé</option>
-          <option value="present">Présent</option>
-          <option value="absent">Absent</option>
-          <option value="annule">Annulé</option>
+          <option value="inscrit">{% trans "Inscrit" %}</option>
+          <option value="confirme">{% trans "Confirmé" %}</option>
+          <option value="present">{% trans "Présent" %}</option>
+          <option value="absent">{% trans "Absent" %}</option>
+          <option value="annule">{% trans "Annulé" %}</option>
         </select>
       </td>
       <td style="display:flex;gap:4px">
         <button class="action-btn" style="background:var(--green-mid);color:#fff" onclick="savePartStatut(${p.id})"><i class="fas fa-check"></i></button>
         <button class="action-btn" style="background:#fde8e8;color:#e74c3c" onclick="deletePart(${p.id})"><i class="fas fa-trash"></i></button>
       </td>
-    </tr>`).join('') || `<tr><td colspan="6" style="text-align:center;padding:16px;color:var(--text-muted)">Aucune participation.</td></tr>`;
+    </tr>`).join('') || `<tr><td colspan="6" style="text-align:center;padding:16px;color:var(--text-muted)">{% trans "Aucune participation." %}</td></tr>`;
 
-  const produceursOpts = '<option value="">-- Producteur --</option>' +
-    _producteurs.map(p => `<option value="${p.id}">${p.label}</option>`).join('');
+  const produceursOpts = '<option value="">{% trans "-- Producteur --" %}</option>' +
+    _producteurs.map(p => `<option value="${p.id}">{% trans "${p.label}" %}</option>`).join('');
 
   document.getElementById('drawer-body').innerHTML = `
     <div class="info-grid">
-      <div class="drow"><label>Zone</label><p>${c.zone} — ${c.departement}</p></div>
-      <div class="drow"><label>Point de collecte</label><p>${c.point||'—'}</p></div>
-      <div class="drow"><label>Collecteur</label><p>${c.collecteur||'—'}</p></div>
-      <div class="drow"><label>Date planifiée</label><p style="font-weight:700">${fdate(c.date_planifiee)}</p></div>
-      <div class="drow"><label>Horaire</label><p>${c.heure_debut||'—'}${c.heure_fin?' → '+c.heure_fin:''}</p></div>
-      <div class="drow"><label>Montant total</label><p style="font-weight:700">${fmt(c.montant_total)} HTG</p></div>
+      <div class="drow"><label>{% trans "Zone" %}</label><p>{% trans "${c.zone} — ${c.departement}" %}</p></div>
+      <div class="drow"><label>{% trans "Point de collecte" %}</label><p>{% trans "${c.point||'—'}" %}</p></div>
+      <div class="drow"><label>{% trans "Collecteur" %}</label><p>{% trans "${c.collecteur||'—'}" %}</p></div>
+      <div class="drow"><label>{% trans "Date planifiée" %}</label><p style="font-weight:700">{% trans "${fdate(c.date_planifiee)}" %}</p></div>
+      <div class="drow"><label>{% trans "Horaire" %}</label><p>{% trans "${c.heure_debut||'—'}${c.heure_fin?' → '+c.heure_fin:''}" %}</p></div>
+      <div class="drow"><label>{% trans "Montant total" %}</label><p style="font-weight:700">{% trans "${fmt(c.montant_total)} HTG" %}</p></div>
     </div>
-    ${c.notes?`<div class="drow"><label>Notes</label><p>${c.notes}</p></div>`:''}
-    ${c.rapport?`<div class="drow"><label>Rapport</label><p>${c.rapport}</p></div>`:''}
+    ${c.notes?`<div class="drow"><label>{% trans "Notes" %}</label><p>{% trans "${c.notes}" %}</p></div>`:''}
+    ${c.rapport?`<div class="drow"><label>{% trans "Rapport" %}</label><p>{% trans "${c.rapport}" %}</p></div>`:''}
 
     <div class="drawer-section">
-      <h4>Changer le statut</h4>
+      <h4>{% trans "Changer le statut" %}</h4>
       <div style="display:flex;gap:8px;align-items:center">
         <select id="d-collecte-statut" style="flex:1;padding:8px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:13px;font-family:inherit;background:var(--bg);color:var(--text);outline:none">
-          <option value="planifiee">Planifiée</option>
-          <option value="en_cours">En cours</option>
-          <option value="terminee">Terminée</option>
-          <option value="annulee">Annulée</option>
-          <option value="reportee">Reportée</option>
+          <option value="planifiee">{% trans "Planifiée" %}</option>
+          <option value="en_cours">{% trans "En cours" %}</option>
+          <option value="terminee">{% trans "Terminée" %}</option>
+          <option value="annulee">{% trans "Annulée" %}</option>
+          <option value="reportee">{% trans "Reportée" %}</option>
         </select>
-        <button class="btn-save" onclick="saveCollecteStatut()"><i class="fas fa-save"></i> OK</button>
+        <button class="btn-save" onclick="saveCollecteStatut()"><i class="fas fa-save"></i> {% trans "OK" %}</button>
       </div>
     </div>
 
@@ -478,14 +479,14 @@ async function renderDetail(id) {
       <h4><i class="fas fa-users" style="margin-right:6px"></i>Participations (${c.participations.length})</h4>
       <div style="overflow-x:auto">
         <table class="part-table">
-          <thead><tr><th>Producteur</th><th>Prévue</th><th>Collectée</th><th>Statut</th><th>Modifier</th><th></th></tr></thead>
+          <thead><tr><th>{% trans "Producteur" %}</th><th>{% trans "Prévue" %}</th><th>{% trans "Collectée" %}</th><th>{% trans "Statut" %}</th><th>{% trans "Modifier" %}</th><th></th></tr></thead>
           <tbody id="part-tbody">${partRows}</tbody>
         </table>
       </div>
       <div class="add-part-form" style="margin-top:14px">
         <select id="add-prod-sel">${produceursOpts}</select>
-        <input type="number" id="add-qte" placeholder="Qté prévue" min="0" style="max-width:110px">
-        <button class="btn-add-part" onclick="addParticipation()"><i class="fas fa-plus"></i> Ajouter</button>
+        <input type="number" id="add-qte" placeholder="{% trans 'Qté prévue' %}" min="0" style="max-width:110px">
+        <button class="btn-add-part" onclick="addParticipation()"><i class="fas fa-plus"></i> {% trans "Ajouter" %}</button>
       </div>
     </div>
   `;

@@ -1,6 +1,7 @@
 import requests
 import base64
 from django.conf import settings
+from django.utils.translation import gettext as _
 
 
 class MonCashService:

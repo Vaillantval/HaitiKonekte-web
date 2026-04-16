@@ -1,6 +1,7 @@
 {% load static %}
+{% load i18n %}
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="{{ LANGUAGE_CODE }}">
 <head>
   <meta charset="UTF-8">
   <title>Dashboard — Makèt Peyizan</title>
@@ -26,7 +27,7 @@
 <body>
   <div class="logo">🌾</div>
   <div class="spinner"></div>
-  <p>Redirection vers votre espace...</p>
+  <p>{% trans "Redirection vers votre espace..." %}</p>
 
   <script>
     (function () {

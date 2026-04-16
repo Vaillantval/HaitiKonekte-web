@@ -1,7 +1,8 @@
 {% extends "emails/base.html" %}
+{% load i18n %}
 {% block content %}
 
-<p class="greeting">Bonjour {{ prenom }} 👋</p>
+<p class="greeting">{% blocktrans with prenom=prenom %}Bonjour {{ prenom }} 👋{% endblocktrans %}</p>
 
 <div class="success-box">
   ✅ Votre paiement a été confirmé.
@@ -10,32 +11,32 @@
 
 <div class="card">
   <div class="card-row">
-    <span class="card-label">Référence paiement</span>
+    <span class="card-label">{% trans "Référence paiement" %}</span>
     <span class="card-value">{{ paiement.reference }}</span>
   </div>
   <div class="card-row">
-    <span class="card-label">N° commande</span>
+    <span class="card-label">{% trans "N° commande" %}</span>
     <span class="card-value">{{ commande.numero_commande }}</span>
   </div>
   <div class="card-row">
-    <span class="card-label">Méthode</span>
+    <span class="card-label">{% trans "Méthode" %}</span>
     <span class="card-value">{{ paiement.get_type_paiement_display }}</span>
   </div>
   <div class="card-row">
-    <span class="card-label">Montant confirmé</span>
+    <span class="card-label">{% trans "Montant confirmé" %}</span>
     <span class="card-value" style="color:#27ae60; font-size:18px">
       {{ paiement.montant }} HTG
     </span>
   </div>
   <div class="card-row">
-    <span class="card-label">Date de confirmation</span>
+    <span class="card-label">{% trans "Date de confirmation" %}</span>
     <span class="card-value">
       {{ paiement.date_verification|date:"d/m/Y à H:i" }}
     </span>
   </div>
   <div class="card-row">
-    <span class="card-label">Statut</span>
-    <span class="badge badge-vert">✅ Confirmé</span>
+    <span class="card-label">{% trans "Statut" %}</span>
+    <span class="badge badge-vert">{% trans "✅ Confirmé" %}</span>
   </div>
 </div>
 

@@ -1,5 +1,6 @@
 from django.db import models
 from django.conf import settings
+from django.utils.translation import gettext_lazy as _
 
 
 class Panier(models.Model):
@@ -16,8 +17,8 @@ class Panier(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        verbose_name        = 'Panier'
-        verbose_name_plural = 'Paniers'
+        verbose_name        = _('Panier')
+        verbose_name_plural = _('Paniers')
 
     def __str__(self):
         return f"Panier de {self.user.get_full_name()}"
@@ -70,8 +71,8 @@ class LignePanier(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        verbose_name        = 'Ligne panier'
-        verbose_name_plural = 'Lignes panier'
+        verbose_name        = _('Ligne panier')
+        verbose_name_plural = _('Lignes panier')
         unique_together     = ('panier', 'produit')
 
     def __str__(self):

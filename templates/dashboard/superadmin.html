@@ -1,4 +1,5 @@
 {% extends 'dashboard/base.html' %}
+{% load i18n %}
 {% block title %}Vue d'ensemble — Superadmin{% endblock %}
 
 {% block sidebar_nav %}{% include 'dashboard/superadmin_sidebar.html' with active='overview' %}{% endblock %}
@@ -131,24 +132,24 @@
   <div class="spacer"></div>
   <a href="/dashboard/superadmin/carte/" class="btn-export secondary"
      style="background:var(--green-dark,#1a6b2f); color:white; border-color:transparent">
-    <i class="fas fa-map-marked-alt"></i> Carte des utilisateurs
+    <i class="fas fa-map-marked-alt"></i> {% trans "Carte des utilisateurs" %}
   </a>
   <a href="/analytics/dashboard/" class="btn-export secondary">
-    <i class="fas fa-chart-bar"></i> Analytiques BI
+    <i class="fas fa-chart-bar"></i> {% trans "Analytiques BI" %}
   </a>
   <a href="/dashboard/superadmin/rapport/" class="btn-export">
-    <i class="fas fa-file-download"></i> Exporter le Rapport
+    <i class="fas fa-file-download"></i> {% trans "Exporter le Rapport" %}
   </a>
 </div>
 
 <!-- KPIs -->
 <div class="kpi-grid" id="kpi-grid">
-  <div class="kpi-card"><span class="kpi-label">Utilisateurs</span><span class="kpi-value" id="k-users">—</span><span class="kpi-sub" id="k-users-sub"></span></div>
-  <div class="kpi-card orange"><span class="kpi-label">Producteurs en attente</span><span class="kpi-value" id="k-prod-attente">—</span><span class="kpi-sub" id="k-prod-actifs"></span></div>
-  <div class="kpi-card red"><span class="kpi-label">Commandes en attente</span><span class="kpi-value" id="k-cmds-attente">—</span><span class="kpi-sub" id="k-cmds-jour"></span></div>
-  <div class="kpi-card blue"><span class="kpi-label">Paiements à vérifier</span><span class="kpi-value" id="k-pay">—</span></div>
-  <div class="kpi-card"><span class="kpi-label">Revenus du mois</span><span class="kpi-value" id="k-rev">—</span><span class="kpi-sub">HTG</span></div>
-  <div class="kpi-card red"><span class="kpi-label">Alertes stock</span><span class="kpi-value" id="k-alertes">—</span></div>
+  <div class="kpi-card"><span class="kpi-label">{% trans "Utilisateurs" %}</span><span class="kpi-value" id="k-users">—</span><span class="kpi-sub" id="k-users-sub"></span></div>
+  <div class="kpi-card orange"><span class="kpi-label">{% trans "Producteurs en attente" %}</span><span class="kpi-value" id="k-prod-attente">—</span><span class="kpi-sub" id="k-prod-actifs"></span></div>
+  <div class="kpi-card red"><span class="kpi-label">{% trans "Commandes en attente" %}</span><span class="kpi-value" id="k-cmds-attente">—</span><span class="kpi-sub" id="k-cmds-jour"></span></div>
+  <div class="kpi-card blue"><span class="kpi-label">{% trans "Paiements à vérifier" %}</span><span class="kpi-value" id="k-pay">—</span></div>
+  <div class="kpi-card"><span class="kpi-label">{% trans "Revenus du mois" %}</span><span class="kpi-value" id="k-rev">—</span><span class="kpi-sub">{% trans "HTG" %}</span></div>
+  <div class="kpi-card red"><span class="kpi-label">{% trans "Alertes stock" %}</span><span class="kpi-value" id="k-alertes">—</span></div>
 </div>
 
 <!-- Sections rapides -->
@@ -156,8 +157,8 @@
   <!-- Dernières commandes -->
   <div class="panel">
     <div class="panel-header">
-      <h3><i class="fas fa-clipboard-list" style="color:var(--green-mid);margin-right:6px"></i>Commandes récentes</h3>
-      <a href="/dashboard/superadmin/commandes/">Voir tout →</a>
+      <h3><i class="fas fa-clipboard-list" style="color:var(--green-mid);margin-right:6px"></i>{% trans "Commandes récentes" %}</h3>
+      <a href="/dashboard/superadmin/commandes/">{% trans "Voir tout →" %}</a>
     </div>
     <div class="panel-body" id="panel-commandes">
       <div class="empty-panel"><i class="fas fa-spinner fa-spin"></i></div>
@@ -167,8 +168,8 @@
   <!-- Producteurs en attente -->
   <div class="panel">
     <div class="panel-header">
-      <h3><i class="fas fa-tractor" style="color:var(--orange);margin-right:6px"></i>Producteurs à valider</h3>
-      <a href="/dashboard/superadmin/producteurs/?statut=en_attente">Voir tout →</a>
+      <h3><i class="fas fa-tractor" style="color:var(--orange);margin-right:6px"></i>{% trans "Producteurs à valider" %}</h3>
+      <a href="/dashboard/superadmin/producteurs/?statut=en_attente">{% trans "Voir tout →" %}</a>
     </div>
     <div class="panel-body" id="panel-producteurs">
       <div class="empty-panel"><i class="fas fa-spinner fa-spin"></i></div>
@@ -178,8 +179,8 @@
   <!-- Alertes stock -->
   <div class="panel">
     <div class="panel-header">
-      <h3><i class="fas fa-exclamation-triangle" style="color:var(--red);margin-right:6px"></i>Alertes stock critiques</h3>
-      <a href="/dashboard/superadmin/stocks/">Voir tout →</a>
+      <h3><i class="fas fa-exclamation-triangle" style="color:var(--red);margin-right:6px"></i>{% trans "Alertes stock critiques" %}</h3>
+      <a href="/dashboard/superadmin/stocks/">{% trans "Voir tout →" %}</a>
     </div>
     <div class="panel-body" id="panel-alertes">
       <div class="empty-panel"><i class="fas fa-spinner fa-spin"></i></div>
@@ -189,8 +190,8 @@
   <!-- Paiements à vérifier -->
   <div class="panel">
     <div class="panel-header">
-      <h3><i class="fas fa-credit-card" style="color:var(--blue);margin-right:6px"></i>Preuves de paiement</h3>
-      <a href="/dashboard/superadmin/paiements/">Voir tout →</a>
+      <h3><i class="fas fa-credit-card" style="color:var(--blue);margin-right:6px"></i>{% trans "Preuves de paiement" %}</h3>
+      <a href="/dashboard/superadmin/paiements/">{% trans "Voir tout →" %}</a>
     </div>
     <div class="panel-body" id="panel-paiements">
       <div class="empty-panel"><i class="fas fa-spinner fa-spin"></i></div>
@@ -247,18 +248,18 @@ async function loadStats() {
 async function loadCommandes() {
   const r = await fetch('/api/admin/commandes/?statut=en_attente', { headers: H });
   const el = document.getElementById('panel-commandes');
-  if (!r.ok) { el.innerHTML = '<div class="empty-panel">Erreur</div>'; return; }
+  if (!r.ok) { el.innerHTML = '<div class="empty-panel">{% trans "Erreur" %}</div>'; return; }
   const data = (await r.json()).data || [];
-  if (!data.length) { el.innerHTML = '<div class="empty-panel">Aucune commande en attente</div>'; return; }
+  if (!data.length) { el.innerHTML = '<div class="empty-panel">{% trans "Aucune commande en attente" %}</div>'; return; }
   el.innerHTML = data.slice(0,6).map(c => `
     <div class="list-item">
       <div style="flex:1">
-        <div class="li-main">${c.numero_commande}</div>
-        <div class="li-sub">${c.acheteur_nom} · ${c.details.length} art.</div>
+        <div class="li-main">{% trans "${c.numero_commande}" %}</div>
+        <div class="li-sub">{% trans "${c.acheteur_nom} · ${c.details.length} art." %}</div>
       </div>
       <div class="li-right">
-        <div style="font-weight:700">${fmt(c.total)} HTG</div>
-        <div class="li-sub">${fdate(c.created_at)}</div>
+        <div style="font-weight:700">{% trans "${fmt(c.total)} HTG" %}</div>
+        <div class="li-sub">{% trans "${fdate(c.created_at)}" %}</div>
       </div>
     </div>`).join('');
 }
@@ -266,18 +267,18 @@ async function loadCommandes() {
 async function loadProducteurs() {
   const r = await fetch('/api/admin/producteurs/?statut=en_attente', { headers: H });
   const el = document.getElementById('panel-producteurs');
-  if (!r.ok) { el.innerHTML = '<div class="empty-panel">Erreur</div>'; return; }
+  if (!r.ok) { el.innerHTML = '<div class="empty-panel">{% trans "Erreur" %}</div>'; return; }
   const data = (await r.json()).data || [];
-  if (!data.length) { el.innerHTML = '<div class="empty-panel">Aucun producteur en attente ✓</div>'; return; }
+  if (!data.length) { el.innerHTML = '<div class="empty-panel">{% trans "Aucun producteur en attente ✓" %}</div>'; return; }
   el.innerHTML = data.slice(0,6).map(p => `
     <div class="list-item">
       <div style="flex:1">
-        <div class="li-main">${p.nom_complet}</div>
-        <div class="li-sub">${p.commune} · ${p.departement}</div>
+        <div class="li-main">{% trans "${p.nom_complet}" %}</div>
+        <div class="li-sub">{% trans "${p.commune} · ${p.departement}" %}</div>
       </div>
       <div class="li-right">
-        <span class="badge badge-orange">En attente</span>
-        <div class="li-sub">${fdate(p.created_at)}</div>
+        <span class="badge badge-orange">{% trans "En attente" %}</span>
+        <div class="li-sub">{% trans "${fdate(p.created_at)}" %}</div>
       </div>
     </div>`).join('');
 }
@@ -287,19 +288,19 @@ const NIVEAU_LABELS = { critique: 'Critique', epuise: 'Épuisé', bas: 'Stock ba
 async function loadAlertes() {
   const r = await fetch('/api/admin/stocks/alertes/', { headers: H });
   const el = document.getElementById('panel-alertes');
-  if (!r.ok) { el.innerHTML = '<div class="empty-panel">Erreur</div>'; return; }
+  if (!r.ok) { el.innerHTML = '<div class="empty-panel">{% trans "Erreur" %}</div>'; return; }
   const data = (await r.json()).data || [];
   const critiques = data.filter(a => a.niveau === 'critique' || a.niveau === 'epuise');
-  if (!critiques.length) { el.innerHTML = '<div class="empty-panel">Aucune alerte critique ✓</div>'; return; }
+  if (!critiques.length) { el.innerHTML = '<div class="empty-panel">{% trans "Aucune alerte critique ✓" %}</div>'; return; }
   el.innerHTML = critiques.slice(0,6).map(a => `
     <div class="list-item">
       <div style="flex:1">
-        <div class="li-main">${a.produit}</div>
-        <div class="li-sub">${a.producteur}</div>
+        <div class="li-main">{% trans "${a.produit}" %}</div>
+        <div class="li-sub">{% trans "${a.producteur}" %}</div>
       </div>
       <div class="li-right">
-        <span class="badge ${a.niveau === 'epuise' ? 'badge-red' : 'badge-orange'}">${NIVEAU_LABELS[a.niveau] || a.niveau}</span>
-        <div class="li-sub">Stock : ${a.stock_actuel}</div>
+        <span class="badge ${a.niveau === 'epuise' ? 'badge-red' : 'badge-orange'}">{% trans "${NIVEAU_LABELS[a.niveau] || a.niveau}" %}</span>
+        <div class="li-sub">{% trans "Stock : ${a.stock_actuel}" %}</div>
       </div>
     </div>`).join('');
 }
@@ -309,27 +310,27 @@ const TYPE_ICONS = { moncash:'📱', natcash:'📲', virement:'🏦', cash:'💵
 async function loadPaiements() {
   const r = await fetch('/api/admin/paiements/?statut=soumis', { headers: H });
   const el = document.getElementById('panel-paiements');
-  if (!r.ok) { el.innerHTML = '<div class="empty-panel">Erreur</div>'; return; }
+  if (!r.ok) { el.innerHTML = '<div class="empty-panel">{% trans "Erreur" %}</div>'; return; }
   const data = (await r.json()).data || [];
-  if (!data.length) { el.innerHTML = '<div class="empty-panel">Aucune preuve à vérifier ✓</div>'; return; }
+  if (!data.length) { el.innerHTML = '<div class="empty-panel">{% trans "Aucune preuve à vérifier ✓" %}</div>'; return; }
   el.innerHTML = data.slice(0,6).map(p => {
     const icon     = TYPE_ICONS[p.type_paiement] || '💳';
-    const hasProof = p.preuve_image ? `<span title="Preuve jointe" style="color:#27ae60;font-size:11px">🖼 Preuve</span>` : `<span style="color:#e74c3c;font-size:11px">⚠ Sans preuve</span>`;
-    const ref      = p.id_transaction ? `<span style="font-size:11px;color:#888">#${p.id_transaction}</span>` : '';
+    const hasProof = p.preuve_image ? `<span title="{% trans 'Preuve jointe' %}" style="color:#27ae60;font-size:11px">{% trans "🖼 Preuve" %}</span>` : `<span style="color:#e74c3c;font-size:11px">{% trans "⚠ Sans preuve" %}</span>`;
+    const ref      = p.id_transaction ? `<span style="font-size:11px;color:#888">{% trans "#${p.id_transaction}" %}</span>` : '';
     return `
     <div class="list-item" style="flex-direction:column;align-items:stretch;gap:4px;padding:10px 12px;cursor:pointer"
          onclick="window.location.href='/dashboard/superadmin/paiements/'">
       <div style="display:flex;justify-content:space-between;align-items:center">
-        <span style="font-weight:700;font-size:14px">Cmd. ${p.commande_numero}</span>
-        <span style="font-weight:700;color:var(--green-dark,#1a6b2f)">${fmt(p.montant)} HTG</span>
+        <span style="font-weight:700;font-size:14px">{% trans "Cmd. ${p.commande_numero}" %}</span>
+        <span style="font-weight:700;color:var(--green-dark,#1a6b2f)">{% trans "${fmt(p.montant)} HTG" %}</span>
       </div>
       <div style="display:flex;justify-content:space-between;align-items:center">
-        <span class="li-sub">${p.acheteur || '—'}</span>
-        <span class="li-sub">${fdate(p.created_at)}</span>
+        <span class="li-sub">{% trans "${p.acheteur || '—'}" %}</span>
+        <span class="li-sub">{% trans "${fdate(p.created_at)}" %}</span>
       </div>
       <div style="display:flex;justify-content:space-between;align-items:center;margin-top:2px">
-        <span style="font-size:12px">${icon} ${p.type_label}</span>
-        <div style="display:flex;gap:8px;align-items:center">${ref} ${hasProof}</div>
+        <span style="font-size:12px">{% trans "${icon} ${p.type_label}" %}</span>
+        <div style="display:flex;gap:8px;align-items:center">{% trans "${ref} ${hasProof}" %}</div>
       </div>
     </div>`;
   }).join('');

@@ -11,6 +11,7 @@ from apps.catalog.serializers import (
     ProduitDetailSerializer,
     ProduitCreateUpdateSerializer,
 )
+from django.utils.translation import gettext as _
 
 
 # ── GET/POST /api/products/mes-produits/ ────────────────────────
@@ -93,5 +94,5 @@ def mon_produit_detail(request, slug):
     produit.delete()
     return Response({
         'success': True,
-        'data': {'message': 'Produit supprimé avec succès.'},
+        'data': {'message': _('Produit supprimé avec succès.')},
     })

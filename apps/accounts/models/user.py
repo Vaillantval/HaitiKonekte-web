@@ -1,19 +1,20 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+from django.utils.translation import gettext_lazy as _
 
 
 class CustomUser(AbstractUser):
     class Role(models.TextChoices):
-        SUPERADMIN = 'superadmin', 'Super Administrateur'
-        PRODUCTEUR = 'producteur', 'Producteur'
-        ACHETEUR   = 'acheteur',   'Acheteur'
-        COLLECTEUR = 'collecteur', 'Agent de Collecte'
+        SUPERADMIN = 'superadmin', _('Super Administrateur')
+        PRODUCTEUR = 'producteur', _('Producteur')
+        ACHETEUR   = 'acheteur',   _('Acheteur')
+        COLLECTEUR = 'collecteur', _('Agent de Collecte')
 
     role        = models.CharField(max_length=20, choices=Role.choices, default=Role.ACHETEUR)
     telephone   = models.CharField(max_length=20, blank=True)
     photo       = models.ImageField(upload_to='users/photos/', null=True, blank=True)
     is_verified = models.BooleanField(default=False)
-    fcm_token   = models.TextField(blank=True, help_text="Firebase token pour notifications push")
+    fcm_token   = models.TextField(blank=True, help_text=_("Firebase token pour notifications push"))
     created_at  = models.DateTimeField(auto_now_add=True)
     updated_at  = models.DateTimeField(auto_now=True)
 
@@ -21,8 +22,8 @@ class CustomUser(AbstractUser):
     REQUIRED_FIELDS = ['email', 'role']
 
     class Meta:
-        verbose_name        = 'Utilisateur'
-        verbose_name_plural = 'Utilisateurs'
+        verbose_name        = _('Utilisateur')
+        verbose_name_plural = _('Utilisateurs')
         ordering            = ['-created_at']
 
     def __str__(self):

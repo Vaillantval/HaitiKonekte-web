@@ -1,6 +1,7 @@
 {% load static %}
+{% load i18n %}
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="{{ LANGUAGE_CODE }}">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -251,17 +252,17 @@
     <div class="steps">
       <a href="/panier/" class="step done" style="text-decoration:none">
         <div class="step-circle"><i class="fas fa-check" style="font-size:13px"></i></div>
-        <div class="step-label">Mon panier</div>
+        <div class="step-label">{% trans "Mon panier" %}</div>
       </a>
       <div class="step-connector done"></div>
       <div class="step active">
         <div class="step-circle">2</div>
-        <div class="step-label">Livraison & Paiement</div>
+        <div class="step-label">{% trans "Livraison & Paiement" %}</div>
       </div>
       <div class="step-connector pending"></div>
       <div class="step pending">
         <div class="step-circle">3</div>
-        <div class="step-label">Confirmation</div>
+        <div class="step-label">{% trans "Confirmation" %}</div>
       </div>
     </div>
   </div>
@@ -270,10 +271,10 @@
 <!-- ══ AUTH WALL ══ -->
 <div id="auth-wall">
   <span class="wall-icon"><i class="fas fa-lock"></i></span>
-  <div class="wall-title">Connexion requise</div>
-  <div class="wall-text">Vous devez être connecté en tant qu'acheteur pour passer commande.</div>
+  <div class="wall-title">{% trans "Connexion requise" %}</div>
+  <div class="wall-text">{% trans "Vous devez être connecté en tant qu'acheteur pour passer commande." %}</div>
   <a id="wall-login-btn" href="{% url 'home:login' %}?next=/commander/" class="btn-wall">
-    <i class="fas fa-sign-in-alt"></i> Se connecter
+    <i class="fas fa-sign-in-alt"></i> {% trans "Se connecter" %}
   </a>
 </div>
 
@@ -291,7 +292,7 @@
             <div class="c-section-head">
               <div class="c-num">1</div>
               <div>
-                <div class="c-title">Adresse de livraison</div>
+                <div class="c-title">{% trans "Adresse de livraison" %}</div>
               </div>
             </div>
             <div class="c-body">
@@ -305,7 +306,7 @@
               <!-- Multi-producteur warning -->
               <div class="multi-warn" id="multi-prod-warn">
                 <i class="fas fa-info-circle"></i>
-                <span>Votre panier contient des produits de plusieurs producteurs. Une commande sera créée pour chacun.</span>
+                <span>{% trans "Votre panier contient des produits de plusieurs producteurs. Une commande sera créée pour chacun." %}</span>
               </div>
 
               <!-- Address list (JS populated) -->
@@ -314,10 +315,10 @@
               <!-- Toggles -->
               <div class="addr-toggles" id="addr-toggles" style="display:none">
                 <button class="btn-toggle" id="btn-autre" onclick="toggleAddrForm('autre')">
-                  <i class="fas fa-map-marker-alt"></i> Livrer à une autre adresse
+                  <i class="fas fa-map-marker-alt"></i> {% trans "Livrer à une autre adresse" %}
                 </button>
                 <button class="btn-toggle" id="btn-nouvelle" onclick="toggleAddrForm('nouvelle')">
-                  <i class="fas fa-plus-circle"></i> Ajouter une nouvelle adresse
+                  <i class="fas fa-plus-circle"></i> {% trans "Ajouter une nouvelle adresse" %}
                 </button>
               </div>
 
@@ -325,7 +326,7 @@
               <div class="addr-form-wrap" id="addr-form-wrap" style="display:none">
                 <div class="form-title">
                   <i class="fas fa-map-pin" style="color:var(--vert-vif)"></i>
-                  <span id="form-mode-title">Nouvelle adresse de livraison</span>
+                  <span id="form-mode-title">{% trans "Nouvelle adresse de livraison" %}</span>
                 </div>
                 <form id="addr-form" onsubmit="return false">
                   <div class="form-grid">
@@ -334,58 +335,58 @@
                     <div class="form-group full" id="f-libelle-group" style="display:none">
                       <label class="form-label">Libellé <span class="req">*</span></label>
                       <select id="f-libelle" class="f-input">
-                        <option value="Domicile">Domicile</option>
-                        <option value="Bureau">Bureau</option>
-                        <option value="Marché">Marché</option>
-                        <option value="Exploitation agricole">Exploitation agricole</option>
-                        <option value="Point de collecte">Point de collecte</option>
-                        <option value="Boutique / Dépôt">Boutique / Dépôt</option>
-                        <option value="Famille">Famille</option>
-                        <option value="Autre">Autre</option>
+                        <option value="Domicile">{% trans "Domicile" %}</option>
+                        <option value="Bureau">{% trans "Bureau" %}</option>
+                        <option value="Marché">{% trans "Marché" %}</option>
+                        <option value="Exploitation agricole">{% trans "Exploitation agricole" %}</option>
+                        <option value="Point de collecte">{% trans "Point de collecte" %}</option>
+                        <option value="Boutique / Dépôt">{% trans "Boutique / Dépôt" %}</option>
+                        <option value="Famille">{% trans "Famille" %}</option>
+                        <option value="Autre">{% trans "Autre" %}</option>
                       </select>
                     </div>
 
                     <!-- Nom complet -->
                     <div class="form-group">
                       <label class="form-label">Nom du destinataire <span class="req">*</span></label>
-                      <input id="f-nom" class="f-input" type="text" placeholder="Prénom Nom" maxlength="150" oninput="validateSubmit()">
+                      <input id="f-nom" class="f-input" type="text" placeholder="{% trans 'Prénom Nom' %}" maxlength="150" oninput="validateSubmit()">
                     </div>
 
                     <!-- Téléphone -->
                     <div class="form-group">
-                      <label class="form-label">Téléphone</label>
-                      <input id="f-tel" class="f-input" type="tel" placeholder="509 XXXX XXXX" maxlength="20">
+                      <label class="form-label">{% trans "Téléphone" %}</label>
+                      <input id="f-tel" class="f-input" type="tel" placeholder="{% trans '509 XXXX XXXX' %}" maxlength="20">
                     </div>
 
                     <!-- Département -->
                     <div class="form-group">
                       <label class="form-label">Département <span class="req">*</span></label>
                       <select id="f-dept" class="f-input f-select">
-                        <option value="">— Sélectionner —</option>
+                        <option value="">{% trans "— Sélectionner —" %}</option>
                       </select>
                     </div>
 
                     <!-- Commune -->
                     <div class="form-group">
                       <label class="form-label">Commune <span class="req">*</span></label>
-                      <input id="f-commune" class="f-input" type="text" placeholder="Rechercher une commune…">
+                      <input id="f-commune" class="f-input" type="text" placeholder="{% trans 'Rechercher une commune…' %}">
                     </div>
 
                     <!-- Section communale -->
                     <div class="form-group full">
-                      <label class="form-label">Section communale <span style="color:#bbb;font-weight:400">(optionnel)</span></label>
-                      <input id="f-section" class="f-input" type="text" placeholder="Section communale (optionnel)">
+                      <label class="form-label">Section communale <span style="color:#bbb;font-weight:400">{% trans "(optionnel)" %}</span></label>
+                      <input id="f-section" class="f-input" type="text" placeholder="{% trans 'Section communale (optionnel)' %}">
                     </div>
 
                     <!-- Rue / Adresse -->
                     <div class="form-group full">
                       <label class="form-label">Rue / Adresse complète <span class="req">*</span></label>
-                      <input id="f-rue" class="f-input" type="text" placeholder="N° rue, quartier, repère…" maxlength="255" oninput="validateSubmit()">
+                      <input id="f-rue" class="f-input" type="text" placeholder="{% trans 'N° rue, quartier, repère…' %}" maxlength="255" oninput="validateSubmit()">
                     </div>
 
                     <!-- Instructions -->
                     <div class="form-group full">
-                      <label class="form-label">Instructions de livraison <span style="color:#bbb;font-weight:400">(optionnel)</span></label>
+                      <label class="form-label">Instructions de livraison <span style="color:#bbb;font-weight:400">{% trans "(optionnel)" %}</span></label>
                       <input id="f-instructions" class="f-input" type="text" placeholder="Code d'accès, repère, disponibilités…" maxlength="255">
                     </div>
 
@@ -408,7 +409,7 @@
           <div class="c-section">
             <div class="c-section-head">
               <div class="c-num">2</div>
-              <div class="c-title">Mode de paiement</div>
+              <div class="c-title">{% trans "Mode de paiement" %}</div>
             </div>
             <div class="c-body">
               <div class="pm-list">
@@ -417,44 +418,44 @@
                 <label class="pm-option pm-selected" id="pm-moncash" onclick="selectPayment('moncash',this)">
                   <input type="radio" name="pm" value="moncash" checked>
                   <div class="pm-icon-wrap" style="background:#fff8f0;padding:4px">
-                    <img src="{% static 'img/moncash.png' %}" alt="MonCash" style="width:34px;height:34px;object-fit:contain;border-radius:6px">
+                    <img src="{% static 'img/moncash.png' %}" alt="{% trans 'MonCash' %}" style="width:34px;height:34px;object-fit:contain;border-radius:6px">
                   </div>
                   <div>
-                    <div class="pm-name">MonCash</div>
-                    <div class="pm-desc">Mobile money Digicel Haiti — paiement immédiat</div>
+                    <div class="pm-name">{% trans "MonCash" %}</div>
+                    <div class="pm-desc">{% trans "Mobile money Digicel Haiti — paiement immédiat" %}</div>
                   </div>
                   <div class="pm-check"><i class="fas fa-check-circle"></i></div>
                 </label>
                 <div class="pm-extra pm-extra-moncash" id="pm-extra-moncash" style="display:block">
                   <div class="pm-extra-title">
-                    <img src="{% static 'img/moncash.png' %}" alt="MonCash" style="width:22px;height:22px;object-fit:contain;border-radius:4px;vertical-align:middle">
+                    <img src="{% static 'img/moncash.png' %}" alt="{% trans 'MonCash' %}" style="width:22px;height:22px;object-fit:contain;border-radius:4px;vertical-align:middle">
                     Paiement via MonCash
                   </div>
-                  <p>Vous allez être redirigé vers la plateforme MonCash pour effectuer votre paiement en toute sécurité.</p>
+                  <p>{% trans "Vous allez être redirigé vers la plateforme MonCash pour effectuer votre paiement en toute sécurité." %}</p>
                   <p>Montant à payer : <strong id="mc-montant">—</strong></p>
-                  <p style="font-size:11px;color:#92400e"><i class="fas fa-info-circle"></i> Votre commande sera validée automatiquement après confirmation du paiement.</p>
+                  <p style="font-size:11px;color:#92400e"><i class="fas fa-info-circle"></i> {% trans "Votre commande sera validée automatiquement après confirmation du paiement." %}</p>
                 </div>
 
                 <!-- 2. NatCash -->
                 <label class="pm-option" id="pm-natcash" onclick="selectPayment('natcash',this)">
                   <input type="radio" name="pm" value="natcash">
                   <div class="pm-icon-wrap" style="background:#f0f9ff;padding:4px">
-                    <img src="{% static 'img/natcash.png' %}" alt="NatCash" style="width:34px;height:34px;object-fit:contain;border-radius:6px">
+                    <img src="{% static 'img/natcash.png' %}" alt="{% trans 'NatCash' %}" style="width:34px;height:34px;object-fit:contain;border-radius:6px">
                   </div>
                   <div>
-                    <div class="pm-name">NatCash</div>
-                    <div class="pm-desc">Mobile money Natcom Haiti — paiement immédiat</div>
+                    <div class="pm-name">{% trans "NatCash" %}</div>
+                    <div class="pm-desc">{% trans "Mobile money Natcom Haiti — paiement immédiat" %}</div>
                   </div>
                   <div class="pm-check"><i class="fas fa-check-circle"></i></div>
                 </label>
                 <div class="pm-extra pm-extra-natcash" id="pm-extra-natcash">
                   <div class="pm-extra-title">
-                    <img src="{% static 'img/natcash.png' %}" alt="NatCash" style="width:22px;height:22px;object-fit:contain;border-radius:4px;vertical-align:middle">
+                    <img src="{% static 'img/natcash.png' %}" alt="{% trans 'NatCash' %}" style="width:22px;height:22px;object-fit:contain;border-radius:4px;vertical-align:middle">
                     Paiement via NatCash
                   </div>
-                  <p>Vous allez être redirigé vers la plateforme NatCash de Natcom pour effectuer votre paiement en toute sécurité.</p>
+                  <p>{% trans "Vous allez être redirigé vers la plateforme NatCash de Natcom pour effectuer votre paiement en toute sécurité." %}</p>
                   <p>Montant à payer : <strong id="nc-montant">—</strong></p>
-                  <p style="font-size:11px;color:#0369a1"><i class="fas fa-info-circle"></i> Votre commande sera validée automatiquement après confirmation du paiement.</p>
+                  <p style="font-size:11px;color:#0369a1"><i class="fas fa-info-circle"></i> {% trans "Votre commande sera validée automatiquement après confirmation du paiement." %}</p>
                 </div>
 
                 <!-- 3. Hors ligne -->
@@ -462,21 +463,21 @@
                   <input type="radio" name="pm" value="hors_ligne">
                   <div class="pm-icon-wrap" style="background:#f0f4ff"><i class="fas fa-receipt" style="color:#4f46e5"></i></div>
                   <div>
-                    <div class="pm-name">Hors ligne</div>
-                    <div class="pm-desc">Virement / dépôt avec preuve de paiement</div>
+                    <div class="pm-name">{% trans "Hors ligne" %}</div>
+                    <div class="pm-desc">{% trans "Virement / dépôt avec preuve de paiement" %}</div>
                   </div>
                   <div class="pm-check"><i class="fas fa-check-circle"></i></div>
                 </label>
                 <div class="pm-extra pm-extra-hors-ligne" id="pm-extra-hors-ligne">
-                  <div class="pm-extra-title"><i class="fas fa-receipt"></i> Preuve de paiement</div>
-                  <p>Effectuez votre virement ou dépôt puis importez votre reçu ci-dessous. L'administrateur vérifiera et validera votre commande sous 24h.</p>
+                  <div class="pm-extra-title"><i class="fas fa-receipt"></i> {% trans "Preuve de paiement" %}</div>
+                  <p>{% trans "Effectuez votre virement ou dépôt puis importez votre reçu ci-dessous. L'administrateur vérifiera et validera votre commande sous 24h." %}</p>
                   <div class="pm-upload-wrap">
                     <label class="pm-upload-label" for="preuve-paiement-input">
                       <i class="fas fa-upload"></i> Joindre la preuve <span style="color:#e74c3c">*</span>
                     </label>
                     <input type="file" id="preuve-paiement-input" class="pm-upload-input"
                       accept="image/*,.pdf" onchange="validateSubmit()">
-                    <div class="pm-upload-hint">Formats acceptés : JPG, PNG, PDF — max 5 Mo</div>
+                    <div class="pm-upload-hint">{% trans "Formats acceptés : JPG, PNG, PDF — max 5 Mo" %}</div>
                   </div>
                 </div>
 
@@ -485,8 +486,8 @@
                   <input type="radio" name="pm" value="cash">
                   <div class="pm-icon-wrap" style="background:#e8f5e9"><i class="fas fa-money-bill-wave" style="color:var(--vert-vif)"></i></div>
                   <div>
-                    <div class="pm-name">À la livraison</div>
-                    <div class="pm-desc">Paiement en espèces à la réception — aucun frais</div>
+                    <div class="pm-name">{% trans "À la livraison" %}</div>
+                    <div class="pm-desc">{% trans "Paiement en espèces à la réception — aucun frais" %}</div>
                   </div>
                   <div class="pm-check"><i class="fas fa-check-circle"></i></div>
                 </label>
@@ -496,10 +497,10 @@
                   <input type="radio" name="pm" value="virement" disabled>
                   <div class="pm-icon-wrap" style="background:#f5f0ff"><i class="fas fa-university" style="color:#8e44ad"></i></div>
                   <div>
-                    <div class="pm-name">Compte bancaire</div>
-                    <div class="pm-desc">Virement bancaire direct</div>
+                    <div class="pm-name">{% trans "Compte bancaire" %}</div>
+                    <div class="pm-desc">{% trans "Virement bancaire direct" %}</div>
                   </div>
-                  <span class="pm-soon">Bientôt</span>
+                  <span class="pm-soon">{% trans "Bientôt" %}</span>
                 </div>
 
               </div>
@@ -510,12 +511,12 @@
           <div class="c-section">
             <div class="c-section-head">
               <div class="c-num">3</div>
-              <div class="c-title">Instructions supplémentaires <span style="font-size:12px;font-weight:400;color:#aaa">(optionnel)</span></div>
+              <div class="c-title">Instructions supplémentaires <span style="font-size:12px;font-weight:400;color:#aaa">{% trans "(optionnel)" %}</span></div>
             </div>
             <div class="c-body">
               <textarea id="checkout-notes" class="notes-area" rows="3"
-                placeholder="Horaires de disponibilité, instructions spéciales, allergies, informations utiles pour le producteur…"></textarea>
-              <div class="notes-hint"><i class="fas fa-info-circle"></i> Ces informations seront transmises au(x) producteur(s).</div>
+                placeholder="{% trans 'Horaires de disponibilité, instructions spéciales, allergies, informations utiles pour le producteur…' %}"></textarea>
+              <div class="notes-hint"><i class="fas fa-info-circle"></i> {% trans "Ces informations seront transmises au(x) producteur(s)." %}</div>
             </div>
           </div>
 
@@ -530,8 +531,8 @@
         <aside>
           <div class="recap-card">
             <div class="recap-head">
-              <div class="recap-head-title"><i class="fas fa-receipt" style="color:var(--vert-vif);margin-right:6px;font-size:14px"></i>Récapitulatif</div>
-              <a href="/panier/" class="recap-head-link"><i class="fas fa-edit"></i> Modifier</a>
+              <div class="recap-head-title"><i class="fas fa-receipt" style="color:var(--vert-vif);margin-right:6px;font-size:14px"></i>{% trans "Récapitulatif" %}</div>
+              <a href="/panier/" class="recap-head-link"><i class="fas fa-edit"></i> {% trans "Modifier" %}</a>
             </div>
 
             <!-- Items (JS populated) -->
@@ -543,30 +544,30 @@
 
             <div class="recap-totals">
               <div class="recap-line">
-                <span>Sous-total</span>
+                <span>{% trans "Sous-total" %}</span>
                 <span id="recap-subtotal">—</span>
               </div>
               <div class="recap-line" id="recap-remise-line" style="display:none;color:var(--vert-vif)">
-                <span>Réduction</span>
+                <span>{% trans "Réduction" %}</span>
                 <span id="recap-remise">—</span>
               </div>
               <div class="recap-line">
-                <span>Livraison</span>
-                <span style="color:var(--vert-vif)">Gratuit</span>
+                <span>{% trans "Livraison" %}</span>
+                <span style="color:var(--vert-vif)">{% trans "Gratuit" %}</span>
               </div>
               <div class="recap-total">
-                <span>Total</span>
+                <span>{% trans "Total" %}</span>
                 <span id="recap-total">—</span>
               </div>
             </div>
 
             <!-- Voucher -->
             <div class="recap-voucher">
-              <div class="recap-voucher-label"><i class="fas fa-tag"></i> Code de réduction</div>
+              <div class="recap-voucher-label"><i class="fas fa-tag"></i> {% trans "Code de réduction" %}</div>
               <div class="voucher-row">
-                <input id="voucher-input" class="voucher-input" type="text" placeholder="Ex. : PROMO2026" maxlength="30"
+                <input id="voucher-input" class="voucher-input" type="text" placeholder="{% trans 'Ex. : PROMO2026' %}" maxlength="30"
                   oninput="this.value=this.value.toUpperCase()" onkeydown="if(event.key==='Enter'){event.preventDefault();applyVoucher();}">
-                <button class="btn-voucher" id="btn-voucher" onclick="applyVoucher()">Appliquer</button>
+                <button class="btn-voucher" id="btn-voucher" onclick="applyVoucher()">{% trans "Appliquer" %}</button>
               </div>
               <div class="voucher-feedback" id="voucher-feedback"></div>
             </div>
@@ -574,7 +575,7 @@
             <!-- Couverture totale par voucher -->
             <div id="voucher-free-note" style="display:none;margin:0 20px 12px;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;padding:11px 14px;font-size:12px;color:#166534;align-items:center;gap:8px;">
               <i class="fas fa-gift" style="font-size:16px;color:#16a34a;flex-shrink:0"></i>
-              <span>Votre voucher couvre l'intégralité de cette commande. Aucun paiement requis.</span>
+              <span>{% trans "Votre voucher couvre l'intégralité de cette commande. Aucun paiement requis." %}</span>
             </div>
 
             <div class="recap-footer">
@@ -583,7 +584,7 @@
               </button>
               <div class="security-note">
                 <i class="fas fa-shield-alt"></i>
-                <span>Vous serez redirigé vers MonCash pour effectuer le paiement en toute sécurité.</span>
+                <span>{% trans "Vous serez redirigé vers MonCash pour effectuer le paiement en toute sécurité." %}</span>
               </div>
             </div>
           </div>
@@ -600,7 +601,7 @@
     <div class="confirm-icon">
       <i class="fas fa-check"></i>
     </div>
-    <div class="confirm-title">Commande passée !</div>
+    <div class="confirm-title">{% trans "Commande passée !" %}</div>
     <div class="confirm-sub">
       Votre commande a été transmise au(x) producteur(s).<br>
       Vous serez contacté pour confirmer la livraison.
@@ -608,10 +609,10 @@
     <div class="confirm-orders" id="confirm-orders"></div>
     <div class="confirm-btns">
       <a href="/dashboard/acheteur/commandes/" class="btn-conf-dash">
-        <i class="fas fa-list-alt"></i> Mes commandes
+        <i class="fas fa-list-alt"></i> {% trans "Mes commandes" %}
       </a>
       <a href="/" class="btn-conf-cat">
-        <i class="fas fa-store"></i> Catalogue
+        <i class="fas fa-store"></i> {% trans "Catalogue" %}
       </a>
     </div>
   </div>

@@ -1,8 +1,9 @@
 {% extends 'emails/base.html' %}
+{% load i18n %}
 {% block titre %}Alerte stock {{ alerte.get_niveau_display }} — {{ produit.nom }}{% endblock %}
 
 {% block content %}
-<p class="greeting">Bonjour,</p>
+<p class="greeting">{% trans "Bonjour," %}</p>
 <p class="message">
   Une alerte de stock a été déclenchée sur la plateforme Makèt Peyizan.
   L'intervention d'un administrateur peut être nécessaire.
@@ -10,59 +11,59 @@
 
 {% if alerte.niveau == 'epuise' %}
 <div class="alert-box">
-  <strong>Stock ÉPUISÉ</strong> — Le produit <strong>{{ produit.nom }}</strong> n'est plus disponible.
+  <strong>{% trans "Stock ÉPUISÉ" %}</strong> — Le produit <strong>{{ produit.nom }}</strong> n'est plus disponible.
 </div>
 {% else %}
 <div class="alert-box">
-  <strong>Stock CRITIQUE</strong> — Le produit <strong>{{ produit.nom }}</strong> est en dessous du seuil d'alerte.
+  <strong>{% trans "Stock CRITIQUE" %}</strong> — Le produit <strong>{{ produit.nom }}</strong> est en dessous du seuil d'alerte.
 </div>
 {% endif %}
 
 <div class="card">
   <div class="card-row">
-    <span class="card-label">Produit</span>
+    <span class="card-label">{% trans "Produit" %}</span>
     <span class="card-value">{{ produit.nom }}</span>
   </div>
   <div class="card-row">
-    <span class="card-label">Catégorie</span>
+    <span class="card-label">{% trans "Catégorie" %}</span>
     <span class="card-value">{{ produit.categorie.nom|default:"—" }}</span>
   </div>
   <div class="card-row">
-    <span class="card-label">Niveau alerte</span>
+    <span class="card-label">{% trans "Niveau alerte" %}</span>
     <span class="card-value">
       {% if alerte.niveau == 'epuise' %}
-        <span class="badge badge-rouge">ÉPUISÉ</span>
+        <span class="badge badge-rouge">{% trans "ÉPUISÉ" %}</span>
       {% else %}
-        <span class="badge badge-orange">CRITIQUE</span>
+        <span class="badge badge-orange">{% trans "CRITIQUE" %}</span>
       {% endif %}
     </span>
   </div>
   <div class="card-row">
-    <span class="card-label">Stock actuel</span>
+    <span class="card-label">{% trans "Stock actuel" %}</span>
     <span class="card-value" style="color:#e74c3c;font-weight:700">{{ alerte.quantite_actuelle }} {{ produit.unite_vente }}</span>
   </div>
   <div class="card-row">
-    <span class="card-label">Seuil d'alerte</span>
+    <span class="card-label">{% trans "Seuil d'alerte" %}</span>
     <span class="card-value">{{ alerte.seuil_alerte }} {{ produit.unite_vente }}</span>
   </div>
 </div>
 
-<p style="font-size:14px;font-weight:700;color:#2c3e50;margin:20px 0 8px">Producteur concerné</p>
+<p style="font-size:14px;font-weight:700;color:#2c3e50;margin:20px 0 8px">{% trans "Producteur concerné" %}</p>
 <div class="card">
   <div class="card-row">
-    <span class="card-label">Nom</span>
+    <span class="card-label">{% trans "Nom" %}</span>
     <span class="card-value">{{ producteur.user.get_full_name|default:producteur.user.username }}</span>
   </div>
   <div class="card-row">
-    <span class="card-label">Code</span>
+    <span class="card-label">{% trans "Code" %}</span>
     <span class="card-value">{{ producteur.code_producteur }}</span>
   </div>
   <div class="card-row">
-    <span class="card-label">Téléphone</span>
+    <span class="card-label">{% trans "Téléphone" %}</span>
     <span class="card-value">{{ producteur.user.telephone|default:"—" }}</span>
   </div>
   <div class="card-row">
-    <span class="card-label">Localité</span>
+    <span class="card-label">{% trans "Localité" %}</span>
     <span class="card-value">{{ producteur.commune }} — {{ producteur.get_departement_display }}</span>
   </div>
 </div>

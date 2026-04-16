@@ -1,4 +1,5 @@
 {% extends 'dashboard/base.html' %}
+{% load i18n %}
 {% block title %}Zones & Points de collecte — Superadmin{% endblock %}
 {% block sidebar_nav %}{% include 'dashboard/superadmin_sidebar.html' with active='zones' %}{% endblock %}
 {% block page_title %}Zones &amp; Points de collecte{% endblock %}
@@ -69,27 +70,27 @@
 <!-- Modal Zone -->
 <div class="modal-overlay" id="zone-modal">
   <div class="modal-box">
-    <h3 id="zone-modal-title">Nouvelle zone de collecte</h3>
+    <h3 id="zone-modal-title">{% trans "Nouvelle zone de collecte" %}</h3>
     <form id="zone-form" onsubmit="submitZone(event)">
       <div class="form-grid">
         <div class="field full">
-          <label>Nom de la zone *</label>
-          <input type="text" id="z-nom" required placeholder="Ex: Zone Nord Artibonite">
+          <label>{% trans "Nom de la zone *" %}</label>
+          <input type="text" id="z-nom" required placeholder="{% trans 'Ex: Zone Nord Artibonite' %}">
         </div>
         <div class="field">
-          <label>Département *</label>
+          <label>{% trans "Département *" %}</label>
           <select id="z-dept" required>
-            <option value="">-- Choisir --</option>
-            <option value="ouest">Ouest</option>
-            <option value="artibonite">Artibonite</option>
-            <option value="nord">Nord</option>
-            <option value="nord_est">Nord-Est</option>
-            <option value="nord_ouest">Nord-Ouest</option>
-            <option value="sud">Sud</option>
-            <option value="sud_est">Sud-Est</option>
-            <option value="centre">Centre</option>
-            <option value="grand_anse">Grand-Anse</option>
-            <option value="nippes">Nippes</option>
+            <option value="">{% trans "-- Choisir --" %}</option>
+            <option value="ouest">{% trans "Ouest" %}</option>
+            <option value="artibonite">{% trans "Artibonite" %}</option>
+            <option value="nord">{% trans "Nord" %}</option>
+            <option value="nord_est">{% trans "Nord-Est" %}</option>
+            <option value="nord_ouest">{% trans "Nord-Ouest" %}</option>
+            <option value="sud">{% trans "Sud" %}</option>
+            <option value="sud_est">{% trans "Sud-Est" %}</option>
+            <option value="centre">{% trans "Centre" %}</option>
+            <option value="grand_anse">{% trans "Grand-Anse" %}</option>
+            <option value="nippes">{% trans "Nippes" %}</option>
           </select>
         </div>
         <div class="field">
@@ -98,13 +99,13 @@
           </label>
         </div>
         <div class="field full">
-          <label>Description</label>
+          <label>{% trans "Description" %}</label>
           <textarea id="z-description" rows="2" style="resize:vertical"></textarea>
         </div>
       </div>
       <div class="modal-actions">
-        <button type="button" class="btn-cancel" onclick="closeZoneModal()">Annuler</button>
-        <button type="submit" class="btn-save" id="z-submit"><i class="fas fa-save"></i> Enregistrer</button>
+        <button type="button" class="btn-cancel" onclick="closeZoneModal()">{% trans "Annuler" %}</button>
+        <button type="submit" class="btn-save" id="z-submit"><i class="fas fa-save"></i> {% trans "Enregistrer" %}</button>
       </div>
     </form>
   </div>
@@ -113,31 +114,31 @@
 <!-- Modal Point -->
 <div class="modal-overlay" id="point-modal">
   <div class="modal-box">
-    <h3 id="point-modal-title">Nouveau point de collecte</h3>
+    <h3 id="point-modal-title">{% trans "Nouveau point de collecte" %}</h3>
     <form id="point-form" onsubmit="submitPoint(event)">
       <div class="form-grid">
         <div class="field full">
-          <label>Zone *</label>
+          <label>{% trans "Zone *" %}</label>
           <select id="pt-zone" required></select>
         </div>
         <div class="field full">
-          <label>Nom du point *</label>
-          <input type="text" id="pt-nom" required placeholder="Ex: Marché de Pont-Sondé">
+          <label>{% trans "Nom du point *" %}</label>
+          <input type="text" id="pt-nom" required placeholder="{% trans 'Ex: Marché de Pont-Sondé' %}">
         </div>
         <div class="field">
-          <label>Commune *</label>
-          <input type="text" id="pt-commune" required placeholder="Ex: Saint-Marc">
+          <label>{% trans "Commune *" %}</label>
+          <input type="text" id="pt-commune" required placeholder="{% trans 'Ex: Saint-Marc' %}">
         </div>
         <div class="field">
-          <label>Adresse</label>
-          <input type="text" id="pt-adresse" placeholder="Rue, quartier...">
+          <label>{% trans "Adresse" %}</label>
+          <input type="text" id="pt-adresse" placeholder="{% trans 'Rue, quartier...' %}">
         </div>
         <div class="field">
-          <label>Responsable</label>
-          <input type="text" id="pt-responsable" placeholder="Nom du responsable">
+          <label>{% trans "Responsable" %}</label>
+          <input type="text" id="pt-responsable" placeholder="{% trans 'Nom du responsable' %}">
         </div>
         <div class="field">
-          <label>Téléphone</label>
+          <label>{% trans "Téléphone" %}</label>
           <input type="text" id="pt-telephone" placeholder="+509 ...">
         </div>
         <div class="field">
@@ -147,39 +148,39 @@
         </div>
       </div>
       <div class="modal-actions">
-        <button type="button" class="btn-cancel" onclick="closePointModal()">Annuler</button>
-        <button type="submit" class="btn-save" id="pt-submit"><i class="fas fa-save"></i> Enregistrer</button>
+        <button type="button" class="btn-cancel" onclick="closePointModal()">{% trans "Annuler" %}</button>
+        <button type="submit" class="btn-save" id="pt-submit"><i class="fas fa-save"></i> {% trans "Enregistrer" %}</button>
       </div>
     </form>
   </div>
 </div>
 
 <div class="tabs">
-  <button class="tab-btn active" onclick="switchTab('zones',this)">Zones de collecte</button>
-  <button class="tab-btn" onclick="switchTab('points',this)">Points de collecte</button>
+  <button class="tab-btn active" onclick="switchTab('zones',this)">{% trans "Zones de collecte" %}</button>
+  <button class="tab-btn" onclick="switchTab('points',this)">{% trans "Points de collecte" %}</button>
 </div>
 
 <!-- Onglet Zones -->
 <div class="tab-panel active" id="tab-zones">
   <div class="toolbar">
-    <button class="btn-new" onclick="openZoneCreate()"><i class="fas fa-plus"></i> Nouvelle zone</button>
+    <button class="btn-new" onclick="openZoneCreate()"><i class="fas fa-plus"></i> {% trans "Nouvelle zone" %}</button>
   </div>
   <div class="table-wrap">
-    <div class="empty-state" id="z-loading"><i class="fas fa-spinner fa-spin"></i> Chargement...</div>
+    <div class="empty-state" id="z-loading"><i class="fas fa-spinner fa-spin"></i> {% trans "Chargement..." %}</div>
     <table id="z-tbl" style="display:none">
       <thead>
         <tr>
-          <th>Zone</th>
-          <th>Département</th>
-          <th>Points actifs</th>
-          <th>Collectes</th>
-          <th>Statut</th>
-          <th>Actions</th>
+          <th>{% trans "Zone" %}</th>
+          <th>{% trans "Département" %}</th>
+          <th>{% trans "Points actifs" %}</th>
+          <th>{% trans "Collectes" %}</th>
+          <th>{% trans "Statut" %}</th>
+          <th>{% trans "Actions" %}</th>
         </tr>
       </thead>
       <tbody id="z-tbody"></tbody>
     </table>
-    <div class="empty-state" id="z-empty" style="display:none">Aucune zone de collecte.</div>
+    <div class="empty-state" id="z-empty" style="display:none">{% trans "Aucune zone de collecte." %}</div>
   </div>
 </div>
 
@@ -187,27 +188,27 @@
 <div class="tab-panel" id="tab-points">
   <div class="toolbar">
     <select id="pt-zone-filter" class="filter-btn" style="appearance:none;padding-right:24px" onchange="loadPoints()">
-      <option value="">Toutes les zones</option>
+      <option value="">{% trans "Toutes les zones" %}</option>
     </select>
-    <button class="btn-new" onclick="openPointCreate()"><i class="fas fa-plus"></i> Nouveau point</button>
+    <button class="btn-new" onclick="openPointCreate()"><i class="fas fa-plus"></i> {% trans "Nouveau point" %}</button>
   </div>
   <div class="table-wrap">
-    <div class="empty-state" id="pt-loading"><i class="fas fa-spinner fa-spin"></i> Chargement...</div>
+    <div class="empty-state" id="pt-loading"><i class="fas fa-spinner fa-spin"></i> {% trans "Chargement..." %}</div>
     <table id="pt-tbl" style="display:none">
       <thead>
         <tr>
-          <th>Point</th>
-          <th>Zone</th>
-          <th>Commune</th>
-          <th>Responsable</th>
-          <th>Téléphone</th>
-          <th>Statut</th>
-          <th>Actions</th>
+          <th>{% trans "Point" %}</th>
+          <th>{% trans "Zone" %}</th>
+          <th>{% trans "Commune" %}</th>
+          <th>{% trans "Responsable" %}</th>
+          <th>{% trans "Téléphone" %}</th>
+          <th>{% trans "Statut" %}</th>
+          <th>{% trans "Actions" %}</th>
         </tr>
       </thead>
       <tbody id="pt-tbody"></tbody>
     </table>
-    <div class="empty-state" id="pt-empty" style="display:none">Aucun point de collecte.</div>
+    <div class="empty-state" id="pt-empty" style="display:none">{% trans "Aucun point de collecte." %}</div>
   </div>
 </div>
 {% endblock %}
@@ -245,11 +246,11 @@ async function loadZones() {
   // Mettre à jour les selects zones
   const zsel = document.getElementById('pt-zone');
   const zfil = document.getElementById('pt-zone-filter');
-  zsel.innerHTML = '<option value="">-- Sélectionner --</option>';
-  zfil.innerHTML = '<option value="">Toutes les zones</option>';
+  zsel.innerHTML = '<option value="">{% trans "-- Sélectionner --" %}</option>';
+  zfil.innerHTML = '<option value="">{% trans "Toutes les zones" %}</option>';
   _zones.forEach(z => {
-    zsel.innerHTML += `<option value="${z.id}">${z.nom} (${z.departement})</option>`;
-    zfil.innerHTML += `<option value="${z.id}">${z.nom}</option>`;
+    zsel.innerHTML += `<option value="${z.id}">{% trans "${z.nom} (${z.departement})" %}</option>`;
+    zfil.innerHTML += `<option value="${z.id}">{% trans "${z.nom}" %}</option>`;
   });
 
   const tbody = document.getElementById('z-tbody');
@@ -258,16 +259,16 @@ async function loadZones() {
     tbody.innerHTML += `
       <tr id="zrow-${z.id}">
         <td>
-          <div style="font-weight:600">${z.nom}</div>
-          <div style="font-size:11px;color:var(--text-muted)">${z.description||''}</div>
+          <div style="font-weight:600">{% trans "${z.nom}" %}</div>
+          <div style="font-size:11px;color:var(--text-muted)">{% trans "${z.description||''}" %}</div>
         </td>
-        <td style="color:var(--text-muted)">${z.departement}</td>
-        <td><strong>${z.nb_points}</strong></td>
-        <td>${z.nb_collectes}</td>
+        <td style="color:var(--text-muted)">{% trans "${z.departement}" %}</td>
+        <td><strong>{% trans "${z.nb_points}" %}</strong></td>
+        <td>{% trans "${z.nb_collectes}" %}</td>
         <td><span class="status-dot ${z.is_active?'dot-green':'dot-red'}"></span>${z.is_active?'Active':'Inactive'}</td>
         <td style="display:flex;gap:6px">
           <button class="action-btn" style="background:var(--bg);border:1px solid var(--border);color:var(--text-muted)" onclick="openZoneEdit(${z.id})"><i class="fas fa-edit"></i></button>
-          <button class="action-btn" style="background:${z.is_active?'#fde8e8':'#e8f8ee'};color:${z.is_active?'#e74c3c':'#27ae60'}" onclick="toggleZone(${z.id},${z.is_active})">${z.is_active?'Désactiver':'Activer'}</button>
+          <button class="action-btn" style="background:${z.is_active?'#fde8e8':'#e8f8ee'};color:${z.is_active?'#e74c3c':'#27ae60'}" onclick="toggleZone(${z.id},${z.is_active})">{% trans "${z.is_active?'Désactiver':'Activer'}" %}</button>
           ${z.nb_collectes===0?`<button class="action-btn" style="background:#fde8e8;color:#e74c3c" onclick="deleteZone(${z.id},'${z.nom}')"><i class="fas fa-trash"></i></button>`:''}
         </td>
       </tr>`;
@@ -278,7 +279,7 @@ async function loadZones() {
 function openZoneCreate() {
   _zEditId = null;
   document.getElementById('zone-modal-title').textContent = 'Nouvelle zone de collecte';
-  document.getElementById('z-submit').innerHTML = '<i class="fas fa-plus"></i> Créer';
+  document.getElementById('z-submit').innerHTML = '<i class="fas fa-plus"></i> {% trans "Créer';" %}
   ['z-nom','z-description'].forEach(id => document.getElementById(id).value='');
   document.getElementById('z-dept').value = '';
   document.getElementById('z-active').checked = true;
@@ -291,7 +292,7 @@ async function openZoneEdit(id) {
   if (!r.ok) return;
   const z = (await r.json()).data;
   document.getElementById('zone-modal-title').textContent = 'Modifier zone';
-  document.getElementById('z-submit').innerHTML = '<i class="fas fa-save"></i> Enregistrer';
+  document.getElementById('z-submit').innerHTML = '<i class="fas fa-save"></i> {% trans "Enregistrer';" %}
   document.getElementById('z-nom').value         = z.nom;
   document.getElementById('z-dept').value        = z.departement;
   document.getElementById('z-description').value = z.description;
@@ -350,15 +351,15 @@ async function loadPoints() {
   data.forEach(p => {
     tbody.innerHTML += `
       <tr id="ptrow-${p.id}">
-        <td><div style="font-weight:600">${p.nom}</div><div style="font-size:11px;color:var(--text-muted)">${p.adresse||''}</div></td>
-        <td style="color:var(--text-muted)">${p.zone_nom}</td>
-        <td>${p.commune}</td>
-        <td>${p.responsable||'—'}</td>
-        <td style="color:var(--text-muted)">${p.telephone||'—'}</td>
+        <td><div style="font-weight:600">{% trans "${p.nom}" %}</div><div style="font-size:11px;color:var(--text-muted)">{% trans "${p.adresse||''}" %}</div></td>
+        <td style="color:var(--text-muted)">{% trans "${p.zone_nom}" %}</td>
+        <td>{% trans "${p.commune}" %}</td>
+        <td>{% trans "${p.responsable||'—'}" %}</td>
+        <td style="color:var(--text-muted)">{% trans "${p.telephone||'—'}" %}</td>
         <td><span class="status-dot ${p.is_active?'dot-green':'dot-red'}"></span>${p.is_active?'Actif':'Inactif'}</td>
         <td style="display:flex;gap:6px">
           <button class="action-btn" style="background:var(--bg);border:1px solid var(--border);color:var(--text-muted)" onclick="openPointEdit(${p.id})"><i class="fas fa-edit"></i></button>
-          <button class="action-btn" style="background:${p.is_active?'#fde8e8':'#e8f8ee'};color:${p.is_active?'#e74c3c':'#27ae60'}" onclick="togglePoint(${p.id},${p.is_active})">${p.is_active?'Désactiver':'Activer'}</button>
+          <button class="action-btn" style="background:${p.is_active?'#fde8e8':'#e8f8ee'};color:${p.is_active?'#e74c3c':'#27ae60'}" onclick="togglePoint(${p.id},${p.is_active})">{% trans "${p.is_active?'Désactiver':'Activer'}" %}</button>
           <button class="action-btn" style="background:#fde8e8;color:#e74c3c" onclick="deletePoint(${p.id},'${p.nom}')"><i class="fas fa-trash"></i></button>
         </td>
       </tr>`;
@@ -369,7 +370,7 @@ async function loadPoints() {
 function openPointCreate() {
   _ptEditId = null;
   document.getElementById('point-modal-title').textContent = 'Nouveau point de collecte';
-  document.getElementById('pt-submit').innerHTML = '<i class="fas fa-plus"></i> Créer';
+  document.getElementById('pt-submit').innerHTML = '<i class="fas fa-plus"></i> {% trans "Créer';" %}
   ['pt-nom','pt-commune','pt-adresse','pt-responsable','pt-telephone'].forEach(id => document.getElementById(id).value='');
   document.getElementById('pt-zone').value = '';
   document.getElementById('pt-active').checked = true;
@@ -384,7 +385,7 @@ async function openPointEdit(id) {
   const p = pts.find(x => x.id === id);
   if (!p) return;
   document.getElementById('point-modal-title').textContent = 'Modifier point';
-  document.getElementById('pt-submit').innerHTML = '<i class="fas fa-save"></i> Enregistrer';
+  document.getElementById('pt-submit').innerHTML = '<i class="fas fa-save"></i> {% trans "Enregistrer';" %}
   document.getElementById('pt-zone').value       = p.zone_id;
   document.getElementById('pt-nom').value        = p.nom;
   document.getElementById('pt-commune').value    = p.commune;

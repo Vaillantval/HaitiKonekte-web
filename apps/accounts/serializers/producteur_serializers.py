@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from apps.accounts.models import Producteur
 from apps.orders.models import Commande
+from django.utils.translation import gettext_lazy as _
 
 
 class ProducteurProfilSerializer(serializers.ModelSerializer):

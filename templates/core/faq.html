@@ -1,5 +1,6 @@
+{% load i18n %}
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="{{ LANGUAGE_CODE }}">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -148,10 +149,10 @@
     <div class="container">
       <div class="page-header-inner">
         <div class="breadcrumb">
-          <a href="/">Accueil</a><span>›</span><span>FAQ</span>
+          <a href="/">{% trans "Accueil" %}</a><span>›</span><span>{% trans "FAQ" %}</span>
         </div>
-        <h1 class="page-title">Questions fréquentes</h1>
-        <p class="page-subtitle">Toutes les réponses à vos questions sur la plateforme</p>
+        <h1 class="page-title">{% trans "Questions fréquentes" %}</h1>
+        <p class="page-subtitle">{% trans "Toutes les réponses à vos questions sur la plateforme" %}</p>
       </div>
     </div>
   </div>
@@ -162,7 +163,7 @@
 
       <!-- Recherche -->
       <div class="faq-search">
-        <input type="text" id="faqSearch" placeholder="Rechercher une question..." oninput="filtrerFAQ(this.value)">
+        <input type="text" id="faqSearch" placeholder="{% trans 'Rechercher une question...' %}" oninput="filtrerFAQ(this.value)">
         <button><i class="fas fa-search"></i></button>
       </div>
 
@@ -171,7 +172,7 @@
 
         <!-- Navigation latérale -->
         <nav class="faq-nav">
-          <div class="faq-nav-title">Catégories</div>
+          <div class="faq-nav-title">{% trans "Catégories" %}</div>
           {% for cat in categories %}
           <div class="faq-nav-link {% if forloop.first %}active{% endif %}"
                onclick="scrollToSection('cat-{{ cat.pk }}', this)">
@@ -222,8 +223,8 @@
       {% else %}
       <div class="empty-state">
         <div class="icon">❓</div>
-        <h3>Aucune question pour le moment</h3>
-        <p>La FAQ sera disponible prochainement. En attendant, contactez-nous directement.</p>
+        <h3>{% trans "Aucune question pour le moment" %}</h3>
+        <p>{% trans "La FAQ sera disponible prochainement. En attendant, contactez-nous directement." %}</p>
       </div>
       {% endif %}
 
@@ -233,7 +234,7 @@
   <!-- CTA CONTACT -->
   <div class="cta-section">
     <div class="container">
-      <p>Vous n'avez pas trouvé votre réponse ? Notre équipe est là pour vous aider.</p>
+      <p>{% trans "Vous n'avez pas trouvé votre réponse ? Notre équipe est là pour vous aider." %}</p>
       <a href="{% url 'core:contact' %}" class="btn-contact">
         <i class="fas fa-envelope"></i>
         Nous contacter
@@ -248,27 +249,27 @@
         <div class="footer-brand">
           <h3>🌾 {{ site_settings.nom_site|default:"Makèt Peyizan" }}</h3>
           <p>{{ site_settings.slogan|default:"Marketplace agricole haïtienne." }}</p>
-          <p class="slogan">« Sòti nan jaden rive lakay »</p>
+          <p class="slogan">{% trans "« Sòti nan jaden rive lakay »" %}</p>
         </div>
         <div class="footer-col">
-          <h4>Navigation</h4>
+          <h4>{% trans "Navigation" %}</h4>
           <ul>
-            <li><a href="/">Accueil</a></li>
-            <li><a href="/#catalogue">Catalogue</a></li>
-            <li><a href="{% url 'core:apropos' %}">À propos</a></li>
-            <li><a href="{% url 'core:faq' %}">FAQ</a></li>
-            <li><a href="{% url 'core:contact' %}">Contact</a></li>
+            <li><a href="/">{% trans "Accueil" %}</a></li>
+            <li><a href="/#catalogue">{% trans "Catalogue" %}</a></li>
+            <li><a href="{% url 'core:apropos' %}">{% trans "À propos" %}</a></li>
+            <li><a href="{% url 'core:faq' %}">{% trans "FAQ" %}</a></li>
+            <li><a href="{% url 'core:contact' %}">{% trans "Contact" %}</a></li>
           </ul>
         </div>
         <div class="footer-col">
-          <h4>Plateforme</h4>
+          <h4>{% trans "Plateforme" %}</h4>
           <ul>
-            <li><a href="/admin/">Administration</a></li>
-            <li><a href="/analytics/dashboard/">Dashboard BI</a></li>
+            <li><a href="/admin/">{% trans "Administration" %}</a></li>
+            <li><a href="/analytics/dashboard/">{% trans "Dashboard BI" %}</a></li>
           </ul>
         </div>
         <div class="footer-col">
-          <h4>Contact</h4>
+          <h4>{% trans "Contact" %}</h4>
           <ul>
             <li><a href="mailto:{{ site_settings.email_contact|default:'info@maketpeyizan.ht' }}"><i class="fas fa-envelope"></i> {{ site_settings.email_contact|default:"info@maketpeyizan.ht" }}</a></li>
             {% if site_settings.telephone %}<li><i class="fas fa-phone"></i> {{ site_settings.telephone }}</li>{% endif %}

@@ -6,6 +6,7 @@ from django.utils import timezone
 from django.db.models import Sum, Count, Avg, Q
 from datetime import timedelta, date, datetime
 from io import BytesIO
+from django.utils.translation import gettext as _
 
 
 @method_decorator(staff_member_required, name='dispatch')

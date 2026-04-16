@@ -15,6 +15,7 @@ from apps.orders.serializers import PasserCommandeSerializer
 from apps.orders.services.commande_service import CommandeService
 from apps.payments.models import Paiement
 from apps.payments.services.paiement_service import PaiementService, VoucherService
+from django.utils.translation import gettext as _
 
 
 # ── POST /api/orders/commander/ ─────────────────────────────────
@@ -28,7 +29,7 @@ def commander(request):
     # Vérifier le rôle acheteur
     if not hasattr(request.user, 'profil_acheteur'):
         return Response(
-            {'success': False, 'error': "Seuls les acheteurs peuvent passer commande."},
+            {'success': False, 'error': _("Seuls les acheteurs peuvent passer commande.")},
             status=status.HTTP_403_FORBIDDEN,
         )
 
@@ -50,14 +51,14 @@ def commander(request):
         ).get(user=request.user)
     except Panier.DoesNotExist:
         return Response(
-            {'success': False, 'error': "Votre panier est vide."},
+            {'success': False, 'error': _("Votre panier est vide.")},
             status=status.HTTP_400_BAD_REQUEST,
         )
 
     items = list(panier.items.all())
     if not items:
         return Response(
-            {'success': False, 'error': "Votre panier est vide."},
+            {'success': False, 'error': _("Votre panier est vide.")},
             status=status.HTTP_400_BAD_REQUEST,
         )
 
@@ -75,7 +76,7 @@ def commander(request):
             departement   = adresse.departement
         except Adresse.DoesNotExist:
             return Response(
-                {'success': False, 'error': "Adresse introuvable."},
+                {'success': False, 'error': _("Adresse introuvable.")},
                 status=status.HTTP_400_BAD_REQUEST,
             )
     else:
@@ -222,7 +223,7 @@ def commander(request):
             acheteur.pk, methode_paiement, mode_livraison,
         )
         return Response(
-            {'success': False, 'error': "Une erreur interne est survenue. Veuillez réessayer."},
+            {'success': False, 'error': _("Une erreur interne est survenue. Veuillez réessayer.")},
             status=status.HTTP_500_INTERNAL_SERVER_ERROR,
         )
 

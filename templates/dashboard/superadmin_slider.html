@@ -1,4 +1,5 @@
 {% extends 'dashboard/base.html' %}
+{% load i18n %}
 {% block title %}Slider accueil — Superadmin{% endblock %}
 {% block sidebar_nav %}{% include 'dashboard/superadmin_sidebar.html' with active='slider' %}{% endblock %}
 {% block page_title %}Slider de la page d'accueil{% endblock %}
@@ -98,34 +99,34 @@
 <!-- Modal -->
 <div class="modal-overlay" id="modal">
   <div class="modal-box">
-    <h3 id="modal-title">Nouveau slide</h3>
+    <h3 id="modal-title">{% trans "Nouveau slide" %}</h3>
     <form id="slide-form" onsubmit="submitSlide(event)" enctype="multipart/form-data">
       <div class="form-grid">
         <div class="field full">
           <label>Image <span style="color:#e74c3c">*</span></label>
           <input type="file" id="f-image" accept="image/*" onchange="previewImg(this)">
-          <div class="current-img-label" id="current-img-label" style="display:none">Image actuelle :</div>
+          <div class="current-img-label" id="current-img-label" style="display:none">{% trans "Image actuelle :" %}</div>
           <div class="img-preview-wrap"><img id="img-preview" style="display:none"></div>
-          <div style="font-size:11px;color:var(--text-muted);margin-top:4px">Résolution recommandée : 1600 × 700 px — JPG/PNG/WEBP</div>
+          <div style="font-size:11px;color:var(--text-muted);margin-top:4px">{% trans "Résolution recommandée : 1600 × 700 px — JPG/PNG/WEBP" %}</div>
         </div>
         <div class="field full">
-          <label>Titre</label>
-          <input type="text" id="f-titre" placeholder="Ex : Produits frais directement du jardin">
+          <label>{% trans "Titre" %}</label>
+          <input type="text" id="f-titre" placeholder="{% trans 'Ex : Produits frais directement du jardin' %}">
         </div>
         <div class="field full">
-          <label>Sous-titre</label>
-          <textarea id="f-sous_titre" placeholder="Courte description affichée sous le titre"></textarea>
+          <label>{% trans "Sous-titre" %}</label>
+          <textarea id="f-sous_titre" placeholder="{% trans 'Courte description affichée sous le titre' %}"></textarea>
         </div>
         <div class="field">
-          <label>Texte du bouton</label>
-          <input type="text" id="f-texte_bouton" placeholder="Ex : Découvrir" value="Découvrir">
+          <label>{% trans "Texte du bouton" %}</label>
+          <input type="text" id="f-texte_bouton" placeholder="{% trans 'Ex : Découvrir' %}" value="Découvrir">
         </div>
         <div class="field">
-          <label>Lien (URL ou ancre)</label>
-          <input type="text" id="f-lien" placeholder="#catalogue ou /produits/...">
+          <label>{% trans "Lien (URL ou ancre)" %}</label>
+          <input type="text" id="f-lien" placeholder="{% trans '#catalogue ou /produits/...' %}">
         </div>
         <div class="field">
-          <label>Ordre d'affichage</label>
+          <label>{% trans "Ordre d'affichage" %}</label>
           <input type="number" id="f-ordre" value="0" min="0">
         </div>
         <div class="field" style="justify-content:flex-end">
@@ -135,8 +136,8 @@
         </div>
       </div>
       <div class="modal-actions">
-        <button type="button" class="btn-cancel-modal" onclick="closeModal()">Annuler</button>
-        <button type="submit" class="btn-save" id="btn-save"><i class="fas fa-save"></i> Enregistrer</button>
+        <button type="button" class="btn-cancel-modal" onclick="closeModal()">{% trans "Annuler" %}</button>
+        <button type="submit" class="btn-save" id="btn-save"><i class="fas fa-save"></i> {% trans "Enregistrer" %}</button>
       </div>
     </form>
   </div>
@@ -144,7 +145,7 @@
 
 <!-- Aperçu live -->
 <div class="preview-wrap" id="preview-wrap" style="display:none">
-  <div class="preview-header"><i class="fas fa-eye"></i> Aperçu du slider</div>
+  <div class="preview-header"><i class="fas fa-eye"></i> {% trans "Aperçu du slider" %}</div>
   <div class="preview-slider" id="preview-slider">
     <div class="preview-arrows">
       <button class="preview-arrow" onclick="prevSlide()"><i class="fas fa-chevron-left"></i></button>
@@ -155,7 +156,7 @@
 </div>
 
 <div class="toolbar">
-  <button class="btn-new" onclick="openCreate()"><i class="fas fa-plus"></i> Nouveau slide</button>
+  <button class="btn-new" onclick="openCreate()"><i class="fas fa-plus"></i> {% trans "Nouveau slide" %}</button>
   <span style="font-size:12px;color:var(--text-muted)" id="count-label"></span>
 </div>
 
@@ -200,16 +201,16 @@ function render() {
         ? `<img src="${s.image}" class="slide-img" alt="${s.titre}">`
         : `<div class="slide-img-placeholder"><i class="fas fa-image"></i></div>`}
       <div class="slide-body">
-        <div class="slide-titre">${s.titre || '<em style="color:var(--text-muted)">Sans titre</em>'}</div>
-        <div class="slide-sous">${s.sous_titre || ''}</div>
+        <div class="slide-titre">${s.titre || '<em style="color:var(--text-muted)">{% trans "Sans titre" %}</em>'}</div>
+        <div class="slide-sous">{% trans "${s.sous_titre || ''}" %}</div>
         <div class="slide-meta">
-          <span class="slide-ordre">Ordre : ${s.ordre}</span>
+          <span class="slide-ordre">{% trans "Ordre : ${s.ordre}" %}</span>
           ${s.lien ? `<span class="slide-lien"><i class="fas fa-link" style="font-size:9px"></i> ${s.lien}</span>` : ''}
-          <span class="${s.is_active?'badge-active':'badge-inactive'}">${s.is_active?'Actif':'Inactif'}</span>
+          <span class="${s.is_active?'badge-active':'badge-inactive'}">{% trans "${s.is_active?'Actif':'Inactif'}" %}</span>
         </div>
         <div class="slide-actions">
-          <button class="action-btn btn-edit" onclick="openEdit(${s.id})"><i class="fas fa-edit"></i> Modifier</button>
-          <button class="action-btn ${s.is_active?'btn-toggle-on':'btn-toggle-off'}" onclick="toggleSlide(${s.id},${s.is_active})">${s.is_active?'Désactiver':'Activer'}</button>
+          <button class="action-btn btn-edit" onclick="openEdit(${s.id})"><i class="fas fa-edit"></i> {% trans "Modifier" %}</button>
+          <button class="action-btn ${s.is_active?'btn-toggle-on':'btn-toggle-off'}" onclick="toggleSlide(${s.id},${s.is_active})">{% trans "${s.is_active?'Désactiver':'Activer'}" %}</button>
           <button class="action-btn btn-del" onclick="deleteSlide(${s.id})"><i class="fas fa-trash"></i></button>
         </div>
       </div>
@@ -232,9 +233,9 @@ function renderPreview() {
     el.className = 'preview-slide' + (i === 0 ? ' active' : '');
     el.style.backgroundImage = s.image ? `url(${s.image})` : 'linear-gradient(135deg,#1a6b2f,#27ae60)';
     el.innerHTML = `<div class="preview-content">
-      ${s.titre    ? `<div class="preview-titre">${s.titre}</div>` : ''}
-      ${s.sous_titre ? `<div class="preview-sous">${s.sous_titre}</div>` : ''}
-      ${s.texte_bouton ? `<div class="preview-btn">${s.texte_bouton}</div>` : ''}
+      ${s.titre    ? `<div class="preview-titre">{% trans "${s.titre}" %}</div>` : ''}
+      ${s.sous_titre ? `<div class="preview-sous">{% trans "${s.sous_titre}" %}</div>` : ''}
+      ${s.texte_bouton ? `<div class="preview-btn">{% trans "${s.texte_bouton}" %}</div>` : ''}
     </div>`;
     container.insertBefore(el, container.querySelector('.preview-arrows'));
 
@@ -269,7 +270,7 @@ function startAuto() {
 function openCreate() {
   _editId = null;
   document.getElementById('modal-title').textContent = 'Nouveau slide';
-  document.getElementById('btn-save').innerHTML = '<i class="fas fa-plus"></i> Créer';
+  document.getElementById('btn-save').innerHTML = '<i class="fas fa-plus"></i> {% trans "Créer';" %}
   document.getElementById('f-titre').value        = '';
   document.getElementById('f-sous_titre').value   = '';
   document.getElementById('f-texte_bouton').value = 'Découvrir';
@@ -287,7 +288,7 @@ function openEdit(id) {
   if (!s) return;
   _editId = id;
   document.getElementById('modal-title').textContent = 'Modifier le slide';
-  document.getElementById('btn-save').innerHTML = '<i class="fas fa-save"></i> Enregistrer';
+  document.getElementById('btn-save').innerHTML = '<i class="fas fa-save"></i> {% trans "Enregistrer';" %}
   document.getElementById('f-titre').value        = s.titre;
   document.getElementById('f-sous_titre').value   = s.sous_titre;
   document.getElementById('f-texte_bouton').value = s.texte_bouton;

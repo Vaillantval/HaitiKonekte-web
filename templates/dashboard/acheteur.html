@@ -1,30 +1,31 @@
 {% extends 'dashboard/base.html' %}
+{% load i18n %}
 
 {% block title %}Mon espace — Acheteur{% endblock %}
 
 {% block sidebar_nav %}
-  <div class="nav-section-label">Navigation</div>
+  <div class="nav-section-label">{% trans "Navigation" %}</div>
   <a href="/dashboard/acheteur/" class="nav-item active">
-    <i class="fas fa-th-large"></i> Vue d'ensemble
+    <i class="fas fa-th-large"></i> {% trans "Vue d'ensemble" %}
   </a>
   <a href="/dashboard/acheteur/commandes/" class="nav-item">
-    <i class="fas fa-clipboard-list"></i> Mes commandes
+    <i class="fas fa-clipboard-list"></i> {% trans "Mes commandes" %}
     <span class="nav-badge" id="sb-badge-commandes" style="display:none"></span>
   </a>
   <a href="/dashboard/acheteur/adresses/" class="nav-item">
-    <i class="fas fa-map-marker-alt"></i> Mes adresses
+    <i class="fas fa-map-marker-alt"></i> {% trans "Mes adresses" %}
   </a>
   <a href="/dashboard/acheteur/vouchers/" class="nav-item">
-    <i class="fas fa-ticket-alt"></i> Mes vouchers
+    <i class="fas fa-ticket-alt"></i> {% trans "Mes vouchers" %}
     <span class="nav-badge" id="sb-badge-vouchers" style="display:none"></span>
   </a>
   <a href="/" class="nav-item">
-    <i class="fas fa-store"></i> Catalogue
+    <i class="fas fa-store"></i> {% trans "Catalogue" %}
   </a>
 
-  <div class="nav-section-label">Compte</div>
+  <div class="nav-section-label">{% trans "Compte" %}</div>
   <a href="/dashboard/acheteur/profil/" class="nav-item">
-    <i class="fas fa-user-edit"></i> Mon profil
+    <i class="fas fa-user-edit"></i> {% trans "Mon profil" %}
   </a>
 {% endblock %}
 
@@ -239,8 +240,8 @@
   <!-- Bannière de bienvenue -->
   <div class="welcome-banner">
     <div>
-      <h2 id="welcome-name">Bonjour !</h2>
-      <p>Voici un aperçu de votre activité sur Makèt Peyizan.</p>
+      <h2 id="welcome-name">{% trans "Bonjour !" %}</h2>
+      <p>{% trans "Voici un aperçu de votre activité sur Makèt Peyizan." %}</p>
     </div>
   </div>
 
@@ -250,28 +251,28 @@
       <div class="stat-icon green"><i class="fas fa-clipboard-list"></i></div>
       <div>
         <div class="stat-value" id="stat-commandes">—</div>
-        <div class="stat-label">Commandes passées</div>
+        <div class="stat-label">{% trans "Commandes passées" %}</div>
       </div>
     </div>
     <div class="stat-card">
       <div class="stat-icon blue"><i class="fas fa-coins"></i></div>
       <div>
         <div class="stat-value" id="stat-depense">—</div>
-        <div class="stat-label">Total dépensé (HTG)</div>
+        <div class="stat-label">{% trans "Total dépensé (HTG)" %}</div>
       </div>
     </div>
     <div class="stat-card">
       <div class="stat-icon orange"><i class="fas fa-map-marker-alt"></i></div>
       <div>
         <div class="stat-value" id="stat-adresses">—</div>
-        <div class="stat-label">Adresses sauvegardées</div>
+        <div class="stat-label">{% trans "Adresses sauvegardées" %}</div>
       </div>
     </div>
     <div class="stat-card">
       <div class="stat-icon yellow"><i class="fas fa-truck"></i></div>
       <div>
         <div class="stat-value" id="stat-en-cours">—</div>
-        <div class="stat-label">Commandes en cours</div>
+        <div class="stat-label">{% trans "Commandes en cours" %}</div>
       </div>
     </div>
   </div>
@@ -285,17 +286,17 @@
   <div class="table-wrap" id="recent-orders-wrap">
     <div class="empty-state" id="orders-loading">
       <i class="fas fa-spinner fa-spin"></i>
-      <p>Chargement...</p>
+      <p>{% trans "Chargement..." %}</p>
     </div>
     <table id="orders-table" style="display:none">
       <thead>
         <tr>
-          <th>N° Commande</th>
-          <th>Producteur</th>
-          <th>Articles</th>
-          <th>Total</th>
-          <th>Statut</th>
-          <th>Date</th>
+          <th>{% trans "N° Commande" %}</th>
+          <th>{% trans "Producteur" %}</th>
+          <th>{% trans "Articles" %}</th>
+          <th>{% trans "Total" %}</th>
+          <th>{% trans "Statut" %}</th>
+          <th>{% trans "Date" %}</th>
         </tr>
       </thead>
       <tbody id="orders-tbody"></tbody>
@@ -303,27 +304,27 @@
     <div class="empty-state" id="orders-empty" style="display:none">
       <i class="fas fa-clipboard-list"></i>
       <p>Aucune commande pour l'instant.<br>
-        <a href="/">Parcourir le catalogue</a>
+        <a href="/">{% trans "Parcourir le catalogue" %}</a>
       </p>
     </div>
   </div>
 
   <!-- Codes promo -->
   <div class="section-title" style="margin-top:36px">
-    <span><i class="fas fa-ticket-alt" style="color:var(--green-mid);margin-right:7px"></i>Codes promo</span>
+    <span><i class="fas fa-ticket-alt" style="color:var(--green-mid);margin-right:7px"></i>{% trans "Codes promo" %}</span>
     <a href="/dashboard/acheteur/vouchers/">Voir tous <i class="fas fa-arrow-right"></i></a>
   </div>
 
   <div id="vouchers-loading" class="empty-state">
     <i class="fas fa-spinner fa-spin"></i>
-    <p>Chargement…</p>
+    <p>{% trans "Chargement…" %}</p>
   </div>
 
   <div class="voucher-grid" id="vouchers-grid" style="display:none"></div>
 
   <div class="empty-state" id="vouchers-empty" style="display:none">
     <i class="fas fa-tag"></i>
-    <p>Aucun code promo pour l'instant.</p>
+    <p>{% trans "Aucun code promo pour l'instant." %}</p>
   </div>
 
 {% endblock %}
@@ -395,12 +396,12 @@
           commandes.slice(0, 5).forEach(c => {
             tbody.innerHTML += `
               <tr>
-                <td><a href="/dashboard/acheteur/commandes/" style="color:var(--green-mid);font-weight:600">${c.numero_commande}</a></td>
-                <td>${c.producteur_nom || '—'}<br><small style="color:var(--text-muted)">${c.producteur_commune || ''}</small></td>
-                <td style="text-align:center">${c.details.length}</td>
-                <td style="font-weight:600">${Number(c.total).toLocaleString('fr-FR')} HTG</td>
-                <td>${statutBadge(c.statut, c.statut_label)}</td>
-                <td style="color:var(--text-muted)">${formatDate(c.created_at)}</td>
+                <td><a href="/dashboard/acheteur/commandes/" style="color:var(--green-mid);font-weight:600">{% trans "${c.numero_commande}" %}</a></td>
+                <td>${c.producteur_nom || '—'}<br><small style="color:var(--text-muted)">{% trans "${c.producteur_commune || ''}" %}</small></td>
+                <td style="text-align:center">{% trans "${c.details.length}" %}</td>
+                <td style="font-weight:600">{% trans "${Number(c.total).toLocaleString('fr-FR')} HTG" %}</td>
+                <td>{% trans "${statutBadge(c.statut, c.statut_label)}" %}</td>
+                <td style="color:var(--text-muted)">{% trans "${formatDate(c.created_at)}" %}</td>
               </tr>`;
           });
           // Badge sidebar
@@ -442,24 +443,24 @@
     }
     if (!v.est_valide) {
       return `<div class="voucher-usage dead">
-        <i class="fas fa-ban"></i> Ce code n'est plus valide.
+        <i class="fas fa-ban"></i> {% trans "Ce code n'est plus valide." %}
       </div>`;
     }
     const minTxt = parseFloat(v.montant_commande_min) > 0
-      ? ` pour une commande d'au moins <strong>${Number(v.montant_commande_min).toLocaleString('fr-FR')} HTG</strong>` : '';
+      ? ` pour une commande d'au moins <strong>{% trans "${Number(v.montant_commande_min).toLocaleString('fr-FR')} HTG" %}</strong>` : '';
 
     if (v.type_valeur === 'fixe') {
       return `<div class="voucher-usage">
-        <strong><i class="fas fa-info-circle"></i> Comment l'utiliser :</strong><br>
-        Ce code vous donne <strong>${Number(v.valeur).toLocaleString('fr-FR')} HTG de réduction</strong>${minTxt}.<br>
-        Au moment du paiement, saisissez ce code dans le champ <em>« Code de réduction »</em> du récapitulatif.
+        <strong><i class="fas fa-info-circle"></i> {% trans "Comment l'utiliser :" %}</strong><br>
+        Ce code vous donne <strong>{% trans "${Number(v.valeur).toLocaleString('fr-FR')} HTG de réduction" %}</strong>${minTxt}.<br>
+        Au moment du paiement, saisissez ce code dans le champ <em>{% trans "« Code de réduction »" %}</em> du récapitulatif.
       </div>`;
     } else {
       const maxTxt = v.montant_max ? ` (max ${Number(v.montant_max).toLocaleString('fr-FR')} HTG)` : '';
       return `<div class="voucher-usage">
-        <strong><i class="fas fa-info-circle"></i> Comment l'utiliser :</strong><br>
-        Ce code donne <strong>${Number(v.valeur).toLocaleString('fr-FR')}% de réduction</strong>${maxTxt}${minTxt}.<br>
-        La réduction est calculée sur le total de votre panier. Saisissez ce code dans le champ <em>« Code de réduction »</em> au moment du paiement.
+        <strong><i class="fas fa-info-circle"></i> {% trans "Comment l'utiliser :" %}</strong><br>
+        Ce code donne <strong>{% trans "${Number(v.valeur).toLocaleString('fr-FR')}% de réduction" %}</strong>${maxTxt}${minTxt}.<br>
+        La réduction est calculée sur le total de votre panier. Saisissez ce code dans le champ <em>{% trans "« Code de réduction »" %}</em> au moment du paiement.
       </div>`;
     }
   }
@@ -489,12 +490,12 @@
         const btnId = `copy-btn-${idx}`;
         grid.innerHTML += `
           <div class="voucher-card ${cardClass}">
-            ${v.est_valide ? `<button class="voucher-copy" id="${btnId}" onclick="copyCode('${v.code}', this)">Copier</button>` : ''}
+            ${v.est_valide ? `<button class="voucher-copy" id="${btnId}" onclick="copyCode('${v.code}', this)">{% trans "Copier" %}</button>` : ''}
             <div class="voucher-badge ${badgeClass}">
               <i class="fas ${badgeIcon}" style="font-size:9px"></i> ${v.statut_label}
             </div>
-            <div class="voucher-code">${v.code}</div>
-            <div class="voucher-valeur">${valeurTxt}</div>
+            <div class="voucher-code">{% trans "${v.code}" %}</div>
+            <div class="voucher-valeur">{% trans "${valeurTxt}" %}</div>
             <div class="voucher-meta">
               <i class="fas fa-ticket-alt" style="margin-right:4px;color:var(--green-mid)"></i>${v.programme_nom}<br>
               <i class="fas fa-calendar-alt" style="margin-right:4px"></i>Expire le ${fmtDate(v.date_expiration)}

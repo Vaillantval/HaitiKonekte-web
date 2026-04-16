@@ -1,38 +1,39 @@
 from django.db import models
 from django.conf import settings
+from django.utils.translation import gettext_lazy as _
 
 
 class Commande(models.Model):
     class Statut(models.TextChoices):
-        EN_ATTENTE     = 'en_attente',     'En attente de confirmation'
-        CONFIRMEE      = 'confirmee',      'Confirmee'
-        EN_PREPARATION = 'en_preparation', 'En preparation'
-        PRETE          = 'prete',          'Prete pour collecte'
-        EN_COLLECTE    = 'en_collecte',    'En cours de collecte'
-        LIVREE         = 'livree',         'Livree'
-        ANNULEE        = 'annulee',        'Annulee'
-        LITIGE         = 'litige',         'En litige'
+        EN_ATTENTE     = 'en_attente',     _('En attente de confirmation')
+        CONFIRMEE      = 'confirmee',      _('Confirmee')
+        EN_PREPARATION = 'en_preparation', _('En preparation')
+        PRETE          = 'prete',          _('Prete pour collecte')
+        EN_COLLECTE    = 'en_collecte',    _('En cours de collecte')
+        LIVREE         = 'livree',         _('Livree')
+        ANNULEE        = 'annulee',        _('Annulee')
+        LITIGE         = 'litige',         _('En litige')
 
     class ModeLivraison(models.TextChoices):
-        LIVRAISON_DOMICILE = 'domicile', 'Livraison a domicile'
-        RETRAIT_PRODUCTEUR = 'retrait',  'Retrait chez le producteur'
-        POINT_COLLECTE     = 'collecte', 'Point de collecte'
+        LIVRAISON_DOMICILE = 'domicile', _('Livraison a domicile')
+        RETRAIT_PRODUCTEUR = 'retrait',  _('Retrait chez le producteur')
+        POINT_COLLECTE     = 'collecte', _('Point de collecte')
 
     class MethodePaiement(models.TextChoices):
-        MONCASH    = 'moncash',    'MonCash'
-        NATCASH    = 'natcash',    'NatCash'
-        VIREMENT   = 'virement',   'Virement bancaire'
-        CASH       = 'cash',       'Especes'
-        VOUCHER    = 'voucher',    'e-Voucher'
-        HORS_LIGNE = 'hors_ligne', 'Paiement hors ligne'
+        MONCASH    = 'moncash',    _('MonCash')
+        NATCASH    = 'natcash',    _('NatCash')
+        VIREMENT   = 'virement',   _('Virement bancaire')
+        CASH       = 'cash',       _('Especes')
+        VOUCHER    = 'voucher',    _('e-Voucher')
+        HORS_LIGNE = 'hors_ligne', _('Paiement hors ligne')
 
     class StatutPaiement(models.TextChoices):
-        NON_PAYE       = 'non_paye',       'Non paye'
-        EN_ATTENTE     = 'en_attente',     'En attente de verification'
-        PREUVE_SOUMISE = 'preuve_soumise', 'Preuve soumise'
-        VERIFIE        = 'verifie',        'Verifie'
-        PAYE           = 'paye',           'Paye'
-        REMBOURSE      = 'rembourse',      'Rembourse'
+        NON_PAYE       = 'non_paye',       _('Non paye')
+        EN_ATTENTE     = 'en_attente',     _('En attente de verification')
+        PREUVE_SOUMISE = 'preuve_soumise', _('Preuve soumise')
+        VERIFIE        = 'verifie',        _('Verifie')
+        PAYE           = 'paye',           _('Paye')
+        REMBOURSE      = 'rembourse',      _('Rembourse')
 
     numero_commande        = models.CharField(max_length=30, unique=True, blank=True)
     acheteur               = models.ForeignKey('accounts.Acheteur', on_delete=models.PROTECT, related_name='commandes')
@@ -61,8 +62,8 @@ class Commande(models.Model):
     updated_at             = models.DateTimeField(auto_now=True)
 
     class Meta:
-        verbose_name        = 'Commande'
-        verbose_name_plural = 'Commandes'
+        verbose_name        = _('Commande')
+        verbose_name_plural = _('Commandes')
         ordering            = ['-created_at']
 
     def __str__(self):

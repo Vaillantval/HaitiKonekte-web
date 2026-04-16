@@ -1,8 +1,9 @@
 {% extends "emails/base.html" %}
+{% load i18n %}
 {% block titre %}Votre code de réduction — Makèt Peyizan{% endblock %}
 {% block content %}
 
-<p class="greeting">Bonjour {{ prenom }} 👋</p>
+<p class="greeting">{% blocktrans with prenom=prenom %}Bonjour {{ prenom }} 👋{% endblocktrans %}</p>
 
 <p class="message">
   Bonne nouvelle ! Un code de réduction a été généré pour vous dans le cadre
@@ -26,14 +27,14 @@
 <div class="card">
   {% if voucher.type_valeur == 'fixe' %}
   <div class="card-row">
-    <span class="card-label">Réduction</span>
+    <span class="card-label">{% trans "Réduction" %}</span>
     <span class="card-value" style="color:#27ae60;font-size:16px;">
       {{ voucher.valeur|floatformat:0 }} HTG de réduction
     </span>
   </div>
   {% else %}
   <div class="card-row">
-    <span class="card-label">Réduction</span>
+    <span class="card-label">{% trans "Réduction" %}</span>
     <span class="card-value" style="color:#27ae60;font-size:16px;">
       {{ voucher.valeur|floatformat:0 }}% de réduction
       {% if voucher.montant_max %}
@@ -45,54 +46,54 @@
 
   {% if voucher.montant_commande_min > 0 %}
   <div class="card-row">
-    <span class="card-label">Commande minimum</span>
-    <span class="card-value">{{ voucher.montant_commande_min|floatformat:0 }} HTG</span>
+    <span class="card-label">{% trans "Commande minimum" %}</span>
+    <span class="card-value">{% blocktrans with voucher=voucher.montant_commande_min|floatformat:0 %}{{ voucher }} HTG{% endblocktrans %}</span>
   </div>
   {% endif %}
 
   <div class="card-row">
-    <span class="card-label">Valide jusqu'au</span>
+    <span class="card-label">{% trans "Valide jusqu'au" %}</span>
     <span class="card-value">{{ voucher.date_expiration|date:"d F Y" }}</span>
   </div>
 
   <div class="card-row">
-    <span class="card-label">Programme</span>
+    <span class="card-label">{% trans "Programme" %}</span>
     <span class="card-value">{{ voucher.programme.nom }}</span>
   </div>
 
   <div class="card-row">
-    <span class="card-label">Statut</span>
-    <span class="badge badge-vert">Actif</span>
+    <span class="card-label">{% trans "Statut" %}</span>
+    <span class="badge badge-vert">{% trans "Actif" %}</span>
   </div>
 </div>
 
 <!-- Instructions d'utilisation -->
 {% if voucher.type_valeur == 'fixe' %}
 <div class="info-box">
-  <strong>💡 Comment utiliser ce code ?</strong><br><br>
-  Ce code vous donne <strong>{{ voucher.valeur|floatformat:0 }} HTG de réduction</strong> sur votre commande.
+  <strong>{% trans "💡 Comment utiliser ce code ?" %}</strong><br><br>
+  Ce code vous donne <strong>{% blocktrans with voucher=voucher.valeur|floatformat:0 %}{{ voucher }} HTG de réduction{% endblocktrans %}</strong> sur votre commande.
   {% if voucher.montant_commande_min > 0 %}
-  Il est valable pour toute commande d'un montant minimum de <strong>{{ voucher.montant_commande_min|floatformat:0 }} HTG</strong>.
+  Il est valable pour toute commande d'un montant minimum de <strong>{% blocktrans with voucher=voucher.montant_commande_min|floatformat:0 %}{{ voucher }} HTG{% endblocktrans %}</strong>.
   {% endif %}
   <ol style="margin:12px 0 0 18px;line-height:2">
-    <li>Ajoutez vos produits au panier</li>
-    <li>Accédez à la page de paiement</li>
+    <li>{% trans "Ajoutez vos produits au panier" %}</li>
+    <li>{% trans "Accédez à la page de paiement" %}</li>
     <li>Saisissez le code <strong style="font-family:monospace">{{ voucher.code }}</strong> dans le champ « Code de réduction »</li>
-    <li>La réduction de <strong>{{ voucher.valeur|floatformat:0 }} HTG</strong> sera automatiquement appliquée</li>
+    <li>La réduction de <strong>{% blocktrans with voucher=voucher.valeur|floatformat:0 %}{{ voucher }} HTG{% endblocktrans %}</strong> sera automatiquement appliquée</li>
   </ol>
 </div>
 {% else %}
 <div class="info-box">
-  <strong>💡 Comment utiliser ce code ?</strong><br><br>
-  Ce code vous donne <strong>{{ voucher.valeur|floatformat:0 }}% de réduction</strong> sur le montant total de votre commande{% if voucher.montant_max %}, jusqu'à un maximum de <strong>{{ voucher.montant_max|floatformat:0 }} HTG</strong>{% endif %}.
+  <strong>{% trans "💡 Comment utiliser ce code ?" %}</strong><br><br>
+  Ce code vous donne <strong>{% blocktrans with voucher=voucher.valeur|floatformat:0 %}{{ voucher }}% de réduction{% endblocktrans %}</strong> sur le montant total de votre commande{% if voucher.montant_max %}, jusqu'à un maximum de <strong>{% blocktrans with voucher=voucher.montant_max|floatformat:0 %}{{ voucher }} HTG{% endblocktrans %}</strong>{% endif %}.
   {% if voucher.montant_commande_min > 0 %}
-  Il est valable pour toute commande d'un montant minimum de <strong>{{ voucher.montant_commande_min|floatformat:0 }} HTG</strong>.
+  Il est valable pour toute commande d'un montant minimum de <strong>{% blocktrans with voucher=voucher.montant_commande_min|floatformat:0 %}{{ voucher }} HTG{% endblocktrans %}</strong>.
   {% endif %}
   <ol style="margin:12px 0 0 18px;line-height:2">
-    <li>Ajoutez vos produits au panier</li>
-    <li>Accédez à la page de paiement</li>
+    <li>{% trans "Ajoutez vos produits au panier" %}</li>
+    <li>{% trans "Accédez à la page de paiement" %}</li>
     <li>Saisissez le code <strong style="font-family:monospace">{{ voucher.code }}</strong> dans le champ « Code de réduction »</li>
-    <li>La réduction sera calculée automatiquement sur le total de votre panier</li>
+    <li>{% trans "La réduction sera calculée automatiquement sur le total de votre panier" %}</li>
   </ol>
 </div>
 {% endif %}
@@ -109,7 +110,7 @@
   Ce code est personnel et à usage unique.<br>
   Il expire le <strong>{{ voucher.date_expiration|date:"d/m/Y" }}</strong>.
   Retrouvez tous vos codes dans votre
-  <a href="{{ site_url }}dashboard/acheteur/" style="color:#27ae60">espace personnel</a>.
+  <a href="{{ site_url }}dashboard/acheteur/" style="color:#27ae60">{% trans "espace personnel" %}</a>.
 </p>
 
 {% endblock %}

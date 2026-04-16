@@ -9,6 +9,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import status
+from django.utils.translation import gettext as _
 
 
 def _require_admin(user):
@@ -117,9 +118,9 @@ class AdminUserToggleView(APIView):
         try:
             u = CustomUser.objects.get(pk=pk)
         except CustomUser.DoesNotExist:
-            return Response({'detail': 'Utilisateur introuvable.'}, status=404)
+            return Response({'detail': _('Utilisateur introuvable.')}, status=404)
         if u.is_superuser and not request.user.is_superuser:
-            return Response({'detail': 'Impossible de modifier un superadmin.'}, status=403)
+            return Response({'detail': _('Impossible de modifier un superadmin.')}, status=403)
         u.is_active = not u.is_active
         u.save(update_fields=['is_active'])
         return Response({'is_active': u.is_active, 'username': u.username})
@@ -184,14 +185,14 @@ class AdminProducteurStatutView(APIView):
         try:
             p = Producteur.objects.select_related('user').get(pk=pk)
         except Producteur.DoesNotExist:
-            return Response({'detail': 'Producteur introuvable.'}, status=404)
+            return Response({'detail': _('Producteur introuvable.')}, status=404)
 
         nouveau_statut = request.data.get('statut', '').strip()
         note           = request.data.get('note', '').strip()
 
         statuts_valides = [s[0] for s in Producteur.Statut.choices]
         if nouveau_statut not in statuts_valides:
-            return Response({'detail': 'Statut invalide.'}, status=400)
+            return Response({'detail': _('Statut invalide.')}, status=400)
 
         if note:
             p.note_admin = note
@@ -268,7 +269,7 @@ class AdminCommandeDetailView(APIView):
                 'acheteur__user', 'producteur__user'
             ).prefetch_related('details__produit').get(numero_commande=numero)
         except Commande.DoesNotExist:
-            return Response({'detail': 'Commande introuvable.'}, status=404)
+            return Response({'detail': _('Commande introuvable.')}, status=404)
 
         from apps.accounts.views import _actions_possibles
         details = [{
@@ -352,7 +353,7 @@ class AdminCommandeStatutView(APIView):
         try:
             c = Commande.objects.get(numero_commande=numero)
         except Commande.DoesNotExist:
-            return Response({'detail': 'Commande introuvable.'}, status=404)
+            return Response({'detail': _('Commande introuvable.')}, status=404)
 
         action      = request.data.get('action', '').strip()
         commentaire = request.data.get('commentaire', '').strip()
@@ -431,12 +432,12 @@ class AdminPaiementStatutView(APIView):
         try:
             p = Paiement.objects.select_related('commande').get(pk=pk)
         except Paiement.DoesNotExist:
-            return Response({'detail': 'Paiement introuvable.'}, status=404)
+            return Response({'detail': _('Paiement introuvable.')}, status=404)
 
         nouveau_statut = request.data.get('statut', '').strip()
         statuts_valides = [s[0] for s in Paiement.Statut.choices]
         if nouveau_statut not in statuts_valides:
-            return Response({'detail': 'Statut invalide.'}, status=400)
+            return Response({'detail': _('Statut invalide.')}, status=400)
 
         note        = request.data.get('note', '').strip()
         montant_recu = request.data.get('montant_recu')
@@ -523,7 +524,7 @@ class AdminCatalogueToggleView(APIView):
         try:
             p = Produit.objects.get(pk=pk)
         except Produit.DoesNotExist:
-            return Response({'detail': 'Produit introuvable.'}, status=404)
+            return Response({'detail': _('Produit introuvable.')}, status=404)
 
         champ = request.data.get('champ', 'is_active')
         if champ == 'is_active':
@@ -534,7 +535,7 @@ class AdminCatalogueToggleView(APIView):
             p.is_featured = not p.is_featured
             p.save(update_fields=['is_featured'])
             return Response({'is_featured': p.is_featured})
-        return Response({'detail': 'Champ invalide.'}, status=400)
+        return Response({'detail': _('Champ invalide.')}, status=400)
 
 
 class AdminCatalogueStatutView(APIView):
@@ -546,12 +547,12 @@ class AdminCatalogueStatutView(APIView):
         try:
             p = Produit.objects.get(pk=pk)
         except Produit.DoesNotExist:
-            return Response({'detail': 'Produit introuvable.'}, status=404)
+            return Response({'detail': _('Produit introuvable.')}, status=404)
 
         nouveau = request.data.get('statut', '').strip()
         statuts = [s[0] for s in Produit.Statut.choices]
         if nouveau not in statuts:
-            return Response({'detail': 'Statut invalide.'}, status=400)
+            return Response({'detail': _('Statut invalide.')}, status=400)
 
         p.statut = nouveau
         if nouveau == Produit.Statut.ACTIF:
@@ -690,7 +691,7 @@ class AdminCollecteDetailView(APIView):
         try:
             c = Collecte.objects.select_related('zone', 'point_collecte', 'collecteur').get(pk=pk)
         except Collecte.DoesNotExist:
-            return Response({'detail': 'Collecte introuvable.'}, status=404)
+            return Response({'detail': _('Collecte introuvable.')}, status=404)
 
         participations = []
         for p in c.participations.select_related('producteur__user').all():
@@ -742,12 +743,12 @@ class AdminCollecteStatutView(APIView):
         try:
             c = Collecte.objects.get(pk=pk)
         except Collecte.DoesNotExist:
-            return Response({'detail': 'Collecte introuvable.'}, status=404)
+            return Response({'detail': _('Collecte introuvable.')}, status=404)
 
         nouveau = request.data.get('statut', '').strip()
         statuts = [s[0] for s in Collecte.Statut.choices]
         if nouveau not in statuts:
-            return Response({'detail': 'Statut invalide.'}, status=400)
+            return Response({'detail': _('Statut invalide.')}, status=400)
 
         c.statut = nouveau
         if nouveau == Collecte.Statut.EN_COURS and not c.date_debut_reel:
@@ -768,12 +769,12 @@ class AdminParticipationStatutView(APIView):
         try:
             p = ParticipationCollecte.objects.get(pk=pk)
         except ParticipationCollecte.DoesNotExist:
-            return Response({'detail': 'Participation introuvable.'}, status=404)
+            return Response({'detail': _('Participation introuvable.')}, status=404)
 
         nouveau = request.data.get('statut', '').strip()
         statuts = [s[0] for s in ParticipationCollecte.Statut.choices]
         if nouveau not in statuts:
-            return Response({'detail': 'Statut invalide.'}, status=400)
+            return Response({'detail': _('Statut invalide.')}, status=400)
 
         quantite = request.data.get('quantite_collectee')
         if quantite is not None:
@@ -833,7 +834,7 @@ class AdminOptionsView(APIView):
             data = [{'id': p.pk, 'label': f"{p.user.get_full_name() or p.user.username} ({p.code_producteur})", 'departement': p.departement, 'commune': p.commune} for p in Producteur.objects.select_related('user').order_by('-created_at')]
 
         else:
-            return Response({'detail': 'type invalide.'}, status=400)
+            return Response({'detail': _('type invalide.')}, status=400)
 
         return Response(data)
 
@@ -859,11 +860,11 @@ class AdminCatalogueCreateView(APIView):
         try:
             producteur = Producteur.objects.get(pk=data['producteur_id'])
         except Producteur.DoesNotExist:
-            return Response({'producteur_id': 'Producteur introuvable.'}, status=400)
+            return Response({'producteur_id': _('Producteur introuvable.')}, status=400)
         try:
             categorie = Categorie.objects.get(pk=data['categorie_id'])
         except Categorie.DoesNotExist:
-            return Response({'categorie_id': 'Categorie introuvable.'}, status=400)
+            return Response({'categorie_id': _('Categorie introuvable.')}, status=400)
 
         produit = Produit(
             producteur=producteur,
@@ -904,7 +905,7 @@ class AdminCatalogueDetailView(APIView):
         try:
             p = Produit.objects.select_related('producteur__user', 'categorie').get(pk=pk)
         except Produit.DoesNotExist:
-            return Response({'detail': 'Produit introuvable.'}, status=404)
+            return Response({'detail': _('Produit introuvable.')}, status=404)
         return Response({
             'id':                   p.pk,
             'nom':                  p.nom,
@@ -932,7 +933,7 @@ class AdminCatalogueDetailView(APIView):
         try:
             p = Produit.objects.get(pk=pk)
         except Produit.DoesNotExist:
-            return Response({'detail': 'Produit introuvable.'}, status=404)
+            return Response({'detail': _('Produit introuvable.')}, status=404)
 
         data = request.data
         if data.get('nom'):            p.nom = data['nom']
@@ -972,12 +973,12 @@ class AdminStockLotCreateView(APIView):
 
         data = request.data
         if not data.get('produit_id') or not data.get('quantite_initiale'):
-            return Response({'detail': 'produit_id et quantite_initiale sont requis.'}, status=400)
+            return Response({'detail': _('produit_id et quantite_initiale sont requis.')}, status=400)
 
         try:
             produit = Produit.objects.get(pk=data['produit_id'])
         except Produit.DoesNotExist:
-            return Response({'detail': 'Produit introuvable.'}, status=400)
+            return Response({'detail': _('Produit introuvable.')}, status=400)
 
         qte = int(data['quantite_initiale'])
         lot = Lot(
@@ -1022,7 +1023,7 @@ class AdminStockLotDetailView(APIView):
         try:
             lot = Lot.objects.select_related('produit__producteur__user').get(pk=pk)
         except Lot.DoesNotExist:
-            return Response({'detail': 'Lot introuvable.'}, status=404)
+            return Response({'detail': _('Lot introuvable.')}, status=404)
         return Response({
             'id':               lot.pk,
             'numero_lot':       lot.numero_lot,
@@ -1042,7 +1043,7 @@ class AdminStockLotDetailView(APIView):
         try:
             lot = Lot.objects.get(pk=pk)
         except Lot.DoesNotExist:
-            return Response({'detail': 'Lot introuvable.'}, status=404)
+            return Response({'detail': _('Lot introuvable.')}, status=404)
 
         data = request.data
         if 'date_recolte' in data:    lot.date_recolte    = data['date_recolte'] or None
@@ -1092,9 +1093,9 @@ class AdminUserCreateView(APIView):
             return Response(errors, status=400)
 
         if CustomUser.objects.filter(username=data['username']).exists():
-            return Response({'username': 'Ce nom d\'utilisateur est déjà pris.'}, status=400)
+            return Response({'username': _('Ce nom d\'utilisateur est déjà pris.')}, status=400)
         if CustomUser.objects.filter(email=data['email']).exists():
-            return Response({'email': 'Cet email est déjà utilisé.'}, status=400)
+            return Response({'email': _('Cet email est déjà utilisé.')}, status=400)
 
         role = data['role']
         u = CustomUser(
@@ -1139,7 +1140,7 @@ class AdminUserDetailView(APIView):
         try:
             u = CustomUser.objects.get(pk=pk)
         except CustomUser.DoesNotExist:
-            return Response({'detail': 'Utilisateur introuvable.'}, status=404)
+            return Response({'detail': _('Utilisateur introuvable.')}, status=404)
         return Response({
             'id':         u.pk,
             'username':   u.username,
@@ -1157,10 +1158,10 @@ class AdminUserDetailView(APIView):
         try:
             u = CustomUser.objects.get(pk=pk)
         except CustomUser.DoesNotExist:
-            return Response({'detail': 'Utilisateur introuvable.'}, status=404)
+            return Response({'detail': _('Utilisateur introuvable.')}, status=404)
 
         if u.is_superuser and not request.user.is_superuser:
-            return Response({'detail': 'Impossible de modifier un superadmin.'}, status=403)
+            return Response({'detail': _('Impossible de modifier un superadmin.')}, status=403)
 
         data = request.data
         if data.get('email'):      u.email      = data['email']
@@ -1195,7 +1196,7 @@ class AdminProducteurCreateView(APIView):
             return Response(errors, status=400)
 
         if CustomUser.objects.filter(username=data['username']).exists():
-            return Response({'username': 'Ce nom d\'utilisateur est déjà pris.'}, status=400)
+            return Response({'username': _('Ce nom d\'utilisateur est déjà pris.')}, status=400)
 
         from django.db import transaction
         with transaction.atomic():
@@ -1242,7 +1243,7 @@ class AdminProducteurDetailView(APIView):
         try:
             p = Producteur.objects.select_related('user').get(pk=pk)
         except Producteur.DoesNotExist:
-            return Response({'detail': 'Producteur introuvable.'}, status=404)
+            return Response({'detail': _('Producteur introuvable.')}, status=404)
         return Response({
             'id':               p.pk,
             'code_producteur':  p.code_producteur,
@@ -1268,7 +1269,7 @@ class AdminProducteurDetailView(APIView):
         try:
             p = Producteur.objects.select_related('user').get(pk=pk)
         except Producteur.DoesNotExist:
-            return Response({'detail': 'Producteur introuvable.'}, status=404)
+            return Response({'detail': _('Producteur introuvable.')}, status=404)
 
         data = request.data
         u = p.user
@@ -1305,12 +1306,12 @@ class AdminCollecteCreateView(APIView):
 
         data = request.data
         if not data.get('zone_id') or not data.get('date_planifiee'):
-            return Response({'detail': 'zone_id et date_planifiee sont requis.'}, status=400)
+            return Response({'detail': _('zone_id et date_planifiee sont requis.')}, status=400)
 
         try:
             zone = ZoneCollecte.objects.get(pk=data['zone_id'])
         except ZoneCollecte.DoesNotExist:
-            return Response({'zone_id': 'Zone introuvable.'}, status=400)
+            return Response({'zone_id': _('Zone introuvable.')}, status=400)
 
         point = None
         if data.get('point_collecte_id'):
@@ -1351,7 +1352,7 @@ class AdminCollecteEditView(APIView):
         try:
             c = Collecte.objects.get(pk=pk)
         except Collecte.DoesNotExist:
-            return Response({'detail': 'Collecte introuvable.'}, status=404)
+            return Response({'detail': _('Collecte introuvable.')}, status=404)
 
         data = request.data
         if data.get('zone_id'):
@@ -1383,19 +1384,19 @@ class AdminCollecteAddParticipationView(APIView):
         try:
             c = Collecte.objects.get(pk=pk)
         except Collecte.DoesNotExist:
-            return Response({'detail': 'Collecte introuvable.'}, status=404)
+            return Response({'detail': _('Collecte introuvable.')}, status=404)
 
         producteur_id = request.data.get('producteur_id')
         if not producteur_id:
-            return Response({'detail': 'producteur_id requis.'}, status=400)
+            return Response({'detail': _('producteur_id requis.')}, status=400)
 
         try:
             prod = Producteur.objects.get(pk=producteur_id)
         except Producteur.DoesNotExist:
-            return Response({'detail': 'Producteur introuvable.'}, status=400)
+            return Response({'detail': _('Producteur introuvable.')}, status=400)
 
         if ParticipationCollecte.objects.filter(collecte=c, producteur=prod).exists():
-            return Response({'detail': 'Ce producteur est déjà inscrit à cette collecte.'}, status=400)
+            return Response({'detail': _('Ce producteur est déjà inscrit à cette collecte.')}, status=400)
 
         p = ParticipationCollecte.objects.create(
             collecte=c,
@@ -1421,7 +1422,7 @@ class AdminParticipationDeleteView(APIView):
         try:
             p = ParticipationCollecte.objects.get(pk=pk)
         except ParticipationCollecte.DoesNotExist:
-            return Response({'detail': 'Participation introuvable.'}, status=404)
+            return Response({'detail': _('Participation introuvable.')}, status=404)
         p.delete()
         return Response(status=204)
 
@@ -1476,7 +1477,7 @@ class AdminAcheteurDetailView(APIView):
         try:
             a = Acheteur.objects.select_related('user').get(pk=pk)
         except Acheteur.DoesNotExist:
-            return Response({'detail': 'Acheteur introuvable.'}, status=404)
+            return Response({'detail': _('Acheteur introuvable.')}, status=404)
         return Response({
             'id':               a.pk,
             'user_id':          a.user.pk,
@@ -1498,7 +1499,7 @@ class AdminAcheteurDetailView(APIView):
         try:
             a = Acheteur.objects.select_related('user').get(pk=pk)
         except Acheteur.DoesNotExist:
-            return Response({'detail': 'Acheteur introuvable.'}, status=404)
+            return Response({'detail': _('Acheteur introuvable.')}, status=404)
         data = request.data
         if data.get('type_acheteur'):    a.type_acheteur    = data['type_acheteur']
         if 'nom_organisation' in data:   a.nom_organisation = data['nom_organisation']
@@ -1584,7 +1585,7 @@ class AdminCategoriesView(APIView):
         from django.utils.text import slugify
         data = request.data
         if not data.get('nom'):
-            return Response({'nom': 'Champ requis.'}, status=400)
+            return Response({'nom': _('Champ requis.')}, status=400)
         nom  = data['nom'].strip()
         slug = slugify(nom)
         # S'assurer de l'unicité du slug
@@ -1616,7 +1617,7 @@ class AdminCategorieDetailView(APIView):
         try:
             c = Categorie.objects.get(pk=pk)
         except Categorie.DoesNotExist:
-            return Response({'detail': 'Catégorie introuvable.'}, status=404)
+            return Response({'detail': _('Catégorie introuvable.')}, status=404)
         return Response({
             'id':        c.pk,
             'nom':       c.nom,
@@ -1632,7 +1633,7 @@ class AdminCategorieDetailView(APIView):
         try:
             c = Categorie.objects.get(pk=pk)
         except Categorie.DoesNotExist:
-            return Response({'detail': 'Catégorie introuvable.'}, status=404)
+            return Response({'detail': _('Catégorie introuvable.')}, status=404)
         data = request.data
         if data.get('nom'):       c.nom      = data['nom']
         if 'icone' in data:       c.icone    = data['icone']
@@ -1648,9 +1649,9 @@ class AdminCategorieDetailView(APIView):
         try:
             c = Categorie.objects.get(pk=pk)
         except Categorie.DoesNotExist:
-            return Response({'detail': 'Catégorie introuvable.'}, status=404)
+            return Response({'detail': _('Catégorie introuvable.')}, status=404)
         if c.produits.exists():
-            return Response({'detail': 'Impossible de supprimer une catégorie avec des produits.'}, status=400)
+            return Response({'detail': _('Impossible de supprimer une catégorie avec des produits.')}, status=400)
         c.delete()
         return Response(status=204)
 
@@ -1689,7 +1690,7 @@ class AdminVoucherProgrammesView(APIView):
         from apps.payments.models import ProgrammeVoucher
         data = request.data
         if not data.get('nom') or not data.get('type_programme'):
-            return Response({'detail': 'nom et type_programme requis.'}, status=400)
+            return Response({'detail': _('nom et type_programme requis.')}, status=400)
         p = ProgrammeVoucher(
             nom=data['nom'],
             type_programme=data['type_programme'],
@@ -1715,7 +1716,7 @@ class AdminVoucherProgrammeDetailView(APIView):
         try:
             p = ProgrammeVoucher.objects.get(pk=pk)
         except ProgrammeVoucher.DoesNotExist:
-            return Response({'detail': 'Programme introuvable.'}, status=404)
+            return Response({'detail': _('Programme introuvable.')}, status=404)
         return Response({
             'id':             p.pk,
             'nom':            p.nom,
@@ -1737,7 +1738,7 @@ class AdminVoucherProgrammeDetailView(APIView):
         try:
             p = ProgrammeVoucher.objects.get(pk=pk)
         except ProgrammeVoucher.DoesNotExist:
-            return Response({'detail': 'Programme introuvable.'}, status=404)
+            return Response({'detail': _('Programme introuvable.')}, status=404)
         data = request.data
         if data.get('nom'):           p.nom            = data['nom']
         if 'description' in data:     p.description    = data['description']
@@ -1793,11 +1794,11 @@ class AdminVouchersView(APIView):
         from apps.payments.models import ProgrammeVoucher, Voucher
         data = request.data
         if not data.get('programme_id') or not data.get('type_valeur') or not data.get('valeur'):
-            return Response({'detail': 'programme_id, type_valeur et valeur requis.'}, status=400)
+            return Response({'detail': _('programme_id, type_valeur et valeur requis.')}, status=400)
         try:
             prog = ProgrammeVoucher.objects.get(pk=data['programme_id'])
         except ProgrammeVoucher.DoesNotExist:
-            return Response({'detail': 'Programme introuvable.'}, status=400)
+            return Response({'detail': _('Programme introuvable.')}, status=400)
         beneficiaire = None
         if data.get('beneficiaire_id'):
             from apps.accounts.models.acheteur import Acheteur
@@ -1824,7 +1825,7 @@ class AdminVoucherDetailView(APIView):
         try:
             v = Voucher.objects.get(pk=pk)
         except Voucher.DoesNotExist:
-            return Response({'detail': 'Voucher introuvable.'}, status=404)
+            return Response({'detail': _('Voucher introuvable.')}, status=404)
         data = request.data
         if data.get('statut'): v.statut = data['statut']
         if 'date_expiration' in data: v.date_expiration = data['date_expiration'] or None
@@ -1858,7 +1859,7 @@ class AdminZonesCollecteView(APIView):
         from apps.collectes.models import ZoneCollecte
         data = request.data
         if not data.get('nom') or not data.get('departement'):
-            return Response({'detail': 'nom et departement requis.'}, status=400)
+            return Response({'detail': _('nom et departement requis.')}, status=400)
         z = ZoneCollecte(
             nom=data['nom'],
             departement=data['departement'],
@@ -1878,7 +1879,7 @@ class AdminZoneCollecteDetailView(APIView):
         try:
             z = ZoneCollecte.objects.get(pk=pk)
         except ZoneCollecte.DoesNotExist:
-            return Response({'detail': 'Zone introuvable.'}, status=404)
+            return Response({'detail': _('Zone introuvable.')}, status=404)
         points = PointCollecte.objects.filter(zone=z).order_by('nom')
         return Response({
             'id':          z.pk,
@@ -1898,7 +1899,7 @@ class AdminZoneCollecteDetailView(APIView):
         try:
             z = ZoneCollecte.objects.get(pk=pk)
         except ZoneCollecte.DoesNotExist:
-            return Response({'detail': 'Zone introuvable.'}, status=404)
+            return Response({'detail': _('Zone introuvable.')}, status=404)
         data = request.data
         if data.get('nom'):         z.nom         = data['nom']
         if 'departement' in data:   z.departement = data['departement']
@@ -1912,9 +1913,9 @@ class AdminZoneCollecteDetailView(APIView):
         try:
             z = ZoneCollecte.objects.get(pk=pk)
         except ZoneCollecte.DoesNotExist:
-            return Response({'detail': 'Zone introuvable.'}, status=404)
+            return Response({'detail': _('Zone introuvable.')}, status=404)
         if z.collectes.exists():
-            return Response({'detail': 'Impossible de supprimer une zone avec des collectes.'}, status=400)
+            return Response({'detail': _('Impossible de supprimer une zone avec des collectes.')}, status=400)
         z.delete()
         return Response(status=204)
 
@@ -1948,11 +1949,11 @@ class AdminPointsCollecteView(APIView):
         from apps.collectes.models import ZoneCollecte, PointCollecte
         data = request.data
         if not data.get('zone_id') or not data.get('nom') or not data.get('commune'):
-            return Response({'detail': 'zone_id, nom et commune requis.'}, status=400)
+            return Response({'detail': _('zone_id, nom et commune requis.')}, status=400)
         try:
             zone = ZoneCollecte.objects.get(pk=data['zone_id'])
         except ZoneCollecte.DoesNotExist:
-            return Response({'detail': 'Zone introuvable.'}, status=400)
+            return Response({'detail': _('Zone introuvable.')}, status=400)
         p = PointCollecte(
             zone=zone,
             nom=data['nom'],
@@ -1975,7 +1976,7 @@ class AdminPointCollecteDetailView(APIView):
         try:
             p = PointCollecte.objects.get(pk=pk)
         except PointCollecte.DoesNotExist:
-            return Response({'detail': 'Point introuvable.'}, status=404)
+            return Response({'detail': _('Point introuvable.')}, status=404)
         data = request.data
         if data.get('nom'):        p.nom        = data['nom']
         if 'commune' in data:      p.commune    = data['commune']
@@ -1991,7 +1992,7 @@ class AdminPointCollecteDetailView(APIView):
         try:
             p = PointCollecte.objects.get(pk=pk)
         except PointCollecte.DoesNotExist:
-            return Response({'detail': 'Point introuvable.'}, status=404)
+            return Response({'detail': _('Point introuvable.')}, status=404)
         p.delete()
         return Response(status=204)
 
@@ -2107,7 +2108,7 @@ class AdminSiteSettingsView(APIView):
             if img_field in request.FILES:
                 setattr(s, img_field, request.FILES[img_field])
         s.save()
-        return Response({'detail': 'Paramètres mis à jour.'})
+        return Response({'detail': _('Paramètres mis à jour.')})
 
 
 class AdminFAQCategoriesView(APIView):
@@ -2132,7 +2133,7 @@ class AdminFAQCategoriesView(APIView):
         from apps.core.models import FAQCategorie
         data = request.data
         if not data.get('titre'):
-            return Response({'titre': 'Champ requis.'}, status=400)
+            return Response({'titre': _('Champ requis.')}, status=400)
         c = FAQCategorie(
             titre=data['titre'],
             icone=data.get('icone', 'fas fa-question-circle'),
@@ -2152,7 +2153,7 @@ class AdminFAQCategorieDetailView(APIView):
         try:
             c = FAQCategorie.objects.get(pk=pk)
         except FAQCategorie.DoesNotExist:
-            return Response({'detail': 'Catégorie introuvable.'}, status=404)
+            return Response({'detail': _('Catégorie introuvable.')}, status=404)
         data = request.data
         if data.get('titre'):   c.titre    = data['titre']
         if 'icone' in data:     c.icone    = data['icone']
@@ -2166,7 +2167,7 @@ class AdminFAQCategorieDetailView(APIView):
         try:
             c = FAQCategorie.objects.get(pk=pk)
         except FAQCategorie.DoesNotExist:
-            return Response({'detail': 'Catégorie introuvable.'}, status=404)
+            return Response({'detail': _('Catégorie introuvable.')}, status=404)
         c.delete()
         return Response(status=204)
 
@@ -2198,11 +2199,11 @@ class AdminFAQItemsView(APIView):
         from apps.core.models import FAQItem, FAQCategorie
         data = request.data
         if not data.get('question') or not data.get('reponse') or not data.get('categorie_id'):
-            return Response({'detail': 'question, reponse et categorie_id requis.'}, status=400)
+            return Response({'detail': _('question, reponse et categorie_id requis.')}, status=400)
         try:
             cat = FAQCategorie.objects.get(pk=data['categorie_id'])
         except FAQCategorie.DoesNotExist:
-            return Response({'detail': 'Catégorie introuvable.'}, status=400)
+            return Response({'detail': _('Catégorie introuvable.')}, status=400)
         item = FAQItem(
             categorie=cat,
             question=data['question'],
@@ -2223,7 +2224,7 @@ class AdminFAQItemDetailView(APIView):
         try:
             item = FAQItem.objects.get(pk=pk)
         except FAQItem.DoesNotExist:
-            return Response({'detail': 'Question introuvable.'}, status=404)
+            return Response({'detail': _('Question introuvable.')}, status=404)
         data = request.data
         if data.get('question'):    item.question  = data['question']
         if 'reponse' in data:       item.reponse   = data['reponse']
@@ -2239,7 +2240,7 @@ class AdminFAQItemDetailView(APIView):
         try:
             item = FAQItem.objects.get(pk=pk)
         except FAQItem.DoesNotExist:
-            return Response({'detail': 'Question introuvable.'}, status=404)
+            return Response({'detail': _('Question introuvable.')}, status=404)
         item.delete()
         return Response(status=204)
 
@@ -2278,7 +2279,7 @@ class AdminContactMessageDetailView(APIView):
         try:
             m = ContactMessage.objects.get(pk=pk)
         except ContactMessage.DoesNotExist:
-            return Response({'detail': 'Message introuvable.'}, status=404)
+            return Response({'detail': _('Message introuvable.')}, status=404)
         if 'est_lu' in request.data:
             m.est_lu = request.data['est_lu'] not in ('false', '0', False)
             m.save(update_fields=['est_lu'])

@@ -1,4 +1,5 @@
 {% extends 'dashboard/base.html' %}
+{% load i18n %}
 {% block title %}Paiements — Superadmin{% endblock %}
 {% block sidebar_nav %}{% include 'dashboard/superadmin_sidebar.html' with active='paiements' %}{% endblock %}
 {% block page_title %}Paiements{% endblock %}
@@ -63,60 +64,60 @@
 <!-- Modal vérification -->
 <div class="modal-overlay" id="modal">
   <div class="modal-box">
-    <h3 id="modal-title">Vérifier le paiement</h3>
+    <h3 id="modal-title">{% trans "Vérifier le paiement" %}</h3>
     <div id="modal-proof-wrap"></div>
     <div class="modal-field">
-      <label>Nouveau statut</label>
+      <label>{% trans "Nouveau statut" %}</label>
       <select id="modal-statut">
-        <option value="verifie">Vérifié</option>
-        <option value="confirme">Confirmé (paiement reçu)</option>
-        <option value="echoue">Échoué</option>
-        <option value="annule">Annulé</option>
+        <option value="verifie">{% trans "Vérifié" %}</option>
+        <option value="confirme">{% trans "Confirmé (paiement reçu)" %}</option>
+        <option value="echoue">{% trans "Échoué" %}</option>
+        <option value="annule">{% trans "Annulé" %}</option>
       </select>
     </div>
     <div class="modal-field">
-      <label>Montant reçu (HTG)</label>
-      <input type="number" id="modal-montant" placeholder="Laisser vide si identique">
+      <label>{% trans "Montant reçu (HTG)" %}</label>
+      <input type="number" id="modal-montant" placeholder="{% trans 'Laisser vide si identique' %}">
     </div>
     <div class="modal-field">
-      <label>Note de vérification</label>
-      <textarea id="modal-note" placeholder="Observations, référence de transaction..."></textarea>
+      <label>{% trans "Note de vérification" %}</label>
+      <textarea id="modal-note" placeholder="{% trans 'Observations, référence de transaction...' %}"></textarea>
     </div>
     <div class="modal-actions">
-      <button class="action-btn btn-detail" onclick="closeModal()">Annuler</button>
-      <button class="action-btn btn-ok" id="modal-submit" onclick="submitVerif()"><i class="fas fa-check"></i> Enregistrer</button>
+      <button class="action-btn btn-detail" onclick="closeModal()">{% trans "Annuler" %}</button>
+      <button class="action-btn btn-ok" id="modal-submit" onclick="submitVerif()"><i class="fas fa-check"></i> {% trans "Enregistrer" %}</button>
     </div>
   </div>
 </div>
 
 <div class="toolbar">
-  <button class="filter-btn active" data-statut="" onclick="setFilter(this)">Tous</button>
-  <button class="filter-btn" data-statut="soumis" onclick="setFilter(this)"><i class="fas fa-clock"></i> Preuves soumises</button>
-  <button class="filter-btn" data-statut="verifie" onclick="setFilter(this)">Vérifiés</button>
-  <button class="filter-btn" data-statut="confirme" onclick="setFilter(this)">Confirmés</button>
-  <button class="filter-btn" data-statut="echoue" onclick="setFilter(this)">Échoués</button>
-  <button class="filter-btn" data-statut="initie" onclick="setFilter(this)">Initiés</button>
+  <button class="filter-btn active" data-statut="" onclick="setFilter(this)">{% trans "Tous" %}</button>
+  <button class="filter-btn" data-statut="soumis" onclick="setFilter(this)"><i class="fas fa-clock"></i> {% trans "Preuves soumises" %}</button>
+  <button class="filter-btn" data-statut="verifie" onclick="setFilter(this)">{% trans "Vérifiés" %}</button>
+  <button class="filter-btn" data-statut="confirme" onclick="setFilter(this)">{% trans "Confirmés" %}</button>
+  <button class="filter-btn" data-statut="echoue" onclick="setFilter(this)">{% trans "Échoués" %}</button>
+  <button class="filter-btn" data-statut="initie" onclick="setFilter(this)">{% trans "Initiés" %}</button>
 </div>
 
 <div class="table-wrap">
-  <div class="empty-state" id="tbl-loading"><i class="fas fa-spinner fa-spin"></i> Chargement...</div>
+  <div class="empty-state" id="tbl-loading"><i class="fas fa-spinner fa-spin"></i> {% trans "Chargement..." %}</div>
   <table id="tbl" style="display:none">
     <thead>
       <tr>
-        <th>Référence</th>
-        <th>Commande</th>
-        <th>Acheteur</th>
-        <th>Type</th>
-        <th>Montant</th>
-        <th>Preuve</th>
-        <th>Statut</th>
-        <th>Date</th>
-        <th>Action</th>
+        <th>{% trans "Référence" %}</th>
+        <th>{% trans "Commande" %}</th>
+        <th>{% trans "Acheteur" %}</th>
+        <th>{% trans "Type" %}</th>
+        <th>{% trans "Montant" %}</th>
+        <th>{% trans "Preuve" %}</th>
+        <th>{% trans "Statut" %}</th>
+        <th>{% trans "Date" %}</th>
+        <th>{% trans "Action" %}</th>
       </tr>
     </thead>
     <tbody id="tbody"></tbody>
   </table>
-  <div class="empty-state" id="tbl-empty" style="display:none">Aucun paiement trouvé.</div>
+  <div class="empty-state" id="tbl-empty" style="display:none">{% trans "Aucun paiement trouvé." %}</div>
 </div>
 {% endblock %}
 
@@ -137,7 +138,7 @@ const STATUT_P = {
 
 function sBadge(s, label) {
   const st = STATUT_P[s] || { bg:'#eee', color:'#888' };
-  return `<span class="badge" style="background:${st.bg};color:${st.color}">${label}</span>`;
+  return `<span class="badge" style="background:${st.bg};color:${st.color}">{% trans "${label}" %}</span>`;
 }
 function fmt(n) { return Number(n).toLocaleString('fr-FR'); }
 function fdate(iso) { return new Date(iso).toLocaleDateString('fr-FR', {day:'2-digit',month:'short',year:'numeric'}); }
@@ -170,15 +171,15 @@ async function load() {
     const canVerify = p.statut === 'soumis' || p.statut === 'verifie' || p.statut === 'initie' || p.statut === 'en_attente';
     tbody.innerHTML += `
       <tr id="row-${p.id}">
-        <td style="font-family:monospace;font-size:12px;color:var(--green-mid)">${p.reference}</td>
-        <td><a href="/dashboard/superadmin/commandes/" style="color:var(--text);font-weight:600">${p.commande_numero}</a></td>
-        <td>${p.acheteur}<br><small style="color:var(--text-muted)">${p.acheteur_tel || ''}</small></td>
-        <td>${p.type_label}</td>
-        <td style="font-weight:600">${fmt(p.montant)} HTG</td>
+        <td style="font-family:monospace;font-size:12px;color:var(--green-mid)">{% trans "${p.reference}" %}</td>
+        <td><a href="/dashboard/superadmin/commandes/" style="color:var(--text);font-weight:600">{% trans "${p.commande_numero}" %}</a></td>
+        <td>${p.acheteur}<br><small style="color:var(--text-muted)">{% trans "${p.acheteur_tel || ''}" %}</small></td>
+        <td>{% trans "${p.type_label}" %}</td>
+        <td style="font-weight:600">{% trans "${fmt(p.montant)} HTG" %}</td>
         <td style="text-align:center">${p.preuve_image ? `<a href="${p.preuve_image}" target="_blank"><img src="${p.preuve_image}" style="width:40px;height:40px;border-radius:6px;object-fit:cover"></a>` : '<span style="color:var(--text-muted)">—</span>'}</td>
-        <td>${sBadge(p.statut, p.statut_label)}</td>
-        <td style="color:var(--text-muted);font-size:12px">${fdate(p.created_at)}</td>
-        <td>${canVerify ? `<button class="action-btn btn-ok" onclick="openModal(${p.id},'${p.reference}',${p.montant},'${p.preuve_image||''}')"><i class="fas fa-check-circle"></i> Vérifier</button>` : '<span style="font-size:11px;color:var(--text-muted)">—</span>'}</td>
+        <td>{% trans "${sBadge(p.statut, p.statut_label)}" %}</td>
+        <td style="color:var(--text-muted);font-size:12px">{% trans "${fdate(p.created_at)}" %}</td>
+        <td>${canVerify ? `<button class="action-btn btn-ok" onclick="openModal(${p.id},'${p.reference}',${p.montant},'${p.preuve_image||''}')"><i class="fas fa-check-circle"></i> {% trans "Vérifier" %}</button>` : '<span style="font-size:11px;color:var(--text-muted)">—</span>'}</td>
       </tr>`;
   });
   document.getElementById('tbl').style.display = 'table';

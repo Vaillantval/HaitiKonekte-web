@@ -1,90 +1,91 @@
+{% load i18n %}
 {# Inclusion partielle — sidebar commune à toutes les pages superadmin #}
 {# Usage : {% include 'dashboard/superadmin_sidebar.html' with active='overview' %} #}
-<div class="nav-section-label">Principal</div>
+<div class="nav-section-label">{% trans "Principal" %}</div>
 <a href="/dashboard/superadmin/" class="nav-item {% if active == 'overview' %}active{% endif %}">
-  <i class="fas fa-th-large"></i> Vue d'ensemble
+  <i class="fas fa-th-large"></i> {% trans "Vue d'ensemble" %}
 </a>
 
-<div class="nav-section-label">Comptes &amp; Profils</div>
+<div class="nav-section-label">{% trans "Comptes &amp; Profils" %}</div>
 <a href="/dashboard/superadmin/utilisateurs/" class="nav-item {% if active == 'users' %}active{% endif %}">
-  <i class="fas fa-users"></i> Utilisateurs
+  <i class="fas fa-users"></i> {% trans "Utilisateurs" %}
   <span class="nav-badge" id="sb-badge-users" style="display:none"></span>
 </a>
 <a href="/dashboard/superadmin/producteurs/" class="nav-item {% if active == 'producteurs' %}active{% endif %}">
-  <i class="fas fa-tractor"></i> Producteurs
+  <i class="fas fa-tractor"></i> {% trans "Producteurs" %}
   <span class="nav-badge" id="sb-badge-prod" style="display:none"></span>
 </a>
 <a href="/dashboard/superadmin/acheteurs/" class="nav-item {% if active == 'acheteurs' %}active{% endif %}">
-  <i class="fas fa-shopping-basket"></i> Acheteurs
+  <i class="fas fa-shopping-basket"></i> {% trans "Acheteurs" %}
 </a>
 <a href="/dashboard/superadmin/adresses/" class="nav-item {% if active == 'adresses' %}active{% endif %}">
-  <i class="fas fa-map-marker-alt"></i> Adresses
+  <i class="fas fa-map-marker-alt"></i> {% trans "Adresses" %}
 </a>
 
-<div class="nav-section-label">Catalogue &amp; Stock</div>
+<div class="nav-section-label">{% trans "Catalogue &amp; Stock" %}</div>
 <a href="/dashboard/superadmin/categories/" class="nav-item {% if active == 'categories' %}active{% endif %}">
-  <i class="fas fa-tags"></i> Catégories
+  <i class="fas fa-tags"></i> {% trans "Catégories" %}
 </a>
 <a href="/dashboard/superadmin/catalogue/" class="nav-item {% if active == 'catalogue' %}active{% endif %}">
-  <i class="fas fa-box-open"></i> Produits
+  <i class="fas fa-box-open"></i> {% trans "Produits" %}
 </a>
 <a href="/dashboard/superadmin/stocks/" class="nav-item {% if active == 'stocks' %}active{% endif %}">
-  <i class="fas fa-warehouse"></i> Stocks &amp; Lots
+  <i class="fas fa-warehouse"></i> {% trans "Stocks &amp; Lots" %}
   <span class="nav-badge" id="sb-badge-stock" style="display:none"></span>
 </a>
 
-<div class="nav-section-label">Commandes &amp; Paiements</div>
+<div class="nav-section-label">{% trans "Commandes &amp; Paiements" %}</div>
 <a href="/dashboard/superadmin/commandes/" class="nav-item {% if active == 'commandes' %}active{% endif %}">
-  <i class="fas fa-clipboard-list"></i> Commandes
+  <i class="fas fa-clipboard-list"></i> {% trans "Commandes" %}
   <span class="nav-badge" id="sb-badge-cmds" style="display:none"></span>
 </a>
 <a href="/dashboard/superadmin/paiements/" class="nav-item {% if active == 'paiements' %}active{% endif %}">
-  <i class="fas fa-credit-card"></i> Paiements
+  <i class="fas fa-credit-card"></i> {% trans "Paiements" %}
   <span class="nav-badge" id="sb-badge-pay" style="display:none"></span>
 </a>
 <a href="/dashboard/superadmin/vouchers/" class="nav-item {% if active == 'vouchers' %}active{% endif %}">
-  <i class="fas fa-ticket-alt"></i> Vouchers
+  <i class="fas fa-ticket-alt"></i> {% trans "Vouchers" %}
 </a>
 
-<div class="nav-section-label">Collectes Terrain</div>
+<div class="nav-section-label">{% trans "Collectes Terrain" %}</div>
 <a href="/dashboard/superadmin/collectes/" class="nav-item {% if active == 'collectes' %}active{% endif %}">
-  <i class="fas fa-truck"></i> Collectes
+  <i class="fas fa-truck"></i> {% trans "Collectes" %}
 </a>
 <a href="/dashboard/superadmin/zones/" class="nav-item {% if active == 'zones' %}active{% endif %}">
-  <i class="fas fa-map"></i> Zones &amp; Points
+  <i class="fas fa-map"></i> {% trans "Zones &amp; Points" %}
 </a>
 
-<div class="nav-section-label">Mon Compte</div>
+<div class="nav-section-label">{% trans "Mon Compte" %}</div>
 <a href="/dashboard/superadmin/profil/" class="nav-item {% if active == 'profil' %}active{% endif %}">
-  <i class="fas fa-user-circle"></i> Mon profil
+  <i class="fas fa-user-circle"></i> {% trans "Mon profil" %}
 </a>
 
-<div class="nav-section-label">Configuration</div>
+<div class="nav-section-label">{% trans "Configuration" %}</div>
 <a href="/dashboard/superadmin/slider/" class="nav-item {% if active == 'slider' %}active{% endif %}">
-  <i class="fas fa-images"></i> Slider accueil
+  <i class="fas fa-images"></i> {% trans "Slider accueil" %}
 </a>
 <a href="/dashboard/superadmin/config/" class="nav-item {% if active == 'config' %}active{% endif %}">
-  <i class="fas fa-cog"></i> Paramètres du site
+  <i class="fas fa-cog"></i> {% trans "Paramètres du site" %}
   <span class="nav-badge" id="sb-badge-contact" style="display:none"></span>
 </a>
 <a href="/dashboard/superadmin/config/#faq" class="nav-item {% if active == 'faq' %}active{% endif %}">
-  <i class="fas fa-question-circle"></i> FAQ
+  <i class="fas fa-question-circle"></i> {% trans "FAQ" %}
 </a>
 <a href="/dashboard/superadmin/config/#contact" class="nav-item {% if active == 'contact' %}active{% endif %}">
-  <i class="fas fa-envelope"></i> Messages de contact
+  <i class="fas fa-envelope"></i> {% trans "Messages de contact" %}
   <span class="nav-badge" id="sb-badge-msgs" style="display:none"></span>
 </a>
 
-<div class="nav-section-label">Système</div>
+<div class="nav-section-label">{% trans "Système" %}</div>
 <a href="/dashboard/superadmin/carte/" class="nav-item {% if active == 'carte_users' %}active{% endif %}">
-  <i class="fas fa-map-marked-alt"></i> Carte des utilisateurs
+  <i class="fas fa-map-marked-alt"></i> {% trans "Carte des utilisateurs" %}
 </a>
 <a href="/analytics/dashboard/" class="nav-item">
-  <i class="fas fa-chart-bar"></i> Analytiques BI
+  <i class="fas fa-chart-bar"></i> {% trans "Analytiques BI" %}
 </a>
 <a href="/dashboard/superadmin/rapport/" class="nav-item {% if active == 'rapport' %}active{% endif %}">
-  <i class="fas fa-file-alt"></i> Rapport &amp; Export
+  <i class="fas fa-file-alt"></i> {% trans "Rapport &amp; Export" %}
 </a>
 <a href="/admin/" class="nav-item">
-  <i class="fas fa-terminal"></i> Admin Django
+  <i class="fas fa-terminal"></i> {% trans "Admin Django" %}
 </a>
