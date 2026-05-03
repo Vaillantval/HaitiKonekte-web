@@ -34,7 +34,13 @@
       "Bash(sed -i -e 's/border:1.5px solid #1565C0/border:1.5px solid #003F87/g' -e 's/row.style.background = '\\\\''#f0faf4'\\\\''/row.style.background = '\\\\''#EEF4FF'\\\\''/g' -e 's/GeoSearchSelect — Combobox cherchable pour les formulaires AyitiKonekte/GeoSearchSelect — Combobox cherchable pour les formulaires AyitiKonekte/g' static/js/geo_selector.js)",
       "Bash(sed -i -e 's/Combobox cherchable pour les formulaires Mak.*/Combobox cherchable pour les formulaires AyitiKonekte/g' -e 's/#1565C0/#003F87/g' -e 's/'\\\\''#f0faf4'\\\\''/'\\\\''#EEF4FF'\\\\''/g' static/js/geo_selector.js)",
       "Bash(sed -i -e 's/maketpeyizan\\\\.ht/ayitikonekte.ht/g' -e 's/Maket Peyizan/AyitiKonekte/g' -e s/maket-peyizan/ayiti-konekte/g .env.example)",
-      "Bash(sed -i -e 's/maketpeyizan\\\\.ht/ayitikonekte.ht/g' -e 's/Maket Peyizan/AyitiKonekte/g' .env)"
+      "Bash(sed -i -e 's/maketpeyizan\\\\.ht/ayitikonekte.ht/g' -e 's/Maket Peyizan/AyitiKonekte/g' .env)",
+      "Bash(py -m py_compile config/settings/base.py config/settings/production.py)",
+      "Bash(sed -i -e 's/agricole ha\\\\xc3\\\\xaftienne/ha\\\\xc3\\\\xaftienne/g' -e 's/vos cultures principales, vos m\\\\xc3\\\\xa9thodes agricoles/vos produits principaux, votre activit\\\\xc3\\\\xa9/g' templates/accounts/register.html)",
+      "Bash(sed -i -e 's/Cat\\\\xc3\\\\xa9gories agricoles/Cat\\\\xc3\\\\xa9gories/g' templates/core/apropos.html)",
+      "Bash(sed -i -e 's/Exploitation agricole/Exploitation commerciale/g' templates/dashboard/acheteur_adresses.html)",
+      "Bash(sed -i -e 's/Exploitation agricole/Exploitation commerciale/g' templates/home/checkout.html)",
+      "Bash(where python *)"
     ]
   }
 }
