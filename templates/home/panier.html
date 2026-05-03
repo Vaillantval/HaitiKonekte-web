@@ -5,15 +5,15 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Mon panier — {{ site_settings.nom_site|default:"Makèt Peyizan" }}</title>
+  <title>Mon panier — {{ site_settings.nom_site|default:"AyitiKonekte" }}</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <style>
     :root {
-      --vert-fonce:#1a6b2f; --vert-vif:#27ae60; --vert-menthe:#e8f8ee;
-      --jaune:#e8d800; --blanc:#fff; --noir:#1a1a1a; --gris:#f4f6f9;
+      --primary:#003F87; --accent:#1565C0; --light:#EEF4FF;
+      --rouge:#C62828; --blanc:#fff; --noir:#1a1a1a; --gris:#f4f6f9;
       --gris-bord:#e2e8f0; --gris-texte:#555; --shadow:0 4px 24px rgba(0,0,0,.08);
       --radius:12px;
     }
@@ -29,16 +29,16 @@
     .btn-outline:hover{background:rgba(255,255,255,.1);}
     .btn-nav-outline{background:transparent;border:1.5px solid rgba(255,255,255,.5);color:var(--blanc);}
     .btn-nav-outline:hover{background:rgba(255,255,255,.1);border-color:var(--blanc);}
-    .btn-nav-primary{background:var(--jaune);color:var(--noir);border:none;}
-    .btn-nav-primary:hover{background:#d4c800;}
+    .btn-nav-primary{background:var(--rouge);color:var(--noir);border:none;}
+    .btn-nav-primary:hover{background:#B71C1C;}
     .navbar-actions{display:flex;align-items:center;gap:12px;}
     .navbar-search{flex:1;max-width:400px;margin:0 24px;}
     .navbar-search form{display:flex;align-items:center;background:rgba(255,255,255,.15);border-radius:50px;overflow:hidden;border:1.5px solid rgba(255,255,255,.25);}
     .navbar-search input{flex:1;background:transparent;border:none;outline:none;padding:9px 16px;font-size:13px;color:var(--blanc);font-family:'DM Sans',sans-serif;}
     .navbar-search input::placeholder{color:rgba(255,255,255,.6);}
-    .navbar-search button{background:var(--jaune);border:none;width:38px;height:38px;display:flex;align-items:center;justify-content:center;color:var(--noir);cursor:pointer;}
+    .navbar-search button{background:var(--rouge);border:none;width:38px;height:38px;display:flex;align-items:center;justify-content:center;color:var(--noir);cursor:pointer;}
     .user-menu{display:flex;align-items:center;gap:10px;}
-    .user-avatar{width:36px;height:36px;background:var(--jaune);color:var(--noir);border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;cursor:pointer;border:2px solid rgba(255,255,255,.3);flex-shrink:0;}
+    .user-avatar{width:36px;height:36px;background:var(--rouge);color:var(--noir);border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;cursor:pointer;border:2px solid rgba(255,255,255,.3);flex-shrink:0;}
     .user-name{color:#fff;font-size:13px;font-weight:600;max-width:120px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
     .user-role-badge{font-size:10px;padding:2px 8px;border-radius:20px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;}
     .btn-logout{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.25);color:rgba(255,255,255,.85);padding:7px 14px;border-radius:50px;font-size:12px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;transition:background .2s,color .2s;display:flex;align-items:center;gap:6px;}
@@ -48,7 +48,7 @@
     .cart-dd-wrap{position:relative;}
     .btn-panier{position:relative;display:flex;align-items:center;gap:7px;padding:9px 18px;border-radius:50px;font-size:13px;font-weight:600;background:rgba(255,255,255,.15);border:1.5px solid rgba(255,255,255,.4);color:var(--blanc);cursor:pointer;transition:all .2s;font-family:'DM Sans',sans-serif;text-decoration:none;}
     .btn-panier:hover{background:rgba(255,255,255,.25);}
-    .panier-badge{position:absolute;top:-6px;right:-6px;background:var(--jaune);color:var(--noir);font-size:10px;font-weight:800;min-width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;padding:0 4px;}
+    .panier-badge{position:absolute;top:-6px;right:-6px;background:var(--rouge);color:var(--noir);font-size:10px;font-weight:800;min-width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;padding:0 4px;}
     .panier-badge.hidden{display:none;}
     .cart-dd{position:absolute;top:calc(100% + 8px);right:0;width:300px;background:#fff;border-radius:12px;box-shadow:0 8px 32px rgba(0,0,0,.18);z-index:9999;display:none;flex-direction:column;overflow:hidden;}
     .cart-dd.open{display:flex;}
@@ -61,19 +61,19 @@
     .cart-dd-item-name{font-size:12px;font-weight:600;color:#222;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
     .cart-dd-item-price{font-size:11px;color:#666;margin-top:2px;}
     .cart-dd-total{padding:10px 16px;border-top:2px solid #eee;font-weight:700;font-size:13px;color:#222;display:flex;justify-content:space-between;align-items:center;}
-    .cart-dd-total span{color:var(--vert-vif);}
+    .cart-dd-total span{color:var(--accent);}
     .cart-dd-footer{padding:10px 16px;display:flex;gap:8px;background:#f9f9f9;}
     .cart-dd-empty{padding:24px 16px;text-align:center;color:#999;font-size:13px;}
     .cart-dd-loading{padding:18px 16px;text-align:center;color:#999;font-size:13px;}
-    .btn-dd-voir{flex:1;text-align:center;padding:8px 12px;border-radius:50px;font-size:12px;font-weight:600;border:1.5px solid var(--vert-vif);color:var(--vert-vif);background:transparent;cursor:pointer;text-decoration:none;transition:all .15s;}
-    .btn-dd-voir:hover{background:var(--vert-vif);color:#fff;}
-    .btn-dd-cmd{flex:1;text-align:center;padding:8px 12px;border-radius:50px;font-size:12px;font-weight:600;border:none;color:var(--noir);background:var(--jaune);cursor:pointer;text-decoration:none;transition:all .15s;}
-    .btn-dd-cmd:hover{background:#d4c800;}
+    .btn-dd-voir{flex:1;text-align:center;padding:8px 12px;border-radius:50px;font-size:12px;font-weight:600;border:1.5px solid var(--accent);color:var(--accent);background:transparent;cursor:pointer;text-decoration:none;transition:all .15s;}
+    .btn-dd-voir:hover{background:var(--accent);color:#fff;}
+    .btn-dd-cmd{flex:1;text-align:center;padding:8px 12px;border-radius:50px;font-size:12px;font-weight:600;border:none;color:var(--noir);background:var(--rouge);cursor:pointer;text-decoration:none;transition:all .15s;}
+    .btn-dd-cmd:hover{background:#B71C1C;}
 
     /* Page */
     .page-header{padding:28px 0 12px;display:flex;align-items:center;gap:12px;}
     .page-header h1{font-size:24px;font-weight:800;}
-    .page-header .back-link{font-size:13px;color:var(--vert-vif);display:flex;align-items:center;gap:5px;}
+    .page-header .back-link{font-size:13px;color:var(--accent);display:flex;align-items:center;gap:5px;}
     .page-header .back-link:hover{text-decoration:underline;}
 
     /* Panier */
@@ -91,11 +91,11 @@
     .item-nom{font-size:14px;font-weight:700;margin-bottom:2px;}
     .item-producteur{font-size:11px;color:#aaa;margin-bottom:4px;}
     .item-prix{font-size:13px;color:var(--gris-texte);}
-    .item-total{font-size:15px;font-weight:800;color:var(--vert-fonce);text-align:right;white-space:nowrap;}
+    .item-total{font-size:15px;font-weight:800;color:var(--primary);text-align:right;white-space:nowrap;}
     .item-actions{display:flex;flex-direction:column;align-items:flex-end;gap:8px;}
     .qty-mini{display:flex;align-items:center;gap:4px;}
     .qty-mini button{width:28px;height:28px;border-radius:6px;border:1.5px solid var(--gris-bord);background:var(--blanc);cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;transition:background .15s;}
-    .qty-mini button:hover{background:var(--vert-menthe);}
+    .qty-mini button:hover{background:var(--light);}
     .qty-mini span{width:34px;text-align:center;font-size:14px;font-weight:700;}
     .btn-retirer{background:none;border:none;color:#e74c3c;cursor:pointer;font-size:12px;display:flex;align-items:center;gap:4px;padding:2px 0;}
     .btn-retirer:hover{text-decoration:underline;}
@@ -108,8 +108,8 @@
     .recap{background:var(--blanc);border-radius:var(--radius);box-shadow:var(--shadow);padding:20px;position:sticky;top:84px;}
     .recap-title{font-size:15px;font-weight:800;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--gris-bord);}
     .recap-line{display:flex;justify-content:space-between;font-size:14px;margin-bottom:10px;color:var(--gris-texte);}
-    .recap-total{display:flex;justify-content:space-between;font-size:18px;font-weight:800;color:var(--vert-fonce);padding-top:12px;border-top:2px solid var(--gris-bord);margin-top:4px;}
-    .btn-checkout{width:100%;margin-top:16px;padding:14px;background:var(--vert-fonce);color:var(--blanc);border:none;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;transition:background .2s;display:flex;align-items:center;justify-content:center;gap:8px;}
+    .recap-total{display:flex;justify-content:space-between;font-size:18px;font-weight:800;color:var(--primary);padding-top:12px;border-top:2px solid var(--gris-bord);margin-top:4px;}
+    .btn-checkout{width:100%;margin-top:16px;padding:14px;background:var(--primary);color:var(--blanc);border:none;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;transition:background .2s;display:flex;align-items:center;justify-content:center;gap:8px;}
     .btn-checkout:hover{background:#145a26;}
     .btn-checkout:disabled{opacity:.5;cursor:not-allowed;}
     .btn-vider{width:100%;margin-top:10px;padding:10px;background:transparent;color:#e74c3c;border:1.5px solid #fbd;border-radius:10px;font-size:13px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .2s;}
@@ -122,7 +122,7 @@
     /* Toast */
     .toast-container{position:fixed;bottom:24px;right:24px;z-index:9999;display:flex;flex-direction:column;gap:10px;}
     .toast{display:flex;align-items:center;gap:10px;padding:12px 16px;border-radius:10px;font-size:14px;font-weight:500;box-shadow:0 4px 20px rgba(0,0,0,.15);color:#fff;animation:slideUp .25s ease;}
-    .toast.success{background:#27ae60;} .toast.error{background:#e74c3c;}
+    .toast.success{background:#1565C0;} .toast.error{background:#e74c3c;}
     @keyframes slideUp{from{opacity:0;transform:translateY(10px);}}
   </style>
 </head>
@@ -134,7 +134,7 @@
 
   <div class="page-header">
     <a href="/" class="back-link"><i class="fas fa-arrow-left"></i> {% trans "Continuer mes achats" %}</a>
-    <h1><i class="fas fa-shopping-basket" style="color:var(--vert-vif);font-size:20px;"></i> {% trans "Mon panier" %}</h1>
+    <h1><i class="fas fa-shopping-basket" style="color:var(--accent);font-size:20px;"></i> {% trans "Mon panier" %}</h1>
   </div>
 
   <div class="panier-grid">
@@ -172,7 +172,7 @@
             <i class="fas fa-user-lock"></i> {% trans "Connexion requise pour commander" %}
           </div>
           <div style="color:#78350f;line-height:1.5;">{% trans "Votre panier est sauvegardé. Connectez-vous pour finaliser votre commande — les articles seront conservés." %}</div>
-          <a href="/connexion/?next=/panier/" style="display:inline-flex;align-items:center;gap:6px;margin-top:10px;padding:8px 16px;background:var(--vert-fonce);color:#fff;border-radius:8px;font-weight:700;font-size:13px;">
+          <a href="/connexion/?next=/panier/" style="display:inline-flex;align-items:center;gap:6px;margin-top:10px;padding:8px 16px;background:var(--primary);color:#fff;border-radius:8px;font-weight:700;font-size:13px;">
             <i class="fas fa-sign-in-alt"></i> {% trans "Se connecter" %}
           </a>
         </div>
@@ -184,7 +184,7 @@
           <i class="fas fa-trash"></i> {% trans "Vider le panier" %}
         </button>
         <p class="checkout-note">
-          <i class="fas fa-shield-alt" style="color:var(--vert-vif)"></i>
+          <i class="fas fa-shield-alt" style="color:var(--accent)"></i>
           Paiement sécurisé — MonCash, NatCash ou espèces
         </p>
       </div>
@@ -336,7 +336,7 @@
 
       if (!items.length) {
         dd.innerHTML = `
-          <div class="cart-dd-header"><i class="fas fa-shopping-basket" style="color:var(--vert-vif);margin-right:6px"></i>Mon panier</div>
+          <div class="cart-dd-header"><i class="fas fa-shopping-basket" style="color:var(--accent);margin-right:6px"></i>Mon panier</div>
           <div class="cart-dd-empty"><i class="fas fa-shopping-basket" style="font-size:26px;opacity:.15;display:block;margin-bottom:8px"></i>Votre panier est vide</div>
           <div class="cart-dd-footer"><a href="/panier/" class="btn-dd-voir">Voir le panier</a></div>`;
         return;
@@ -350,7 +350,7 @@
           </div>
         </div>`).join('');
       dd.innerHTML = `
-        <div class="cart-dd-header"><i class="fas fa-shopping-basket" style="color:var(--vert-vif);margin-right:6px"></i>Mon panier (${items.length})</div>
+        <div class="cart-dd-header"><i class="fas fa-shopping-basket" style="color:var(--accent);margin-right:6px"></i>Mon panier (${items.length})</div>
         <div class="cart-dd-body">${rows}</div>
         <div class="cart-dd-total">Total <span>${total} HTG</span></div>
         <div class="cart-dd-footer">
@@ -405,7 +405,7 @@
           <div class="empty-cart">
             <i class="fas fa-shopping-basket"></i>
             <p>Votre panier est vide.</p>
-            <a href="/" style="display:inline-flex;align-items:center;gap:7px;padding:11px 22px;background:var(--vert-fonce);color:#fff;border-radius:50px;font-weight:600;font-size:14px;">
+            <a href="/" style="display:inline-flex;align-items:center;gap:7px;padding:11px 22px;background:var(--primary);color:#fff;border-radius:50px;font-weight:600;font-size:14px;">
               <i class="fas fa-store"></i> Découvrir le catalogue
             </a>
           </div>
@@ -426,7 +426,7 @@
         </a>
         <div class="item-body">
           <div class="item-nom"><a href="/produits/${_esc(it.slug)}/">${_esc(it.nom)}</a></div>
-          <div class="item-producteur"><i class="fas fa-map-marker-alt" style="color:var(--vert-vif);font-size:10px"></i> ${_esc(it.producteur_nom)}</div>
+          <div class="item-producteur"><i class="fas fa-map-marker-alt" style="color:var(--accent);font-size:10px"></i> ${_esc(it.producteur_nom)}</div>
           <div class="item-prix">HTG ${it.prix_unitaire} / ${_esc(it.unite_vente_label)}</div>
         </div>
         <div class="item-actions">

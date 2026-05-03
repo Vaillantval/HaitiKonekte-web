@@ -5,7 +5,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>{{ produit.nom }} — {{ site_settings.nom_site|default:"Makèt Peyizan" }}</title>
+  <title>{{ produit.nom }} — {{ site_settings.nom_site|default:"AyitiKonekte" }}</title>
   <meta name="description" content="{{ produit.description|truncatechars:160 }}">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -15,10 +15,10 @@
 
   <style>
     :root {
-      --vert-fonce:  #1a6b2f;
-      --vert-vif:    #27ae60;
-      --vert-menthe: #e8f8ee;
-      --jaune:       #e8d800;
+      --primary:  #003F87;
+      --accent:    #1565C0;
+      --light: #EEF4FF;
+      --rouge:       #C62828;
       --blanc:       #ffffff;
       --noir:        #1a1a1a;
       --gris-clair:  #f4f6f9;
@@ -38,7 +38,7 @@
     /* ── Navbar ─────────────────────────────────────────────── */
     .navbar {
       position: sticky; top: 0; z-index: 100;
-      background: var(--vert-fonce);
+      background: var(--primary);
       box-shadow: 0 2px 16px rgba(0,0,0,.15);
     }
     .navbar-inner {
@@ -46,7 +46,7 @@
     }
     .navbar-logo { display: flex; align-items: center; gap: 12px; }
     .navbar-logo-icon {
-      width: 42px; height: 42px; background: var(--jaune); border-radius: 50%;
+      width: 42px; height: 42px; background: var(--rouge); border-radius: 50%;
       display: flex; align-items: center; justify-content: center; font-size: 20px;
     }
     .navbar-logo-text {
@@ -68,10 +68,10 @@
     }
     .navbar-search input::placeholder { color: rgba(255,255,255,.6); }
     .navbar-search button {
-      padding: 10px 18px; background: var(--jaune); border: none; cursor: pointer;
+      padding: 10px 18px; background: var(--rouge); border: none; cursor: pointer;
       color: var(--noir); font-size: 14px; transition: background .2s;
     }
-    .navbar-search button:hover { background: #d4c800; }
+    .navbar-search button:hover { background: #B71C1C; }
     .navbar-actions { display: flex; align-items: center; gap: 12px; }
     .btn-nav {
       padding: 9px 20px; border-radius: 50px; font-size: 13px; font-weight: 600;
@@ -81,8 +81,8 @@
       background: transparent; border: 1.5px solid rgba(255,255,255,.5); color: var(--blanc);
     }
     .btn-nav-outline:hover { background: rgba(255,255,255,.1); border-color: var(--blanc); }
-    .btn-nav-primary { background: var(--jaune); color: var(--noir); }
-    .btn-nav-primary:hover { background: #d4c800; transform: translateY(-1px); }
+    .btn-nav-primary { background: var(--rouge); color: var(--noir); }
+    .btn-nav-primary:hover { background: #B71C1C; transform: translateY(-1px); }
 
     /* Panier badge navbar */
     .btn-panier {
@@ -95,7 +95,7 @@
     .btn-panier:hover { background: rgba(255,255,255,.25); }
     .panier-badge {
       position: absolute; top: -6px; right: -6px;
-      background: var(--jaune); color: var(--noir);
+      background: var(--rouge); color: var(--noir);
       font-size: 10px; font-weight: 800; min-width: 18px; height: 18px;
       border-radius: 50%; display: flex; align-items: center; justify-content: center;
       padding: 0 4px;
@@ -118,19 +118,19 @@
     .cart-dd-item-name { font-size: 12px; font-weight: 600; color: #222; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .cart-dd-item-price { font-size: 11px; color: #666; margin-top: 2px; }
     .cart-dd-total { padding: 10px 16px; border-top: 2px solid #eee; font-weight: 700; font-size: 13px; color: #222; display: flex; justify-content: space-between; align-items: center; }
-    .cart-dd-total span { color: var(--vert-vif); }
+    .cart-dd-total span { color: var(--accent); }
     .cart-dd-footer { padding: 10px 16px; display: flex; gap: 8px; background: #f9f9f9; }
     .cart-dd-empty { padding: 24px 16px; text-align: center; color: #999; font-size: 13px; }
     .cart-dd-loading { padding: 18px 16px; text-align: center; color: #999; font-size: 13px; }
-    .btn-dd-voir { flex: 1; text-align: center; padding: 8px 12px; border-radius: 50px; font-size: 12px; font-weight: 600; border: 1.5px solid var(--vert-vif); color: var(--vert-vif); background: transparent; cursor: pointer; text-decoration: none; transition: all .15s; }
-    .btn-dd-voir:hover { background: var(--vert-vif); color: #fff; }
-    .btn-dd-cmd { flex: 1; text-align: center; padding: 8px 12px; border-radius: 50px; font-size: 12px; font-weight: 600; border: none; color: var(--noir); background: var(--jaune); cursor: pointer; text-decoration: none; transition: all .15s; }
-    .btn-dd-cmd:hover { background: #d4c800; }
+    .btn-dd-voir { flex: 1; text-align: center; padding: 8px 12px; border-radius: 50px; font-size: 12px; font-weight: 600; border: 1.5px solid var(--accent); color: var(--accent); background: transparent; cursor: pointer; text-decoration: none; transition: all .15s; }
+    .btn-dd-voir:hover { background: var(--accent); color: #fff; }
+    .btn-dd-cmd { flex: 1; text-align: center; padding: 8px 12px; border-radius: 50px; font-size: 12px; font-weight: 600; border: none; color: var(--noir); background: var(--rouge); cursor: pointer; text-decoration: none; transition: all .15s; }
+    .btn-dd-cmd:hover { background: #B71C1C; }
 
     /* User menu */
     .user-menu { display: flex; align-items: center; gap: 10px; }
     .user-avatar {
-      width: 36px; height: 36px; background: var(--jaune); color: var(--noir);
+      width: 36px; height: 36px; background: var(--rouge); color: var(--noir);
       border-radius: 50%; display: flex; align-items: center; justify-content: center;
       font-weight: 700; font-size: 14px; cursor: pointer;
     }
@@ -155,7 +155,7 @@
       display: flex; align-items: center; gap: 8px;
       font-size: 13px; color: var(--gris-texte);
     }
-    .breadcrumb-inner a { color: var(--vert-vif); }
+    .breadcrumb-inner a { color: var(--accent); }
     .breadcrumb-inner a:hover { text-decoration: underline; }
     .breadcrumb-inner i { font-size: 9px; color: #aaa; }
 
@@ -192,7 +192,7 @@
       width: 68px; height: 68px; border-radius: 8px; overflow: hidden;
       border: 2px solid var(--gris-bord); cursor: pointer; transition: border-color .2s;
     }
-    .thumb:hover, .thumb.active { border-color: var(--vert-vif); }
+    .thumb:hover, .thumb.active { border-color: var(--accent); }
     .thumb img { width: 100%; height: 100%; object-fit: cover; }
 
     /* Infos produit */
@@ -200,8 +200,8 @@
 
     .produit-cat {
       display: inline-flex; align-items: center; gap: 6px;
-      font-size: 12px; font-weight: 700; color: var(--vert-vif);
-      background: var(--vert-menthe); padding: 4px 12px; border-radius: 20px;
+      font-size: 12px; font-weight: 700; color: var(--accent);
+      background: var(--light); padding: 4px 12px; border-radius: 20px;
       margin-bottom: 12px; text-transform: uppercase; letter-spacing: .04em;
     }
 
@@ -214,7 +214,7 @@
 
     .prix-bloc { margin-bottom: 24px; }
     .prix-principal {
-      font-size: 36px; font-weight: 800; color: var(--vert-fonce);
+      font-size: 36px; font-weight: 800; color: var(--primary);
       display: flex; align-items: baseline; gap: 8px;
     }
     .prix-principal .currency { font-size: 18px; font-weight: 600; }
@@ -223,20 +223,20 @@
       font-size: 13px; color: var(--gris-texte); margin-top: 4px;
       display: flex; align-items: center; gap: 6px;
     }
-    .prix-gros strong { color: var(--vert-vif); }
+    .prix-gros strong { color: var(--accent); }
 
     .stock-badge {
       display: inline-flex; align-items: center; gap: 6px;
       font-size: 13px; font-weight: 600; padding: 5px 14px; border-radius: 20px;
       margin-bottom: 20px;
     }
-    .stock-dispo  { background: #e8f8ee; color: #1a6b2f; }
+    .stock-dispo  { background: #EEF4FF; color: #003F87; }
     .stock-alerte { background: #fff4e0; color: #d97706; }
     .stock-vide   { background: #fde8e8; color: #e74c3c; }
     .stock-badge .dot {
       width: 7px; height: 7px; border-radius: 50%; animation: pulse 1.5s infinite;
     }
-    .stock-dispo  .dot { background: #27ae60; }
+    .stock-dispo  .dot { background: #1565C0; }
     .stock-alerte .dot { background: #f59e0b; }
     @keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:.4;} }
 
@@ -253,7 +253,7 @@
       font-size: 18px; cursor: pointer; color: var(--noir); transition: background .15s;
       display: flex; align-items: center; justify-content: center;
     }
-    .qty-btn:hover:not(:disabled) { background: var(--vert-menthe); color: var(--vert-fonce); }
+    .qty-btn:hover:not(:disabled) { background: var(--light); color: var(--primary); }
     .qty-btn:disabled { opacity: .4; cursor: not-allowed; }
     .qty-input {
       width: 62px; height: 42px; border: none; border-left: 1.5px solid var(--gris-bord);
@@ -268,21 +268,21 @@
     .btn-ajouter {
       display: flex; align-items: center; justify-content: center; gap: 10px;
       padding: 14px 24px; border-radius: 12px; font-size: 15px; font-weight: 700;
-      border: 2.5px solid var(--vert-fonce); background: var(--blanc); color: var(--vert-fonce);
+      border: 2.5px solid var(--primary); background: var(--blanc); color: var(--primary);
       cursor: pointer; font-family: 'DM Sans', sans-serif; transition: all .2s;
     }
-    .btn-ajouter:hover { background: var(--vert-menthe); }
+    .btn-ajouter:hover { background: var(--light); }
     .btn-ajouter.dans-panier {
-      background: var(--vert-menthe); border-color: var(--vert-vif); color: var(--vert-fonce);
+      background: var(--light); border-color: var(--accent); color: var(--primary);
     }
     .btn-commander {
       display: flex; align-items: center; justify-content: center; gap: 10px;
       padding: 14px 24px; border-radius: 12px; font-size: 15px; font-weight: 700;
-      border: none; background: var(--vert-fonce); color: var(--blanc);
+      border: none; background: var(--primary); color: var(--blanc);
       cursor: pointer; font-family: 'DM Sans', sans-serif; transition: all .2s;
-      box-shadow: 0 4px 14px rgba(26,107,47,.3);
+      box-shadow: 0 4px 14px rgba(0,63,135,.3);
     }
-    .btn-commander:hover { background: #145a26; transform: translateY(-1px); box-shadow: 0 6px 20px rgba(26,107,47,.4); }
+    .btn-commander:hover { background: #145a26; transform: translateY(-1px); box-shadow: 0 6px 20px rgba(0,63,135,.4); }
     .btn-commander:disabled, .btn-ajouter:disabled { opacity: .5; cursor: not-allowed; transform: none; }
 
     /* Producteur card */
@@ -292,7 +292,7 @@
     }
     .producteur-avatar {
       width: 44px; height: 44px; border-radius: 50%;
-      background: var(--vert-fonce); color: var(--blanc);
+      background: var(--primary); color: var(--blanc);
       display: flex; align-items: center; justify-content: center;
       font-size: 18px; font-weight: 700; flex-shrink: 0;
     }
@@ -305,7 +305,7 @@
     .section-titre {
       font-size: 17px; font-weight: 700; margin-bottom: 20px;
       padding-bottom: 12px; border-bottom: 2px solid var(--gris-bord);
-      display: flex; align-items: center; gap: 9px; color: var(--vert-fonce);
+      display: flex; align-items: center; gap: 9px; color: var(--primary);
     }
     .section-titre i { font-size: 16px; }
 
@@ -337,7 +337,7 @@
     .card-img .no-img { display: flex; align-items: center; justify-content: center; height: 100%; font-size: 40px; opacity: .15; }
     .card-body { padding: 14px; }
     .card-nom { font-size: 14px; font-weight: 700; margin-bottom: 4px; line-height: 1.3; }
-    .card-prix { font-size: 16px; font-weight: 800; color: var(--vert-fonce); }
+    .card-prix { font-size: 16px; font-weight: 800; color: var(--primary); }
     .card-unite { font-size: 12px; color: var(--gris-texte); }
     .card-producteur { font-size: 11px; color: #aaa; margin-top: 4px; }
 
@@ -349,7 +349,7 @@
       box-shadow: 0 4px 20px rgba(0,0,0,.15); color: var(--blanc);
       animation: slideUp .25s ease; max-width: 340px;
     }
-    .toast.success { background: #27ae60; }
+    .toast.success { background: #1565C0; }
     .toast.error   { background: #e74c3c; }
     .toast.info    { background: #2980b9; }
     @keyframes slideUp { from { opacity:0; transform: translateY(10px); } }
@@ -511,7 +511,7 @@
           <div class="producteur-info">
             <div class="producteur-nom">{{ produit.producteur.user.get_full_name }}</div>
             <div class="producteur-lieu">
-              <i class="fas fa-map-marker-alt" style="color:var(--vert-vif)"></i>
+              <i class="fas fa-map-marker-alt" style="color:var(--accent)"></i>
               {{ produit.producteur.commune }}{% if produit.producteur.departement %}, {{ produit.producteur.get_departement_display }}{% endif %}
             </div>
           </div>
@@ -580,7 +580,7 @@
           {{ produit.producteur.user.get_full_name }}
         </div>
         <div style="font-size:13px;color:var(--gris-texte);margin-bottom:10px;display:flex;align-items:center;gap:6px;">
-          <i class="fas fa-map-marker-alt" style="color:var(--vert-vif)"></i>
+          <i class="fas fa-map-marker-alt" style="color:var(--accent)"></i>
           {{ produit.producteur.commune }}{% if produit.producteur.departement %}, {{ produit.producteur.get_departement_display }}{% endif %}
           {% if produit.producteur.localite %} · {{ produit.producteur.localite }}{% endif %}
         </div>
@@ -619,7 +619,7 @@
           <div class="card-prix">{% blocktrans with s=s.prix_unitaire %}HTG {{ s }}{% endblocktrans %}</div>
           <div class="card-unite">/ {{ s.get_unite_vente_display }}</div>
           <div class="card-producteur">
-            <i class="fas fa-map-marker-alt" style="color:var(--vert-vif);font-size:10px"></i>
+            <i class="fas fa-map-marker-alt" style="color:var(--accent);font-size:10px"></i>
             {{ s.producteur.user.get_full_name }}
           </div>
         </div>
@@ -867,7 +867,7 @@
 
       if (!items.length) {
         dd.innerHTML = `
-          <div class="cart-dd-header"><i class="fas fa-shopping-basket" style="color:var(--vert-vif);margin-right:6px"></i>Mon panier</div>
+          <div class="cart-dd-header"><i class="fas fa-shopping-basket" style="color:var(--accent);margin-right:6px"></i>Mon panier</div>
           <div class="cart-dd-empty"><i class="fas fa-shopping-basket" style="font-size:26px;opacity:.15;display:block;margin-bottom:8px"></i>Votre panier est vide</div>
           <div class="cart-dd-footer"><a href="/panier/" class="btn-dd-voir">Voir le panier</a></div>`;
         return;
@@ -881,7 +881,7 @@
           </div>
         </div>`).join('');
       dd.innerHTML = `
-        <div class="cart-dd-header"><i class="fas fa-shopping-basket" style="color:var(--vert-vif);margin-right:6px"></i>Mon panier (${items.length})</div>
+        <div class="cart-dd-header"><i class="fas fa-shopping-basket" style="color:var(--accent);margin-right:6px"></i>Mon panier (${items.length})</div>
         <div class="cart-dd-body">${rows}</div>
         <div class="cart-dd-total">Total <span>${total} HTG</span></div>
         <div class="cart-dd-footer">

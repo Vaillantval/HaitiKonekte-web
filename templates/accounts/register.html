@@ -5,7 +5,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Inscription — {{ site_settings.nom_site|default:"Makèt Peyizan" }}</title>
+  <title>Inscription — {{ site_settings.nom_site|default:"AyitiKonekte" }}</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,700&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -42,7 +42,7 @@
     .auth-left-bg {
       position: absolute;
       inset: 0;
-      background: linear-gradient(155deg, #0d4a1f 0%, #1a6b2f 50%, #1e8449 100%);
+      background: linear-gradient(155deg, #001F5B 0%, #003F87 50%, #1565C0 100%);
     }
 
     .auth-left-img {
@@ -138,7 +138,7 @@
       font-weight: 700;
       letter-spacing: .14em;
       text-transform: uppercase;
-      color: #e8d800;
+      color: #C62828;
       margin-bottom: 14px;
       display: flex;
       align-items: center;
@@ -148,7 +148,7 @@
       content: '';
       width: 24px;
       height: 2px;
-      background: #e8d800;
+      background: #C62828;
       border-radius: 2px;
     }
     .welcome-title {
@@ -159,7 +159,7 @@
       line-height: 1.2;
       margin-bottom: 22px;
     }
-    .welcome-title em { font-style: italic; color: #e8d800; }
+    .welcome-title em { font-style: italic; color: #C62828; }
 
     /* benefits list */
     .benefits { list-style: none; display: flex; flex-direction: column; gap: 13px; }
@@ -182,7 +182,7 @@
       justify-content: center;
       flex-shrink: 0;
       font-size: 13px;
-      color: #e8d800;
+      color: #C62828;
       margin-top: 1px;
     }
 
@@ -202,7 +202,7 @@
       font-size: 12px;
       color: rgba(255,255,255,.8);
     }
-    .trust-badge i { color: #e8d800; }
+    .trust-badge i { color: #C62828; }
 
     /* ── Panneau droit ── */
     .auth-right {
@@ -224,8 +224,8 @@
     }
     .form-head h1 { font-size: 24px; font-weight: 700; color: #1a1a1a; margin-bottom: 6px; }
     .form-head p  { font-size: 14px; color: #777; }
-    .form-head p a { color: #27ae60; font-weight: 600; }
-    .form-head p a:hover { color: #1a6b2f; }
+    .form-head p a { color: #1565C0; font-weight: 600; }
+    .form-head p a:hover { color: #003F87; }
 
     /* role tabs */
     .role-tabs {
@@ -252,9 +252,9 @@
       border: none;
     }
     .role-tab:first-child { border-right: 1.5px solid #ebebeb; }
-    .role-tab:hover { color: #27ae60; background: #f0faf5; }
+    .role-tab:hover { color: #1565C0; background: #f0faf5; }
     .role-tab.active {
-      background: #27ae60;
+      background: #1565C0;
       color: #fff;
     }
     .role-tab .chip {
@@ -264,8 +264,8 @@
       background: rgba(255,255,255,.2);
     }
     .role-tab:not(.active) .chip {
-      background: #e8f8ee;
-      color: #27ae60;
+      background: #EEF4FF;
+      color: #1565C0;
     }
 
     /* alert */
@@ -280,7 +280,7 @@
     }
     .alert.show { display: flex; }
     .alert-error   { background: #fde8e8; color: #c0392b; border: 1px solid #f5c6c6; }
-    .alert-success { background: #e8f8ee; color: #1a6b2f; border: 1px solid #a8ddb8; }
+    .alert-success { background: #EEF4FF; color: #003F87; border: 1px solid #a8ddb8; }
 
     /* form */
     .section-label {
@@ -288,7 +288,7 @@
       font-weight: 700;
       letter-spacing: .08em;
       text-transform: uppercase;
-      color: #27ae60;
+      color: #1565C0;
       margin: 22px 0 14px;
       display: flex;
       align-items: center;
@@ -298,7 +298,7 @@
       content: '';
       flex: 1;
       height: 1px;
-      background: #e8f8ee;
+      background: #EEF4FF;
     }
 
     .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
@@ -345,8 +345,8 @@
     .input-wrap input:focus,
     .input-wrap select:focus,
     .input-wrap textarea:focus {
-      border-color: #27ae60;
-      box-shadow: 0 0 0 3px rgba(39,174,96,.1);
+      border-color: #1565C0;
+      box-shadow: 0 0 0 3px rgba(21,101,192,.1);
       background: #fff;
     }
     .toggle-pwd {
@@ -385,7 +385,7 @@
     .btn-submit {
       width: 100%;
       padding: 14px;
-      background: #27ae60;
+      background: #1565C0;
       color: #fff;
       border: none;
       border-radius: 10px;
@@ -399,12 +399,12 @@
       justify-content: center;
       gap: 9px;
       margin-top: 10px;
-      box-shadow: 0 4px 14px rgba(39,174,96,.28);
+      box-shadow: 0 4px 14px rgba(21,101,192,.28);
     }
     .btn-submit:hover:not(:disabled) {
-      background: #1a6b2f;
+      background: #003F87;
       transform: translateY(-1px);
-      box-shadow: 0 6px 20px rgba(39,174,96,.33);
+      box-shadow: 0 6px 20px rgba(21,101,192,.33);
     }
     .btn-submit:disabled { opacity: .65; cursor: not-allowed; transform: none; box-shadow: none; }
 
@@ -424,8 +424,8 @@
       font-size: 13px;
       color: #888;
     }
-    .auth-footer a { color: #27ae60; font-weight: 600; }
-    .auth-footer a:hover { color: #1a6b2f; }
+    .auth-footer a { color: #1565C0; font-weight: 600; }
+    .auth-footer a:hover { color: #003F87; }
 
     /* mobile */
     @media (max-width: 900px) {
@@ -472,8 +472,8 @@
           {% endif %}
         </div>
         <div>
-          <div class="logo-text">{{ site_settings.nom_site|default:"Makèt Peyizan" }}</div>
-          <div class="logo-sub">{{ site_settings.slogan|default:"Marketplace Agricole" }}</div>
+          <div class="logo-text">{{ site_settings.nom_site|default:"AyitiKonekte" }}</div>
+          <div class="logo-sub">{{ site_settings.slogan|default:"Marketplace Haïti" }}</div>
         </div>
       </div>
 
@@ -488,11 +488,11 @@
         <ul class="benefits">
           <li>
             <div class="benefit-icon"><i class="fas fa-store"></i></div>
-            <div>{% trans "Accédez directement aux produits frais des producteurs locaux" %}</div>
+            <div>{% trans "Accédez directement aux produits locaux des vendeurs locaux" %}</div>
           </li>
           <li>
             <div class="benefit-icon"><i class="fas fa-tractor"></i></div>
-            <div>{% trans "Vendez vos récoltes et touchez des acheteurs partout en Haïti" %}</div>
+            <div>{% trans "Vendez vos produits et touchez des acheteurs partout en Haïti" %}</div>
           </li>
           <li>
             <div class="benefit-icon"><i class="fas fa-shield-alt"></i></div>
@@ -526,8 +526,8 @@
           <input name="next" type="hidden" value="{{ request.get_full_path }}">
           {% get_current_language as LANGUAGE_CODE %}
           {% get_available_languages as LANGUAGES %}
-          <i class="fas fa-globe" style="color:#27ae60;font-size:13px;"></i>
-          <select name="language" onchange="this.form.submit()" style="border:1.5px solid #d1fae5;border-radius:8px;padding:5px 10px;font-size:12px;font-weight:600;font-family:'DM Sans',sans-serif;background:#f0faf4;color:#1a6b2f;cursor:pointer;outline:none;">
+          <i class="fas fa-globe" style="color:#1565C0;font-size:13px;"></i>
+          <select name="language" onchange="this.form.submit()" style="border:1.5px solid #d1fae5;border-radius:8px;padding:5px 10px;font-size:12px;font-weight:600;font-family:'DM Sans',sans-serif;background:#f0faf4;color:#003F87;cursor:pointer;outline:none;">
             {% for lang_code, lang_name in LANGUAGES %}
               <option value="{{ lang_code }}" {% if lang_code == LANGUAGE_CODE %}selected{% endif %}>{{ lang_code|upper }}</option>
             {% endfor %}

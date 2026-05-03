@@ -107,7 +107,7 @@ MEDIA_ROOT = BASE_DIR / 'media'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-SITE_URL = config('SITE_URL', default='https://maketpeyizan.ht')
+SITE_URL = config('SITE_URL', default='https://ayitikonekte.ht')
 
 # ── DRF ────────────────────────────────────────────────────────
 REST_FRAMEWORK = {
@@ -125,6 +125,15 @@ REST_FRAMEWORK = {
     ],
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 20,
+    'DEFAULT_THROTTLE_CLASSES': [
+        'rest_framework.throttling.AnonRateThrottle',
+        'rest_framework.throttling.UserRateThrottle',
+    ],
+    'DEFAULT_THROTTLE_RATES': {
+        'anon': '200/hour',
+        'user': '2000/hour',
+        'login': '10/minute',
+    },
 }
 
 # ── JWT ─────────────────────────────────────────────────────────
@@ -155,18 +164,18 @@ except Exception:
 
 # ── SPECTACULAR (API Docs) ───────────────────────────────────────
 SPECTACULAR_SETTINGS = {
-    'TITLE': 'Makèt Peyizan API',
-    'DESCRIPTION': 'API REST — Marketplace agricole haïtienne',
+    'TITLE': 'AyitiKonekte API',
+    'DESCRIPTION': 'API REST — Marketplace Haïtienne',
     'VERSION': '1.0.0',
 }
 
 # ── JAZZMIN ─────────────────────────────────────────────────────
 JAZZMIN_SETTINGS = {
-    "site_title":    "Makèt Peyizan",
-    "site_brand":    "Makèt Peyizan",
+    "site_title":    "AyitiKonekte",
+    "site_brand":    "AyitiKonekte",
     "site_header":   "Administration",
-    "welcome_sign":  "Bienvenue sur Makèt Peyizan",
-    "copyright":     "Makèt Peyizan Haiti",
+    "welcome_sign":  "Bienvenue sur AyitiKonekte",
+    "copyright":     "AyitiKonekte Haiti",
     "search_model":  ["accounts.CustomUser", "catalog.Produit"],
     "show_sidebar":  True,
     "navigation_expanded": True,
@@ -213,15 +222,15 @@ JAZZMIN_UI_TWEAKS = {
     "footer_small_text":          False,
     "body_small_text":            False,
     "brand_small_text":           False,
-    "brand_colour":               "navbar-success",
-    "accent":                     "accent-success",
-    "navbar":                     "navbar-success navbar-dark",
+    "brand_colour":               "navbar-primary",
+    "accent":                     "accent-primary",
+    "navbar":                     "navbar-primary navbar-dark",
     "no_navbar_border":           False,
     "navbar_fixed":               True,
     "layout_boxed":               False,
     "footer_fixed":               False,
     "sidebar_fixed":              True,
-    "sidebar":                    "sidebar-dark-success",
+    "sidebar":                    "sidebar-dark-primary",
     "sidebar_nav_small_text":     False,
     "sidebar_disable_expand":     False,
     "sidebar_nav_child_indent":   True,
@@ -242,6 +251,53 @@ JAZZMIN_UI_TWEAKS = {
 
 # ── EMAIL (Resend) ───────────────────────────────────────────────
 RESEND_API_KEY      = config('RESEND_API_KEY', default='')
-DEFAULT_FROM_EMAIL  = config('DEFAULT_FROM_EMAIL', default='Maket Peyizan <info@maketpeyizan.ht>')
+DEFAULT_FROM_EMAIL  = config('DEFAULT_FROM_EMAIL', default='AyitiKonekte <info@ayitikonekte.ht>')
 ADMINS_NOTIFY       = config('ADMINS_NOTIFY', default='')
+
+# ── CACHE ────────────────────────────────────────────────────────
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        'LOCATION': 'ayiti-konekte-cache',
+    }
+}
+
+# ── LOGGING ──────────────────────────────────────────────────────
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '{levelname} {asctime} {module} {message}',
+            'style': '{',
+        },
+    },
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+            'formatter': 'verbose',
+        },
+    },
+    'root': {
+        'handlers': ['console'],
+        'level': 'WARNING',
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['console'],
+            'level': 'WARNING',
+            'propagate': False,
+        },
+        'django.request': {
+            'handlers': ['console'],
+            'level': 'ERROR',
+            'propagate': False,
+        },
+        'apps': {
+            'handlers': ['console'],
+            'level': 'INFO',
+            'propagate': False,
+        },
+    },
+}
 

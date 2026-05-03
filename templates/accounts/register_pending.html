@@ -35,7 +35,7 @@
 
     /* Bandeau supérieur */
     .card-top {
-      background: linear-gradient(135deg, #1a6b2f 0%, #27ae60 100%);
+      background: linear-gradient(135deg, #003F87 0%, #1565C0 100%);
       padding: 40px 40px 56px;
       text-align: center;
       position: relative;
@@ -101,7 +101,7 @@
     .delay-badge .icon {
       width: 44px; height: 44px;
       border-radius: 10px;
-      background: #27ae60;
+      background: #1565C0;
       color: #fff;
       display: flex; align-items: center; justify-content: center;
       font-size: 18px;
@@ -110,7 +110,7 @@
     .delay-badge .text strong {
       display: block;
       font-size: 15px;
-      color: #1a6b2f;
+      color: #003F87;
       margin-bottom: 2px;
     }
     .delay-badge .text span {
@@ -137,8 +137,8 @@
     .step-num {
       width: 28px; height: 28px;
       border-radius: 50%;
-      background: #e8f8ee;
-      color: #27ae60;
+      background: #EEF4FF;
+      color: #1565C0;
       font-size: 12px;
       font-weight: 700;
       display: flex; align-items: center; justify-content: center;
@@ -146,7 +146,7 @@
       margin-top: 1px;
     }
     .step-num.active {
-      background: #27ae60;
+      background: #1565C0;
       color: #fff;
     }
     .step-text strong { display: block; font-size: 13px; color: #2c3e50; }
@@ -183,7 +183,7 @@
       justify-content: center;
       gap: 8px;
       padding: 13px 24px;
-      background: linear-gradient(135deg, #1a6b2f, #27ae60);
+      background: linear-gradient(135deg, #003F87, #1565C0);
       color: #fff;
       border-radius: 10px;
       font-size: 14px;
@@ -225,8 +225,8 @@
     <input name="next" type="hidden" value="{{ request.get_full_path }}">
     {% get_current_language as LANGUAGE_CODE %}
     {% get_available_languages as LANGUAGES %}
-    <i class="fas fa-globe" style="color:#27ae60;font-size:12px;"></i>
-    <select name="language" onchange="this.form.submit()" style="border:none;background:transparent;color:#1a6b2f;font-size:12px;font-weight:700;cursor:pointer;outline:none;font-family:-apple-system,sans-serif;">
+    <i class="fas fa-globe" style="color:#1565C0;font-size:12px;"></i>
+    <select name="language" onchange="this.form.submit()" style="border:none;background:transparent;color:#003F87;font-size:12px;font-weight:700;cursor:pointer;outline:none;font-family:-apple-system,sans-serif;">
       {% for lang_code, lang_name in LANGUAGES %}
         <option value="{{ lang_code }}" {% if lang_code == LANGUAGE_CODE %}selected{% endif %}>{{ lang_code|upper }}</option>
       {% endfor %}

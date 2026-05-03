@@ -35,7 +35,7 @@
 {% block extra_css %}
 <style>
   .welcome-banner {
-    background: linear-gradient(120deg, #1a6b2f, #27ae60);
+    background: linear-gradient(120deg, #003F87, #1565C0);
     border-radius: var(--radius);
     padding: 28px 32px;
     color: #fff;
@@ -58,7 +58,7 @@
   .welcome-banner h2 { font-size: 22px; font-weight: 700; margin-bottom: 6px; }
   .welcome-banner p  { font-size: 14px; opacity: .85; }
 
-  .stat-icon.green  { background: #e8f8ee; color: #27ae60; }
+  .stat-icon.green  { background: #EEF4FF; color: #1565C0; }
   .stat-icon.blue   { background: #e8f2ff; color: #2980b9; }
   .stat-icon.orange { background: #fff4e6; color: #e67e22; }
   .stat-icon.yellow { background: #fdfbe8; color: #c9a007; }
@@ -191,7 +191,7 @@
     font-weight: 700;
     margin-bottom: 10px;
   }
-  .badge-actif   { background: #e8f8ee; color: #1a6b2f; }
+  .badge-actif   { background: #EEF4FF; color: #003F87; }
   .badge-utilise { background: #eaf4fb; color: #2980b9; }
   .badge-expire  { background: #f0f0f0; color: #555; }
   .badge-annule  { background: #fde8e8; color: #e74c3c; }
@@ -201,7 +201,7 @@
     border-radius: 8px;
     padding: 10px 12px;
     font-size: 12px;
-    color: #1a6b2f;
+    color: #003F87;
     line-height: 1.6;
     border-left: 3px solid var(--green-mid);
   }
@@ -241,7 +241,7 @@
   <div class="welcome-banner">
     <div>
       <h2 id="welcome-name">{% trans "Bonjour !" %}</h2>
-      <p>{% trans "Voici un aperçu de votre activité sur Makèt Peyizan." %}</p>
+      <p>{% trans "Voici un aperçu de votre activité sur AyitiKonekte." %}</p>
     </div>
   </div>
 
@@ -334,9 +334,9 @@
     en_attente:     { bg: '#fef9e7', color: '#c9a007', icon: 'fa-clock' },
     confirmee:      { bg: '#e8f2ff', color: '#2980b9', icon: 'fa-check' },
     en_preparation: { bg: '#e8f2ff', color: '#2980b9', icon: 'fa-cog' },
-    prete:          { bg: '#e8f8ee', color: '#27ae60', icon: 'fa-box' },
+    prete:          { bg: '#EEF4FF', color: '#1565C0', icon: 'fa-box' },
     en_collecte:    { bg: '#fff4e6', color: '#e67e22', icon: 'fa-truck' },
-    livree:         { bg: '#e8f8ee', color: '#1a6b2f', icon: 'fa-check-circle' },
+    livree:         { bg: '#EEF4FF', color: '#003F87', icon: 'fa-check-circle' },
     annulee:        { bg: '#fde8e8', color: '#e74c3c', icon: 'fa-times-circle' },
     litige:         { bg: '#f5e6ff', color: '#8e44ad', icon: 'fa-exclamation-triangle' },
   };

@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import SiteConfig, FAQCategorie, FAQItem, ContactMessage, SliderImage
+from .models import FAQCategorie, FAQItem, ContactMessage, SliderImage
 
 
 @admin.register(SliderImage)
@@ -28,6 +28,3 @@ class ContactMessageAdmin(admin.ModelAdmin):
     readonly_fields = ('nom', 'email', 'sujet', 'message', 'created_at')
 
 
-@admin.register(SiteConfig)
-class SiteConfigAdmin(admin.ModelAdmin):
-    pass

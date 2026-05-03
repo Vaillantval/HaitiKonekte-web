@@ -197,9 +197,9 @@
     en_attente:     { bg: '#fef9e7', color: '#c9a007',  icon: 'fa-clock' },
     confirmee:      { bg: '#e8f2ff', color: '#2980b9',  icon: 'fa-check' },
     en_preparation: { bg: '#e8f2ff', color: '#2980b9',  icon: 'fa-cog' },
-    prete:          { bg: '#e8f8ee', color: '#27ae60',  icon: 'fa-box' },
+    prete:          { bg: '#EEF4FF', color: '#1565C0',  icon: 'fa-box' },
     en_collecte:    { bg: '#fff4e6', color: '#e67e22',  icon: 'fa-truck' },
-    livree:         { bg: '#e8f8ee', color: '#1a6b2f',  icon: 'fa-check-circle' },
+    livree:         { bg: '#EEF4FF', color: '#003F87',  icon: 'fa-check-circle' },
     annulee:        { bg: '#fde8e8', color: '#e74c3c',  icon: 'fa-times-circle' },
     litige:         { bg: '#f5e6ff', color: '#8e44ad',  icon: 'fa-exclamation-triangle' },
   };
@@ -207,8 +207,8 @@
     non_paye:       { bg: '#fde8e8', color: '#e74c3c' },
     en_attente:     { bg: '#fef9e7', color: '#c9a007' },
     preuve_soumise: { bg: '#e8f2ff', color: '#2980b9' },
-    verifie:        { bg: '#e8f2ff', color: '#27ae60' },
-    paye:           { bg: '#e8f8ee', color: '#1a6b2f' },
+    verifie:        { bg: '#e8f2ff', color: '#1565C0' },
+    paye:           { bg: '#EEF4FF', color: '#003F87' },
     rembourse:      { bg: '#f5e6ff', color: '#8e44ad' },
   };
 
@@ -318,7 +318,7 @@
         <div style="margin-top:12px">
           <div style="display:flex;justify-content:space-between;padding:6px 0;font-size:13px;color:var(--text-muted)"><span>{% trans "Sous-total" %}</span><span>{% trans "${Number(c.sous_total).toLocaleString('fr-FR')} HTG" %}</span></div>
           <div style="display:flex;justify-content:space-between;padding:6px 0;font-size:13px;color:var(--text-muted)"><span>{% trans "Frais de livraison" %}</span><span>{% trans "${Number(c.frais_livraison).toLocaleString('fr-FR')} HTG" %}</span></div>
-          ${Number(c.remise) > 0 ? `<div style="display:flex;justify-content:space-between;padding:6px 0;font-size:13px;color:#27ae60"><span>{% trans "Remise" %}</span><span>{% trans "−${Number(c.remise).toLocaleString('fr-FR')} HTG" %}</span></div>` : ''}
+          ${Number(c.remise) > 0 ? `<div style="display:flex;justify-content:space-between;padding:6px 0;font-size:13px;color:#1565C0"><span>{% trans "Remise" %}</span><span>{% trans "−${Number(c.remise).toLocaleString('fr-FR')} HTG" %}</span></div>` : ''}
         </div>
         <div class="total-row"><span>{% trans "Total" %}</span><span style="color:var(--green)">{% trans "${Number(c.total).toLocaleString('fr-FR')} HTG" %}</span></div>
         ${c.notes_acheteur ? `<div class="detail-section">{% trans "Notes" %}</div><p style="font-size:13px;color:var(--text-muted)">{% trans "${c.notes_acheteur}" %}</p>` : ''}

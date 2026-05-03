@@ -61,7 +61,7 @@
   /* Messages contact */
   .msg-card { background:var(--card); border-radius:var(--radius); box-shadow:var(--shadow); padding:16px 20px; margin-bottom:10px; border-left:4px solid var(--border); transition:border-color .18s; }
   .msg-card.non-lu { border-left-color:var(--orange); }
-  .msg-card.repondu-card { border-left-color:#27ae60; }
+  .msg-card.repondu-card { border-left-color:#1565C0; }
   .msg-card:hover { box-shadow:0 4px 20px rgba(0,0,0,.1); }
   .msg-card-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:8px; cursor:pointer; }
   .msg-nom { font-size:14px; font-weight:700; }
@@ -70,24 +70,24 @@
   .msg-preview { font-size:12px; color:var(--text-muted); cursor:pointer; }
   .msg-full { display:none; margin-top:12px; padding-top:12px; border-top:1px solid var(--border); font-size:13px; line-height:1.6; }
   .msg-card.open .msg-full { display:block; }
-  .badge-lu       { display:inline-block; padding:2px 8px; border-radius:10px; font-size:11px; font-weight:700; background:#e8f8ee; color:#1a6b2f; }
+  .badge-lu       { display:inline-block; padding:2px 8px; border-radius:10px; font-size:11px; font-weight:700; background:#EEF4FF; color:#003F87; }
   .badge-non-lu   { display:inline-block; padding:2px 8px; border-radius:10px; font-size:11px; font-weight:700; background:#fff4e6; color:#e67e22; }
-  .badge-repondu  { display:inline-block; padding:2px 8px; border-radius:10px; font-size:11px; font-weight:700; background:#d5f5e3; color:#1a6b2f; }
+  .badge-repondu  { display:inline-block; padding:2px 8px; border-radius:10px; font-size:11px; font-weight:700; background:#d5f5e3; color:#003F87; }
   /* Zone réponse */
   .reply-zone { margin-top:16px; padding-top:16px; border-top:1px solid var(--border); display:none; }
   .msg-card.open .reply-zone { display:block; }
   .reply-history { margin-bottom:14px; }
-  .reply-item { background:#f0faf4; border-left:3px solid #27ae60; border-radius:0 8px 8px 0; padding:10px 14px; margin-bottom:8px; font-size:12px; }
+  .reply-item { background:#f0faf4; border-left:3px solid #1565C0; border-radius:0 8px 8px 0; padding:10px 14px; margin-bottom:8px; font-size:12px; }
   .reply-item-meta { font-size:11px; color:#888; margin-bottom:4px; }
   .reply-item-text { color:#2c3e50; line-height:1.6; white-space:pre-line; }
   .reply-form textarea { width:100%; box-sizing:border-box; padding:10px 12px; border:1.5px solid var(--border); border-radius:8px; font-size:13px; font-family:inherit; resize:vertical; min-height:90px; background:var(--bg); color:var(--text); outline:none; }
-  .reply-form textarea:focus { border-color:#27ae60; }
+  .reply-form textarea:focus { border-color:#1565C0; }
   .reply-actions { display:flex; justify-content:flex-end; gap:8px; margin-top:8px; }
-  .btn-reply { padding:8px 18px; border-radius:8px; font-size:12px; font-weight:700; border:none; cursor:pointer; background:#27ae60; color:#fff; font-family:inherit; }
-  .btn-reply:hover { background:#1e8449; }
+  .btn-reply { padding:8px 18px; border-radius:8px; font-size:12px; font-weight:700; border:none; cursor:pointer; background:#1565C0; color:#fff; font-family:inherit; }
+  .btn-reply:hover { background:#1565C0; }
   .btn-reply:disabled { opacity:.6; cursor:not-allowed; }
-  .btn-reply-inline { flex-shrink:0; display:inline-flex; align-items:center; gap:5px; padding:5px 12px; border-radius:20px; font-size:11px; font-weight:700; border:1.5px solid #27ae60; background:#f0faf4; color:#1a6b2f; cursor:pointer; font-family:inherit; transition:all .18s; white-space:nowrap; }
-  .btn-reply-inline:hover { background:#27ae60; color:#fff; }
+  .btn-reply-inline { flex-shrink:0; display:inline-flex; align-items:center; gap:5px; padding:5px 12px; border-radius:20px; font-size:11px; font-weight:700; border:1.5px solid #1565C0; background:#f0faf4; color:#003F87; cursor:pointer; font-family:inherit; transition:all .18s; white-space:nowrap; }
+  .btn-reply-inline:hover { background:#1565C0; color:#fff; }
 
   /* Modal FAQ */
   .modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,.45); z-index:600; display:flex; align-items:center; justify-content:center; opacity:0; pointer-events:none; transition:opacity .22s; }
@@ -103,7 +103,7 @@
 
   .toast-container { position:fixed; bottom:24px; right:24px; z-index:9999; display:flex; flex-direction:column; gap:8px; }
   .toast { display:flex; align-items:center; gap:10px; padding:12px 16px; border-radius:10px; font-size:13px; font-weight:500; color:#fff; box-shadow:0 4px 20px rgba(0,0,0,.15); animation:slideUp .25s ease; }
-  .toast.success { background:#27ae60; } .toast.error { background:#e74c3c; }
+  .toast.success { background:#1565C0; } .toast.error { background:#e74c3c; }
   @keyframes slideUp { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
 </style>
 {% endblock %}
@@ -114,7 +114,7 @@
 <!-- Modale confirmation réponse contact -->
 <div class="modal-overlay" id="reply-confirm-modal">
   <div class="modal-box" style="width:480px">
-    <h3><i class="fas fa-paper-plane" style="color:#27ae60;margin-right:8px"></i>{% trans "Confirmer l'envoi" %}</h3>
+    <h3><i class="fas fa-paper-plane" style="color:#1565C0;margin-right:8px"></i>{% trans "Confirmer l'envoi" %}</h3>
     <p style="font-size:13px;color:var(--text-muted);margin-bottom:16px">
       Vous allez envoyer cette réponse à <strong id="reply-confirm-email"></strong>.<br>
       L'email sera envoyé immédiatement et ne peut pas être annulé.
@@ -211,11 +211,11 @@
         <div class="form-grid">
           <div class="field">
             <label>{% trans "Nom du site" %}</label>
-            <input type="text" id="s-nom-site" placeholder="{% trans 'Makèt Peyizan' %}">
+            <input type="text" id="s-nom-site" placeholder="{% trans 'AyitiKonekte' %}">
           </div>
           <div class="field">
             <label>{% trans "Slogan" %}</label>
-            <input type="text" id="s-slogan" placeholder="{% trans 'Marketplace Agricole Haïtienne' %}">
+            <input type="text" id="s-slogan" placeholder="{% trans 'Marketplace Haïti' %}">
           </div>
           <div class="field">
             <label>{% trans "Logo" %}</label>
@@ -238,7 +238,7 @@
         <div class="form-grid">
           <div class="field full">
             <label>{% trans "Texte du badge" %}</label>
-            <input type="text" id="s-hero-badge" placeholder="{% trans 'Marketplace Agricole Haïtienne' %}">
+            <input type="text" id="s-hero-badge" placeholder="{% trans 'Marketplace Haïti' %}">
           </div>
           <div class="field">
             <label>{% trans "Titre ligne 1" %}</label>
@@ -598,7 +598,7 @@ function renderApkState(data) {
   const link = document.getElementById('apk-current-link');
   if (data.has_apk) {
     cur.style.display = 'flex';
-    name.textContent  = data.apk_name || 'maket-peyizan.apk';
+    name.textContent  = data.apk_name || 'ayiti-konekte.apk';
     link.href         = data.apk_url;
   } else {
     cur.style.display = 'none';
@@ -817,7 +817,7 @@ async function loadFaqItems(catId) {
         <div class="faq-item-r">{% trans "${item.reponse.substring(0,120)}${item.reponse.length>120?'…':''}" %}</div>
         <div class="faq-actions">
           <button class="btn-xs" style="background:var(--bg);border:1px solid var(--border);color:var(--text-muted)" onclick="openFaqItemEdit(${item.id})"><i class="fas fa-edit"></i> {% trans "Modifier" %}</button>
-          <button class="btn-xs" style="background:${item.is_active?'#fde8e8':'#e8f8ee'};color:${item.is_active?'#e74c3c':'#27ae60'}" onclick="toggleFaqItem(${item.id},${item.is_active})">{% trans "${item.is_active?'Désactiver':'Activer'}" %}</button>
+          <button class="btn-xs" style="background:${item.is_active?'#fde8e8':'#EEF4FF'};color:${item.is_active?'#e74c3c':'#1565C0'}" onclick="toggleFaqItem(${item.id},${item.is_active})">{% trans "${item.is_active?'Désactiver':'Activer'}" %}</button>
           <button class="btn-xs" style="background:#fde8e8;color:#e74c3c" onclick="deleteFaqItem(${item.id})"><i class="fas fa-trash"></i></button>
         </div>
       </div>`;
@@ -975,7 +975,7 @@ async function loadMsgs(est_lu) {
     if (m.reponses && m.reponses.length) {
       repliesHtml = `<div class="reply-history">
         <p style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:#888;margin-bottom:8px">
-          <i class="fas fa-reply" style="color:#27ae60"></i> ${m.reponses.length} réponse(s) envoyée(s)
+          <i class="fas fa-reply" style="color:#1565C0"></i> ${m.reponses.length} réponse(s) envoyée(s)
         </p>`;
       m.reponses.forEach(r => {
         const d = new Date(r.envoye_le).toLocaleDateString('fr-FR',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'});
@@ -1014,7 +1014,7 @@ async function loadMsgs(est_lu) {
             ${repliesHtml}
             <div class="reply-form">
               <label style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:#888;display:block;margin-bottom:6px">
-                <i class="fas fa-reply" style="color:#27ae60"></i> Répondre à ${escHtml(m.nom)}
+                <i class="fas fa-reply" style="color:#1565C0"></i> Répondre à ${escHtml(m.nom)}
               </label>
               <textarea id="reply-txt-${m.id}" placeholder="{% trans 'Écrivez votre réponse ici…' %}"></textarea>
               <div class="reply-actions">

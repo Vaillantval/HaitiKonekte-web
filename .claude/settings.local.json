@@ -26,7 +26,15 @@
       "Bash(head -20 grep -n \"await r.json\\(\\)\\\\|\\\\.json\\(\\)\\\\.\\\\|json\\(\\)\\\\.data\\\\|\\\\.forEach\\\\|\\\\.map\\(\" templates/dashboard/superadmin_stocks.html)",
       "Bash(head -20 grep -n \"await r.json\\(\\)\\\\|\\\\.json\\(\\)\\\\.\\\\|json\\(\\)\\\\.data\\\\|\\\\.forEach\\\\|\\\\.map\\(\" templates/dashboard/superadmin_catalogue.html)",
       "Bash(BASE=\"C:/Users/wind/Desktop/TRANSVERSAL/MAKET-PEYIZAN-026/MP_web_2026/maket_peyizan/templates/dashboard\" for f in superadmin_commandes.html superadmin_paiements.html superadmin_producteurs.html superadmin_collectes.html superadmin_stocks.html superadmin_acheteurs.html superadmin_adresses.html superadmin_zones.html superadmin_vouchers.html superadmin_categories.html superadmin_slider.html)",
-      "Bash(do echo:*)"
+      "Bash(do echo:*)",
+      "Bash(py -m venv venv)",
+      "Bash(venv/Scripts/pip install *)",
+      "Bash(py --list)",
+      "Bash(py -3 --version)",
+      "Bash(sed -i -e 's/border:1.5px solid #1565C0/border:1.5px solid #003F87/g' -e 's/row.style.background = '\\\\''#f0faf4'\\\\''/row.style.background = '\\\\''#EEF4FF'\\\\''/g' -e 's/GeoSearchSelect — Combobox cherchable pour les formulaires AyitiKonekte/GeoSearchSelect — Combobox cherchable pour les formulaires AyitiKonekte/g' static/js/geo_selector.js)",
+      "Bash(sed -i -e 's/Combobox cherchable pour les formulaires Mak.*/Combobox cherchable pour les formulaires AyitiKonekte/g' -e 's/#1565C0/#003F87/g' -e 's/'\\\\''#f0faf4'\\\\''/'\\\\''#EEF4FF'\\\\''/g' static/js/geo_selector.js)",
+      "Bash(sed -i -e 's/maketpeyizan\\\\.ht/ayitikonekte.ht/g' -e 's/Maket Peyizan/AyitiKonekte/g' -e s/maket-peyizan/ayiti-konekte/g .env.example)",
+      "Bash(sed -i -e 's/maketpeyizan\\\\.ht/ayitikonekte.ht/g' -e 's/Maket Peyizan/AyitiKonekte/g' .env)"
     ]
   }
 }

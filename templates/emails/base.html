@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>{% block titre %}Makèt Peyizan{% endblock %}</title>
+  <title>{% block titre %}AyitiKonekte{% endblock %}</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
@@ -21,7 +21,7 @@
       box-shadow: 0 4px 20px rgba(0,0,0,.08);
     }
     .header {
-      background: linear-gradient(135deg, #27ae60 0%, #1e8449 100%);
+      background: linear-gradient(135deg, #1565C0 0%, #1565C0 100%);
       padding: 32px 40px;
       text-align: center;
     }
@@ -54,14 +54,14 @@
       font-size: 12px;
       font-weight: 600;
     }
-    .badge-vert   { background: #d5f5e3; color: #1e8449; }
+    .badge-vert   { background: #d5f5e3; color: #1565C0; }
     .badge-orange { background: #fef9e7; color: #e67e22; }
     .badge-rouge  { background: #fdedec; color: #e74c3c; }
     .badge-bleu   { background: #eaf4fb; color: #2980b9; }
     .btn {
       display: inline-block;
       padding: 14px 32px;
-      background: #27ae60;
+      background: #1565C0;
       color: white !important;
       text-decoration: none;
       border-radius: 8px;
@@ -91,7 +91,7 @@
     }
     .total-row td {
       font-weight: 700;
-      color: #27ae60;
+      color: #1565C0;
       font-size: 16px;
       border-top: 2px solid #d5f5e3;
     }
@@ -103,7 +103,7 @@
       border-top: 1px solid #eee;
     }
     .footer p  { font-size: 12px; color: #aaa; line-height: 1.6; }
-    .footer a  { color: #27ae60; text-decoration: none; }
+    .footer a  { color: #1565C0; text-decoration: none; }
     .alert-box {
       border-left: 4px solid #e74c3c;
       background: #fdedec;
@@ -114,13 +114,13 @@
       color: #c0392b;
     }
     .success-box {
-      border-left: 4px solid #27ae60;
+      border-left: 4px solid #1565C0;
       background: #d5f5e3;
       padding: 14px 18px;
       border-radius: 0 8px 8px 0;
       margin: 16px 0;
       font-size: 14px;
-      color: #1e8449;
+      color: #1565C0;
     }
     .info-box {
       border-left: 4px solid #2980b9;
@@ -136,8 +136,8 @@
 <body>
   <div class="wrapper">
     <div class="header">
-      <h1>{% trans "🌾 Makèt Peyizan" %}</h1>
-      <p>{% trans "Marketplace agricole haïtienne" %}</p>
+      <h1>{% trans "🌾 AyitiKonekte" %}</h1>
+      <p>{% trans "Marketplace Haïti" %}</p>
     </div>
     <div class="body">
       {% block content %}{% endblock %}
@@ -145,8 +145,8 @@
     <div class="footer">
       <p>
         Cet email a été envoyé automatiquement par
-        <a href="{{ site_url }}">{% trans "Makèt Peyizan" %}</a>.<br>
-        © {% now "Y" %} Makèt Peyizan Haiti. Tous droits réservés.
+        <a href="{{ site_url }}">{% trans "AyitiKonekte" %}</a>.<br>
+        © {% now "Y" %} AyitiKonekte Haiti. Tous droits réservés.
       </p>
     </div>
   </div>

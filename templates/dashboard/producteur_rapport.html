@@ -45,19 +45,19 @@
   .form-group small { display: block; margin-top: 4px; font-size: 11px; color: #95a5a6; }
   .radio-group { display: flex; flex-direction: column; gap: 10px; }
   .radio-option { display: flex; align-items: flex-start; cursor: pointer; padding: 12px; border: 2px solid var(--border, #ecf0f1); border-radius: 8px; transition: border-color .2s; }
-  .radio-option:has(input:checked) { border-color: #27ae60; background: #f0faf3; }
-  .radio-option input[type="radio"] { margin-top: 2px; margin-right: 12px; width: 18px; height: 18px; accent-color: #27ae60; flex-shrink: 0; }
+  .radio-option:has(input:checked) { border-color: #1565C0; background: #f0faf3; }
+  .radio-option input[type="radio"] { margin-top: 2px; margin-right: 12px; width: 18px; height: 18px; accent-color: #1565C0; flex-shrink: 0; }
   .radio-label { display: flex; flex-direction: column; gap: 2px; }
   .radio-label strong { font-size: 14px; color: var(--text, #2c3e50); }
   .radio-label small { font-size: 12px; color: #7f8c8d; }
   .form-actions { display: flex; gap: 10px; margin-top: 24px; }
   .info-section { margin-bottom: 20px; }
   .info-section:last-child { margin-bottom: 0; }
-  .info-section h3 { font-size: 14px; font-weight: 600; color: #27ae60; margin-bottom: 6px; display: flex; align-items: center; gap: 8px; }
+  .info-section h3 { font-size: 14px; font-weight: 600; color: #1565C0; margin-bottom: 6px; display: flex; align-items: center; gap: 8px; }
   .info-section ul { margin: 4px 0 0 20px; padding: 0; }
   .info-section li { font-size: 12px; color: #7f8c8d; margin: 2px 0; }
-  #export-loading { display: none; align-items: center; gap: 10px; color: #27ae60; font-size: 14px; margin-top: 12px; }
-  .spinner { width: 20px; height: 20px; border: 3px solid #e0f5e9; border-top-color: #27ae60; border-radius: 50%; animation: spin .8s linear infinite; }
+  #export-loading { display: none; align-items: center; gap: 10px; color: #1565C0; font-size: 14px; margin-top: 12px; }
+  .spinner { width: 20px; height: 20px; border: 3px solid #e0f5e9; border-top-color: #1565C0; border-radius: 50%; animation: spin .8s linear infinite; }
   @keyframes spin { to { transform: rotate(360deg); } }
 </style>
 {% endblock %}
@@ -65,7 +65,7 @@
 {% block content %}
 <div class="export-grid">
   <div class="exp-card">
-    <h2><i class="fas fa-file-export" style="color:#27ae60; margin-right:8px;"></i>{% trans "Paramètres d'Export" %}</h2>
+    <h2><i class="fas fa-file-export" style="color:#1565C0; margin-right:8px;"></i>{% trans "Paramètres d'Export" %}</h2>
     <form method="post" action="/dashboard/producteur/rapport/" id="export-form">
       {% csrf_token %}
       <input type="hidden" name="_jwt" id="jwt-field">
@@ -95,7 +95,7 @@
           <label class="radio-option">
             <input type="radio" name="format" value="csv">
             <span class="radio-label">
-              <strong><i class="fas fa-file-csv" style="color:#27ae60; margin-right:6px;"></i>{% trans "CSV" %}</strong>
+              <strong><i class="fas fa-file-csv" style="color:#1565C0; margin-right:6px;"></i>{% trans "CSV" %}</strong>
               <small>{% trans "Données brutes, compatible Excel" %}</small>
             </span>
           </label>
@@ -118,7 +118,7 @@
   </div>
 
   <div class="exp-card" style="align-self: start; position: sticky; top: 80px;">
-    <h2><i class="fas fa-info-circle" style="color:#27ae60; margin-right:8px;"></i>{% trans "Contenu du rapport" %}</h2>
+    <h2><i class="fas fa-info-circle" style="color:#1565C0; margin-right:8px;"></i>{% trans "Contenu du rapport" %}</h2>
     <div class="info-section">
       <h3><i class="fas fa-tachometer-alt"></i> {% trans "Tableau de bord" %}</h3>
       <ul>

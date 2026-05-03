@@ -5,7 +5,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>{% block title %}Dashboard{% endblock %} — {{ site_settings.nom_site|default:"Makèt Peyizan" }}</title>
+  <title>{% block title %}Dashboard{% endblock %} — {{ site_settings.nom_site|default:"AyitiKonekte" }}</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet">
@@ -19,14 +19,14 @@
       --topbar-h:    60px;
 
       /* Brand */
-      --green:       #1a6b2f;
-      --green-dark:  #145525;
-      --green-mid:   #27ae60;
-      --green-light: #e8f8ee;
-      --green-glow:  rgba(39,174,96,.15);
-      --yellow:      #e8d800;
-      --yellow-dark: #c9bb00;
-      --yellow-text: #4a3c00;
+      --green:       #003F87;
+      --green-dark:  #002B5E;
+      --green-mid:   #1565C0;
+      --green-light: #EEF4FF;
+      --green-glow:  rgba(21,101,192,.15);
+      --yellow:      #C62828;
+      --yellow-dark: #8E0000;
+      --yellow-text: #FFFFFF;
       --red:         #e74c3c;
       --orange:      #e67e22;
       --blue:        #2980b9;
@@ -72,7 +72,7 @@
       --input-bg:    #111827;
       --topbar-bg:   #141b27;
       --topbar-bdr:  rgba(255,255,255,.07);
-      --green-light: rgba(39,174,96,.12);
+      --green-light: rgba(21,101,192,.12);
       --shadow:      0 1px 8px rgba(0,0,0,.35);
       --shadow-md:   0 4px 20px rgba(0,0,0,.45);
       --shadow-lg:   0 8px 32px rgba(0,0,0,.55);
@@ -304,7 +304,7 @@
       color: var(--green-mid);
       background: var(--green-light);
     }
-    [data-theme="dark"] .topbar-icon-btn:hover { background: rgba(39,174,96,.15); }
+    [data-theme="dark"] .topbar-icon-btn:hover { background: rgba(21,101,192,.15); }
 
     /* Notification dot */
     .notif-dot {
@@ -352,7 +352,7 @@
       color: var(--green);
       background: var(--green-light);
     }
-    [data-theme="dark"] .topbar-site-btn:hover { background: rgba(39,174,96,.12); color: var(--green-mid); }
+    [data-theme="dark"] .topbar-site-btn:hover { background: rgba(21,101,192,.12); color: var(--green-mid); }
 
     /* Language select in topbar */
     .lang-select-topbar {
@@ -369,7 +369,7 @@
       transition: border-color .18s, color .18s, background .18s;
     }
     .lang-select-topbar:hover { border-color: var(--green-mid); color: var(--green); background: var(--green-light); }
-    [data-theme="dark"] .lang-select-topbar:hover { background: rgba(39,174,96,.12); }
+    [data-theme="dark"] .lang-select-topbar:hover { background: rgba(21,101,192,.12); }
 
     /* User badge in topbar */
     .topbar-user {
@@ -381,7 +381,7 @@
       cursor: pointer; transition: all .18s;
     }
     .topbar-user:hover { border-color: var(--green-mid); background: var(--green-light); }
-    [data-theme="dark"] .topbar-user:hover { background: rgba(39,174,96,.1); }
+    [data-theme="dark"] .topbar-user:hover { background: rgba(21,101,192,.1); }
     .topbar-user-avatar {
       width: 28px; height: 28px; border-radius: 50%;
       background: var(--green-mid);
@@ -514,7 +514,7 @@
         {% endif %}
       </div>
       <div>
-        <div class="sidebar-logo-text">{{ site_settings.nom_site|default:"Makèt Peyizan" }}</div>
+        <div class="sidebar-logo-text">{{ site_settings.nom_site|default:"AyitiKonekte" }}</div>
         <div class="sidebar-logo-sub">{% trans "Admin" %}</div>
       </div>
     </div>

@@ -5,7 +5,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Finaliser ma commande — {{ site_settings.nom_site|default:"Makèt Peyizan" }}</title>
+  <title>Finaliser ma commande — {{ site_settings.nom_site|default:"AyitiKonekte" }}</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -13,8 +13,8 @@
   <script src="{% static 'js/geo_selector.js' %}"></script>
   <style>
     :root {
-      --vert-fonce:#1a6b2f; --vert-vif:#27ae60; --vert-menthe:#e8f8ee;
-      --jaune:#e8d800; --blanc:#fff; --noir:#1a1a1a; --gris:#f4f6f9;
+      --primary:#003F87; --accent:#1565C0; --light:#EEF4FF;
+      --rouge:#C62828; --blanc:#fff; --noir:#1a1a1a; --gris:#f4f6f9;
       --gris-bord:#e2e8f0; --gris-texte:#555; --shadow:0 4px 24px rgba(0,0,0,.08);
       --radius:14px;
     }
@@ -28,15 +28,15 @@
     .steps { display:flex; align-items:center; justify-content:center; }
     .step { display:flex; flex-direction:column; align-items:center; gap:5px; min-width:100px; }
     .step-circle { width:34px; height:34px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:700; transition:all .2s; }
-    .step.done .step-circle { background:var(--vert-vif); color:#fff; }
-    .step.active .step-circle { background:var(--vert-fonce); color:#fff; box-shadow:0 0 0 4px rgba(26,107,47,.15); }
+    .step.done .step-circle { background:var(--accent); color:#fff; }
+    .step.active .step-circle { background:var(--primary); color:#fff; box-shadow:0 0 0 4px rgba(0,63,135,.15); }
     .step.pending .step-circle { background:#e0e0e0; color:#999; }
     .step-label { font-size:11px; font-weight:600; white-space:nowrap; }
-    .step.done .step-label { color:var(--vert-vif); }
-    .step.active .step-label { color:var(--vert-fonce); font-weight:800; }
+    .step.done .step-label { color:var(--accent); }
+    .step.active .step-label { color:var(--primary); font-weight:800; }
     .step.pending .step-label { color:#aaa; }
     .step-connector { flex:1; height:2px; margin:0 4px; margin-bottom:16px; max-width:80px; }
-    .step-connector.done { background:var(--vert-vif); }
+    .step-connector.done { background:var(--accent); }
     .step-connector.pending { background:#e0e0e0; }
 
     /* ── Layout ──────────────────────────────────────────────── */
@@ -48,7 +48,7 @@
     /* ── Section cards ───────────────────────────────────────── */
     .c-section { background:var(--blanc); border-radius:var(--radius); box-shadow:var(--shadow); overflow:hidden; }
     .c-section-head { display:flex; align-items:center; gap:14px; padding:18px 24px; border-bottom:1px solid var(--gris-bord); }
-    .c-num { width:30px; height:30px; background:var(--vert-fonce); color:#fff; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:800; flex-shrink:0; }
+    .c-num { width:30px; height:30px; background:var(--primary); color:#fff; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:800; flex-shrink:0; }
     .c-title { font-size:16px; font-weight:800; }
     .c-body { padding:20px 24px; }
 
@@ -60,12 +60,12 @@
 
     /* ── Address options ─────────────────────────────────────── */
     .addr-option { display:flex; align-items:flex-start; gap:12px; padding:14px 16px; border:2px solid var(--gris-bord); border-radius:10px; cursor:pointer; margin-bottom:10px; transition:all .15s; }
-    .addr-option:hover { border-color:var(--vert-vif); background:#f5fbf7; }
-    .addr-option.selected { border-color:var(--vert-vif); background:#f0fbf4; }
-    .addr-option input[type="radio"] { margin-top:3px; accent-color:var(--vert-vif); width:16px; height:16px; flex-shrink:0; cursor:pointer; }
+    .addr-option:hover { border-color:var(--accent); background:#f5fbf7; }
+    .addr-option.selected { border-color:var(--accent); background:#f0fbf4; }
+    .addr-option input[type="radio"] { margin-top:3px; accent-color:var(--accent); width:16px; height:16px; flex-shrink:0; cursor:pointer; }
     .addr-info { flex:1; min-width:0; }
-    .addr-libelle { font-size:13px; font-weight:700; color:var(--vert-fonce); display:flex; align-items:center; gap:6px; margin-bottom:4px; }
-    .addr-default { font-size:10px; background:#e8f5e9; color:var(--vert-vif); padding:2px 7px; border-radius:20px; font-weight:700; }
+    .addr-libelle { font-size:13px; font-weight:700; color:var(--primary); display:flex; align-items:center; gap:6px; margin-bottom:4px; }
+    .addr-default { font-size:10px; background:#e8f5e9; color:var(--accent); padding:2px 7px; border-radius:20px; font-weight:700; }
     .addr-dest { font-size:13px; font-weight:600; margin-bottom:2px; }
     .addr-rue { font-size:12px; color:#555; }
     .addr-dept { font-size:11px; color:#999; margin-top:2px; }
@@ -73,36 +73,36 @@
     /* ── Address form toggles ────────────────────────────────── */
     .addr-toggles { display:flex; gap:10px; flex-wrap:wrap; margin-top:4px; }
     .btn-toggle { display:flex; align-items:center; gap:7px; padding:9px 16px; border-radius:8px; font-size:12px; font-weight:600; cursor:pointer; transition:all .15s; font-family:'DM Sans',sans-serif; border:1.5px solid var(--gris-bord); color:var(--gris-texte); background:var(--blanc); }
-    .btn-toggle:hover { border-color:var(--vert-vif); color:var(--vert-vif); }
-    .btn-toggle.active { border-color:var(--vert-vif); color:var(--vert-vif); background:#f0fbf4; }
+    .btn-toggle:hover { border-color:var(--accent); color:var(--accent); }
+    .btn-toggle.active { border-color:var(--accent); color:var(--accent); background:#f0fbf4; }
 
     /* ── Inline address form ─────────────────────────────────── */
     .addr-form-wrap { margin-top:16px; background:#f8fff9; border:1px solid #c8e6c9; border-radius:12px; padding:20px; animation:fadeIn .2s ease; }
     @keyframes fadeIn { from{opacity:0;transform:translateY(-6px)} to{opacity:1;transform:none} }
-    .form-title { font-size:13px; font-weight:700; color:var(--vert-fonce); margin-bottom:14px; display:flex; align-items:center; gap:7px; }
+    .form-title { font-size:13px; font-weight:700; color:var(--primary); margin-bottom:14px; display:flex; align-items:center; gap:7px; }
     .form-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
     .form-group { display:flex; flex-direction:column; gap:4px; }
     .form-group.full { grid-column:1/-1; }
     .form-label { font-size:11px; font-weight:700; color:#555; text-transform:uppercase; letter-spacing:.04em; }
     .form-label .req { color:#e74c3c; }
     .f-input { padding:10px 12px; border:1.5px solid var(--gris-bord); border-radius:8px; font-size:13px; font-family:'DM Sans',sans-serif; outline:none; background:#fff; transition:border-color .15s; }
-    .f-input:focus { border-color:var(--vert-vif); }
+    .f-input:focus { border-color:var(--accent); }
     .f-input:disabled { background:#f5f5f5; color:#999; cursor:not-allowed; }
     .f-select { appearance:none; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%23555' d='M6 8L0 0h12z'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right 12px center; padding-right:32px; cursor:pointer; }
     .save-check { display:flex; align-items:center; gap:8px; font-size:12px; color:var(--gris-texte); cursor:pointer; margin-top:12px; }
-    .save-check input { accent-color:var(--vert-vif); width:15px; height:15px; cursor:pointer; }
+    .save-check input { accent-color:var(--accent); width:15px; height:15px; cursor:pointer; }
 
     /* ── Payment methods ─────────────────────────────────────── */
     .pm-list { display:flex; flex-direction:column; gap:10px; }
     .pm-option { display:flex; align-items:center; gap:14px; padding:14px 16px; border:2px solid var(--gris-bord); border-radius:10px; cursor:pointer; transition:all .15s; position:relative; }
-    .pm-option:hover:not(.pm-disabled) { border-color:var(--vert-vif); background:#f5fbf7; }
-    .pm-option.pm-selected { border-color:var(--vert-vif); background:#f0fbf4; }
+    .pm-option:hover:not(.pm-disabled) { border-color:var(--accent); background:#f5fbf7; }
+    .pm-option.pm-selected { border-color:var(--accent); background:#f0fbf4; }
     .pm-option.pm-disabled { opacity:.55; cursor:not-allowed; }
-    .pm-option input[type="radio"] { accent-color:var(--vert-vif); width:16px; height:16px; flex-shrink:0; }
+    .pm-option input[type="radio"] { accent-color:var(--accent); width:16px; height:16px; flex-shrink:0; }
     .pm-icon-wrap { width:42px; height:42px; border-radius:10px; background:#f4f6f9; display:flex; align-items:center; justify-content:center; font-size:20px; flex-shrink:0; }
     .pm-name { font-size:14px; font-weight:700; }
     .pm-desc { font-size:11px; color:#888; margin-top:2px; }
-    .pm-check { margin-left:auto; color:var(--vert-vif); font-size:20px; opacity:0; transition:opacity .15s; }
+    .pm-check { margin-left:auto; color:var(--accent); font-size:20px; opacity:0; transition:opacity .15s; }
     .pm-option.pm-selected .pm-check { opacity:1; }
     .pm-soon { position:absolute; right:12px; top:50%; transform:translateY(-50%); font-size:10px; font-weight:700; background:#f0f0f0; color:#888; padding:3px 8px; border-radius:20px; white-space:nowrap; }
 
@@ -123,29 +123,29 @@
 
     /* ── Notes ───────────────────────────────────────────────── */
     .notes-area { width:100%; padding:12px; border:1.5px solid var(--gris-bord); border-radius:8px; font-size:13px; font-family:'DM Sans',sans-serif; resize:vertical; min-height:80px; outline:none; transition:border-color .15s; }
-    .notes-area:focus { border-color:var(--vert-vif); }
+    .notes-area:focus { border-color:var(--accent); }
     .notes-hint { font-size:11px; color:#aaa; margin-top:6px; }
 
     /* ── Voucher (dans recap card) ───────────────────────────── */
     .recap-voucher { padding:12px 20px; border-top:1px solid var(--gris-bord); background:#f7fdf9; }
-    .recap-voucher-label { font-size:11px; font-weight:700; color:var(--vert-fonce); text-transform:uppercase; letter-spacing:.05em; margin-bottom:8px; display:flex; align-items:center; gap:6px; }
+    .recap-voucher-label { font-size:11px; font-weight:700; color:var(--primary); text-transform:uppercase; letter-spacing:.05em; margin-bottom:8px; display:flex; align-items:center; gap:6px; }
     .voucher-row { display:flex; gap:8px; align-items:stretch; }
     .voucher-input { flex:1; padding:9px 12px; border:1.5px solid var(--gris-bord); border-radius:8px; font-size:13px; font-family:'DM Sans',sans-serif; outline:none; transition:border-color .15s; text-transform:uppercase; letter-spacing:.04em; background:#fff; }
-    .voucher-input:focus { border-color:var(--vert-vif); }
+    .voucher-input:focus { border-color:var(--accent); }
     .voucher-input.v-error { border-color:#ef4444; }
-    .voucher-input.v-ok    { border-color:var(--vert-vif); background:#f0fdf4; }
-    .btn-voucher { padding:9px 14px; background:var(--vert-fonce); color:#fff; border:none; border-radius:8px; font-size:12px; font-weight:700; cursor:pointer; font-family:'DM Sans',sans-serif; white-space:nowrap; transition:background .2s; }
+    .voucher-input.v-ok    { border-color:var(--accent); background:#f0fdf4; }
+    .btn-voucher { padding:9px 14px; background:var(--primary); color:#fff; border:none; border-radius:8px; font-size:12px; font-weight:700; cursor:pointer; font-family:'DM Sans',sans-serif; white-space:nowrap; transition:background .2s; }
     .btn-voucher:hover:not(:disabled) { background:#145a26; }
     .btn-voucher:disabled { opacity:.5; cursor:not-allowed; }
     .voucher-feedback { margin-top:6px; font-size:12px; display:none; }
-    .voucher-feedback.v-ok    { color:var(--vert-vif); display:flex; align-items:center; gap:5px; }
+    .voucher-feedback.v-ok    { color:var(--accent); display:flex; align-items:center; gap:5px; }
     .voucher-feedback.v-error { color:#ef4444; display:flex; align-items:center; gap:5px; }
 
     /* ── Recap card (sticky) ─────────────────────────────────── */
     .recap-card { background:var(--blanc); border-radius:var(--radius); box-shadow:var(--shadow); position:sticky; top:84px; overflow:hidden; }
     .recap-head { padding:16px 20px; border-bottom:1px solid var(--gris-bord); display:flex; align-items:center; justify-content:space-between; }
     .recap-head-title { font-size:15px; font-weight:800; }
-    .recap-head-link { font-size:12px; color:var(--vert-vif); display:flex; align-items:center; gap:5px; }
+    .recap-head-link { font-size:12px; color:var(--accent); display:flex; align-items:center; gap:5px; }
     .recap-head-link:hover { text-decoration:underline; }
     .recap-items { padding:0 20px; max-height:280px; overflow-y:auto; }
     .recap-item { display:flex; align-items:center; gap:12px; padding:12px 0; border-bottom:1px solid #f5f5f5; }
@@ -154,17 +154,17 @@
     .recap-item-info { flex:1; min-width:0; }
     .recap-item-name { font-size:12px; font-weight:700; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
     .recap-item-qty { font-size:11px; color:#888; margin-top:2px; }
-    .recap-item-price { font-size:13px; font-weight:800; color:var(--vert-fonce); white-space:nowrap; }
+    .recap-item-price { font-size:13px; font-weight:800; color:var(--primary); white-space:nowrap; }
     .recap-totals { padding:14px 20px; border-top:1px solid var(--gris-bord); background:#fafafa; }
     .recap-line { display:flex; justify-content:space-between; font-size:13px; margin-bottom:8px; color:#666; }
     .recap-line span:last-child { font-weight:600; color:var(--noir); }
-    .recap-total { display:flex; justify-content:space-between; font-size:19px; font-weight:900; color:var(--vert-fonce); padding-top:10px; border-top:2px solid var(--gris-bord); margin-top:4px; }
+    .recap-total { display:flex; justify-content:space-between; font-size:19px; font-weight:900; color:var(--primary); padding-top:10px; border-top:2px solid var(--gris-bord); margin-top:4px; }
     .recap-footer { padding:16px 20px; }
-    .btn-submit { width:100%; padding:16px; background:var(--vert-fonce); color:#fff; border:none; border-radius:10px; font-size:15px; font-weight:800; cursor:pointer; font-family:'DM Sans',sans-serif; transition:all .2s; display:flex; align-items:center; justify-content:center; gap:8px; }
-    .btn-submit:hover:not(:disabled) { background:#145a26; transform:translateY(-1px); box-shadow:0 6px 20px rgba(26,107,47,.25); }
+    .btn-submit { width:100%; padding:16px; background:var(--primary); color:#fff; border:none; border-radius:10px; font-size:15px; font-weight:800; cursor:pointer; font-family:'DM Sans',sans-serif; transition:all .2s; display:flex; align-items:center; justify-content:center; gap:8px; }
+    .btn-submit:hover:not(:disabled) { background:#145a26; transform:translateY(-1px); box-shadow:0 6px 20px rgba(0,63,135,.25); }
     .btn-submit:disabled { opacity:.45; cursor:not-allowed; transform:none; }
     .security-note { font-size:11px; color:#bbb; text-align:center; margin-top:12px; line-height:1.6; display:flex; align-items:flex-start; gap:5px; justify-content:center; }
-    .security-note i { margin-top:1px; color:#27ae60; }
+    .security-note i { margin-top:1px; color:#1565C0; }
 
     /* ── Multi-producteur warning ────────────────────────────── */
     .multi-warn { background:#fff4e0; border:1px solid #fde68a; border-radius:10px; padding:12px 14px; font-size:12px; color:#92400e; display:none; align-items:flex-start; gap:8px; margin-bottom:4px; }
@@ -175,24 +175,24 @@
     .wall-icon { font-size:48px; opacity:.2; display:block; margin-bottom:16px; }
     .wall-title { font-size:20px; font-weight:800; margin-bottom:8px; }
     .wall-text { font-size:14px; color:#888; margin-bottom:24px; }
-    .btn-wall { display:inline-flex; align-items:center; gap:8px; padding:12px 28px; background:var(--vert-fonce); color:#fff; border:none; border-radius:50px; font-size:14px; font-weight:700; cursor:pointer; font-family:'DM Sans',sans-serif; }
+    .btn-wall { display:inline-flex; align-items:center; gap:8px; padding:12px 28px; background:var(--primary); color:#fff; border:none; border-radius:50px; font-size:14px; font-weight:700; cursor:pointer; font-family:'DM Sans',sans-serif; }
 
     /* ── Confirmation overlay ────────────────────────────────── */
     .confirm-overlay { position:fixed; inset:0; background:rgba(0,0,0,.55); z-index:9999; display:none; align-items:center; justify-content:center; padding:24px; }
     .confirm-card { background:#fff; border-radius:20px; padding:40px 36px; max-width:460px; width:100%; text-align:center; animation:zoomIn .3s ease; }
     @keyframes zoomIn { from{opacity:0;transform:scale(.9)} to{opacity:1;transform:none} }
-    .confirm-icon { width:80px; height:80px; background:var(--vert-vif); border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 20px; font-size:34px; color:#fff; }
-    .confirm-title { font-size:22px; font-weight:900; color:var(--vert-fonce); margin-bottom:8px; }
+    .confirm-icon { width:80px; height:80px; background:var(--accent); border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 20px; font-size:34px; color:#fff; }
+    .confirm-title { font-size:22px; font-weight:900; color:var(--primary); margin-bottom:8px; }
     .confirm-sub { font-size:14px; color:#777; margin-bottom:20px; line-height:1.5; }
     .confirm-orders { background:#f0fbf4; border-radius:10px; padding:14px 16px; margin-bottom:24px; text-align:left; }
-    .confirm-order { display:flex; align-items:center; gap:8px; font-size:13px; font-weight:700; color:var(--vert-fonce); margin-bottom:6px; }
+    .confirm-order { display:flex; align-items:center; gap:8px; font-size:13px; font-weight:700; color:var(--primary); margin-bottom:6px; }
     .confirm-order:last-child { margin-bottom:0; }
-    .confirm-order-total { margin-left:auto; color:var(--vert-vif); }
+    .confirm-order-total { margin-left:auto; color:var(--accent); }
     .confirm-btns { display:flex; gap:10px; }
-    .btn-conf-dash { flex:1; padding:13px; background:var(--vert-fonce); color:#fff; border:none; border-radius:10px; font-size:13px; font-weight:700; cursor:pointer; font-family:'DM Sans',sans-serif; display:flex; align-items:center; justify-content:center; gap:6px; text-decoration:none; }
+    .btn-conf-dash { flex:1; padding:13px; background:var(--primary); color:#fff; border:none; border-radius:10px; font-size:13px; font-weight:700; cursor:pointer; font-family:'DM Sans',sans-serif; display:flex; align-items:center; justify-content:center; gap:6px; text-decoration:none; }
     .btn-conf-dash:hover { background:#145a26; }
-    .btn-conf-cat { flex:1; padding:13px; background:transparent; color:var(--vert-fonce); border:2px solid var(--vert-fonce); border-radius:10px; font-size:13px; font-weight:700; cursor:pointer; font-family:'DM Sans',sans-serif; display:flex; align-items:center; justify-content:center; gap:6px; text-decoration:none; }
-    .btn-conf-cat:hover { background:var(--vert-menthe); }
+    .btn-conf-cat { flex:1; padding:13px; background:transparent; color:var(--primary); border:2px solid var(--primary); border-radius:10px; font-size:13px; font-weight:700; cursor:pointer; font-family:'DM Sans',sans-serif; display:flex; align-items:center; justify-content:center; gap:6px; text-decoration:none; }
+    .btn-conf-cat:hover { background:var(--light); }
 
     /* ── NatCash extra box ───────────────────────────────────────── */
     .pm-extra.pm-extra-natcash { background:#f0f9ff; border:1px solid #bae6fd; }
@@ -218,8 +218,8 @@
       animation:btn-glow 2.4s ease-in-out infinite;
     }
     @keyframes btn-glow {
-      0%,100% { box-shadow:0 4px 14px rgba(26,107,47,.35); }
-      50%      { box-shadow:0 4px 28px rgba(26,107,47,.65), 0 0 0 5px rgba(39,174,96,.18); }
+      0%,100% { box-shadow:0 4px 14px rgba(0,63,135,.35); }
+      50%      { box-shadow:0 4px 28px rgba(0,63,135,.65), 0 0 0 5px rgba(21,101,192,.18); }
     }
 
     /* Désactiver toutes les animations sur disabled */
@@ -231,7 +231,7 @@
     /* ── Toast ───────────────────────────────────────────────── */
     .toast-container { position:fixed; bottom:24px; right:24px; z-index:9999; display:flex; flex-direction:column; gap:10px; }
     .toast { display:flex; align-items:center; gap:10px; padding:12px 16px; border-radius:10px; font-size:14px; font-weight:500; box-shadow:0 4px 20px rgba(0,0,0,.15); color:#fff; animation:slideUp .25s ease; }
-    .toast.success { background:#27ae60; } .toast.error { background:#e74c3c; } .toast.info { background:#2980b9; }
+    .toast.success { background:#1565C0; } .toast.error { background:#e74c3c; } .toast.info { background:#2980b9; }
     @keyframes slideUp { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:none} }
 
     /* ── Responsive ──────────────────────────────────────────── */
@@ -325,7 +325,7 @@
               <!-- Inline address form -->
               <div class="addr-form-wrap" id="addr-form-wrap" style="display:none">
                 <div class="form-title">
-                  <i class="fas fa-map-pin" style="color:var(--vert-vif)"></i>
+                  <i class="fas fa-map-pin" style="color:var(--accent)"></i>
                   <span id="form-mode-title">{% trans "Nouvelle adresse de livraison" %}</span>
                 </div>
                 <form id="addr-form" onsubmit="return false">
@@ -484,7 +484,7 @@
                 <!-- 4. À la livraison (espèces) -->
                 <label class="pm-option" id="pm-cash" onclick="selectPayment('cash',this)">
                   <input type="radio" name="pm" value="cash">
-                  <div class="pm-icon-wrap" style="background:#e8f5e9"><i class="fas fa-money-bill-wave" style="color:var(--vert-vif)"></i></div>
+                  <div class="pm-icon-wrap" style="background:#e8f5e9"><i class="fas fa-money-bill-wave" style="color:var(--accent)"></i></div>
                   <div>
                     <div class="pm-name">{% trans "À la livraison" %}</div>
                     <div class="pm-desc">{% trans "Paiement en espèces à la réception — aucun frais" %}</div>
@@ -531,7 +531,7 @@
         <aside>
           <div class="recap-card">
             <div class="recap-head">
-              <div class="recap-head-title"><i class="fas fa-receipt" style="color:var(--vert-vif);margin-right:6px;font-size:14px"></i>{% trans "Récapitulatif" %}</div>
+              <div class="recap-head-title"><i class="fas fa-receipt" style="color:var(--accent);margin-right:6px;font-size:14px"></i>{% trans "Récapitulatif" %}</div>
               <a href="/panier/" class="recap-head-link"><i class="fas fa-edit"></i> {% trans "Modifier" %}</a>
             </div>
 
@@ -547,13 +547,13 @@
                 <span>{% trans "Sous-total" %}</span>
                 <span id="recap-subtotal">—</span>
               </div>
-              <div class="recap-line" id="recap-remise-line" style="display:none;color:var(--vert-vif)">
+              <div class="recap-line" id="recap-remise-line" style="display:none;color:var(--accent)">
                 <span>{% trans "Réduction" %}</span>
                 <span id="recap-remise">—</span>
               </div>
               <div class="recap-line">
                 <span>{% trans "Livraison" %}</span>
-                <span style="color:var(--vert-vif)">{% trans "Gratuit" %}</span>
+                <span style="color:var(--accent)">{% trans "Gratuit" %}</span>
               </div>
               <div class="recap-total">
                 <span>{% trans "Total" %}</span>
@@ -1141,7 +1141,7 @@
   function showConfirmation(data) {
     const ordersHtml = (data.commandes || []).map(c => `
       <div class="confirm-order">
-        <i class="fas fa-receipt" style="color:var(--vert-vif);flex-shrink:0"></i>
+        <i class="fas fa-receipt" style="color:var(--accent);flex-shrink:0"></i>
         <span>${_esc(c.numero_commande)}</span>
         <span style="font-weight:400;color:#666;font-size:12px;flex:1;padding-left:4px">— ${_esc(c.producteur)}</span>
         <span class="confirm-order-total">${fmtPrice(c.total)}</span>

@@ -10,11 +10,11 @@
                alt="{{ site_settings.nom_site }}"
                style="height:36px; margin-bottom:12px; filter:brightness(0) invert(1);">
         {% else %}
-          <h3>🌾 {{ site_settings.nom_site|default:"Makèt Peyizan" }}</h3>
+          <h3>🌾 {{ site_settings.nom_site|default:"AyitiKonekte" }}</h3>
         {% endif %}
-        <p>{{ site_settings.slogan|default:"Marketplace agricole haïtienne." }}</p>
+        <p>{{ site_settings.slogan|default:"Marketplace Haïti" }}</p>
         {% if site_settings.hero_sous_titre %}
-          <p class="slogan">« Sòti nan jaden rive lakay,<br>manje m se medikaman m »</p>
+          <p class="slogan">« Acheter à Haiti, livré chez vous,<br>Tout ce dont vous avez besoin »</p>
         {% endif %}
 
         {% if site_settings.facebook_url or site_settings.instagram_url or site_settings.twitter_url %}
@@ -122,7 +122,7 @@
     </div>
 
     <div class="footer-bottom">
-      <span>© {% now "Y" %} {{ site_settings.copyright_texte|default:"Makèt Peyizan Haiti. Tous droits réservés." }}</span>
+      <span>© {% now "Y" %} {{ site_settings.copyright_texte|default:"AyitiKonekte Haiti. Tous droits réservés." }}</span>
       <span>{% trans "Transversal| Haiti" %}</span>
     </div>
   </div>

@@ -1,7 +1,7 @@
 {% extends "admin/base_site.html" %}
 {% load i18n static %}
 
-{% block title %}Carte des Utilisateurs — Makèt Peyizan{% endblock %}
+{% block title %}Carte des Utilisateurs — AyitiKonekte{% endblock %}
 
 {% block extrastyle %}
 <meta name="referrer" content="origin-when-cross-origin">
@@ -12,9 +12,9 @@
 
 <style>
   :root {
-    --vert:   #1a6b2f;
-    --vert2:  #27ae60;
-    --jaune:  #e8d800;
+    --vert:   #003F87;
+    --vert2:  #1565C0;
+    --rouge:  #C62828;
     --rouge:  #e74c3c;
     --bleu:   #2980b9;
     --violet: #8e44ad;
@@ -235,7 +235,7 @@
         🗺️ Carte des Utilisateurs
       </h1>
       <p style="margin:2px 0 0; color:#999; font-size:12px">
-        Localisation des utilisateurs inscrits sur Makèt Peyizan
+        Localisation des utilisateurs inscrits sur AyitiKonekte
       </p>
     </div>
     <a href="/analytics/dashboard/"
@@ -302,7 +302,7 @@
           </div>
           <div class="stat-item">
             <div class="stat-val" id="statProducteurs"
-                 style="color:#27ae60">—</div>
+                 style="color:#1565C0">—</div>
             <div class="stat-lbl">{% trans "Producteurs" %}</div>
           </div>
           <div class="stat-item">
@@ -328,7 +328,7 @@
       <div class="card-panel">
         <h3>{% trans "🎨 Légende" %}</h3>
         <div class="legende-item">
-          <div class="legende-dot" style="background:#27ae60"></div>
+          <div class="legende-dot" style="background:#1565C0"></div>
           <span>{% trans "Producteur actif" %}</span>
         </div>
         <div class="legende-item">
@@ -359,8 +359,8 @@
         </div>
         <div class="legende-item">
           <div class="legende-dot"
-               style="background:#27ae60; border:2px solid white;
-                      box-shadow:0 0 0 2px #27ae60"></div>
+               style="background:#1565C0; border:2px solid white;
+                      box-shadow:0 0 0 2px #1565C0"></div>
           <span>{% trans "Localisation commune" %}</span>
         </div>
       </div>
@@ -389,7 +389,7 @@
 <script>
 // ── Config couleurs par rôle ──────────────────────────────────
 const ROLE_COLORS = {
-  'producteur_actif':     '#27ae60',
+  'producteur_actif':     '#1565C0',
   'producteur_en_attente':'#f39c12',
   'producteur_suspendu':  '#e74c3c',
   'producteur_inactif':   '#95a5a6',
@@ -441,7 +441,7 @@ const markerCluster = L.markerClusterGroup({
     const count = cluster.getChildCount();
     return L.divIcon({
       html: `<div style="
-        background:#1a6b2f; color:white;
+        background:#003F87; color:white;
         width:36px; height:36px;
         border-radius:50%; display:flex;
         align-items:center; justify-content:center;
@@ -580,7 +580,7 @@ function updateDonut(stats) {
     stats.collecteur || 0,
     (stats.admin || 0) + (stats.superadmin || 0),
   ];
-  const colors = ['#2980b9', '#27ae60', '#8e44ad', '#1a1a1a'];
+  const colors = ['#2980b9', '#1565C0', '#8e44ad', '#1a1a1a'];
 
   if (donutChart) donutChart.destroy();
 

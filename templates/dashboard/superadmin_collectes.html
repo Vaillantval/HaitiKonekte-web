@@ -70,7 +70,7 @@
 
   .toast-container { position:fixed; bottom:24px; right:24px; z-index:9999; display:flex; flex-direction:column; gap:8px; }
   .toast { display:flex; align-items:center; gap:10px; padding:12px 16px; border-radius:10px; font-size:13px; font-weight:500; color:#fff; box-shadow:0 4px 20px rgba(0,0,0,.15); animation:slideUp .25s ease; }
-  .toast.success { background:#27ae60; } .toast.error { background:#e74c3c; }
+  .toast.success { background:#1565C0; } .toast.error { background:#e74c3c; }
   @keyframes slideUp { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
   @media (max-width: 700px) {
     .toolbar { gap: 6px; }
@@ -139,14 +139,14 @@ let _filter = '', _currentId = null, _drawerMode = 'view';
 const STATUT_C = {
   planifiee:  { bg:'#eaf4fb', color:'#2980b9' },
   en_cours:   { bg:'#fff4e6', color:'#e67e22' },
-  terminee:   { bg:'#e8f8ee', color:'#1a6b2f' },
+  terminee:   { bg:'#EEF4FF', color:'#003F87' },
   annulee:    { bg:'#f0f0f0', color:'#888' },
   reportee:   { bg:'#f5e6ff', color:'#8e44ad' },
 };
 const STATUT_P = {
   inscrit:   { bg:'#eaf4fb', color:'#2980b9' },
-  confirme:  { bg:'#e8f8ee', color:'#1a6b2f' },
-  present:   { bg:'#e8f8ee', color:'#1a6b2f' },
+  confirme:  { bg:'#EEF4FF', color:'#003F87' },
+  present:   { bg:'#EEF4FF', color:'#003F87' },
   absent:    { bg:'#fde8e8', color:'#e74c3c' },
   annule:    { bg:'#f0f0f0', color:'#888' },
 };

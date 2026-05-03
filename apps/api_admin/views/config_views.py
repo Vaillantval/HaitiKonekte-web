@@ -5,7 +5,8 @@ from django.shortcuts import get_object_or_404
 from drf_spectacular.utils import extend_schema
 
 from apps.accounts.permissions import IsSuperAdmin
-from apps.home.models import SiteConfig, FAQCategorie, FAQItem, ContactMessage, ContactReponse, SliderImage
+from apps.core.models import SiteSettings
+from apps.home.models import FAQCategorie, FAQItem, ContactMessage, ContactReponse, SliderImage
 from django.utils.translation import gettext as _
 
 
@@ -69,7 +70,7 @@ def _config_data(c):
         'adresse':         c.adresse,
         'facebook_url':    c.facebook_url,
         'instagram_url':   c.instagram_url,
-        'whatsapp_numero': c.whatsapp_numero,
+        'whatsapp_numero': c.whatsapp,
     }
 
 
@@ -77,17 +78,20 @@ def _config_data(c):
 @api_view(['GET', 'PATCH'])
 @permission_classes([IsSuperAdmin])
 def site_config(request):
-    config = SiteConfig.get_config()
+    config = SiteSettings.get_solo()
 
     if request.method == 'GET':
         return Response({'success': True, 'data': _config_data(config)})
 
-    for field in [
-        'nom_site', 'slogan', 'email_contact', 'telephone',
-        'adresse', 'facebook_url', 'instagram_url', 'whatsapp_numero'
-    ]:
-        if field in request.data:
-            setattr(config, field, request.data[field])
+    field_map = {
+        'nom_site': 'nom_site', 'slogan': 'slogan',
+        'email_contact': 'email_contact', 'telephone': 'telephone',
+        'adresse': 'adresse', 'facebook_url': 'facebook_url',
+        'instagram_url': 'instagram_url', 'whatsapp_numero': 'whatsapp',
+    }
+    for request_key, model_field in field_map.items():
+        if request_key in request.data:
+            setattr(config, model_field, request.data[request_key])
     config.save()
     return Response({'success': True, 'data': _config_data(config)})
 

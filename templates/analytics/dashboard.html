@@ -1,6 +1,6 @@
 {% extends "admin/base_site.html" %}
 {% load i18n %}
-{% block title %}Dashboard BI — Maket Peyizan{% endblock %}
+{% block title %}Dashboard BI — AyitiKonekte{% endblock %}
 
 {% block extrahead %}
 {{ block.super }}
@@ -9,7 +9,7 @@
   .dashboard-wrapper { padding: 20px; }
   .kpi-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; margin-bottom: 28px; }
   .kpi-card { background: #fff; border-radius: 10px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,.08); border-left: 4px solid #3498db; }
-  .kpi-card.green  { border-left-color: #27ae60; }
+  .kpi-card.green  { border-left-color: #1565C0; }
   .kpi-card.orange { border-left-color: #e67e22; }
   .kpi-card.red    { border-left-color: #e74c3c; }
   .kpi-card.purple { border-left-color: #9b59b6; }
@@ -28,7 +28,7 @@
   table.dash-table tr:last-child td { border-bottom: none; }
   table.dash-table tr:hover td { background: #f8f9fa; }
   .badge { display:inline-block; padding:2px 8px; border-radius:4px; font-size:11px; color:#fff; font-weight:600; }
-  .badge-green  { background:#27ae60; }
+  .badge-green  { background:#1565C0; }
   .badge-orange { background:#e67e22; }
   .badge-red    { background:#e74c3c; }
   .badge-blue   { background:#3498db; }
@@ -50,18 +50,18 @@
   <!-- Header -->
   <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px;">
     <div>
-      <h1 style="margin:0; color:#2c3e50; font-size:24px;">{% trans "Dashboard BI — Maket Peyizan" %}</h1>
+      <h1 style="margin:0; color:#2c3e50; font-size:24px;">{% trans "Dashboard BI — AyitiKonekte" %}</h1>
       <p style="margin:4px 0 0; color:#7f8c8d; font-size:13px;">{% blocktrans with today=today|date:"d/m/Y H:i" %}Mise a jour : {{ today }}{% endblocktrans %}</p>
     </div>
     <div style="display:flex; gap:10px;">
       <a href="{% url 'analytics:carte_users' %}"
          style="display:inline-flex; align-items:center; gap:6px;
-                padding:8px 16px; background:#1a6b2f;
+                padding:8px 16px; background:#003F87;
                 color:white; border-radius:6px; text-decoration:none;
                 font-size:13px; font-weight:600;">
         🗺️ Carte des utilisateurs
       </a>
-      <a href="{% url 'analytics:export' %}" style="padding:8px 16px; background:#27ae60; color:#fff; border:none; border-radius:6px; cursor:pointer; font-size:13px; text-decoration:none; display:inline-flex; align-items:center; gap:6px;">
+      <a href="{% url 'analytics:export' %}" style="padding:8px 16px; background:#1565C0; color:#fff; border:none; border-radius:6px; cursor:pointer; font-size:13px; text-decoration:none; display:inline-flex; align-items:center; gap:6px;">
         <i class="fas fa-download"></i> {% trans "Exporter" %}
       </a>
       <button onclick="location.reload()" style="padding:8px 16px; background:#3498db; color:#fff; border:none; border-radius:6px; cursor:pointer; font-size:13px;">
@@ -227,7 +227,7 @@
             </td>
           </tr>
           {% empty %}
-          <tr><td colspan="5" style="text-align:center; color:#27ae60; font-weight:600;">{% trans "Aucune alerte active" %}</td></tr>
+          <tr><td colspan="5" style="text-align:center; color:#1565C0; font-weight:600;">{% trans "Aucune alerte active" %}</td></tr>
           {% endfor %}
         </tbody>
       </table>
@@ -294,7 +294,7 @@
             </td>
           </tr>
           {% empty %}
-          <tr><td colspan="6" style="text-align:center; color:#27ae60; font-weight:600;">{% trans "Aucun paiement en attente" %}</td></tr>
+          <tr><td colspan="6" style="text-align:center; color:#1565C0; font-weight:600;">{% trans "Aucun paiement en attente" %}</td></tr>
           {% endfor %}
         </tbody>
       </table>
@@ -358,7 +358,7 @@ const cmdStatuts = {{ commandes_par_statut|safe }};
 const paiements  = {{ paiements_par_type|safe }};
 const categories = {{ ventes_par_categorie|safe }};
 
-const COLORS = ['#3498db','#27ae60','#e67e22','#9b59b6','#e74c3c','#1abc9c','#f39c12','#2980b9'];
+const COLORS = ['#3498db','#1565C0','#e67e22','#9b59b6','#e74c3c','#1abc9c','#f39c12','#2980b9'];
 
 // Chart 1 — CA par jour
 new Chart(document.getElementById('chartVentesJour'), {
@@ -397,8 +397,8 @@ new Chart(document.getElementById('chartMensuel'), {
     datasets: [{
       label: 'CA (HTG)',
       data: ventesMois.map(d => d.ca),
-      backgroundColor: 'rgba(39,174,96,0.7)',
-      borderColor: '#27ae60',
+      backgroundColor: 'rgba(21,101,192,0.7)',
+      borderColor: '#1565C0',
       borderWidth: 1,
     }]
   },

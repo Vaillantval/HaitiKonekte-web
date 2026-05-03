@@ -70,7 +70,12 @@ def produits_list(request):
 @permission_classes([AllowAny])
 def produit_detail(request, slug):
     """Détail complet d'un produit avec galerie et similaires."""
-    produit    = get_object_or_404(Produit, slug=slug, is_active=True)
+    produit = get_object_or_404(
+        Produit.objects.select_related('producteur__user', 'categorie')
+                       .prefetch_related('images'),
+        slug=slug,
+        is_active=True,
+    )
     serializer = ProduitDetailSerializer(
         produit, context={'request': request}
     )

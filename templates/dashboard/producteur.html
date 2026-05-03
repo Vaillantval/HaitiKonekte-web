@@ -34,7 +34,7 @@
 {% block extra_css %}
 <style>
   .welcome-banner {
-    background: linear-gradient(120deg, #1a6b2f, #27ae60);
+    background: linear-gradient(120deg, #003F87, #1565C0);
     border-radius: var(--radius);
     padding: 28px 32px;
     color: #fff;
@@ -71,7 +71,7 @@
   .statut-en_attente { background: rgba(255,220,0,.25);  color: #ffe066; }
   .statut-suspendu   { background: rgba(255,80,80,.25);  color: #ffaaaa; }
 
-  .stat-icon.green  { background: #e8f8ee; color: #27ae60; }
+  .stat-icon.green  { background: #EEF4FF; color: #1565C0; }
   .stat-icon.blue   { background: #e8f2ff; color: #2980b9; }
   .stat-icon.orange { background: #fff4e6; color: #e67e22; }
   .stat-icon.yellow { background: #fdfbe8; color: #c9a007; }
@@ -252,13 +252,13 @@
   const PART_STATUT = {
     inscrit:  { bg: '#fef9e7', color: '#c9a007', label: 'En attente' },
     confirme: { bg: '#e8f2ff', color: '#2980b9', label: 'Confirmé' },
-    present:  { bg: '#e8f8ee', color: '#27ae60', label: 'Présent' },
+    present:  { bg: '#EEF4FF', color: '#1565C0', label: 'Présent' },
     absent:   { bg: '#fde8e8', color: '#e74c3c', label: 'Absent' },
     annule:   { bg: '#f0f0f0', color: '#888',    label: 'Annulée' },
   };
 
   const COL_STATUT = {
-    planifiee: { bg: '#e8f8ee', color: '#27ae60' },
+    planifiee: { bg: '#EEF4FF', color: '#1565C0' },
     en_cours:  { bg: '#e8f2ff', color: '#2980b9' },
     terminee:  { bg: '#f0f0f0', color: '#888' },
     annulee:   { bg: '#fde8e8', color: '#e74c3c' },

@@ -1,6 +1,6 @@
 {% extends "emails/base.html" %}
 {% load i18n %}
-{% block titre %}Votre code de réduction — Makèt Peyizan{% endblock %}
+{% block titre %}Votre code de réduction — AyitiKonekte{% endblock %}
 {% block content %}
 
 <p class="greeting">{% blocktrans with prenom=prenom %}Bonjour {{ prenom }} 👋{% endblocktrans %}</p>
@@ -8,7 +8,7 @@
 <p class="message">
   Bonne nouvelle ! Un code de réduction a été généré pour vous dans le cadre
   du programme <strong>{{ voucher.programme.nom }}</strong>.
-  Vous pouvez l'utiliser dès maintenant sur Makèt Peyizan.
+  Vous pouvez l'utiliser dès maintenant sur AyitiKonekte.
 </p>
 
 <!-- Code en évidence -->
@@ -16,8 +16,8 @@
   <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:#888;margin-bottom:10px;">
     Votre code promo
   </div>
-  <div style="display:inline-block;background:#f0faf4;border:2px dashed #27ae60;border-radius:12px;padding:14px 36px;">
-    <span style="font-family:monospace;font-size:28px;font-weight:700;color:#1a6b2f;letter-spacing:3px;">
+  <div style="display:inline-block;background:#f0faf4;border:2px dashed #1565C0;border-radius:12px;padding:14px 36px;">
+    <span style="font-family:monospace;font-size:28px;font-weight:700;color:#003F87;letter-spacing:3px;">
       {{ voucher.code }}
     </span>
   </div>
@@ -28,14 +28,14 @@
   {% if voucher.type_valeur == 'fixe' %}
   <div class="card-row">
     <span class="card-label">{% trans "Réduction" %}</span>
-    <span class="card-value" style="color:#27ae60;font-size:16px;">
+    <span class="card-value" style="color:#1565C0;font-size:16px;">
       {{ voucher.valeur|floatformat:0 }} HTG de réduction
     </span>
   </div>
   {% else %}
   <div class="card-row">
     <span class="card-label">{% trans "Réduction" %}</span>
-    <span class="card-value" style="color:#27ae60;font-size:16px;">
+    <span class="card-value" style="color:#1565C0;font-size:16px;">
       {{ voucher.valeur|floatformat:0 }}% de réduction
       {% if voucher.montant_max %}
         (max {{ voucher.montant_max|floatformat:0 }} HTG)
@@ -100,7 +100,7 @@
 
 <div style="text-align:center;margin-top:28px">
   <a class="btn" href="{{ site_url }}">
-    🛒 Faire mes courses sur Makèt Peyizan
+    🛒 Faire mes courses sur AyitiKonekte
   </a>
 </div>
 
@@ -110,7 +110,7 @@
   Ce code est personnel et à usage unique.<br>
   Il expire le <strong>{{ voucher.date_expiration|date:"d/m/Y" }}</strong>.
   Retrouvez tous vos codes dans votre
-  <a href="{{ site_url }}dashboard/acheteur/" style="color:#27ae60">{% trans "espace personnel" %}</a>.
+  <a href="{{ site_url }}dashboard/acheteur/" style="color:#1565C0">{% trans "espace personnel" %}</a>.
 </p>
 
 {% endblock %}

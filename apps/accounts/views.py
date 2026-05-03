@@ -419,16 +419,13 @@ class ProducteurStatsView(APIView):
         en_attente = qs.filter(statut='en_attente').count()
         en_cours   = qs.filter(statut__in=['confirmee', 'en_preparation', 'prete', 'en_collecte']).count()
 
-        produits_actifs = prod.produits.filter(is_active=True).count()
-        stock_faible    = prod.produits.filter(
-            is_active=True,
-            stock_disponible__lte=prod.produits.model._meta.get_field('seuil_alerte').default
-        ).count()
-        # Calcul correct : produits dont stock <= leur propre seuil
+        from django.db.models import F
         from apps.catalog.models import Produit
+        produits_actifs = prod.produits.filter(is_active=True).count()
         stock_faible = Produit.objects.filter(
-            producteur=prod, is_active=True
-        ).extra(where=['stock_disponible <= seuil_alerte']).count()
+            producteur=prod, is_active=True,
+            stock_disponible__lte=F('seuil_alerte'),
+        ).count()
 
         return Response({
             'revenus_mois':     float(revenus_mois),

@@ -1,5 +1,5 @@
 /**
- * GeoSearchSelect — Combobox cherchable pour les formulaires Makèt Peyizan
+ * GeoSearchSelect — Combobox cherchable pour les formulaires AyitiKonekte
  *
  * Fonctionne avec <select> ET <input type="text">.
  * Le dropdown se positionne en portal sur document.body pour éviter
@@ -191,7 +191,7 @@ class GeoSearchSelect {
       row.className = 'gss-option';
       row.style.cssText = 'padding:9px 14px;cursor:pointer;font-size:14px;color:#2c3e50;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;';
       row.textContent = item.label;
-      row.addEventListener('mouseenter', () => { row.style.background = '#f0faf4'; });
+      row.addEventListener('mouseenter', () => { row.style.background = '#EEF4FF'; });
       row.addEventListener('mouseleave', () => { row.style.background = ''; });
       row.addEventListener('mousedown', (e) => {
         e.preventDefault();

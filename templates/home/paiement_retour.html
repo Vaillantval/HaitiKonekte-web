@@ -5,25 +5,25 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Vérification du paiement — {{ site_settings.nom_site|default:"Makèt Peyizan" }}</title>
+  <title>Vérification du paiement — {{ site_settings.nom_site|default:"AyitiKonekte" }}</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <style>
     :root {
-      --vert-fonce:#1a6b2f; --vert-vif:#27ae60; --vert-menthe:#e8f8ee;
-      --jaune:#e8d800; --blanc:#fff; --noir:#1a1a1a; --gris:#f4f6f9;
+      --primary:#003F87; --accent:#1565C0; --light:#EEF4FF;
+      --rouge:#C62828; --blanc:#fff; --noir:#1a1a1a; --gris:#f4f6f9;
       --gris-bord:#e2e8f0; --shadow:0 4px 24px rgba(0,0,0,.08); --radius:14px;
     }
     *,*::before,*::after { margin:0; padding:0; box-sizing:border-box; }
     body { font-family:'DM Sans',sans-serif; background:var(--gris); color:var(--noir); min-height:100vh; display:flex; flex-direction:column; }
     a { text-decoration:none; color:inherit; }
 
-    .navbar { background:var(--vert-fonce); box-shadow:0 2px 16px rgba(0,0,0,.15); }
+    .navbar { background:var(--primary); box-shadow:0 2px 16px rgba(0,0,0,.15); }
     .navbar-inner { display:flex; align-items:center; height:64px; max-width:1100px; margin:0 auto; padding:0 24px; }
     .navbar-logo { display:flex; align-items:center; gap:10px; }
-    .navbar-logo-icon { width:38px; height:38px; background:var(--jaune); border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:18px; flex-shrink:0; }
+    .navbar-logo-icon { width:38px; height:38px; background:var(--rouge); border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:18px; flex-shrink:0; }
     .navbar-logo-text { font-family:'Playfair Display',serif; font-size:18px; font-weight:900; color:#fff; line-height:1.1; }
     .navbar-logo-text span { display:block; font-size:11px; font-weight:400; opacity:.7; font-family:'DM Sans',sans-serif; }
 
@@ -32,20 +32,20 @@
 
     /* ── Loading ── */
     .spinner-wrap { margin:0 auto 24px; }
-    .spinner { width:72px; height:72px; border:5px solid var(--gris-bord); border-top-color:var(--vert-vif); border-radius:50%; animation:spin 0.9s linear infinite; margin:0 auto; }
+    .spinner { width:72px; height:72px; border:5px solid var(--gris-bord); border-top-color:var(--accent); border-radius:50%; animation:spin 0.9s linear infinite; margin:0 auto; }
     @keyframes spin { to { transform:rotate(360deg); } }
-    .loading-title { font-size:20px; font-weight:800; color:var(--vert-fonce); margin-bottom:8px; }
+    .loading-title { font-size:20px; font-weight:800; color:var(--primary); margin-bottom:8px; }
     .loading-sub { font-size:14px; color:#888; line-height:1.6; }
 
     /* ── Icon states ── */
     .icon-wrap { width:88px; height:88px; border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 24px; font-size:38px; color:#fff; }
-    .icon-wrap.success { background:var(--vert-vif); animation:zoomIn .4s ease; }
+    .icon-wrap.success { background:var(--accent); animation:zoomIn .4s ease; }
     .icon-wrap.error   { background:#e74c3c; animation:zoomIn .4s ease; }
     .icon-wrap.pending { background:#f59e0b; animation:zoomIn .4s ease; }
     @keyframes zoomIn { from{opacity:0;transform:scale(.7)} to{opacity:1;transform:none} }
 
     .card-title { font-size:22px; font-weight:900; margin-bottom:10px; }
-    .card-title.success { color:var(--vert-fonce); }
+    .card-title.success { color:var(--primary); }
     .card-title.error   { color:#c0392b; }
     .card-title.pending { color:#b45309; }
     .card-sub { font-size:14px; color:#777; margin-bottom:24px; line-height:1.6; }
@@ -53,22 +53,22 @@
     .orders-box { background:#f0fbf4; border-radius:10px; padding:16px; margin-bottom:24px; text-align:left; }
     .orders-box.error-box { background:#fff5f5; }
     .orders-box.pending-box { background:#fffbeb; }
-    .order-row { display:flex; align-items:center; gap:8px; font-size:13px; font-weight:700; color:var(--vert-fonce); margin-bottom:8px; }
+    .order-row { display:flex; align-items:center; gap:8px; font-size:13px; font-weight:700; color:var(--primary); margin-bottom:8px; }
     .order-row:last-child { margin-bottom:0; }
-    .order-row i { color:var(--vert-vif); flex-shrink:0; }
-    .order-total { margin-left:auto; color:var(--vert-vif); }
+    .order-row i { color:var(--accent); flex-shrink:0; }
+    .order-total { margin-left:auto; color:var(--accent); }
     .meta-line { font-size:12px; color:#888; margin-bottom:5px; }
     .meta-line span { font-weight:600; color:#555; }
 
-    .method-badge { display:inline-flex; align-items:center; gap:6px; background:var(--vert-menthe); color:var(--vert-fonce); border-radius:20px; padding:4px 12px; font-size:12px; font-weight:700; margin-bottom:20px; }
+    .method-badge { display:inline-flex; align-items:center; gap:6px; background:var(--light); color:var(--primary); border-radius:20px; padding:4px 12px; font-size:12px; font-weight:700; margin-bottom:20px; }
     .method-badge img { width:18px; height:18px; object-fit:contain; border-radius:3px; }
 
     .btns { display:flex; gap:12px; flex-wrap:wrap; }
     .btn { flex:1; min-width:140px; padding:14px; border-radius:10px; font-size:14px; font-weight:700; cursor:pointer; font-family:'DM Sans',sans-serif; display:flex; align-items:center; justify-content:center; gap:7px; transition:all .2s; border:none; text-decoration:none; }
-    .btn-primary { background:var(--vert-fonce); color:#fff; }
+    .btn-primary { background:var(--primary); color:#fff; }
     .btn-primary:hover { background:#145a26; }
-    .btn-outline { background:transparent; color:var(--vert-fonce); border:2px solid var(--vert-fonce); }
-    .btn-outline:hover { background:var(--vert-menthe); }
+    .btn-outline { background:transparent; color:var(--primary); border:2px solid var(--primary); }
+    .btn-outline:hover { background:var(--light); }
     .btn-danger { background:#e74c3c; color:#fff; }
     .btn-danger:hover { background:#c0392b; }
     .btn-warn { background:#f59e0b; color:#fff; }
@@ -96,8 +96,8 @@
         {% endif %}
       </div>
       <div class="navbar-logo-text">
-        {{ site_settings.nom_site|default:"Makèt Peyizan" }}
-        <span>{{ site_settings.slogan|default:"Marketplace Agricole" }}</span>
+        {{ site_settings.nom_site|default:"AyitiKonekte" }}
+        <span>{{ site_settings.slogan|default:"Marketplace Haïti" }}</span>
       </div>
     </a>
     <!-- Sélecteur de langue -->
@@ -108,7 +108,7 @@
       {% get_available_languages as LANGUAGES %}
       <select name="language" onchange="this.form.submit()" style="background:rgba(255,255,255,.15);border:1.5px solid rgba(255,255,255,.4);color:#fff;border-radius:50px;padding:7px 10px;font-size:12px;font-weight:700;font-family:'DM Sans',sans-serif;cursor:pointer;outline:none;min-width:52px;" title="Langue">
         {% for lang_code, lang_name in LANGUAGES %}
-          <option value="{{ lang_code }}" {% if lang_code == LANGUAGE_CODE %}selected{% endif %} style="background:#1a6b2f;color:#fff;">{{ lang_code|upper }}</option>
+          <option value="{{ lang_code }}" {% if lang_code == LANGUAGE_CODE %}selected{% endif %} style="background:#003F87;color:#fff;">{{ lang_code|upper }}</option>
         {% endfor %}
       </select>
     </form>
@@ -157,7 +157,7 @@
         <div style="background:#f5f3ff; border-left:4px solid #8b5cf6; border-radius:0 8px 8px 0; padding:14px 16px; font-size:14px; color:#5b21b6;">
           <strong>{% trans "Option 2 — Paiement hors ligne" %}</strong><br>
           Effectuez un virement ou transfert, puis allez dans <strong>{% trans "« Mes commandes »" %}</strong> et uploadez votre preuve de paiement.
-          L'équipe Makèt Peyizan validera votre commande rapidement.
+          L'équipe AyitiKonekte validera votre commande rapidement.
         </div>
       </div>
 

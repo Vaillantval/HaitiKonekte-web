@@ -27,7 +27,7 @@
   .empty-state { text-align:center; padding:48px; color:var(--text-muted); font-size:13px; }
   .action-btn { padding:5px 10px; border-radius:6px; font-size:11px; font-weight:700; border:none; cursor:pointer; font-family:inherit; }
   .status-dot { width:8px; height:8px; border-radius:50%; display:inline-block; margin-right:5px; }
-  .dot-green { background:#27ae60; } .dot-red { background:#e74c3c; }
+  .dot-green { background:#1565C0; } .dot-red { background:#e74c3c; }
 
   /* Modal */
   .modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,.45); z-index:600; display:flex; align-items:center; justify-content:center; opacity:0; pointer-events:none; transition:opacity .22s; }
@@ -46,7 +46,7 @@
 
   .toast-container { position:fixed; bottom:24px; right:24px; z-index:9999; display:flex; flex-direction:column; gap:8px; }
   .toast { display:flex; align-items:center; gap:10px; padding:12px 16px; border-radius:10px; font-size:13px; font-weight:500; color:#fff; box-shadow:0 4px 20px rgba(0,0,0,.15); animation:slideUp .25s ease; }
-  .toast.success { background:#27ae60; } .toast.error { background:#e74c3c; }
+  .toast.success { background:#1565C0; } .toast.error { background:#e74c3c; }
   @keyframes slideUp { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
   @media (max-width: 700px) {
     .toolbar { gap: 6px; }
@@ -268,7 +268,7 @@ async function loadZones() {
         <td><span class="status-dot ${z.is_active?'dot-green':'dot-red'}"></span>${z.is_active?'Active':'Inactive'}</td>
         <td style="display:flex;gap:6px">
           <button class="action-btn" style="background:var(--bg);border:1px solid var(--border);color:var(--text-muted)" onclick="openZoneEdit(${z.id})"><i class="fas fa-edit"></i></button>
-          <button class="action-btn" style="background:${z.is_active?'#fde8e8':'#e8f8ee'};color:${z.is_active?'#e74c3c':'#27ae60'}" onclick="toggleZone(${z.id},${z.is_active})">{% trans "${z.is_active?'Désactiver':'Activer'}" %}</button>
+          <button class="action-btn" style="background:${z.is_active?'#fde8e8':'#EEF4FF'};color:${z.is_active?'#e74c3c':'#1565C0'}" onclick="toggleZone(${z.id},${z.is_active})">{% trans "${z.is_active?'Désactiver':'Activer'}" %}</button>
           ${z.nb_collectes===0?`<button class="action-btn" style="background:#fde8e8;color:#e74c3c" onclick="deleteZone(${z.id},'${z.nom}')"><i class="fas fa-trash"></i></button>`:''}
         </td>
       </tr>`;
@@ -359,7 +359,7 @@ async function loadPoints() {
         <td><span class="status-dot ${p.is_active?'dot-green':'dot-red'}"></span>${p.is_active?'Actif':'Inactif'}</td>
         <td style="display:flex;gap:6px">
           <button class="action-btn" style="background:var(--bg);border:1px solid var(--border);color:var(--text-muted)" onclick="openPointEdit(${p.id})"><i class="fas fa-edit"></i></button>
-          <button class="action-btn" style="background:${p.is_active?'#fde8e8':'#e8f8ee'};color:${p.is_active?'#e74c3c':'#27ae60'}" onclick="togglePoint(${p.id},${p.is_active})">{% trans "${p.is_active?'Désactiver':'Activer'}" %}</button>
+          <button class="action-btn" style="background:${p.is_active?'#fde8e8':'#EEF4FF'};color:${p.is_active?'#e74c3c':'#1565C0'}" onclick="togglePoint(${p.id},${p.is_active})">{% trans "${p.is_active?'Désactiver':'Activer'}" %}</button>
           <button class="action-btn" style="background:#fde8e8;color:#e74c3c" onclick="deletePoint(${p.id},'${p.nom}')"><i class="fas fa-trash"></i></button>
         </td>
       </tr>`;

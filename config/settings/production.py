@@ -62,3 +62,30 @@ if _cors_origins and not CORS_ALLOW_ALL_ORIGINS:
 
 # Fichiers media — monter un Railway Volume sur /app/media
 MEDIA_ROOT = '/app/media'
+
+# ── CACHE (Redis sur Railway) ────────────────────────────────────
+_REDIS_URL = os.environ.get('REDIS_URL', '').strip()
+if _REDIS_URL:
+    CACHES = {
+        'default': {
+            'BACKEND': 'django.core.cache.backends.redis.RedisCache',
+            'LOCATION': _REDIS_URL,
+            'OPTIONS': {
+                'socket_connect_timeout': 5,
+                'socket_timeout': 5,
+            },
+        }
+    }
+
+# ── SENTRY ───────────────────────────────────────────────────────
+_SENTRY_DSN = env('SENTRY_DSN', default='')
+if _SENTRY_DSN:
+    import sentry_sdk
+    from sentry_sdk.integrations.django import DjangoIntegration
+    sentry_sdk.init(
+        dsn=_SENTRY_DSN,
+        integrations=[DjangoIntegration(auto_enabling_integrations=False)],
+        traces_sample_rate=0.05,
+        send_default_pii=False,
+        environment='production',
+    )

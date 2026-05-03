@@ -20,20 +20,20 @@
   .form-group small { display: block; margin-top: 4px; font-size: 11px; color: #95a5a6; }
   .radio-group { display: flex; flex-direction: column; gap: 10px; }
   .radio-option { display: flex; align-items: flex-start; cursor: pointer; padding: 12px; border: 2px solid #ecf0f1; border-radius: 8px; transition: border-color .2s; }
-  .radio-option:has(input:checked) { border-color: #27ae60; background: #f0faf3; }
-  .radio-option input[type="radio"] { margin-top: 2px; margin-right: 12px; width: 18px; height: 18px; accent-color: #27ae60; }
+  .radio-option:has(input:checked) { border-color: #1565C0; background: #f0faf3; }
+  .radio-option input[type="radio"] { margin-top: 2px; margin-right: 12px; width: 18px; height: 18px; accent-color: #1565C0; }
   .radio-label { display: flex; flex-direction: column; gap: 2px; }
   .radio-label strong { font-size: 14px; color: #2c3e50; }
   .radio-label small { font-size: 12px; color: #7f8c8d; }
   .form-actions { display: flex; gap: 10px; margin-top: 24px; }
   .btn { display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px; border: none; border-radius: 6px; font-weight: 600; font-size: 13px; cursor: pointer; text-decoration: none; }
-  .btn-primary { background: #27ae60; color: #fff; }
+  .btn-primary { background: #1565C0; color: #fff; }
   .btn-primary:hover { background: #219150; }
   .btn-secondary { background: #ecf0f1; color: #2c3e50; }
   .btn-secondary:hover { background: #dde1e5; }
   .info-section { margin-bottom: 20px; }
   .info-section:last-child { margin-bottom: 0; }
-  .info-section h3 { font-size: 14px; font-weight: 600; color: #27ae60; margin-bottom: 6px; display: flex; align-items: center; gap: 8px; }
+  .info-section h3 { font-size: 14px; font-weight: 600; color: #1565C0; margin-bottom: 6px; display: flex; align-items: center; gap: 8px; }
   .info-section p { font-size: 13px; color: #555; margin: 0 0 4px; }
   .info-section ul { margin: 4px 0 0 20px; padding: 0; }
   .info-section li { font-size: 12px; color: #7f8c8d; margin: 2px 0; }
@@ -101,7 +101,7 @@
                   id="format_csv"
                 >
                 <span class="radio-label">
-                  <i class="fas fa-file-csv" style="color: #27ae60;"></i>
+                  <i class="fas fa-file-csv" style="color: #1565C0;"></i>
                   <strong>{% trans "CSV" %}</strong>
                   <small>{% trans "Données brutes au format CSV" %}</small>
                 </span>
@@ -115,7 +115,7 @@
                   id="format_xlsx"
                 >
                 <span class="radio-label">
-                  <i class="fas fa-file-excel" style="color: #2ecc71;"></i>
+                  <i class="fas fa-file-excel" style="color: #1976D2;"></i>
                   <strong>{% trans "Excel" %}</strong>
                   <small>{% trans "Classeur avec plusieurs feuilles" %}</small>
                 </span>
@@ -148,7 +148,7 @@
         </ul>
       </div>
       <div class="info-section">
-        <h3><i class="fas fa-file-csv" style="color:#27ae60;"></i> {% trans "CSV" %}</h3>
+        <h3><i class="fas fa-file-csv" style="color:#1565C0;"></i> {% trans "CSV" %}</h3>
         <p>{% trans "Format idéal pour :" %}</p>
         <ul>
           <li>{% trans "Données brutes" %}</li>
@@ -158,7 +158,7 @@
         </ul>
       </div>
       <div class="info-section">
-        <h3><i class="fas fa-file-excel" style="color:#2ecc71;"></i> {% trans "Excel" %}</h3>
+        <h3><i class="fas fa-file-excel" style="color:#1976D2;"></i> {% trans "Excel" %}</h3>
         <p>{% trans "Format idéal pour :" %}</p>
         <ul>
           <li>{% trans "Manipulation des données" %}</li>

@@ -173,7 +173,7 @@
       <h3><i class="fas fa-chart-bar" style="margin-right:6px;color:var(--green-mid)"></i>{% trans "Statistiques" %}</h3>
       <div class="stats-grid">
         <div class="stat-item"><div class="stat-val" id="statTotal">—</div><div class="stat-lbl">{% trans "Total" %}</div></div>
-        <div class="stat-item"><div class="stat-val" id="statProducteurs" style="color:#27ae60">—</div><div class="stat-lbl">{% trans "Producteurs" %}</div></div>
+        <div class="stat-item"><div class="stat-val" id="statProducteurs" style="color:#1565C0">—</div><div class="stat-lbl">{% trans "Producteurs" %}</div></div>
         <div class="stat-item"><div class="stat-val" id="statAcheteurs" style="color:#2980b9">—</div><div class="stat-lbl">{% trans "Acheteurs" %}</div></div>
         <div class="stat-item"><div class="stat-val" id="statCollecteurs" style="color:#8e44ad">—</div><div class="stat-lbl">{% trans "Collecteurs" %}</div></div>
       </div>
@@ -186,7 +186,7 @@
 
     <div class="cp">
       <h3><i class="fas fa-palette" style="margin-right:6px;color:var(--green-mid)"></i>{% trans "Légende" %}</h3>
-      <div class="legende-item"><div class="legende-dot" style="background:#27ae60"></div><span>{% trans "Producteur actif" %}</span></div>
+      <div class="legende-item"><div class="legende-dot" style="background:#1565C0"></div><span>{% trans "Producteur actif" %}</span></div>
       <div class="legende-item"><div class="legende-dot" style="background:#f39c12"></div><span>{% trans "Producteur en attente" %}</span></div>
       <div class="legende-item"><div class="legende-dot" style="background:#2980b9"></div><span>{% trans "Acheteur" %}</span></div>
       <div class="legende-item"><div class="legende-dot" style="background:#8e44ad"></div><span>{% trans "Collecteur" %}</span></div>
@@ -194,7 +194,7 @@
       <div class="legende-item"><div class="legende-dot" style="background:#1a1a1a"></div><span>{% trans "Admin / Superadmin" %}</span></div>
       <hr style="margin:10px 0;border:none;border-top:1px solid var(--border)">
       <div class="legende-item"><div class="legende-dot" style="background:#ccc;border:2px solid #999"></div><span style="color:var(--text-muted)">{% trans "Niveau département" %}</span></div>
-      <div class="legende-item"><div class="legende-dot" style="background:#27ae60;border:2px solid white;box-shadow:0 0 0 2px #27ae60"></div><span>{% trans "Niveau commune" %}</span></div>
+      <div class="legende-item"><div class="legende-dot" style="background:#1565C0;border:2px solid white;box-shadow:0 0 0 2px #1565C0"></div><span>{% trans "Niveau commune" %}</span></div>
     </div>
 
   </div>
@@ -211,7 +211,7 @@
 const _carteH = { 'Authorization': 'Bearer ' + localStorage.getItem('mp_access') };
 
 const _CARTE_COLORS = {
-  'producteur_actif':      '#27ae60',
+  'producteur_actif':      '#1565C0',
   'producteur_en_attente': '#f39c12',
   'producteur_suspendu':   '#e74c3c',
   'producteur_inactif':    '#95a5a6',
@@ -254,7 +254,7 @@ function initMap() {
     iconCreateFunction: (cluster) => {
       const count = cluster.getChildCount();
       return L.divIcon({
-        html: `<div style="background:#1a6b2f;color:white;width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;border:2px solid white;box-shadow:0 2px 6px rgba(0,0,0,.3)">{% trans "${count}" %}</div>`,
+        html: `<div style="background:#003F87;color:white;width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;border:2px solid white;box-shadow:0 2px 6px rgba(0,0,0,.3)">{% trans "${count}" %}</div>`,
         iconSize: [36, 36], iconAnchor: [18, 18],
       });
     },
@@ -304,7 +304,7 @@ function buildPopup(user) {
 function updateDonut(stats) {
   const labels = ['Acheteurs', 'Producteurs', 'Collecteurs', 'Admins'];
   const data   = [stats.acheteur || 0, stats.producteur || 0, stats.collecteur || 0, (stats.admin || 0) + (stats.superadmin || 0)];
-  const colors = ['#2980b9', '#27ae60', '#8e44ad', '#1a1a1a'];
+  const colors = ['#2980b9', '#1565C0', '#8e44ad', '#1a1a1a'];
   if (donutChart) donutChart.destroy();
   donutChart = new Chart(document.getElementById('chartDonut').getContext('2d'), {
     type: 'doughnut',

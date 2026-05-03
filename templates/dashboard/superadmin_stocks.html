@@ -62,7 +62,7 @@
 
   .toast-container { position:fixed; bottom:24px; right:24px; z-index:9999; display:flex; flex-direction:column; gap:8px; }
   .toast { display:flex; align-items:center; gap:10px; padding:12px 16px; border-radius:10px; font-size:13px; font-weight:500; color:#fff; box-shadow:0 4px 20px rgba(0,0,0,.15); animation:slideUp .25s ease; }
-  .toast.success { background:#27ae60; } .toast.error { background:#e74c3c; }
+  .toast.success { background:#1565C0; } .toast.error { background:#e74c3c; }
   @keyframes slideUp { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
   @media (max-width: 700px) {
     .toolbar { gap: 6px; }
@@ -194,7 +194,7 @@
   </div>
   <div class="empty-state" id="alertes-loading" style="display:none"><i class="fas fa-spinner fa-spin"></i> {% trans "Chargement..." %}</div>
   <div class="alerte-card" id="alertes-list" style="display:none"></div>
-  <div class="empty-state" id="alertes-empty" style="display:none"><i class="fas fa-check-circle" style="color:#27ae60;margin-right:6px"></i> {% trans "Aucune alerte." %}</div>
+  <div class="empty-state" id="alertes-empty" style="display:none"><i class="fas fa-check-circle" style="color:#1565C0;margin-right:6px"></i> {% trans "Aucune alerte." %}</div>
 </div>
 
 <!-- Tab Mouvements -->
@@ -242,7 +242,7 @@ const H = { 'Authorization': 'Bearer ' + localStorage.getItem('mp_access'), 'Con
 let _lotsFilter = '', _alertesFilter = '', _lotsDebounce, _editLotId = null;
 
 const LOT_STATUT = {
-  disponible: { bg:'#e8f8ee', color:'#1a6b2f' },
+  disponible: { bg:'#EEF4FF', color:'#003F87' },
   en_cours:   { bg:'#eaf4fb', color:'#2980b9' },
   epuise:     { bg:'#fde8e8', color:'#e74c3c' },
   expire:     { bg:'#f0f0f0', color:'#888' },
@@ -267,7 +267,7 @@ function showToast(msg, type='success') {
 }
 function progressBar(taux) {
   const pct = Math.min(100, Math.round(taux));
-  const color = pct >= 90 ? '#27ae60' : pct >= 50 ? '#e67e22' : '#e74c3c';
+  const color = pct >= 90 ? '#1565C0' : pct >= 50 ? '#e67e22' : '#e74c3c';
   return `<div class="progress-bar-wrap"><div class="progress-bar" style="width:${pct}%;background:${color}"></div></div>${pct}%`;
 }
 
@@ -283,7 +283,7 @@ function switchTab(tab, btn) {
 let _mvtDebounce;
 function debouncedMvt() { clearTimeout(_mvtDebounce); _mvtDebounce = setTimeout(loadMouvements, 350); }
 
-const MVT_COLORS = { entree:'#27ae60', sortie_vente:'#e74c3c', sortie_collecte:'#e67e22', ajust_pos:'#3498db', ajust_neg:'#e74c3c', perte:'#c0392b', retour:'#9b59b6', transfert:'#1abc9c' };
+const MVT_COLORS = { entree:'#1565C0', sortie_vente:'#e74c3c', sortie_collecte:'#e67e22', ajust_pos:'#3498db', ajust_neg:'#e74c3c', perte:'#c0392b', retour:'#9b59b6', transfert:'#1abc9c' };
 
 async function loadMouvements() {
   const search = document.getElementById('mvt-search').value.trim();

@@ -4,15 +4,15 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>FAQ — {{ site_settings.nom_site|default:"Makèt Peyizan" }}</title>
+  <title>FAQ — {{ site_settings.nom_site|default:"AyitiKonekte" }}</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <style>
     :root {
-      --vert-fonce:#1a6b2f; --vert-vif:#27ae60; --vert-menthe:#e8f8ee;
-      --jaune:#e8d800; --jaune-clair:#fdfbe8;
+      --primary:#003F87; --accent:#1565C0; --light:#EEF4FF;
+      --rouge:#C62828; --rouge-clair:#fdfbe8;
       --blanc:#ffffff; --noir:#1a1a1a; --gris-clair:#f4f6f9; --gris-texte:#555;
       --shadow:0 4px 24px rgba(0,0,0,.08); --shadow-lg:0 8px 40px rgba(0,0,0,.14);
       --radius:12px; --radius-lg:20px;
@@ -25,12 +25,12 @@
 
 
     /* Page header */
-    .page-header{background:linear-gradient(150deg, var(--vert-fonce) 0%, #1e8449 100%);padding:60px 0 48px;text-align:center;position:relative;overflow:hidden;}
+    .page-header{background:linear-gradient(150deg, var(--primary) 0%, #1565C0 100%);padding:60px 0 48px;text-align:center;position:relative;overflow:hidden;}
     .page-header::before{content:'';position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");}
     .page-header-inner{position:relative;z-index:1;}
     .breadcrumb{display:flex;justify-content:center;gap:8px;font-size:13px;color:rgba(255,255,255,.6);margin-bottom:14px;}
     .breadcrumb a{color:rgba(255,255,255,.6);}
-    .breadcrumb a:hover{color:var(--jaune);}
+    .breadcrumb a:hover{color:var(--rouge);}
     .page-title{font-family:'Playfair Display',serif;font-size:48px;font-weight:900;color:var(--blanc);margin-bottom:12px;}
     .page-subtitle{font-size:15px;color:rgba(255,255,255,.75);font-style:italic;}
 
@@ -41,7 +41,7 @@
       border-radius:50px;overflow:hidden;box-shadow:var(--shadow);
     }
     .faq-search input{flex:1;padding:14px 20px;border:none;outline:none;font-family:'DM Sans',sans-serif;font-size:14px;}
-    .faq-search button{padding:14px 22px;background:var(--vert-vif);border:none;cursor:pointer;color:white;font-size:14px;}
+    .faq-search button{padding:14px 22px;background:var(--accent);border:none;cursor:pointer;color:white;font-size:14px;}
 
     /* FAQ content */
     .faq-layout{display:grid;grid-template-columns:240px 1fr;gap:40px;align-items:start;}
@@ -53,20 +53,20 @@
       font-size:13px;font-weight:500;color:var(--gris-texte);
       cursor:pointer;transition:all .2s;margin-bottom:4px;
     }
-    .faq-nav-link:hover,.faq-nav-link.active{background:var(--vert-menthe);color:var(--vert-fonce);font-weight:600;}
-    .faq-nav-link i{width:16px;text-align:center;color:var(--vert-vif);}
-    .faq-nav-count{margin-left:auto;background:var(--vert-menthe);color:var(--vert-fonce);padding:1px 8px;border-radius:20px;font-size:11px;font-weight:700;}
+    .faq-nav-link:hover,.faq-nav-link.active{background:var(--light);color:var(--primary);font-weight:600;}
+    .faq-nav-link i{width:16px;text-align:center;color:var(--accent);}
+    .faq-nav-count{margin-left:auto;background:var(--light);color:var(--primary);padding:1px 8px;border-radius:20px;font-size:11px;font-weight:700;}
 
     /* Accordéon FAQ */
     .faq-section{margin-bottom:40px;}
     .faq-section-title{
       display:flex;align-items:center;gap:10px;
       font-family:'Playfair Display',serif;
-      font-size:22px;font-weight:900;color:var(--vert-fonce);
+      font-size:22px;font-weight:900;color:var(--primary);
       margin-bottom:16px;padding-bottom:12px;
-      border-bottom:2px solid var(--vert-menthe);
+      border-bottom:2px solid var(--light);
     }
-    .faq-section-title i{color:var(--vert-vif);font-size:18px;}
+    .faq-section-title i{color:var(--accent);font-size:18px;}
     .faq-item{
       border:1px solid rgba(0,0,0,.06);border-radius:var(--radius);
       margin-bottom:10px;overflow:hidden;
@@ -76,19 +76,19 @@
     .faq-question{
       display:flex;align-items:center;justify-content:space-between;
       padding:18px 20px;cursor:pointer;
-      font-weight:600;font-size:15px;color:var(--vert-fonce);
+      font-weight:600;font-size:15px;color:var(--primary);
       background:var(--blanc);transition:background .2s;
       user-select:none;
     }
-    .faq-question:hover{background:var(--vert-menthe);}
-    .faq-question.open{background:var(--vert-menthe);}
+    .faq-question:hover{background:var(--light);}
+    .faq-question.open{background:var(--light);}
     .faq-chevron{
       width:28px;height:28px;border-radius:50%;
-      background:var(--vert-menthe);color:var(--vert-fonce);
+      background:var(--light);color:var(--primary);
       display:flex;align-items:center;justify-content:center;
       font-size:12px;flex-shrink:0;transition:transform .3s;
     }
-    .faq-question.open .faq-chevron{transform:rotate(180deg);background:var(--vert-vif);color:white;}
+    .faq-question.open .faq-chevron{transform:rotate(180deg);background:var(--accent);color:white;}
     .faq-reponse{
       max-height:0;overflow:hidden;
       transition:max-height .35s ease;
@@ -103,26 +103,26 @@
     /* Empty state */
     .empty-state{text-align:center;padding:60px 20px;}
     .empty-state .icon{font-size:56px;margin-bottom:16px;}
-    .empty-state h3{font-family:'Playfair Display',serif;font-size:22px;color:var(--vert-fonce);margin-bottom:8px;}
+    .empty-state h3{font-family:'Playfair Display',serif;font-size:22px;color:var(--primary);margin-bottom:8px;}
     .empty-state p{font-size:14px;color:var(--gris-texte);}
 
     /* CTA */
-    .cta-section{background:var(--vert-menthe);padding:48px 0;text-align:center;border-top:1px solid rgba(26,107,47,.1);}
+    .cta-section{background:var(--light);padding:48px 0;text-align:center;border-top:1px solid rgba(0,63,135,.1);}
     .cta-section p{font-size:15px;color:var(--gris-texte);margin-bottom:20px;}
-    .btn-contact{display:inline-flex;align-items:center;gap:8px;padding:13px 26px;background:var(--vert-vif);color:white;border-radius:50px;font-weight:600;font-size:14px;transition:all .2s;}
-    .btn-contact:hover{background:var(--vert-fonce);transform:translateY(-2px);}
+    .btn-contact{display:inline-flex;align-items:center;gap:8px;padding:13px 26px;background:var(--accent);color:white;border-radius:50px;font-weight:600;font-size:14px;transition:all .2s;}
+    .btn-contact:hover{background:var(--primary);transform:translateY(-2px);}
 
     /* Footer */
     .footer{background:var(--noir);color:rgba(255,255,255,.7);padding:48px 0 24px;}
     .footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:40px;margin-bottom:32px;}
     .footer-brand h3{font-family:'Playfair Display',serif;font-size:20px;color:var(--blanc);margin-bottom:8px;}
     .footer-brand p{font-size:13px;line-height:1.8;color:rgba(255,255,255,.55);}
-    .footer-brand .slogan{font-style:italic;color:var(--jaune);font-size:12px;margin-top:4px;}
+    .footer-brand .slogan{font-style:italic;color:var(--rouge);font-size:12px;margin-top:4px;}
     .footer-col h4{font-size:12px;font-weight:700;color:var(--blanc);text-transform:uppercase;letter-spacing:.8px;margin-bottom:14px;}
     .footer-col ul{list-style:none;}
     .footer-col li{margin-bottom:8px;font-size:13px;}
     .footer-col a{color:rgba(255,255,255,.55);transition:color .2s;}
-    .footer-col a:hover{color:var(--jaune);}
+    .footer-col a:hover{color:var(--rouge);}
     .footer-bottom{border-top:1px solid rgba(255,255,255,.08);padding-top:20px;display:flex;justify-content:space-between;align-items:center;font-size:12px;color:rgba(255,255,255,.35);flex-wrap:wrap;gap:8px;}
 
     @media(max-width:768px){
@@ -247,9 +247,9 @@
     <div class="container-wide">
       <div class="footer-grid">
         <div class="footer-brand">
-          <h3>🌾 {{ site_settings.nom_site|default:"Makèt Peyizan" }}</h3>
-          <p>{{ site_settings.slogan|default:"Marketplace agricole haïtienne." }}</p>
-          <p class="slogan">{% trans "« Sòti nan jaden rive lakay »" %}</p>
+          <h3>🌾 {{ site_settings.nom_site|default:"AyitiKonekte" }}</h3>
+          <p>{{ site_settings.slogan|default:"Marketplace Haïti" }}</p>
+          <p class="slogan">{% trans "« Acheter à Haiti, livré chez vous »" %}</p>
         </div>
         <div class="footer-col">
           <h4>{% trans "Navigation" %}</h4>
@@ -271,13 +271,13 @@
         <div class="footer-col">
           <h4>{% trans "Contact" %}</h4>
           <ul>
-            <li><a href="mailto:{{ site_settings.email_contact|default:'info@maketpeyizan.ht' }}"><i class="fas fa-envelope"></i> {{ site_settings.email_contact|default:"info@maketpeyizan.ht" }}</a></li>
+            <li><a href="mailto:{{ site_settings.email_contact|default:'info@ayitikonekte.ht' }}"><i class="fas fa-envelope"></i> {{ site_settings.email_contact|default:"info@ayitikonekte.ht" }}</a></li>
             {% if site_settings.telephone %}<li><i class="fas fa-phone"></i> {{ site_settings.telephone }}</li>{% endif %}
           </ul>
         </div>
       </div>
       <div class="footer-bottom">
-        <span>© {% now "Y" %} {{ site_settings.copyright_texte|default:"Makèt Peyizan Haiti. Tous droits réservés." }}</span>
+        <span>© {% now "Y" %} {{ site_settings.copyright_texte|default:"AyitiKonekte Haiti. Tous droits réservés." }}</span>
       </div>
     </div>
   </footer>
