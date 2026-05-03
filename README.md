@@ -171,7 +171,7 @@ cd MAKET-PYIZAN-Transversal
 # Créer et activer un environnement virtuel
 python -m venv venv
 source venv/bin/activate        # Linux/Mac
-venv\Scripts\activate           # Windows
+venv\Scripts\activate           # Windows.
 
 # Installer les dépendances
 pip install -r requirements/development.txt
