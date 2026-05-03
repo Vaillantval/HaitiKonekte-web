@@ -643,7 +643,7 @@ def vouchers_template_excel(request):
     ws_info = wb.create_sheet(title='Instructions')
     instructions = [
         ('Colonne', 'Description', 'Obligatoire'),
-        ('email',       'Adresse e-mail du compte Maket Peyizan',  'Oui'),
+        ('email',       'Adresse e-mail du compte AyitiKonekte',  'Oui'),
         ('nom_complet', 'Nom affiché (informatif seulement)',        'Non'),
     ]
     for r_idx, row in enumerate(instructions, start=1):

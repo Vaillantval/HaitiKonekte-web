@@ -1,5 +1,4 @@
 from django.test import TestCase
-from django.urls import reverse
 from rest_framework.test import APIClient
 from rest_framework import status
 
@@ -33,26 +32,28 @@ class RegisterTests(TestCase):
 
     def test_register_acheteur_success(self):
         data = {
-            'username': 'nouvel_acheteur',
-            'email': 'nouvel@test.com',
-            'password': 'Testpass123!',
+            'username':   'nouvel_acheteur',
+            'email':      'nouvel@test.com',
+            'password':   'Testpass123!',
+            'password2':  'Testpass123!',
             'first_name': 'Jean',
-            'last_name': 'Paul',
-            'role': 'acheteur',
+            'last_name':  'Paul',
+            'role':       'acheteur',
         }
         response = self.client.post(self.url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertIn('access', response.data)
-        self.assertIn('refresh', response.data)
+        self.assertIn('access', response.data['data'])
+        self.assertIn('refresh', response.data['data'])
         self.assertTrue(CustomUser.objects.filter(username='nouvel_acheteur').exists())
 
     def test_register_duplicate_username_fails(self):
         _make_user('existing')
         data = {
-            'username': 'existing',
-            'email': 'other@test.com',
-            'password': 'Testpass123!',
-            'role': 'acheteur',
+            'username':  'existing',
+            'email':     'other@test.com',
+            'password':  'Testpass123!',
+            'password2': 'Testpass123!',
+            'role':      'acheteur',
         }
         response = self.client.post(self.url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
@@ -71,16 +72,16 @@ class LoginTests(TestCase):
     def test_login_success(self):
         response = self.client.post(
             self.url,
-            {'username': 'loginuser', 'password': 'Testpass123!'},
+            {'email': 'loginuser@test.com', 'password': 'Testpass123!'},
             format='json',
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertIn('access', response.data)
+        self.assertIn('access', response.data['data'])
 
     def test_login_wrong_password(self):
         response = self.client.post(
             self.url,
-            {'username': 'loginuser', 'password': 'wrongpassword'},
+            {'email': 'loginuser@test.com', 'password': 'wrongpassword'},
             format='json',
         )
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
@@ -88,7 +89,7 @@ class LoginTests(TestCase):
     def test_login_unknown_user(self):
         response = self.client.post(
             self.url,
-            {'username': 'nobody', 'password': 'Testpass123!'},
+            {'email': 'nobody@test.com', 'password': 'Testpass123!'},
             format='json',
         )
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
@@ -102,10 +103,11 @@ class MeViewTests(TestCase):
     def _auth(self):
         response = self.client.post(
             '/api/auth/login/',
-            {'username': 'meuser', 'password': 'Testpass123!'},
+            {'email': 'meuser@test.com', 'password': 'Testpass123!'},
             format='json',
         )
-        self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {response.data['access']}")
+        token = response.data['data']['access']
+        self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {token}')
 
     def test_me_requires_auth(self):
         response = self.client.get('/api/auth/me/')
@@ -115,7 +117,7 @@ class MeViewTests(TestCase):
         self._auth()
         response = self.client.get('/api/auth/me/')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data['username'], 'meuser')
+        self.assertEqual(response.data['data']['username'], 'meuser')
 
     def test_change_password_wrong_current(self):
         self._auth()
@@ -133,24 +135,25 @@ class AdresseTests(TestCase):
         self.user = _make_user('adresseuser')
         response = self.client.post(
             '/api/auth/login/',
-            {'username': 'adresseuser', 'password': 'Testpass123!'},
+            {'email': 'adresseuser@test.com', 'password': 'Testpass123!'},
             format='json',
         )
-        self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {response.data['access']}")
+        token = response.data['data']['access']
+        self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {token}')
 
     def test_create_and_list_adresse(self):
         payload = {
-            'libelle': 'Domicile',
-            'nom_complet': 'Jean Paul',
-            'telephone': '50912345678',
-            'rue': '12 Rue des Fleurs',
-            'commune': 'Pétionville',
-            'departement': 'ouest',
-            'type_adresse': 'livraison',
+            'libelle':       'Domicile',
+            'nom_complet':   'Jean Paul',
+            'telephone':     '50912345678',
+            'rue':           '12 Rue des Fleurs',
+            'commune':       'Pétionville',
+            'departement':   'ouest',
+            'type_adresse':  'livraison',
         }
         response = self.client.post('/api/auth/adresses/', payload, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
         list_response = self.client.get('/api/auth/adresses/')
         self.assertEqual(list_response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(list_response.data), 1)
+        self.assertEqual(len(list_response.data['data']), 1)

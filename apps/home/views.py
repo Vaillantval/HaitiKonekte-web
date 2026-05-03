@@ -10,7 +10,7 @@ from django.utils.translation import gettext as _
 
 def health_check(request):
     """GET /health/ — utilisé par Railway pour vérifier que l'app est vivante."""
-    return JsonResponse({'status': 'ok', 'service': 'Makèt Peyizan'})
+    return JsonResponse({'status': 'ok', 'service': 'AyitiKonekte'})
 
 
 def faq_publique(request):

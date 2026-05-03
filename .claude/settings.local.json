@@ -40,7 +40,27 @@
       "Bash(sed -i -e 's/Cat\\\\xc3\\\\xa9gories agricoles/Cat\\\\xc3\\\\xa9gories/g' templates/core/apropos.html)",
       "Bash(sed -i -e 's/Exploitation agricole/Exploitation commerciale/g' templates/dashboard/acheteur_adresses.html)",
       "Bash(sed -i -e 's/Exploitation agricole/Exploitation commerciale/g' templates/home/checkout.html)",
-      "Bash(where python *)"
+      "Bash(where python *)",
+      "Bash(python3.13 --version)",
+      "Bash(py -3.13 --version)",
+      "Bash(where python3.13)",
+      "Read(//c/Users/louis_ijaxevn/AppData/Local/Programs/**)",
+      "Read(//c/Program Files/**)",
+      "Read(//c//**)",
+      "Bash(where py *)",
+      "Bash(rmdir /s /q venv)",
+      "Bash(py -3.14 -m venv venv)",
+      "Bash(venv/Scripts/python.exe --version)",
+      "Bash(venv/Scripts/python.exe manage.py migrate)",
+      "Bash(venv/Scripts/python.exe manage.py test apps.accounts apps.catalog apps.orders -v 2)",
+      "Bash(venv/Scripts/python.exe -c ' *)",
+      "Bash(venv/Scripts/python.exe manage.py collectstatic --noinput)",
+      "Bash(venv/Scripts/python.exe manage.py runserver)",
+      "Bash(venv/Scripts/python.exe manage.py runserver --noreload)",
+      "Bash(curl -s http://localhost:8000/health/)",
+      "Bash(curl -s http://localhost:8000/api/schema/swagger-ui/)",
+      "Bash(venv/Scripts/python.exe manage.py runserver 8001 --noreload)",
+      "Bash(curl -s http://localhost:8001/health/)"
     ]
   }
 }

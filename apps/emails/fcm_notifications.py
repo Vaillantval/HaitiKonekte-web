@@ -1,5 +1,5 @@
 """
-Notifications push FCM centralisées — Makèt Peyizan
+Notifications push FCM centralisées — AyitiKonekte
 Chaque fonction inclut un dict `data` structuré pour le deep-linking Flutter.
 
 Convention de routage Flutter (clé `screen`) :
@@ -80,7 +80,7 @@ def push_reponse_contact(contact_msg, reponse):
     if not fcm_token:
         return
 
-    title = "Réponse de Makèt Peyizan"
+    title = "Réponse de AyitiKonekte"
     body  = f"Vous avez reçu une réponse concernant : « {contact_msg.sujet} »"
     data  = {
         "screen":     "contact_reponse",

@@ -1,5 +1,5 @@
 """
-CartService — Panier hybride pour Makèt Peyizan
+CartService — Panier hybride pour AyitiKonekte
 
 Backend selon le contexte :
   - Utilisateur authentifié (JWT) → base de données (Panier / LignePanier)

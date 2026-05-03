@@ -1,5 +1,5 @@
 """
-API Superadmin — Makèt Peyizan
+API Superadmin — AyitiKonekte
 Toutes les vues sont protégées : utilisateur authentifié + is_staff ou is_superuser.
 Préfixe : /api/admin/
 """

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Maket Peyizan - Marquage i18n des fichiers Python.
+AyitiKonekte - Marquage i18n des fichiers Python.
 Ajoute les imports gettext/gettext_lazy et les wrappers _() dans :
   models.py, serializers.py, views.py, forms.py, services/*.py
 """

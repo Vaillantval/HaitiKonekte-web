@@ -6,6 +6,11 @@ from apps.catalog.models import Categorie, Produit
 from apps.orders.services.cart_service import CartService
 
 
+class MockSession(dict):
+    """Dict-like session that supports the .modified flag used by CartService."""
+    modified = False
+
+
 def _make_produit():
     user = CustomUser.objects.create_user(
         username='prod_orders',
@@ -38,7 +43,7 @@ class CartSessionTests(TestCase):
         request = factory.get('/')
         request.user = MagicMock()
         request.user.is_authenticated = False
-        request.session = {}
+        request.session = MockSession()
         return request
 
     def setUp(self):

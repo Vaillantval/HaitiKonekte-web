@@ -61,7 +61,7 @@ def email_admin_nouveau_producteur(producteur):
 def email_producteur_bienvenue(producteur):
     return envoyer_email(
         destinataire=producteur.user.email,
-        sujet="🌾 Bienvenue sur Makèt Peyizan !",
+        sujet="🛍️ Bienvenue sur AyitiKonekte !",
         template="producteur_bienvenue.html",
         contexte={
             "producteur":      producteur,
@@ -297,7 +297,7 @@ def email_reponse_contact(contact_msg, texte_reponse, admin=None):
         admin_name = admin.get_full_name() or admin.username
     return envoyer_email(
         destinataire=contact_msg.email,
-        sujet=f"Re: {contact_msg.sujet} — Makèt Peyizan",
+        sujet=f"Re: {contact_msg.sujet} — AyitiKonekte",
         template="contact_reponse.html",
         contexte={
             "nom":              contact_msg.nom,
@@ -318,7 +318,7 @@ def email_voucher_cree(voucher):
         return False
     return envoyer_email(
         destinataire=voucher.beneficiaire.user.email,
-        sujet=f"🎟️ Votre code de réduction Makèt Peyizan : {voucher.code}",
+        sujet=f"🎟️ Votre code de réduction AyitiKonekte : {voucher.code}",
         template="voucher_cree.html",
         contexte={
             "voucher":  voucher,

@@ -50,12 +50,12 @@ class ProduitListTests(TestCase):
         self.assertEqual(response.data['data']['count'], 1)
 
     def test_list_produits_filter_categorie(self):
-        response = self.client.get('/api/products/?categorie__slug=legumes')
+        response = self.client.get('/api/products/?categorie=legumes')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data['data']['count'], 1)
 
     def test_list_produits_filter_categorie_inexistante(self):
-        response = self.client.get('/api/products/?categorie__slug=zzz-inexistante')
+        response = self.client.get('/api/products/?categorie=zzz-inexistante')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data['data']['count'], 0)
 

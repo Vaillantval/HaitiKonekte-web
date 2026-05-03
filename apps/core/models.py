@@ -8,7 +8,7 @@ class SiteSettings(models.Model):
 
     # ── Identité ────────────────────────────────────────────────
     nom_site        = models.CharField(
-        max_length=100, default='Makèt Peyizan',
+        max_length=100, default='AyitiKonekte',
         verbose_name=_('Nom du site'),
     )
     slogan          = models.CharField(
@@ -51,7 +51,7 @@ class SiteSettings(models.Model):
 
     # ── À propos ────────────────────────────────────────────────
     a_propos_titre   = models.CharField(
-        max_length=200, default='À propos de Makèt Peyizan', blank=True,
+        max_length=200, default='À propos de AyitiKonekte', blank=True,
         verbose_name=_('Titre de la page À propos'),
     )
     a_propos_contenu = models.TextField(
@@ -117,7 +117,7 @@ class SiteSettings(models.Model):
     # ── Footer & SEO ─────────────────────────────────────────────
     copyright_texte  = models.CharField(
         max_length=300,
-        default='Makèt Peyizan Haiti. Tous droits réservés.',
+        default='AyitiKonekte Haiti. Tous droits réservés.',
         blank=True,
         verbose_name=_('Texte copyright'),
     )
