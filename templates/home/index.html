@@ -23,7 +23,7 @@
       --accent:    #1565C0;
       --light: #EEF4FF;
       --vert-moyen:  #1976D2;
-      --rouge:       #C62828;
+      --rouge:       #E65100;
       --rouge-clair: #fdfbe8;
       --blanc:       #ffffff;
       --noir:        #1a1a1a;
@@ -142,7 +142,7 @@
       transition: background .2s;
     }
 
-    .navbar-search button:hover { background: #B71C1C; }
+    .navbar-search button:hover { background: #BF360C; }
 
     .navbar-actions {
       display: flex;
@@ -177,7 +177,7 @@
       color: var(--noir);
     }
 
-    .btn-nav-primary:hover { background: #B71C1C; transform: translateY(-1px); }
+    .btn-nav-primary:hover { background: #BF360C; transform: translateY(-1px); }
 
     /* ── Cart dropdown ──────────────────────────────────────── */
     .cart-dd-wrap { position: relative; }
@@ -248,7 +248,7 @@
       color: var(--noir); background: var(--rouge); cursor: pointer;
       text-decoration: none; transition: all .15s;
     }
-    .btn-dd-cmd:hover { background: #B71C1C; }
+    .btn-dd-cmd:hover { background: #BF360C; }
 
     /* ── Burger button ──────────────────────────────────────── */
     .btn-burger {
@@ -457,7 +457,7 @@
       margin-bottom: 10px;
       transition: background .2s;
     }
-    .btn-drawer-espace:hover { background: #B71C1C; }
+    .btn-drawer-espace:hover { background: #BF360C; }
     .btn-drawer-logout {
       display: flex;
       align-items: center;
@@ -535,68 +535,68 @@
 
     /* ── Hero ──────────────────────────────────────────────── */
     .hero {
-      background: linear-gradient(
-        150deg,
-        var(--primary) 0%,
-        #1565C0 40%,
-        #003F87 100%
-      );
-      padding: 80px 0 60px;
+      background: linear-gradient(145deg, #001a45 0%, var(--primary) 55%, var(--accent) 100%);
+      padding: 80px 0 64px;
       position: relative;
       overflow: hidden;
+      text-align: center;
     }
 
     .hero::before {
       content: '';
       position: absolute;
       inset: 0;
-      background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+      background:
+        radial-gradient(ellipse at 75% 40%, rgba(198,40,40,.14) 0%, transparent 55%),
+        radial-gradient(ellipse at 15% 85%, rgba(255,255,255,.04) 0%, transparent 45%);
+      pointer-events: none;
     }
 
     .hero::after {
       content: '';
       position: absolute;
-      right: -100px;
-      top: -100px;
-      width: 500px;
-      height: 500px;
+      left: -120px; bottom: -120px;
+      width: 420px; height: 420px;
       border-radius: 50%;
-      background: rgba(232, 216, 0, .06);
+      background: rgba(255,255,255,.03);
       pointer-events: none;
     }
 
     .hero-inner {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 60px;
-      align-items: center;
       position: relative;
       z-index: 1;
+      max-width: 760px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
 
     .hero-badge {
       display: inline-flex;
       align-items: center;
-      gap: 6px;
-      background: rgba(232,216,0,.15);
-      border: 1px solid rgba(232,216,0,.3);
-      color: var(--rouge);
-      padding: 6px 14px;
+      gap: 7px;
+      background: rgba(255,255,255,.13);
+      border: 1px solid rgba(255,255,255,.22);
+      color: #fff;
+      padding: 7px 18px;
       border-radius: 50px;
-      font-size: 12px;
-      font-weight: 600;
-      letter-spacing: .5px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .7px;
       text-transform: uppercase;
-      margin-bottom: 20px;
+      margin-bottom: 26px;
     }
+
+    .hero-badge i { color: var(--rouge); font-size: 12px; }
 
     .hero-title {
       font-family: 'Playfair Display', serif;
-      font-size: 52px;
+      font-size: 60px;
       font-weight: 900;
-      color: var(--blanc);
-      line-height: 1.1;
-      margin-bottom: 16px;
+      color: #fff;
+      line-height: 1.06;
+      margin-bottom: 20px;
     }
 
     .hero-title em {
@@ -605,99 +605,139 @@
     }
 
     .hero-subtitle {
-      font-size: 15px;
+      font-size: 16px;
       color: rgba(255,255,255,.75);
-      line-height: 1.7;
-      margin-bottom: 32px;
-      font-style: italic;
+      line-height: 1.65;
+      margin-bottom: 36px;
+      max-width: 560px;
     }
+
+    .hero-search {
+      width: 100%;
+      max-width: 600px;
+      display: flex;
+      background: #fff;
+      border-radius: 60px;
+      overflow: hidden;
+      box-shadow: 0 10px 40px rgba(0,0,0,.28);
+      margin-bottom: 22px;
+    }
+
+    .hero-search input {
+      flex: 1;
+      padding: 15px 22px;
+      border: none;
+      outline: none;
+      font-size: 14px;
+      font-family: 'DM Sans', sans-serif;
+      color: var(--noir);
+      min-width: 0;
+    }
+
+    .hero-search input::placeholder { color: #aaa; }
+
+    .hero-search button {
+      padding: 14px 26px;
+      background: var(--rouge);
+      border: none;
+      cursor: pointer;
+      color: #fff;
+      font-size: 14px;
+      font-weight: 700;
+      font-family: 'DM Sans', sans-serif;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: background .2s;
+      white-space: nowrap;
+      border-radius: 0 60px 60px 0;
+    }
+
+    .hero-search button:hover { background: #BF360C; }
 
     .hero-actions {
       display: flex;
-      gap: 14px;
+      gap: 12px;
       flex-wrap: wrap;
+      justify-content: center;
+      margin-bottom: 52px;
     }
 
     .btn-hero-primary {
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      padding: 14px 28px;
+      padding: 13px 26px;
       background: var(--rouge);
-      color: var(--noir);
+      color: #fff;
       border-radius: 50px;
       font-weight: 700;
-      font-size: 15px;
+      font-size: 14px;
       transition: all .2s;
-      box-shadow: 0 4px 20px rgba(232,216,0,.3);
+      box-shadow: 0 4px 20px rgba(198,40,40,.4);
     }
 
     .btn-hero-primary:hover {
       transform: translateY(-2px);
-      box-shadow: 0 8px 28px rgba(232,216,0,.4);
+      box-shadow: 0 8px 30px rgba(198,40,40,.5);
+      background: #BF360C;
     }
 
     .btn-hero-outline {
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      padding: 14px 28px;
-      background: transparent;
-      color: var(--blanc);
-      border: 2px solid rgba(255,255,255,.4);
+      padding: 13px 26px;
+      background: rgba(255,255,255,.12);
+      color: #fff;
+      border: 1.5px solid rgba(255,255,255,.35);
       border-radius: 50px;
       font-weight: 600;
-      font-size: 15px;
+      font-size: 14px;
       transition: all .2s;
     }
 
     .btn-hero-outline:hover {
-      border-color: var(--blanc);
-      background: rgba(255,255,255,.08);
+      background: rgba(255,255,255,.22);
+      border-color: rgba(255,255,255,.6);
     }
 
-    .hero-visual {
+    .hero-stats {
       display: flex;
-      flex-direction: column;
-      gap: 14px;
+      width: 100%;
+      max-width: 620px;
+      background: rgba(255,255,255,.08);
+      border: 1px solid rgba(255,255,255,.13);
+      border-radius: 18px;
+      overflow: hidden;
     }
 
-    .hero-cards-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 14px;
-    }
-
-    .hero-mini-card {
-      background: rgba(255,255,255,.1);
-      backdrop-filter: blur(10px);
-      border: 1px solid rgba(255,255,255,.15);
-      border-radius: var(--radius);
-      padding: 18px;
+    .hero-stat {
+      flex: 1;
+      padding: 18px 8px;
       text-align: center;
-      transition: transform .2s;
+      border-right: 1px solid rgba(255,255,255,.1);
     }
 
-    .hero-mini-card:hover { transform: translateY(-4px); }
+    .hero-stat:last-child { border-right: none; }
 
-    .hero-mini-card .icon {
-      font-size: 28px;
-      margin-bottom: 8px;
-    }
-
-    .hero-mini-card .val {
+    .hero-stat .val {
       font-family: 'Playfair Display', serif;
       font-size: 28px;
       font-weight: 900;
       color: var(--rouge);
+      display: block;
       line-height: 1;
     }
 
-    .hero-mini-card .lbl {
-      font-size: 12px;
-      color: rgba(255,255,255,.7);
-      margin-top: 4px;
+    .hero-stat .lbl {
+      font-size: 11px;
+      color: rgba(255,255,255,.6);
+      margin-top: 5px;
+      display: block;
     }
+
+    .hero-visual { display: none !important; }
 
     /* ── Sections ──────────────────────────────────────────── */
     .section { padding: 72px 0; }
@@ -1202,7 +1242,7 @@
       font-weight: 700;
       letter-spacing: .18em;
       text-transform: uppercase;
-      color: var(--rouge, #C62828);
+      color: var(--rouge, #E65100);
       background: rgba(0,0,0,.28);
       padding: 4px 14px;
       border-radius: 100px;
@@ -1372,73 +1412,169 @@
     }
 
     /* ── Footer ────────────────────────────────────────────── */
-    .footer {
+    /* ── Footer CTA strip ───────────────────────────────────── */
+    .footer-cta-strip {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+      padding: 40px 0;
+    }
+    .footer-cta-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      flex-wrap: wrap;
+    }
+    .footer-cta-text h3 {
+      color: #fff;
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+    .footer-cta-text p {
+      color: rgba(255,255,255,.75);
+      font-size: 14px;
+    }
+    .footer-cta-btns {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .footer-cta-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 11px 22px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all .2s;
+    }
+    .footer-cta-btn.primary {
+      background: #fff;
+      color: var(--primary);
+    }
+    .footer-cta-btn.primary:hover { background: #f0f4ff; }
+    .footer-cta-btn.outline {
+      border: 2px solid rgba(255,255,255,.55);
+      color: #fff;
+    }
+    .footer-cta-btn.outline:hover { background: rgba(255,255,255,.12); }
+
+    /* ── Footer body ─────────────────────────────────────────── */
+    .footer-body {
       background: var(--noir);
+      padding: 56px 0 40px;
+    }
+    .footer {
       color: rgba(255,255,255,.7);
-      padding: 56px 0 28px;
     }
 
     .footer-grid {
       display: grid;
       grid-template-columns: 2fr 1fr 1fr 1fr;
       gap: 40px;
-      margin-bottom: 40px;
+      margin-bottom: 0;
     }
 
-    .footer-brand h3 {
-      font-family: 'Playfair Display', serif;
+    .footer-logo { margin-bottom: 12px; }
+    .footer-logo-text {
       font-size: 22px;
-      color: var(--blanc);
-      margin-bottom: 10px;
+      font-weight: 800;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .footer-logo-text i { color: var(--rouge); }
+
+    .footer-tagline {
+      font-size: 13px;
+      font-weight: 600;
+      color: rgba(255,255,255,.85);
+      margin-bottom: 8px;
     }
 
-    .footer-brand p {
+    .footer-desc {
       font-size: 13px;
       line-height: 1.8;
-      color: rgba(255,255,255,.55);
-      margin-bottom: 6px;
+      color: rgba(255,255,255,.45);
+      margin-bottom: 20px;
     }
 
-    .footer-brand .slogan {
-      font-style: italic;
-      color: var(--rouge);
-      font-size: 13px;
+    .footer-socials {
+      display: flex;
+      gap: 10px;
     }
+    .footer-social-btn {
+      width: 36px; height: 36px;
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px;
+      color: #fff;
+      background: rgba(255,255,255,.1);
+      transition: background .2s, transform .15s;
+      text-decoration: none;
+    }
+    .footer-social-btn:hover { transform: translateY(-2px); }
+    .footer-social-btn.fb:hover { background: #1877f2; }
+    .footer-social-btn.ig:hover { background: #e1306c; }
+    .footer-social-btn.tw:hover { background: #1da1f2; }
+    .footer-social-btn.yt:hover { background: #ff0000; }
 
-    .footer-col h4 {
-      font-size: 13px;
+    .footer-col-title {
+      font-size: 11px;
       font-weight: 700;
       color: var(--blanc);
       text-transform: uppercase;
-      letter-spacing: .8px;
-      margin-bottom: 16px;
+      letter-spacing: 1.2px;
+      margin-bottom: 18px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid rgba(255,255,255,.08);
     }
 
-    .footer-col ul { list-style: none; }
-
-    .footer-col li {
-      margin-bottom: 8px;
-      font-size: 13px;
+    .footer-links { list-style: none; }
+    .footer-links li { margin-bottom: 10px; font-size: 13px; }
+    .footer-links a {
+      color: rgba(255,255,255,.5);
+      transition: color .2s, padding-left .15s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none;
+    }
+    .footer-links a i { font-size: 11px; color: rgba(255,255,255,.25); }
+    .footer-links a:hover { color: var(--rouge); padding-left: 4px; }
+    .footer-links a:hover i { color: var(--rouge); }
+    .footer-address {
+      color: rgba(255,255,255,.35) !important;
+      font-size: 12px !important;
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
     }
 
-    .footer-col a {
-      color: rgba(255,255,255,.55);
-      transition: color .2s;
-    }
-
-    .footer-col a:hover { color: var(--rouge); }
-
+    /* ── Footer bottom bar ───────────────────────────────────── */
     .footer-bottom {
-      border-top: 1px solid rgba(255,255,255,.08);
-      padding-top: 24px;
+      background: rgba(0,0,0,.35);
+      padding: 16px 0;
+    }
+    .footer-bottom-inner {
       display: flex;
       justify-content: space-between;
       align-items: center;
       font-size: 12px;
-      color: rgba(255,255,255,.35);
+      color: rgba(255,255,255,.3);
       flex-wrap: wrap;
       gap: 8px;
     }
+    .footer-bottom-badge {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      flex-wrap: wrap;
+    }
+    .footer-bottom-badge i { color: rgba(255,255,255,.4); }
 
     /* ── Modal produit ─────────────────────────────────────── */
     .modal-overlay {
@@ -1631,11 +1767,11 @@
       .categories-grid  { grid-template-columns: repeat(4, 1fr); }
       .footer-grid      { grid-template-columns: 1fr 1fr; }
       .hero-title       { font-size: 40px; }
+      .footer-cta-inner { flex-direction: column; align-items: flex-start; }
     }
 
     @media (max-width: 768px) {
-      .hero-inner         { grid-template-columns: 1fr; }
-      .hero-visual        { display: none; }
+      .hero-inner         { padding: 56px 0 48px; }
       .produits-grid      { grid-template-columns: repeat(2, 1fr); }
       .categories-grid    { grid-template-columns: repeat(2, 1fr); }
       .producteurs-grid   { grid-template-columns: 1fr; }
@@ -1643,8 +1779,11 @@
       .steps-grid::before { display: none; }
       .navbar-search      { display: none; }
       .navbar-actions { gap: 8px; }
-      .footer-grid        { grid-template-columns: 1fr; }
+      .footer-grid        { grid-template-columns: 1fr 1fr; }
       .modal-produit-grid { grid-template-columns: 1fr; }
+      .hero-stats         { flex-direction: column; gap: 0; border-radius: 12px; }
+      .hero-stat          { border-right: none; border-bottom: 1px solid rgba(255,255,255,.12); padding: 12px 20px; }
+      .hero-stat:last-child { border-bottom: none; }
     }
 
     @media (max-width: 480px) {
@@ -1653,6 +1792,9 @@
       .hero-title       { font-size: 32px; }
       .section-title    { font-size: 28px; }
       .btn-nav { padding: 7px 14px; font-size: 12px; }
+      .footer-grid      { grid-template-columns: 1fr; }
+      .footer-cta-btns  { flex-direction: column; width: 100%; }
+      .footer-cta-btn   { justify-content: center; }
       .user-name, .user-role-badge { display: none; }
       /* Cart dropdown: constrain width */
       .cart-dd { width: calc(100vw - 20px); right: -10px; left: auto; }
@@ -2176,55 +2318,52 @@
     <div class="container">
       <div class="hero-inner">
 
-        <div>
-          <div class="hero-badge">
-            <i class="fas fa-leaf"></i>
-            {{ site_settings.hero_badge_texte|default:"Marketplace Haïti" }}
-          </div>
-
-          <h1 class="hero-title">
-            <em>{{ site_settings.hero_titre_ligne1|default:"Sòti nan jaden" }}</em><br>
-            {{ site_settings.hero_titre_ligne2|default:"rive lakay ou" }}
-          </h1>
-
-          <p class="hero-subtitle">
-            {{ site_settings.hero_sous_titre|default:"Tout ce dont vous avez besoin — Achetez directement auprès des vendeurs locaux. Produits locaux, traçables, livrés depuis toute Haïti." }}
-          </p>
-
-          <div class="hero-actions">
-            <a href="#catalogue" class="btn-hero-primary">
-              <i class="fas fa-store"></i>
-              Voir le catalogue
-            </a>
-            <button onclick="clickProducteur()" class="btn-hero-outline" style="background:transparent;cursor:pointer;font-family:inherit">
-              <i class="fas fa-tractor"></i>
-              Je suis producteur
-            </button>
-          </div>
+        <div class="hero-badge">
+          <i class="fas fa-store"></i>
+          {{ site_settings.hero_badge_texte|default:"Marketplace Haïtienne" }}
         </div>
 
-        <div class="hero-visual">
-          <div class="hero-cards-grid">
-            <div class="hero-mini-card">
-              <div class="icon">🌾</div>
-              <div class="val">{{ stats.nb_producteurs }}</div>
-              <div class="lbl">{% trans "Producteurs actifs" %}</div>
-            </div>
-            <div class="hero-mini-card">
-              <div class="icon">🥬</div>
-              <div class="val">{{ stats.nb_produits }}</div>
-              <div class="lbl">{% trans "Produits disponibles" %}</div>
-            </div>
-            <div class="hero-mini-card">
-              <div class="icon">🏷️</div>
-              <div class="val">{{ stats.nb_categories }}</div>
-              <div class="lbl">{% trans "Catégories" %}</div>
-            </div>
-            <div class="hero-mini-card">
-              <div class="icon">📍</div>
-              <div class="val">{{ stats.nb_communes }}</div>
-              <div class="lbl">{% trans "Communes couvertes" %}</div>
-            </div>
+        <h1 class="hero-title">
+          {{ site_settings.hero_titre_ligne1|default:"Tout sa ou bezwen" }}<br>
+          <em>{{ site_settings.hero_titre_ligne2|default:"nan yon sèl kote" }}</em>
+        </h1>
+
+        <p class="hero-subtitle">
+          {{ site_settings.hero_sous_titre|default:"Des milliers de produits locaux — alimentation, artisanat, électronique, vêtements et plus. Achetez et vendez facilement partout en Haïti." }}
+        </p>
+
+        <form class="hero-search" onsubmit="heroSearch(event)">
+          <input type="text" id="hero-search-input" placeholder="{% trans 'Rechercher un produit…' %}" autocomplete="off">
+          <button type="submit"><i class="fas fa-search"></i> {% trans "Rechercher" %}</button>
+        </form>
+
+        <div class="hero-actions">
+          <a href="#catalogue" class="btn-hero-primary">
+            <i class="fas fa-th-large"></i>
+            {% trans "Voir le catalogue" %}
+          </a>
+          <button onclick="clickProducteur()" class="btn-hero-outline" style="background:transparent;cursor:pointer;font-family:inherit">
+            <i class="fas fa-user-plus"></i>
+            {% trans "Devenir vendeur" %}
+          </button>
+        </div>
+
+        <div class="hero-stats">
+          <div class="hero-stat">
+            <span class="val">{{ stats.nb_producteurs }}</span>
+            <span class="lbl">{% trans "Vendeurs actifs" %}</span>
+          </div>
+          <div class="hero-stat">
+            <span class="val">{{ stats.nb_produits }}</span>
+            <span class="lbl">{% trans "Produits disponibles" %}</span>
+          </div>
+          <div class="hero-stat">
+            <span class="val">{{ stats.nb_categories }}</span>
+            <span class="lbl">{% trans "Catégories" %}</span>
+          </div>
+          <div class="hero-stat">
+            <span class="val">{{ stats.nb_communes }}</span>
+            <span class="lbl">{% trans "Communes couvertes" %}</span>
           </div>
         </div>
 
@@ -2511,11 +2650,10 @@
   <section class="section section-alt">
     <div class="container">
       <div class="section-header">
-        <span class="section-tag">{% trans "🌾 Nos agriculteurs" %}</span>
-        <h2 class="section-title">{% trans "Les producteurs" %}</h2>
+        <span class="section-tag">{% trans "Nos vendeurs" %}</span>
+        <h2 class="section-title">{% trans "Les vendeurs actifs" %}</h2>
         <p class="section-desc">
-          Des agriculteurs haïtiens passionnés qui cultivent
-          pour votre santé et votre famille.
+          {% trans "Des vendeurs haïtiens qui proposent leurs produits directement sur la plateforme." %}
         </p>
       </div>
 
@@ -2589,8 +2727,7 @@
           <div class="step-num">4</div>
           <div class="step-title">{% trans "Recevez vos produits" %}</div>
           <div class="step-desc">
-            Livraison à domicile, retrait chez le
-            producteur ou point de collecte.
+            {% trans "Livraison à domicile ou retrait en point relais — selon votre convenance." %}
           </div>
         </div>
       </div>
@@ -2602,107 +2739,133 @@
   <section class="cta-banner">
     <div class="container">
       <h2 class="cta-title">
-        Vous êtes <em>{% trans "producteur" %}</em> ?
+        Votre place sur <em>{{ site_settings.nom_site|default:"AyitiKonekte" }}</em>
       </h2>
       <p class="cta-desc">
-        Rejoignez {{ site_settings.nom_site|default:"AyitiKonekte" }} et vendez vos produits
-        directement aux consommateurs haïtiens.
+        {% trans "Acheteur ou vendeur — créez votre compte gratuitement et rejoignez des milliers d'utilisateurs en Haïti." %}
       </p>
       <div class="cta-actions">
-        <button onclick="clickProducteur()" class="btn-hero-primary" style="background:var(--primary);border:none;cursor:pointer;font-family:inherit">
-          <i class="fas fa-tractor"></i>
-          Rejoindre comme producteur
-        </button>
-        <a href="mailto:{{ site_settings.email_contact|default:'info@ayitikonekte.ht' }}" class="btn-hero-outline">
-          <i class="fas fa-envelope"></i>
-          Nous contacter
+        <a href="{% url 'home:register' %}" class="btn-hero-primary">
+          <i class="fas fa-user-plus"></i>
+          {% trans "Créer un compte" %}
         </a>
+        <button onclick="clickProducteur()" class="btn-hero-outline" style="background:transparent;border:2px solid rgba(255,255,255,.4);cursor:pointer;font-family:inherit">
+          <i class="fas fa-store"></i>
+          {% trans "Devenir vendeur" %}
+        </button>
       </div>
     </div>
   </section>
 
 
   <!-- ══ FOOTER ═══════════════════════════════════════════════ -->
+  {% load i18n %}
   <footer class="footer">
-    <div class="container">
-      <div class="footer-grid">
 
-        <div class="footer-brand">
-          {% if site_settings.logo %}
-            <img src="{{ site_settings.logo.url }}"
-                 alt="{{ site_settings.nom_site }}"
-                 style="height:36px; margin-bottom:12px; filter:brightness(0) invert(1);">
-          {% else %}
-            <h3>🌾 {{ site_settings.nom_site|default:"AyitiKonekte" }}</h3>
-          {% endif %}
-          <p>{{ site_settings.slogan|default:"Marketplace Haïti" }}</p>
-          <p class="slogan">
-            « Acheter à Haiti, livré chez vous,<br>
-            Tout ce dont vous avez besoin »
-          </p>
+    <!-- Bande CTA -->
+    <div class="footer-cta-strip">
+      <div class="container footer-cta-inner">
+        <div class="footer-cta-text">
+          <h3>{% trans "Prêt à rejoindre la marketplace ?" %}</h3>
+          <p>{% trans "Achetez, vendez et connectez-vous avec toute Haïti." %}</p>
         </div>
-
-        <div class="footer-col">
-          <h4>{% trans "Catalogue" %}</h4>
-          <ul>
-            {% for cat in categories %}
-            <li>
-              <a href="/?categorie={{ cat.slug }}#catalogue">
-                {{ cat.nom }}
-              </a>
-            </li>
-            {% endfor %}
-          </ul>
+        <div class="footer-cta-btns">
+          <a href="{% url 'home:register' %}" class="footer-cta-btn primary">
+            <i class="fas fa-user-plus"></i> {% trans "S'inscrire gratuitement" %}
+          </a>
+          <a href="/#catalogue" class="footer-cta-btn outline">
+            <i class="fas fa-store"></i> {% trans "Voir le catalogue" %}
+          </a>
         </div>
-
-        <div class="footer-col">
-          <h4>{% trans "Navigation" %}</h4>
-          <ul>
-            <li><a href="/">{% trans "Accueil" %}</a></li>
-            <li><a href="/#catalogue">{% trans "Catalogue" %}</a></li>
-            <li><a href="{% url 'core:apropos' %}">{% trans "À propos" %}</a></li>
-            <li><a href="{% url 'core:faq' %}">{% trans "FAQ" %}</a></li>
-            <li><a href="{% url 'core:contact' %}">{% trans "Contact" %}</a></li>
-          </ul>
-        </div>
-
-        <div class="footer-col">
-          <h4>{% trans "Contact" %}</h4>
-          <ul>
-            <li>
-              <a href="mailto:{{ site_settings.email_contact|default:'info@ayitikonekte.ht' }}">
-                <i class="fas fa-envelope"></i>
-                {{ site_settings.email_contact|default:"info@ayitikonekte.ht" }}
-              </a>
-            </li>
-            {% if site_settings.telephone %}
-            <li>
-              <a href="tel:{{ site_settings.telephone }}">
-                <i class="fas fa-phone"></i>
-                {{ site_settings.telephone }}
-              </a>
-            </li>
-            {% endif %}
-            {% if site_settings.whatsapp %}
-            <li>
-              <a href="https://wa.me/{{ site_settings.whatsapp|cut:' '|cut:'+' }}" target="_blank">
-                <i class="fab fa-whatsapp" style="color:#25d366"></i>
-                WhatsApp
-              </a>
-            </li>
-            {% endif %}
-            <li style="color:rgba(255,255,255,.4); font-size:12px; margin-top:8px">
-              Haïti — 10 départements
-            </li>
-          </ul>
-        </div>
-
-      </div>
-
-      <div class="footer-bottom">
-        <span>© {% now "Y" %} {{ site_settings.copyright_texte|default:"AyitiKonekte Haiti. Tous droits réservés." }}</span>
       </div>
     </div>
+
+    <!-- Corps du footer -->
+    <div class="footer-body">
+      <div class="container">
+        <div class="footer-grid">
+
+          <!-- Marque -->
+          <div class="footer-brand">
+            <div class="footer-logo">
+              {% if site_settings.logo %}
+                <img src="{{ site_settings.logo.url }}" alt="{{ site_settings.nom_site }}" style="height:38px; filter:brightness(0) invert(1);">
+              {% else %}
+                <span class="footer-logo-text">
+                  <i class="fas fa-store"></i>
+                  {{ site_settings.nom_site|default:"AyitiKonekte" }}
+                </span>
+              {% endif %}
+            </div>
+            <p class="footer-tagline">{{ site_settings.slogan|default:"La Marketplace Haïtienne" }}</p>
+            <p class="footer-desc">{% trans "La plateforme qui connecte acheteurs et vendeurs partout en Haïti." %}</p>
+            {% if site_settings.facebook_url or site_settings.instagram_url or site_settings.twitter_url or site_settings.youtube_url %}
+            <div class="footer-socials">
+              {% if site_settings.facebook_url %}<a href="{{ site_settings.facebook_url }}" target="_blank" class="footer-social-btn fb"><i class="fab fa-facebook-f"></i></a>{% endif %}
+              {% if site_settings.instagram_url %}<a href="{{ site_settings.instagram_url }}" target="_blank" class="footer-social-btn ig"><i class="fab fa-instagram"></i></a>{% endif %}
+              {% if site_settings.twitter_url %}<a href="{{ site_settings.twitter_url }}" target="_blank" class="footer-social-btn tw"><i class="fab fa-twitter"></i></a>{% endif %}
+              {% if site_settings.youtube_url %}<a href="{{ site_settings.youtube_url }}" target="_blank" class="footer-social-btn yt"><i class="fab fa-youtube"></i></a>{% endif %}
+            </div>
+            {% endif %}
+          </div>
+
+          <!-- Catalogue -->
+          <div class="footer-col">
+            <h4 class="footer-col-title">{% trans "Catalogue" %}</h4>
+            <ul class="footer-links">
+              {% for cat in categories %}
+              <li><a href="/#catalogue?categorie={{ cat.slug }}"><i class="fas fa-tag"></i> {{ cat.nom }}</a></li>
+              {% endfor %}
+            </ul>
+          </div>
+
+          <!-- Navigation -->
+          <div class="footer-col">
+            <h4 class="footer-col-title">{% trans "Navigation" %}</h4>
+            <ul class="footer-links">
+              <li><a href="/"><i class="fas fa-home"></i> {% trans "Accueil" %}</a></li>
+              <li><a href="/#catalogue"><i class="fas fa-th-large"></i> {% trans "Catalogue" %}</a></li>
+              <li><a href="{% url 'core:apropos' %}"><i class="fas fa-info-circle"></i> {% trans "À propos" %}</a></li>
+              <li><a href="{% url 'core:faq' %}"><i class="fas fa-question-circle"></i> {% trans "FAQ" %}</a></li>
+              <li><a href="{% url 'core:contact' %}"><i class="fas fa-envelope"></i> {% trans "Contact" %}</a></li>
+            </ul>
+          </div>
+
+          <!-- Contact -->
+          <div class="footer-col">
+            <h4 class="footer-col-title">{% trans "Nous contacter" %}</h4>
+            <ul class="footer-links footer-contact-list">
+              {% if site_settings.email_contact %}
+              <li><a href="mailto:{{ site_settings.email_contact }}"><i class="fas fa-envelope"></i> {{ site_settings.email_contact }}</a></li>
+              {% endif %}
+              {% if site_settings.telephone %}
+              <li><a href="tel:{{ site_settings.telephone }}"><i class="fas fa-phone"></i> {{ site_settings.telephone }}</a></li>
+              {% endif %}
+              {% if site_settings.whatsapp %}
+              <li><a href="https://wa.me/{{ site_settings.whatsapp|cut:' '|cut:'+' }}" target="_blank"><i class="fab fa-whatsapp"></i> WhatsApp</a></li>
+              {% endif %}
+              {% if site_settings.adresse %}
+              <li class="footer-address"><i class="fas fa-map-marker-alt"></i> {{ site_settings.adresse }}</li>
+              {% endif %}
+            </ul>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- Barre de copyright -->
+    <div class="footer-bottom">
+      <div class="container footer-bottom-inner">
+        <span>© {% now "Y" %} {{ site_settings.copyright_texte|default:"AyitiKonekte Haiti. Tous droits réservés." }}</span>
+        <span class="footer-bottom-badge">
+          <i class="fas fa-map-marker-alt"></i> {% trans "Haïti" %} &nbsp;·&nbsp;
+          <i class="fas fa-lock"></i> {% trans "Paiements sécurisés" %} &nbsp;·&nbsp;
+          <i class="fas fa-headset"></i> {% trans "Support local" %}
+        </span>
+      </div>
+    </div>
+
   </footer>
 
 
@@ -2840,6 +3003,14 @@
       document.getElementById('drawer-role').textContent     = ROLE_LABELS[role] || role;
       document.getElementById('drawer-espace-link').href     = getDashboardUrl(user);
     })();
+
+    // ── Barre de recherche hero ───────────────────────────────
+    function heroSearch(e) {
+      e.preventDefault();
+      const q = document.getElementById('hero-search-input').value.trim();
+      if (q) window.location.href = '/api/products/?search=' + encodeURIComponent(q) + '#catalogue';
+      else document.getElementById('catalogue').scrollIntoView({ behavior: 'smooth' });
+    }
 
     // ── Bouton « Je suis producteur » ────────────────────────
     function clickProducteur() {

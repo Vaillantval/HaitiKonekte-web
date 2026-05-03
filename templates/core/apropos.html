@@ -1,22 +1,22 @@
 {% load i18n %}
+{% load static %}
 <!DOCTYPE html>
 <html lang="{{ LANGUAGE_CODE }}">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>À propos — {{ site_settings.nom_site|default:"AyitiKonekte" }}</title>
-  <meta name="description" content="{{ site_settings.meta_description|default:"Découvrez AyitiKonekte, la marketplace haïti." }}">
+  <meta name="description" content="{{ site_settings.meta_description|default:"Découvrez AyitiKonekte, la marketplace haïtienne." }}">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <style>
     :root {
-      --primary:  #003F87;
-      --accent:    #1565C0;
-      --light: #EEF4FF;
-      --rouge:       #C62828;
-      --rouge-clair: #fdfbe8;
+      --primary:     #003F87;
+      --accent:      #1565C0;
+      --light:       #EEF4FF;
+      --rouge:       #E65100;
       --blanc:       #ffffff;
       --noir:        #1a1a1a;
       --gris-clair:  #f4f6f9;
@@ -32,189 +32,328 @@
     img { max-width:100%; display:block; }
     .container { max-width:1200px; margin:0 auto; padding:0 24px; }
 
+    /* Navbar helpers reused from index */
     .navbar-search { flex:1; max-width:400px; margin:0 32px; }
     .navbar-search form { display:flex; background:rgba(255,255,255,.12); border:1px solid rgba(255,255,255,.2); border-radius:50px; overflow:hidden; }
     .navbar-search input { flex:1; padding:10px 18px; background:transparent; border:none; outline:none; color:var(--blanc); font-size:14px; font-family:'DM Sans',sans-serif; }
     .navbar-search input::placeholder { color:rgba(255,255,255,.6); }
-    .navbar-search button { padding:10px 18px; background:var(--rouge); border:none; cursor:pointer; color:var(--noir); font-size:14px; }
+    .navbar-search button { padding:10px 18px; background:var(--rouge); border:none; cursor:pointer; color:var(--blanc); font-size:14px; }
     .navbar-actions { display:flex; align-items:center; gap:12px; }
     .btn-nav { padding:9px 20px; border-radius:50px; font-size:13px; font-weight:600; cursor:pointer; transition:all .2s; border:none; font-family:'DM Sans',sans-serif; }
     .btn-nav-outline { background:transparent; border:1.5px solid rgba(255,255,255,.5); color:var(--blanc); }
     .btn-nav-outline:hover { background:rgba(255,255,255,.1); }
-    .btn-nav-primary { background:var(--rouge); color:var(--noir); }
-    .btn-nav-primary:hover { background:#B71C1C; }
+    .btn-nav-primary { background:var(--rouge); color:var(--blanc); }
+    .btn-nav-primary:hover { background:#BF360C; }
 
-    /* Page header */
+    /* ── Page header ─────────────────────────────────────────── */
     .page-header {
-      background:linear-gradient(150deg, var(--primary) 0%, #1565C0 100%);
-      padding:60px 0 48px;
-      text-align:center;
-      position:relative;
-      overflow:hidden;
+      background: linear-gradient(145deg, #001a45 0%, var(--primary) 55%, var(--accent) 100%);
+      padding: 72px 0 56px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
     }
     .page-header::before {
-      content:'';
-      position:absolute;
-      inset:0;
-      background:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+      content: '';
+      position: absolute; inset: 0;
+      background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
     }
-    .page-header-inner { position:relative; z-index:1; }
-    .breadcrumb { display:flex; justify-content:center; gap:8px; font-size:13px; color:rgba(255,255,255,.6); margin-bottom:14px; }
-    .breadcrumb a { color:rgba(255,255,255,.6); }
-    .breadcrumb a:hover { color:var(--rouge); }
-    .breadcrumb span { color:rgba(255,255,255,.9); }
-    .page-title { font-family:'Playfair Display',serif; font-size:48px; font-weight:900; color:var(--blanc); margin-bottom:12px; }
-    .page-subtitle { font-size:15px; color:rgba(255,255,255,.75); font-style:italic; max-width:520px; margin:0 auto; }
+    .page-header-inner { position: relative; z-index: 1; }
+    .breadcrumb {
+      display: flex; justify-content: center; gap: 8px;
+      font-size: 13px; color: rgba(255,255,255,.55); margin-bottom: 16px;
+    }
+    .breadcrumb a { color: rgba(255,255,255,.55); transition: color .2s; }
+    .breadcrumb a:hover { color: var(--rouge); }
+    .breadcrumb span { color: rgba(255,255,255,.9); }
+    .page-badge {
+      display: inline-flex; align-items: center; gap: 7px;
+      background: rgba(255,255,255,.1); color: rgba(255,255,255,.9);
+      padding: 6px 16px; border-radius: 50px;
+      font-size: 12px; font-weight: 700; letter-spacing: .8px; text-transform: uppercase;
+      border: 1px solid rgba(255,255,255,.2);
+      margin-bottom: 20px;
+    }
+    .page-badge i { color: var(--rouge); }
+    .page-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 52px; font-weight: 900; color: var(--blanc);
+      line-height: 1.1; margin-bottom: 16px;
+    }
+    .page-title em { font-style: normal; color: #90caf9; }
+    .page-subtitle {
+      font-size: 16px; color: rgba(255,255,255,.7);
+      max-width: 540px; margin: 0 auto; line-height: 1.7;
+    }
 
-    /* Sections */
-    .section { padding:72px 0; }
-    .section-alt { background:var(--light); }
-    .section-yellow { background:var(--rouge-clair); }
+    /* ── Sections ────────────────────────────────────────────── */
+    .section { padding: 80px 0; }
+    .section-alt { background: var(--gris-clair); }
+    .section-blue { background: var(--light); }
 
-    /* À propos content */
+    .section-label {
+      display: inline-block;
+      background: var(--light); color: var(--primary);
+      padding: 5px 14px; border-radius: 50px;
+      font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;
+      border: 1px solid rgba(0,63,135,.15);
+      margin-bottom: 14px;
+    }
+    .section-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 38px; font-weight: 900; color: var(--primary);
+      margin-bottom: 16px; line-height: 1.15;
+    }
+    .section-subtitle { font-size: 15px; color: var(--gris-texte); line-height: 1.8; max-width: 600px; }
+
+    /* ── Présentation ────────────────────────────────────────── */
     .apropos-grid {
-      display:grid;
-      grid-template-columns:1fr 1fr;
-      gap:60px;
-      align-items:center;
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 72px; align-items: center;
     }
-    .apropos-img {
-      border-radius:var(--radius-lg);
-      overflow:hidden;
-      box-shadow:var(--shadow-lg);
-      height:420px;
-      background:var(--light);
+    .apropos-visual {
+      border-radius: var(--radius-lg); overflow: hidden;
+      box-shadow: var(--shadow-lg); height: 440px;
+      background: var(--light);
+      position: relative;
     }
-    .apropos-img img { width:100%; height:100%; object-fit:cover; }
-    .apropos-img-placeholder {
-      width:100%; height:100%;
-      display:flex; align-items:center; justify-content:center;
-      font-size:96px;
-      background:linear-gradient(135deg, var(--light), #d5f5e3);
+    .apropos-visual img { width: 100%; height: 100%; object-fit: cover; }
+    .apropos-visual-placeholder {
+      width: 100%; height: 100%;
+      display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px;
+      background: linear-gradient(145deg, #001a45, var(--primary));
     }
+    .apropos-visual-placeholder .big-icon {
+      font-size: 72px; color: rgba(255,255,255,.2);
+    }
+    .apropos-visual-placeholder .inner-stats {
+      display: flex; gap: 24px;
+    }
+    .apropos-visual-placeholder .inner-stat {
+      text-align: center; color: rgba(255,255,255,.85);
+    }
+    .apropos-visual-placeholder .inner-stat .v {
+      font-size: 28px; font-weight: 800;
+      font-family: 'Playfair Display', serif;
+    }
+    .apropos-visual-placeholder .inner-stat .l { font-size: 11px; opacity: .7; }
+
     .apropos-badge {
-      display:inline-flex; align-items:center; gap:6px;
-      background:var(--light); color:var(--primary);
-      padding:6px 14px; border-radius:50px;
-      font-size:12px; font-weight:700; letter-spacing:.5px; text-transform:uppercase;
-      border:1px solid rgba(0,63,135,.2);
-      margin-bottom:18px;
+      display: inline-flex; align-items: center; gap: 6px;
+      background: var(--light); color: var(--primary);
+      padding: 6px 14px; border-radius: 50px;
+      font-size: 12px; font-weight: 700; letter-spacing: .5px; text-transform: uppercase;
+      border: 1px solid rgba(0,63,135,.2); margin-bottom: 18px;
     }
+    .apropos-badge i { color: var(--rouge); }
     .apropos-title {
-      font-family:'Playfair Display',serif;
-      font-size:38px; font-weight:900; color:var(--primary);
-      line-height:1.15; margin-bottom:20px;
+      font-family: 'Playfair Display', serif;
+      font-size: 40px; font-weight: 900; color: var(--primary);
+      line-height: 1.15; margin-bottom: 20px;
     }
-    .apropos-text { font-size:15px; color:var(--gris-texte); line-height:1.8; margin-bottom:20px; }
+    .apropos-title em { font-style: normal; color: var(--accent); }
+    .apropos-text { font-size: 15px; color: var(--gris-texte); line-height: 1.85; margin-bottom: 18px; }
+    .apropos-highlight {
+      display: flex; align-items: flex-start; gap: 12px; margin-top: 24px;
+      background: var(--light); padding: 16px 20px;
+      border-radius: var(--radius); border-left: 4px solid var(--accent);
+    }
+    .apropos-highlight i { color: var(--accent); font-size: 20px; margin-top: 2px; flex-shrink: 0; }
+    .apropos-highlight span { font-size: 14px; color: var(--primary); line-height: 1.6; }
 
-    /* Stats */
-    .stats-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:20px; }
-    .stat-card {
-      background:var(--blanc); border-radius:var(--radius-lg);
-      padding:28px 20px; text-align:center;
-      box-shadow:var(--shadow); border:1px solid rgba(0,0,0,.05);
-      transition:transform .25s;
+    /* ── Chiffres clés ───────────────────────────────────────── */
+    .stats-strip {
+      display: grid; grid-template-columns: repeat(4, 1fr);
+      gap: 0; border-radius: var(--radius-lg);
+      overflow: hidden; box-shadow: var(--shadow);
     }
-    .stat-card:hover { transform:translateY(-4px); box-shadow:var(--shadow-lg); }
-    .stat-icon { font-size:36px; margin-bottom:12px; }
+    .stat-item {
+      background: var(--blanc); padding: 36px 24px; text-align: center;
+      border-right: 1px solid rgba(0,0,0,.06); transition: background .2s;
+    }
+    .stat-item:last-child { border-right: none; }
+    .stat-item:hover { background: var(--light); }
+    .stat-icon-wrap {
+      width: 52px; height: 52px; border-radius: 14px;
+      background: linear-gradient(135deg, var(--accent), var(--primary));
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 14px; color: #fff; font-size: 22px;
+    }
     .stat-val {
-      font-family:'Playfair Display',serif;
-      font-size:36px; font-weight:900; color:var(--primary);
-      line-height:1;
+      font-family: 'Playfair Display', serif;
+      font-size: 38px; font-weight: 900; color: var(--primary); line-height: 1;
     }
-    .stat-lbl { font-size:13px; color:var(--gris-texte); margin-top:6px; }
+    .stat-lbl { font-size: 13px; color: var(--gris-texte); margin-top: 6px; }
 
-    /* Mission / Vision */
-    .mv-grid { display:grid; grid-template-columns:1fr 1fr; gap:24px; }
+    /* ── Mission / Vision ────────────────────────────────────── */
+    .mv-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
     .mv-card {
-      background:var(--blanc); border-radius:var(--radius-lg);
-      padding:32px; box-shadow:var(--shadow);
-      border-top:4px solid var(--accent);
-      transition:transform .25s;
+      background: var(--blanc); border-radius: var(--radius-lg);
+      padding: 36px; box-shadow: var(--shadow);
+      border-top: 4px solid var(--accent); transition: transform .25s;
     }
-    .mv-card:hover { transform:translateY(-4px); }
-    .mv-card.vision { border-top-color:var(--rouge); }
-    .mv-card-icon { font-size:40px; margin-bottom:16px; }
+    .mv-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); }
+    .mv-card.vision { border-top-color: var(--rouge); }
+    .mv-icon-wrap {
+      width: 56px; height: 56px; border-radius: 14px;
+      background: linear-gradient(135deg, var(--accent), var(--primary));
+      display: flex; align-items: center; justify-content: center;
+      color: #fff; font-size: 24px; margin-bottom: 20px;
+    }
+    .mv-card.vision .mv-icon-wrap { background: linear-gradient(135deg, #BF360C, var(--rouge)); }
     .mv-card-title {
-      font-family:'Playfair Display',serif;
-      font-size:22px; font-weight:900; color:var(--primary);
-      margin-bottom:12px;
+      font-family: 'Playfair Display', serif;
+      font-size: 22px; font-weight: 900; color: var(--primary); margin-bottom: 12px;
     }
-    .mv-card-text { font-size:14px; color:var(--gris-texte); line-height:1.8; }
+    .mv-card-text { font-size: 14px; color: var(--gris-texte); line-height: 1.85; }
 
-    /* Valeurs */
-    .valeurs-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:20px; }
+    /* ── Valeurs ─────────────────────────────────────────────── */
+    .valeurs-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
     .valeur-card {
-      background:var(--blanc); border-radius:var(--radius-lg);
-      padding:24px; text-align:center; box-shadow:var(--shadow);
-      border:1px solid rgba(0,0,0,.05); transition:all .25s;
+      background: var(--blanc); border-radius: var(--radius-lg);
+      padding: 28px 24px; text-align: center; box-shadow: var(--shadow);
+      border: 1px solid rgba(0,0,0,.05); transition: all .25s;
     }
-    .valeur-card:hover { transform:translateY(-4px); border-color:var(--accent); }
+    .valeur-card:hover { transform: translateY(-4px); border-color: var(--accent); box-shadow: var(--shadow-lg); }
     .valeur-icon {
-      width:60px; height:60px;
-      background:linear-gradient(135deg, var(--accent), var(--primary));
-      border-radius:50%; display:flex; align-items:center; justify-content:center;
-      font-size:24px; margin:0 auto 14px; color:white;
+      width: 60px; height: 60px;
+      background: linear-gradient(135deg, var(--accent), var(--primary));
+      border-radius: 16px; display: flex; align-items: center; justify-content: center;
+      font-size: 24px; margin: 0 auto 16px; color: white;
     }
-    .valeur-title { font-weight:700; font-size:15px; color:var(--primary); margin-bottom:8px; }
-    .valeur-text { font-size:13px; color:var(--gris-texte); line-height:1.6; }
+    .valeur-title { font-weight: 700; font-size: 15px; color: var(--primary); margin-bottom: 8px; }
+    .valeur-text { font-size: 13px; color: var(--gris-texte); line-height: 1.7; }
 
-    /* CTA */
+    /* ── CTA ─────────────────────────────────────────────────── */
     .cta-banner {
-      background:linear-gradient(135deg, var(--primary) 0%, #1565C0 100%);
-      padding:60px 0; text-align:center;
+      background: linear-gradient(145deg, #001a45 0%, var(--primary) 55%, var(--accent) 100%);
+      padding: 80px 0; text-align: center; position: relative; overflow: hidden;
     }
-    .cta-title { font-family:'Playfair Display',serif; font-size:36px; font-weight:900; color:var(--blanc); margin-bottom:12px; }
-    .cta-title em { font-style:normal; color:var(--rouge); }
-    .cta-desc { font-size:15px; color:rgba(255,255,255,.75); margin-bottom:28px; font-style:italic; }
-    .cta-actions { display:flex; justify-content:center; gap:16px; flex-wrap:wrap; }
+    .cta-banner::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    }
+    .cta-banner > .container { position: relative; z-index: 1; }
+    .cta-badge {
+      display: inline-flex; align-items: center; gap: 7px;
+      background: rgba(255,255,255,.1); color: rgba(255,255,255,.9);
+      padding: 6px 16px; border-radius: 50px;
+      font-size: 12px; font-weight: 700; letter-spacing: .8px; text-transform: uppercase;
+      border: 1px solid rgba(255,255,255,.2); margin-bottom: 20px;
+    }
+    .cta-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 42px; font-weight: 900; color: var(--blanc);
+      margin-bottom: 14px; line-height: 1.1;
+    }
+    .cta-title em { font-style: normal; color: #90caf9; }
+    .cta-desc { font-size: 16px; color: rgba(255,255,255,.7); margin-bottom: 32px; line-height: 1.7; max-width: 520px; margin-left: auto; margin-right: auto; }
+    .cta-actions { display: flex; justify-content: center; gap: 16px; flex-wrap: wrap; }
     .btn-cta-primary {
-      display:inline-flex; align-items:center; gap:8px;
-      padding:14px 28px; background:var(--rouge); color:var(--noir);
-      border-radius:50px; font-weight:700; font-size:15px; transition:all .2s;
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 14px 30px; background: var(--rouge); color: var(--blanc);
+      border-radius: 50px; font-weight: 700; font-size: 15px; transition: all .2s;
     }
-    .btn-cta-primary:hover { background:#B71C1C; transform:translateY(-2px); }
+    .btn-cta-primary:hover { background: #BF360C; transform: translateY(-2px); }
     .btn-cta-outline {
-      display:inline-flex; align-items:center; gap:8px;
-      padding:14px 28px; background:transparent; color:var(--blanc);
-      border:2px solid rgba(255,255,255,.4); border-radius:50px;
-      font-weight:600; font-size:15px; transition:all .2s;
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 14px 30px; background: transparent; color: var(--blanc);
+      border: 2px solid rgba(255,255,255,.4); border-radius: 50px;
+      font-weight: 600; font-size: 15px; transition: all .2s;
     }
-    .btn-cta-outline:hover { border-color:var(--blanc); background:rgba(255,255,255,.08); }
+    .btn-cta-outline:hover { border-color: var(--blanc); background: rgba(255,255,255,.1); }
 
-    /* Footer */
-    .footer { background:var(--noir); color:rgba(255,255,255,.7); padding:56px 0 28px; }
-    .footer-grid { display:grid; grid-template-columns:2fr 1fr 1fr 1fr; gap:40px; margin-bottom:40px; }
-    .footer-brand h3 { font-family:'Playfair Display',serif; font-size:22px; color:var(--blanc); margin-bottom:10px; }
-    .footer-brand p { font-size:13px; line-height:1.8; color:rgba(255,255,255,.55); margin-bottom:6px; }
-    .footer-brand .slogan { font-style:italic; color:var(--rouge); font-size:13px; }
-    .footer-col h4 { font-size:13px; font-weight:700; color:var(--blanc); text-transform:uppercase; letter-spacing:.8px; margin-bottom:16px; }
-    .footer-col ul { list-style:none; }
-    .footer-col li { margin-bottom:8px; font-size:13px; }
-    .footer-col a { color:rgba(255,255,255,.55); transition:color .2s; }
-    .footer-col a:hover { color:var(--rouge); }
-    .footer-bottom { border-top:1px solid rgba(255,255,255,.08); padding-top:24px; display:flex; justify-content:space-between; align-items:center; font-size:12px; color:rgba(255,255,255,.35); flex-wrap:wrap; gap:8px; }
+    /* ── Footer ──────────────────────────────────────────────── */
+    .footer { color: rgba(255,255,255,.7); }
+    .footer-cta-strip {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+      padding: 40px 0;
+    }
+    .footer-cta-inner {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 24px; flex-wrap: wrap;
+    }
+    .footer-cta-text h3 { color: #fff; font-size: 20px; font-weight: 700; margin-bottom: 4px; }
+    .footer-cta-text p { color: rgba(255,255,255,.75); font-size: 14px; }
+    .footer-cta-btns { display: flex; gap: 12px; flex-wrap: wrap; }
+    .footer-cta-btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 11px 22px; border-radius: 8px;
+      font-size: 14px; font-weight: 600; text-decoration: none; transition: all .2s;
+    }
+    .footer-cta-btn.primary { background: #fff; color: var(--primary); }
+    .footer-cta-btn.primary:hover { background: #f0f4ff; }
+    .footer-cta-btn.outline { border: 2px solid rgba(255,255,255,.55); color: #fff; }
+    .footer-cta-btn.outline:hover { background: rgba(255,255,255,.12); }
 
-    /* Responsive */
-    @media (max-width:768px) {
-      .apropos-grid, .mv-grid { grid-template-columns:1fr; }
-      .stats-grid { grid-template-columns:repeat(2,1fr); }
-      .valeurs-grid { grid-template-columns:1fr 1fr; }
-      .navbar-search { display:none; }
-      .footer-grid { grid-template-columns:1fr; }
-      .page-title { font-size:32px; }
-      .apropos-img { height:280px; }
+    .footer-body { background: var(--noir); padding: 56px 0 40px; }
+    .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 40px; }
+    .footer-logo { margin-bottom: 12px; }
+    .footer-logo-text { font-size: 22px; font-weight: 800; color: #fff; display: flex; align-items: center; gap: 8px; }
+    .footer-logo-text i { color: var(--rouge); }
+    .footer-tagline { font-size: 13px; font-weight: 600; color: rgba(255,255,255,.85); margin-bottom: 8px; }
+    .footer-desc { font-size: 13px; line-height: 1.8; color: rgba(255,255,255,.45); margin-bottom: 20px; }
+    .footer-socials { display: flex; gap: 10px; }
+    .footer-social-btn {
+      width: 36px; height: 36px; border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px; color: #fff; background: rgba(255,255,255,.1);
+      transition: background .2s, transform .15s; text-decoration: none;
     }
-    @media (max-width:480px) {
-      .stats-grid, .valeurs-grid { grid-template-columns:1fr; }
-      .page-title { font-size:26px; }
-      .btn-nav { padding:7px 12px; font-size:12px; }
-      .navbar-inner { gap:8px; }
+    .footer-social-btn:hover { transform: translateY(-2px); }
+    .footer-social-btn.fb:hover { background: #1877f2; }
+    .footer-social-btn.ig:hover { background: #e1306c; }
+    .footer-social-btn.tw:hover { background: #1da1f2; }
+    .footer-social-btn.yt:hover { background: #ff0000; }
+    .footer-col-title {
+      font-size: 11px; font-weight: 700; color: var(--blanc);
+      text-transform: uppercase; letter-spacing: 1.2px;
+      margin-bottom: 18px; padding-bottom: 10px;
+      border-bottom: 1px solid rgba(255,255,255,.08);
     }
-    @media (max-width:360px) {
-      .btn-nav { font-size:0 !important; padding:9px 11px; }
-      .btn-nav i { font-size:14px; }
-      .navbar-actions { gap:6px; }
+    .footer-links { list-style: none; }
+    .footer-links li { margin-bottom: 10px; font-size: 13px; }
+    .footer-links a {
+      color: rgba(255,255,255,.5); transition: color .2s, padding-left .15s;
+      display: flex; align-items: center; gap: 8px; text-decoration: none;
+    }
+    .footer-links a i { font-size: 11px; color: rgba(255,255,255,.25); }
+    .footer-links a:hover { color: var(--rouge); padding-left: 4px; }
+    .footer-links a:hover i { color: var(--rouge); }
+    .footer-bottom { background: rgba(0,0,0,.35); padding: 16px 0; }
+    .footer-bottom-inner {
+      display: flex; justify-content: space-between; align-items: center;
+      font-size: 12px; color: rgba(255,255,255,.3); flex-wrap: wrap; gap: 8px;
+    }
+    .footer-bottom-badge { display: flex; align-items: center; gap: 4px; flex-wrap: wrap; }
+    .footer-bottom-badge i { color: rgba(255,255,255,.4); }
+
+    /* ── Responsive ──────────────────────────────────────────── */
+    @media (max-width: 1024px) {
+      .footer-grid { grid-template-columns: 1fr 1fr; }
+      .footer-cta-inner { flex-direction: column; align-items: flex-start; }
+    }
+    @media (max-width: 768px) {
+      .apropos-grid, .mv-grid { grid-template-columns: 1fr; }
+      .stats-strip { grid-template-columns: repeat(2, 1fr); }
+      .valeurs-grid { grid-template-columns: 1fr 1fr; }
+      .navbar-search { display: none; }
+      .footer-grid { grid-template-columns: 1fr 1fr; }
+      .page-title { font-size: 36px; }
+      .apropos-visual { height: 300px; }
+      .section-title { font-size: 30px; }
+      .cta-title { font-size: 30px; }
+    }
+    @media (max-width: 480px) {
+      .stats-strip, .valeurs-grid { grid-template-columns: 1fr; }
+      .stat-item { border-right: none; border-bottom: 1px solid rgba(0,0,0,.06); }
+      .stat-item:last-child { border-bottom: none; }
+      .page-title { font-size: 28px; }
+      .btn-nav { padding: 7px 12px; font-size: 12px; }
+      .footer-grid { grid-template-columns: 1fr; }
+      .footer-cta-btns { flex-direction: column; width: 100%; }
+      .footer-cta-btn { justify-content: center; }
     }
   </style>
 </head>
@@ -222,7 +361,7 @@
 
   {% include 'partials/navbar.html' %}
 
-  <!-- PAGE HEADER -->
+  <!-- ══ PAGE HEADER ══════════════════════════════════════════ -->
   <div class="page-header">
     <div class="container">
       <div class="page-header-inner">
@@ -231,88 +370,113 @@
           <span>›</span>
           <span>{% trans "À propos" %}</span>
         </div>
+        <div class="page-badge">
+          <i class="fas fa-store"></i>
+          {% trans "Notre histoire" %}
+        </div>
         <h1 class="page-title">
-          {{ site.a_propos_titre|default:"À propos de nous" }}
+          À propos d'<em>{{ site_settings.nom_site|default:"AyitiKonekte" }}</em>
         </h1>
         <p class="page-subtitle">
-          {{ site_settings.slogan|default:"Marketplace Haïti" }}
+          {{ site_settings.slogan|default:"La Marketplace Haïtienne" }} — {% trans "la plateforme qui connecte acheteurs et vendeurs partout en Haïti." %}
         </p>
       </div>
     </div>
   </div>
 
-  <!-- PRÉSENTATION -->
+  <!-- ══ PRÉSENTATION ═════════════════════════════════════════ -->
   <section class="section">
     <div class="container">
       <div class="apropos-grid">
-        <div class="apropos-img">
+
+        <div class="apropos-visual">
           {% if site.a_propos_image %}
             <img src="{{ site.a_propos_image.url }}" alt="À propos de {{ site_settings.nom_site }}">
           {% else %}
-            <div class="apropos-img-placeholder">🌾</div>
+            <div class="apropos-visual-placeholder">
+              <div class="big-icon"><i class="fas fa-store"></i></div>
+              <div class="inner-stats">
+                <div class="inner-stat">
+                  <div class="v">{{ stats.nb_producteurs|default:"0" }}</div>
+                  <div class="l">{% trans "Vendeurs" %}</div>
+                </div>
+                <div class="inner-stat">
+                  <div class="v">{{ stats.nb_produits|default:"0" }}</div>
+                  <div class="l">{% trans "Produits" %}</div>
+                </div>
+                <div class="inner-stat">
+                  <div class="v">{{ stats.nb_communes|default:"10" }}</div>
+                  <div class="l">{% trans "Communes" %}</div>
+                </div>
+              </div>
+            </div>
           {% endif %}
         </div>
+
         <div>
           <div class="apropos-badge">
-            <i class="fas fa-leaf"></i>
-            Notre histoire
+            <i class="fas fa-info-circle"></i>
+            {% trans "Qui sommes-nous ?" %}
           </div>
           <h2 class="apropos-title">
-            La marketplace qui <em style="color:var(--accent)">{% trans "connecte" %}</em><br>
-            champs et foyers
+            La marketplace qui <em>{% trans "connecte" %}</em><br>
+            {% trans "toute Haïti" %}
           </h2>
+
           {% if site.a_propos_contenu %}
-            <div class="apropos-text" style="line-height:1.8">
-              {{ site.a_propos_contenu|linebreaks }}
-            </div>
+            <div class="apropos-text">{{ site.a_propos_contenu|linebreaks }}</div>
           {% else %}
             <p class="apropos-text">
-              <strong>{{ site_settings.nom_site|default:"AyitiKonekte" }}</strong> est une marketplace
-              agricole haïtienne qui connecte directement les producteurs locaux
-              aux acheteurs — particuliers, restaurateurs et revendeurs.
+              <strong>{{ site_settings.nom_site|default:"AyitiKonekte" }}</strong>
+              {% trans "est une marketplace haïtienne qui met en relation vendeurs locaux et acheteurs — particuliers, professionnels et revendeurs — sur une plateforme simple, rapide et sécurisée." %}
             </p>
             <p class="apropos-text">
-              Notre plateforme permet d'acheter des produits locaux, traçables,
-              cultivés localement dans les 10 départements d'Haïti.
-              De la semence au panier, nous garantissons qualité et transparence.
+              {% trans "Alimentation, artisanat, électronique, vêtements, services… Des milliers de produits disponibles, livrés depuis les 10 départements d'Haïti." %}
             </p>
           {% endif %}
+
           {% if site.annee_fondation %}
-            <div style="display:flex; align-items:center; gap:10px; margin-top:24px;
-                        background:var(--light); padding:14px 18px; border-radius:var(--radius);
-                        border-left:4px solid var(--accent)">
-              <i class="fas fa-calendar-check" style="color:var(--accent); font-size:20px"></i>
-              <span style="font-size:14px; color:var(--primary)">
-                Fondée en <strong>{{ site.annee_fondation }}</strong>
-              </span>
-            </div>
+          <div class="apropos-highlight">
+            <i class="fas fa-calendar-check"></i>
+            <span>{% trans "Fondée en" %} <strong>{{ site.annee_fondation }}</strong> — {% trans "pour soutenir le commerce local haïtien." %}</span>
+          </div>
+          {% else %}
+          <div class="apropos-highlight">
+            <i class="fas fa-shield-alt"></i>
+            <span>{% trans "Plateforme sécurisée, paiements MonCash & NatCash, support local 7j/7." %}</span>
+          </div>
           {% endif %}
         </div>
+
       </div>
     </div>
   </section>
 
-  <!-- STATISTIQUES -->
+  <!-- ══ CHIFFRES CLÉS ════════════════════════════════════════ -->
   <section class="section section-alt">
     <div class="container">
-      <div class="stats-grid">
-        <div class="stat-card">
-          <div class="stat-icon">🌾</div>
+      <div style="text-align:center; margin-bottom:48px">
+        <span class="section-label">{% trans "En chiffres" %}</span>
+        <h2 class="section-title">{% trans "La plateforme en quelques mots" %}</h2>
+      </div>
+      <div class="stats-strip">
+        <div class="stat-item">
+          <div class="stat-icon-wrap"><i class="fas fa-users"></i></div>
           <div class="stat-val">{{ stats.nb_producteurs|default:"0" }}</div>
-          <div class="stat-lbl">{% trans "Producteurs actifs" %}</div>
+          <div class="stat-lbl">{% trans "Vendeurs actifs" %}</div>
         </div>
-        <div class="stat-card">
-          <div class="stat-icon">🥬</div>
+        <div class="stat-item">
+          <div class="stat-icon-wrap"><i class="fas fa-box-open"></i></div>
           <div class="stat-val">{{ stats.nb_produits|default:"0" }}</div>
           <div class="stat-lbl">{% trans "Produits disponibles" %}</div>
         </div>
-        <div class="stat-card">
-          <div class="stat-icon">📍</div>
+        <div class="stat-item">
+          <div class="stat-icon-wrap"><i class="fas fa-map-marker-alt"></i></div>
           <div class="stat-val">{{ stats.nb_communes|default:"10" }}</div>
           <div class="stat-lbl">{% trans "Communes couvertes" %}</div>
         </div>
-        <div class="stat-card">
-          <div class="stat-icon">🏷️</div>
+        <div class="stat-item">
+          <div class="stat-icon-wrap"><i class="fas fa-th-large"></i></div>
           <div class="stat-val">{{ stats.nb_categories|default:"0" }}</div>
           <div class="stat-lbl">{% trans "Catégories" %}</div>
         </div>
@@ -320,78 +484,62 @@
     </div>
   </section>
 
-  <!-- MISSION & VISION -->
-  {% if site.a_propos_mission or site.a_propos_vision %}
+  <!-- ══ MISSION & VISION ══════════════════════════════════════ -->
   <section class="section">
-    <div class="container">
-      <div class="mv-grid">
-        {% if site.a_propos_mission %}
-        <div class="mv-card">
-          <div class="mv-card-icon">🎯</div>
-          <div class="mv-card-title">{% trans "Notre mission" %}</div>
-          <p class="mv-card-text">{{ site.a_propos_mission }}</p>
-        </div>
-        {% endif %}
-        {% if site.a_propos_vision %}
-        <div class="mv-card vision">
-          <div class="mv-card-icon">🔭</div>
-          <div class="mv-card-title">{% trans "Notre vision" %}</div>
-          <p class="mv-card-text">{{ site.a_propos_vision }}</p>
-        </div>
-        {% endif %}
-      </div>
-    </div>
-  </section>
-  {% else %}
-  <section class="section">
-    <div class="container">
-      <div class="mv-grid">
-        <div class="mv-card">
-          <div class="mv-card-icon">🎯</div>
-          <div class="mv-card-title">{% trans "Notre mission" %}</div>
-          <p class="mv-card-text">
-            Rendre accessible l'agriculture haïtienne en créant un pont
-            numérique entre les producteurs des zones rurales et les
-            consommateurs urbains — pour une alimentation plus locale,
-            plus juste et plus traçable.
-          </p>
-        </div>
-        <div class="mv-card vision">
-          <div class="mv-card-icon">🔭</div>
-          <div class="mv-card-title">{% trans "Notre vision" %}</div>
-          <p class="mv-card-text">
-            Un Haïti où chaque paysan peut vendre sa récolte au juste
-            prix et où chaque famille peut accéder à des produits locaux
-            de qualité, directement du champ à la table.
-          </p>
-        </div>
-      </div>
-    </div>
-  </section>
-  {% endif %}
-
-  <!-- NOS VALEURS -->
-  <section class="section section-yellow">
     <div class="container">
       <div style="text-align:center; margin-bottom:48px">
-        <span style="display:inline-block; background:var(--blanc); color:var(--primary); padding:5px 14px; border-radius:50px; font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:.8px; border:1px solid rgba(0,63,135,.15)">{% trans "Nos valeurs" %}</span>
-        <h2 style="font-family:'Playfair Display',serif; font-size:36px; font-weight:900; color:var(--primary); margin-top:12px">{% trans "Ce qui nous guide" %}</h2>
+        <span class="section-label">{% trans "Nos engagements" %}</span>
+        <h2 class="section-title">{% trans "Mission & Vision" %}</h2>
+      </div>
+      <div class="mv-grid">
+        <div class="mv-card">
+          <div class="mv-icon-wrap"><i class="fas fa-bullseye"></i></div>
+          <div class="mv-card-title">{% trans "Notre mission" %}</div>
+          <p class="mv-card-text">
+            {% if site.a_propos_mission %}
+              {{ site.a_propos_mission }}
+            {% else %}
+              {% trans "Rendre le commerce local accessible à tous — connecter vendeurs et acheteurs haïtiens sur une plateforme numérique simple, sécurisée et adaptée à la réalité locale." %}
+            {% endif %}
+          </p>
+        </div>
+        <div class="mv-card vision">
+          <div class="mv-icon-wrap"><i class="fas fa-binoculars"></i></div>
+          <div class="mv-card-title">{% trans "Notre vision" %}</div>
+          <p class="mv-card-text">
+            {% if site.a_propos_vision %}
+              {{ site.a_propos_vision }}
+            {% else %}
+              {% trans "Un Haïti numérique où chaque entrepreneur, artisan ou producteur peut vendre ses produits à juste prix et toucher des clients dans tout le pays." %}
+            {% endif %}
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ NOS VALEURS ══════════════════════════════════════════ -->
+  <section class="section section-blue">
+    <div class="container">
+      <div style="text-align:center; margin-bottom:48px">
+        <span class="section-label">{% trans "Nos valeurs" %}</span>
+        <h2 class="section-title">{% trans "Ce qui nous guide" %}</h2>
       </div>
       <div class="valeurs-grid">
         <div class="valeur-card">
           <div class="valeur-icon"><i class="fas fa-handshake"></i></div>
-          <div class="valeur-title">{% trans "Équité" %}</div>
-          <p class="valeur-text">{% trans "Prix justes pour les producteurs, transparence totale pour les acheteurs." %}</p>
+          <div class="valeur-title">{% trans "Confiance" %}</div>
+          <p class="valeur-text">{% trans "Transactions sécurisées, vendeurs vérifiés, paiements protégés." %}</p>
         </div>
         <div class="valeur-card">
-          <div class="valeur-icon"><i class="fas fa-seedling"></i></div>
-          <div class="valeur-title">{% trans "Durabilité" %}</div>
-          <p class="valeur-text">{% trans "Soutien à l'agriculture locale et aux pratiques respectueuses de l'environnement." %}</p>
+          <div class="valeur-icon"><i class="fas fa-bolt"></i></div>
+          <div class="valeur-title">{% trans "Simplicité" %}</div>
+          <p class="valeur-text">{% trans "Une interface intuitive, rapide et accessible depuis n'importe quel appareil." %}</p>
         </div>
         <div class="valeur-card">
-          <div class="valeur-icon"><i class="fas fa-qrcode"></i></div>
-          <div class="valeur-title">{% trans "Traçabilité" %}</div>
-          <p class="valeur-text">{% trans "QR code sur chaque produit pour connaître son origine exacte." %}</p>
+          <div class="valeur-icon"><i class="fas fa-map-pin"></i></div>
+          <div class="valeur-title">{% trans "Localité" %}</div>
+          <p class="valeur-text">{% trans "Valoriser les produits et entrepreneurs haïtiens dans tous les départements." %}</p>
         </div>
         <div class="valeur-card">
           <div class="valeur-icon"><i class="fas fa-mobile-alt"></i></div>
@@ -401,25 +549,28 @@
         <div class="valeur-card">
           <div class="valeur-icon"><i class="fas fa-users"></i></div>
           <div class="valeur-title">{% trans "Communauté" %}</div>
-          <p class="valeur-text">{% trans "Une communauté de vendeurs et acheteurs qui partagent savoirs et ressources." %}</p>
+          <p class="valeur-text">{% trans "Une communauté de vendeurs et acheteurs qui partagent ressources et opportunités." %}</p>
         </div>
         <div class="valeur-card">
           <div class="valeur-icon"><i class="fas fa-chart-line"></i></div>
-          <div class="valeur-title">{% trans "Impact" %}</div>
-          <p class="valeur-text">{% trans "Chaque commande contribue directement au revenu des familles rurales." %}</p>
+          <div class="valeur-title">{% trans "Croissance" %}</div>
+          <p class="valeur-text">{% trans "Chaque vente contribue directement au développement économique d'Haïti." %}</p>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- CTA -->
+  <!-- ══ CTA ══════════════════════════════════════════════════ -->
   <section class="cta-banner">
     <div class="container">
-      <h2 class="cta-title">Rejoignez le mouvement <em>{% trans "vendeur" %}</em></h2>
-      <p class="cta-desc">{% trans "Producteur ou acheteur — votre place est ici." %}</p>
+      <div class="cta-badge"><i class="fas fa-store"></i> {% trans "Rejoignez-nous" %}</div>
+      <h2 class="cta-title">
+        Votre place sur<br><em>{{ site_settings.nom_site|default:"AyitiKonekte" }}</em>
+      </h2>
+      <p class="cta-desc">{% trans "Acheteur ou vendeur — créez votre compte gratuitement et rejoignez des milliers d'utilisateurs en Haïti." %}</p>
       <div class="cta-actions">
-        <a href="/" class="btn-cta-primary">
-          <i class="fas fa-store"></i> {% trans "Voir le catalogue" %}
+        <a href="{% url 'home:register' %}" class="btn-cta-primary">
+          <i class="fas fa-user-plus"></i> {% trans "Créer un compte" %}
         </a>
         <a href="{% url 'core:contact' %}" class="btn-cta-outline">
           <i class="fas fa-envelope"></i> {% trans "Nous contacter" %}
@@ -428,43 +579,77 @@
     </div>
   </section>
 
-  <!-- FOOTER -->
+  <!-- ══ FOOTER ═══════════════════════════════════════════════ -->
   <footer class="footer">
-    <div class="container">
-      <div class="footer-grid">
-        <div class="footer-brand">
-          <h3>🌾 {{ site_settings.nom_site|default:"AyitiKonekte" }}</h3>
-          <p>{{ site_settings.slogan|default:"Marketplace Haïti" }}</p>
-          <p class="slogan">{% trans "« Acheter à Haiti, livré chez vous »" %}</p>
+    <div class="footer-cta-strip">
+      <div class="container footer-cta-inner">
+        <div class="footer-cta-text">
+          <h3>{% trans "Prêt à rejoindre la marketplace ?" %}</h3>
+          <p>{% trans "Achetez, vendez et connectez-vous avec toute Haïti." %}</p>
         </div>
-        <div class="footer-col">
-          <h4>{% trans "Navigation" %}</h4>
-          <ul>
-            <li><a href="/">{% trans "Accueil" %}</a></li>
-            <li><a href="/#catalogue">{% trans "Catalogue" %}</a></li>
-            <li><a href="{% url 'core:apropos' %}">{% trans "À propos" %}</a></li>
-            <li><a href="{% url 'core:faq' %}">{% trans "FAQ" %}</a></li>
-            <li><a href="{% url 'core:contact' %}">{% trans "Contact" %}</a></li>
-          </ul>
-        </div>
-        <div class="footer-col">
-          <h4>{% trans "Plateforme" %}</h4>
-          <ul>
-            <li><a href="/admin/">{% trans "Administration" %}</a></li>
-            <li><a href="/analytics/dashboard/">{% trans "Dashboard BI" %}</a></li>
-            <li><a href="/api/schema/swagger-ui/">{% trans "API Docs" %}</a></li>
-          </ul>
-        </div>
-        <div class="footer-col">
-          <h4>{% trans "Contact" %}</h4>
-          <ul>
-            <li><a href="mailto:{{ site_settings.email_contact|default:'info@ayitikonekte.ht' }}"><i class="fas fa-envelope"></i> {{ site_settings.email_contact|default:"info@ayitikonekte.ht" }}</a></li>
-            {% if site_settings.telephone %}<li><a href="tel:{{ site_settings.telephone }}"><i class="fas fa-phone"></i> {{ site_settings.telephone }}</a></li>{% endif %}
-          </ul>
+        <div class="footer-cta-btns">
+          <a href="{% url 'home:register' %}" class="footer-cta-btn primary"><i class="fas fa-user-plus"></i> {% trans "S'inscrire gratuitement" %}</a>
+          <a href="/#catalogue" class="footer-cta-btn outline"><i class="fas fa-store"></i> {% trans "Voir le catalogue" %}</a>
         </div>
       </div>
-      <div class="footer-bottom">
+    </div>
+    <div class="footer-body">
+      <div class="container">
+        <div class="footer-grid">
+          <div class="footer-brand">
+            <div class="footer-logo">
+              {% if site_settings.logo %}
+                <img src="{{ site_settings.logo.url }}" alt="{{ site_settings.nom_site }}" style="height:38px; filter:brightness(0) invert(1);">
+              {% else %}
+                <span class="footer-logo-text"><i class="fas fa-store"></i> {{ site_settings.nom_site|default:"AyitiKonekte" }}</span>
+              {% endif %}
+            </div>
+            <p class="footer-tagline">{{ site_settings.slogan|default:"La Marketplace Haïtienne" }}</p>
+            <p class="footer-desc">{% trans "La plateforme qui connecte acheteurs et vendeurs partout en Haïti." %}</p>
+          </div>
+          <div class="footer-col">
+            <h4 class="footer-col-title">{% trans "Navigation" %}</h4>
+            <ul class="footer-links">
+              <li><a href="/"><i class="fas fa-home"></i> {% trans "Accueil" %}</a></li>
+              <li><a href="/#catalogue"><i class="fas fa-th-large"></i> {% trans "Catalogue" %}</a></li>
+              <li><a href="{% url 'core:apropos' %}"><i class="fas fa-info-circle"></i> {% trans "À propos" %}</a></li>
+              <li><a href="{% url 'core:faq' %}"><i class="fas fa-question-circle"></i> {% trans "FAQ" %}</a></li>
+              <li><a href="{% url 'core:contact' %}"><i class="fas fa-envelope"></i> {% trans "Contact" %}</a></li>
+            </ul>
+          </div>
+          <div class="footer-col">
+            <h4 class="footer-col-title">{% trans "Plateforme" %}</h4>
+            <ul class="footer-links">
+              <li><a href="{% url 'home:login' %}"><i class="fas fa-sign-in-alt"></i> {% trans "Se connecter" %}</a></li>
+              <li><a href="{% url 'home:register' %}"><i class="fas fa-user-plus"></i> {% trans "Créer un compte" %}</a></li>
+              <li><a href="/admin/"><i class="fas fa-cog"></i> {% trans "Administration" %}</a></li>
+            </ul>
+          </div>
+          <div class="footer-col">
+            <h4 class="footer-col-title">{% trans "Nous contacter" %}</h4>
+            <ul class="footer-links">
+              {% if site_settings.email_contact %}
+              <li><a href="mailto:{{ site_settings.email_contact }}"><i class="fas fa-envelope"></i> {{ site_settings.email_contact }}</a></li>
+              {% endif %}
+              {% if site_settings.telephone %}
+              <li><a href="tel:{{ site_settings.telephone }}"><i class="fas fa-phone"></i> {{ site_settings.telephone }}</a></li>
+              {% endif %}
+              {% if site_settings.whatsapp %}
+              <li><a href="https://wa.me/{{ site_settings.whatsapp|cut:' '|cut:'+' }}" target="_blank"><i class="fab fa-whatsapp"></i> WhatsApp</a></li>
+              {% endif %}
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div class="container footer-bottom-inner">
         <span>© {% now "Y" %} {{ site_settings.copyright_texte|default:"AyitiKonekte Haiti. Tous droits réservés." }}</span>
+        <span class="footer-bottom-badge">
+          <i class="fas fa-map-marker-alt"></i> {% trans "Haïti" %} &nbsp;·&nbsp;
+          <i class="fas fa-lock"></i> {% trans "Paiements sécurisés" %} &nbsp;·&nbsp;
+          <i class="fas fa-headset"></i> {% trans "Support local" %}
+        </span>
       </div>
     </div>
   </footer>

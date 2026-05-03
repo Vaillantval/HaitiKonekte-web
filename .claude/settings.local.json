@@ -60,7 +60,25 @@
       "Bash(curl -s http://localhost:8000/health/)",
       "Bash(curl -s http://localhost:8000/api/schema/swagger-ui/)",
       "Bash(venv/Scripts/python.exe manage.py runserver 8001 --noreload)",
-      "Bash(curl -s http://localhost:8001/health/)"
+      "Bash(curl -s http://localhost:8001/health/)",
+      "Bash(venv/Scripts/python.exe manage.py runserver 8002 --noreload)",
+      "Bash(curl -s http://localhost:8002/)",
+      "Bash(curl -s http://localhost:8002/accounts/login/)",
+      "Bash(curl -s http://localhost:8002/accounts/register/)",
+      "Bash(curl -s -o /dev/null -w '%{http_code}' http://localhost:8002/accounts/login/)",
+      "Bash(echo \"---login status: $\\(curl -s -o /dev/null -w '%{http_code}' http://localhost:8002/accounts/login/\\)\")",
+      "Bash(curl -s -o /dev/null -w '%{http_code}' http://localhost:8002/accounts/register/)",
+      "Bash(echo \"---register status: $\\(curl -s -o /dev/null -w '%{http_code}' http://localhost:8002/accounts/register/\\)\")",
+      "Bash(curl -s http://localhost:8002/connexion/)",
+      "Bash(curl -s -o /dev/null -w '%{http_code}' http://localhost:8002/connexion/)",
+      "Bash(echo \"---connexion status: $\\(curl -s -o /dev/null -w '%{http_code}' http://localhost:8002/connexion/\\)\")",
+      "Bash(curl -s http://localhost:8002/inscription/)",
+      "Bash(curl -s -o /dev/null -w '%{http_code}' http://localhost:8002/inscription/)",
+      "Bash(echo \"---inscription status: $\\(curl -s -o /dev/null -w '%{http_code}' http://localhost:8002/inscription/\\)\")",
+      "Bash(venv/Scripts/python.exe manage.py runserver 8003 --noreload)",
+      "Bash(curl -s http://localhost:8003/)",
+      "Bash(xargs sed *)",
+      "Bash(venv\\\\Scripts\\\\python.exe manage.py runserver --settings=config.settings.development)"
     ]
   }
 }

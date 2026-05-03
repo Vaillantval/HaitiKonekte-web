@@ -1,129 +1,146 @@
 {% load static %}
 {% load i18n %}
 <footer class="footer">
-  <div class="container">
-    <div class="footer-grid">
 
-      <div class="footer-brand">
-        {% if site_settings.logo %}
-          <img src="{{ site_settings.logo.url }}"
-               alt="{{ site_settings.nom_site }}"
-               style="height:36px; margin-bottom:12px; filter:brightness(0) invert(1);">
-        {% else %}
-          <h3>🌾 {{ site_settings.nom_site|default:"AyitiKonekte" }}</h3>
-        {% endif %}
-        <p>{{ site_settings.slogan|default:"Marketplace Haïti" }}</p>
-        {% if site_settings.hero_sous_titre %}
-          <p class="slogan">« Acheter à Haiti, livré chez vous,<br>Tout ce dont vous avez besoin »</p>
-        {% endif %}
-
-        {% if site_settings.facebook_url or site_settings.instagram_url or site_settings.twitter_url %}
-        <div style="display:flex; gap:10px; margin-top:16px">
-          {% if site_settings.facebook_url %}
-            <a href="{{ site_settings.facebook_url }}" target="_blank"
-               style="width:34px; height:34px; border-radius:50%; background:rgba(255,255,255,.1);
-                      display:flex; align-items:center; justify-content:center; color:white; font-size:14px;
-                      transition:background .2s"
-               onmouseover="this.style.background='#1877f2'"
-               onmouseout="this.style.background='rgba(255,255,255,.1)'">
-              <i class="fab fa-facebook-f"></i>
-            </a>
-          {% endif %}
-          {% if site_settings.instagram_url %}
-            <a href="{{ site_settings.instagram_url }}" target="_blank"
-               style="width:34px; height:34px; border-radius:50%; background:rgba(255,255,255,.1);
-                      display:flex; align-items:center; justify-content:center; color:white; font-size:14px;
-                      transition:background .2s"
-               onmouseover="this.style.background='#e1306c'"
-               onmouseout="this.style.background='rgba(255,255,255,.1)'">
-              <i class="fab fa-instagram"></i>
-            </a>
-          {% endif %}
-          {% if site_settings.twitter_url %}
-            <a href="{{ site_settings.twitter_url }}" target="_blank"
-               style="width:34px; height:34px; border-radius:50%; background:rgba(255,255,255,.1);
-                      display:flex; align-items:center; justify-content:center; color:white; font-size:14px;
-                      transition:background .2s"
-               onmouseover="this.style.background='#1da1f2'"
-               onmouseout="this.style.background='rgba(255,255,255,.1)'">
-              <i class="fab fa-twitter"></i>
-            </a>
-          {% endif %}
-          {% if site_settings.youtube_url %}
-            <a href="{{ site_settings.youtube_url }}" target="_blank"
-               style="width:34px; height:34px; border-radius:50%; background:rgba(255,255,255,.1);
-                      display:flex; align-items:center; justify-content:center; color:white; font-size:14px;
-                      transition:background .2s"
-               onmouseover="this.style.background='#ff0000'"
-               onmouseout="this.style.background='rgba(255,255,255,.1)'">
-              <i class="fab fa-youtube"></i>
-            </a>
-          {% endif %}
-        </div>
-        {% endif %}
+  <!-- Bande pré-footer CTA -->
+  <div class="footer-cta-strip">
+    <div class="container footer-cta-inner">
+      <div class="footer-cta-text">
+        <h3>{% trans "Prêt à rejoindre la marketplace ?" %}</h3>
+        <p>{% trans "Achetez, vendez et connectez-vous avec toute Haïti." %}</p>
       </div>
-
-      <div class="footer-col">
-        <h4>{% trans "Navigation" %}</h4>
-        <ul>
-          <li><a href="/">{% trans "Accueil" %}</a></li>
-          <li><a href="/#catalogue">{% trans "Catalogue" %}</a></li>
-          <li><a href="{% url 'core:apropos' %}">{% trans "À propos" %}</a></li>
-          <li><a href="{% url 'core:faq' %}">{% trans "FAQ" %}</a></li>
-          <li><a href="{% url 'core:contact' %}">{% trans "Contact" %}</a></li>
-        </ul>
+      <div class="footer-cta-btns">
+        <a href="{% url 'home:register' %}" class="footer-cta-btn primary">
+          <i class="fas fa-user-plus"></i> {% trans "S'inscrire gratuitement" %}
+        </a>
+        <a href="/#catalogue" class="footer-cta-btn outline">
+          <i class="fas fa-store"></i> {% trans "Voir le catalogue" %}
+        </a>
       </div>
-
-      <div class="footer-col">
-        <h4>{% trans "Plateforme" %}</h4>
-        <ul>
-          <li><a href="/admin/">{% trans "Administration" %}</a></li>
-          <li><a href="/analytics/dashboard/">{% trans "Dashboard BI" %}</a></li>
-          <li><a href="/api/schema/swagger-ui/">{% trans "API Docs" %}</a></li>
-        </ul>
-      </div>
-
-      <div class="footer-col">
-        <h4>{% trans "Contact" %}</h4>
-        <ul>
-          {% if site_settings.email_contact %}
-          <li>
-            <a href="mailto:{{ site_settings.email_contact }}">
-              <i class="fas fa-envelope"></i>
-              {{ site_settings.email_contact }}
-            </a>
-          </li>
-          {% endif %}
-          {% if site_settings.telephone %}
-          <li>
-            <a href="tel:{{ site_settings.telephone }}">
-              <i class="fas fa-phone"></i>
-              {{ site_settings.telephone }}
-            </a>
-          </li>
-          {% endif %}
-          {% if site_settings.whatsapp %}
-          <li>
-            <a href="https://wa.me/{{ site_settings.whatsapp|cut:' '|cut:'+' }}" target="_blank">
-              <i class="fab fa-whatsapp" style="color:#25d366"></i>
-              WhatsApp
-            </a>
-          </li>
-          {% endif %}
-          {% if site_settings.adresse %}
-          <li style="color:rgba(255,255,255,.4); font-size:12px; margin-top:8px">
-            <i class="fas fa-map-marker-alt"></i>
-            {{ site_settings.adresse }}
-          </li>
-          {% endif %}
-        </ul>
-      </div>
-
-    </div>
-
-    <div class="footer-bottom">
-      <span>© {% now "Y" %} {{ site_settings.copyright_texte|default:"AyitiKonekte Haiti. Tous droits réservés." }}</span>
-      <span>{% trans "Transversal| Haiti" %}</span>
     </div>
   </div>
+
+  <!-- Corps principal -->
+  <div class="footer-body">
+    <div class="container">
+      <div class="footer-grid">
+
+        <!-- Colonne marque -->
+        <div class="footer-brand">
+          <div class="footer-logo">
+            {% if site_settings.logo %}
+              <img src="{{ site_settings.logo.url }}" alt="{{ site_settings.nom_site }}" style="height:38px;">
+            {% else %}
+              <span class="footer-logo-text">
+                <i class="fas fa-store"></i>
+                {{ site_settings.nom_site|default:"AyitiKonekte" }}
+              </span>
+            {% endif %}
+          </div>
+          <p class="footer-tagline">{{ site_settings.slogan|default:"La Marketplace Haïtienne" }}</p>
+          <p class="footer-desc">{% trans "La plateforme qui connecte acheteurs et vendeurs partout en Haïti." %}</p>
+
+          {% if site_settings.facebook_url or site_settings.instagram_url or site_settings.twitter_url or site_settings.youtube_url %}
+          <div class="footer-socials">
+            {% if site_settings.facebook_url %}
+              <a href="{{ site_settings.facebook_url }}" target="_blank" aria-label="Facebook" class="footer-social-btn fb">
+                <i class="fab fa-facebook-f"></i>
+              </a>
+            {% endif %}
+            {% if site_settings.instagram_url %}
+              <a href="{{ site_settings.instagram_url }}" target="_blank" aria-label="Instagram" class="footer-social-btn ig">
+                <i class="fab fa-instagram"></i>
+              </a>
+            {% endif %}
+            {% if site_settings.twitter_url %}
+              <a href="{{ site_settings.twitter_url }}" target="_blank" aria-label="Twitter" class="footer-social-btn tw">
+                <i class="fab fa-twitter"></i>
+              </a>
+            {% endif %}
+            {% if site_settings.youtube_url %}
+              <a href="{{ site_settings.youtube_url }}" target="_blank" aria-label="YouTube" class="footer-social-btn yt">
+                <i class="fab fa-youtube"></i>
+              </a>
+            {% endif %}
+          </div>
+          {% endif %}
+        </div>
+
+        <!-- Navigation -->
+        <div class="footer-col">
+          <h4 class="footer-col-title">{% trans "Navigation" %}</h4>
+          <ul class="footer-links">
+            <li><a href="/"><i class="fas fa-home"></i> {% trans "Accueil" %}</a></li>
+            <li><a href="/#catalogue"><i class="fas fa-th-large"></i> {% trans "Catalogue" %}</a></li>
+            <li><a href="{% url 'core:apropos' %}"><i class="fas fa-info-circle"></i> {% trans "À propos" %}</a></li>
+            <li><a href="{% url 'core:faq' %}"><i class="fas fa-question-circle"></i> {% trans "FAQ" %}</a></li>
+            <li><a href="{% url 'core:contact' %}"><i class="fas fa-envelope"></i> {% trans "Contact" %}</a></li>
+          </ul>
+        </div>
+
+        <!-- Plateforme -->
+        <div class="footer-col">
+          <h4 class="footer-col-title">{% trans "Plateforme" %}</h4>
+          <ul class="footer-links">
+            <li><a href="{% url 'home:login' %}"><i class="fas fa-sign-in-alt"></i> {% trans "Se connecter" %}</a></li>
+            <li><a href="{% url 'home:register' %}"><i class="fas fa-user-plus"></i> {% trans "Créer un compte" %}</a></li>
+            <li><a href="/admin/"><i class="fas fa-cog"></i> {% trans "Administration" %}</a></li>
+            <li><a href="/analytics/dashboard/"><i class="fas fa-chart-bar"></i> {% trans "Dashboard BI" %}</a></li>
+            <li><a href="/api/schema/swagger-ui/"><i class="fas fa-code"></i> {% trans "API Docs" %}</a></li>
+          </ul>
+        </div>
+
+        <!-- Contact -->
+        <div class="footer-col">
+          <h4 class="footer-col-title">{% trans "Nous contacter" %}</h4>
+          <ul class="footer-links footer-contact-list">
+            {% if site_settings.email_contact %}
+            <li>
+              <a href="mailto:{{ site_settings.email_contact }}">
+                <i class="fas fa-envelope"></i>
+                {{ site_settings.email_contact }}
+              </a>
+            </li>
+            {% endif %}
+            {% if site_settings.telephone %}
+            <li>
+              <a href="tel:{{ site_settings.telephone }}">
+                <i class="fas fa-phone"></i>
+                {{ site_settings.telephone }}
+              </a>
+            </li>
+            {% endif %}
+            {% if site_settings.whatsapp %}
+            <li>
+              <a href="https://wa.me/{{ site_settings.whatsapp|cut:' '|cut:'+' }}" target="_blank">
+                <i class="fab fa-whatsapp"></i>
+                WhatsApp
+              </a>
+            </li>
+            {% endif %}
+            {% if site_settings.adresse %}
+            <li class="footer-address">
+              <i class="fas fa-map-marker-alt"></i>
+              {{ site_settings.adresse }}
+            </li>
+            {% endif %}
+          </ul>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Barre de copyright -->
+  <div class="footer-bottom">
+    <div class="container footer-bottom-inner">
+      <span>© {% now "Y" %} {{ site_settings.copyright_texte|default:"AyitiKonekte Haiti. Tous droits réservés." }}</span>
+      <span class="footer-bottom-badge">
+        <i class="fas fa-map-marker-alt"></i> {% trans "Haïti" %} &nbsp;·&nbsp;
+        <i class="fas fa-lock"></i> {% trans "Paiements sécurisés" %} &nbsp;·&nbsp;
+        <i class="fas fa-headset"></i> {% trans "Support local" %}
+      </span>
+    </div>
+  </div>
+
 </footer>
