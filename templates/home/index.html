@@ -1140,59 +1140,51 @@
     }
 
     /* ── Comment ça marche ─────────────────────────────────── */
-    .steps-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 24px;
-      position: relative;
-    }
+    .steps-section { background: linear-gradient(145deg, #001124 0%, var(--primary) 55%, var(--accent) 100%); padding: 80px 0; }
+    .steps-section .section-header { margin-bottom: 48px; }
+    .steps-section .section-tag { background: rgba(255,255,255,.12); color: rgba(255,255,255,.9); border: 1px solid rgba(255,255,255,.2); }
+    .steps-section .section-title { color: #fff; }
+    .steps-section .section-desc { color: rgba(255,255,255,.6); }
 
-    .steps-grid::before {
-      content: '';
-      position: absolute;
-      top: 36px;
-      left: 10%;
-      right: 10%;
-      height: 2px;
-      background: linear-gradient(90deg, var(--accent), var(--rouge));
-      z-index: 0;
-    }
+    .steps-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
 
     .step-card {
+      background: rgba(255,255,255,.07);
+      border: 1px solid rgba(255,255,255,.13);
+      border-radius: 20px;
+      padding: 28px 20px 24px;
       text-align: center;
       position: relative;
-      z-index: 1;
+      overflow: hidden;
+      transition: background .25s, transform .2s, box-shadow .2s;
     }
+    .step-card::after {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0;
+      height: 3px;
+      border-radius: 20px 20px 0 0;
+    }
+    .step-card:nth-child(1)::after { background: linear-gradient(90deg, #42a5f5, #1565C0); }
+    .step-card:nth-child(2)::after { background: linear-gradient(90deg, #ce93d8, #7B1FA2); }
+    .step-card:nth-child(3)::after { background: linear-gradient(90deg, #ffb74d, #E65100); }
+    .step-card:nth-child(4)::after { background: linear-gradient(90deg, #81c784, #1B5E20); }
+    .step-card:hover { background: rgba(255,255,255,.12); transform: translateY(-5px); box-shadow: 0 20px 48px rgba(0,0,0,.3); }
 
-    .step-num {
-      width: 72px;
-      height: 72px;
-      border-radius: 50%;
-      background: var(--blanc);
-      border: 3px solid var(--accent);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-family: 'Playfair Display', serif;
-      font-size: 26px;
-      font-weight: 900;
-      color: var(--primary);
-      margin: 0 auto 18px;
-      box-shadow: 0 4px 16px rgba(21,101,192,.2);
-    }
+    .step-icon-wrap { position: relative; display: inline-flex; margin-bottom: 18px; }
+    .step-icon { width: 68px; height: 68px; border-radius: 18px; display: flex; align-items: center; justify-content: center; font-size: 26px; color: #fff; }
+    .step-card:nth-child(1) .step-icon { background: linear-gradient(135deg, #1565C0, #42a5f5); box-shadow: 0 8px 20px rgba(21,101,192,.4); }
+    .step-card:nth-child(2) .step-icon { background: linear-gradient(135deg, #7B1FA2, #ce93d8); box-shadow: 0 8px 20px rgba(123,31,162,.4); }
+    .step-card:nth-child(3) .step-icon { background: linear-gradient(135deg, #E65100, #ffb74d); box-shadow: 0 8px 20px rgba(230,81,0,.4); }
+    .step-card:nth-child(4) .step-icon { background: linear-gradient(135deg, #1B5E20, #81c784); box-shadow: 0 8px 20px rgba(27,94,32,.4); }
 
-    .step-title {
-      font-weight: 700;
-      font-size: 15px;
-      color: var(--primary);
-      margin-bottom: 8px;
-    }
+    .step-num { position: absolute; top: -8px; right: -8px; width: 24px; height: 24px; background: #fff; border-radius: 50%; font-size: 11px; font-weight: 800; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(0,0,0,.15); }
+    .step-card:nth-child(1) .step-num { color: #1565C0; }
+    .step-card:nth-child(2) .step-num { color: #7B1FA2; }
+    .step-card:nth-child(3) .step-num { color: #E65100; }
+    .step-card:nth-child(4) .step-num { color: #1B5E20; }
 
-    .step-desc {
-      font-size: 13px;
-      color: var(--gris-texte);
-      line-height: 1.6;
-    }
+    .step-title { font-weight: 700; font-size: 15px; color: #fff; margin-bottom: 8px; }
+    .step-desc { font-size: 13px; color: rgba(255,255,255,.6); line-height: 1.65; }
 
     /* ── Slider ─────────────────────────────────────────────── */
     .slider-section {
@@ -1776,7 +1768,6 @@
       .categories-grid    { grid-template-columns: repeat(2, 1fr); }
       .producteurs-grid   { grid-template-columns: 1fr; }
       .steps-grid         { grid-template-columns: repeat(2, 1fr); }
-      .steps-grid::before { display: none; }
       .navbar-search      { display: none; }
       .navbar-actions { gap: 8px; }
       .footer-grid        { grid-template-columns: 1fr 1fr; }
@@ -2687,48 +2678,48 @@
 
 
   <!-- ══ COMMENT ÇA MARCHE ════════════════════════════════════ -->
-  <section class="section">
+  <section class="steps-section">
     <div class="container">
       <div class="section-header">
         <span class="section-tag">{% trans "Guide" %}</span>
         <h2 class="section-title">{% trans "Comment ça marche ?" %}</h2>
         <p class="section-desc">
-          Commander sur AyitiKonekte est simple et rapide.
-          Du champ à votre table en 4 étapes.
+          {% trans "Commander sur AyitiKonekte est simple et rapide — du champ à votre table en 4 étapes." %}
         </p>
       </div>
 
       <div class="steps-grid">
         <div class="step-card">
-          <div class="step-num">1</div>
+          <div class="step-icon-wrap">
+            <div class="step-icon"><i class="fas fa-search"></i></div>
+            <div class="step-num">1</div>
+          </div>
           <div class="step-title">{% trans "Parcourez le catalogue" %}</div>
-          <div class="step-desc">
-            Explorez les produits locaux disponibles
-            par catégorie ou recherche.
-          </div>
+          <div class="step-desc">{% trans "Explorez les produits locaux disponibles par catégorie ou par recherche." %}</div>
         </div>
         <div class="step-card">
-          <div class="step-num">2</div>
+          <div class="step-icon-wrap">
+            <div class="step-icon"><i class="fas fa-map-marker-alt"></i></div>
+            <div class="step-num">2</div>
+          </div>
           <div class="step-title">{% trans "Choisissez votre adresse" %}</div>
-          <div class="step-desc">
-            Renseignez votre adresse de livraison
-            et/ou de facturation à la commande.
-          </div>
+          <div class="step-desc">{% trans "Renseignez votre adresse de livraison et/ou de facturation à la commande." %}</div>
         </div>
         <div class="step-card">
-          <div class="step-num">3</div>
+          <div class="step-icon-wrap">
+            <div class="step-icon"><i class="fas fa-mobile-alt"></i></div>
+            <div class="step-num">3</div>
+          </div>
           <div class="step-title">{% trans "Payez facilement" %}</div>
-          <div class="step-desc">
-            MonCash, NatCash, virement ou
-            espèces — choisissez votre méthode.
-          </div>
+          <div class="step-desc">{% trans "MonCash, NatCash, virement ou espèces — choisissez votre méthode de paiement." %}</div>
         </div>
         <div class="step-card">
-          <div class="step-num">4</div>
-          <div class="step-title">{% trans "Recevez vos produits" %}</div>
-          <div class="step-desc">
-            {% trans "Livraison à domicile ou retrait en point relais — selon votre convenance." %}
+          <div class="step-icon-wrap">
+            <div class="step-icon"><i class="fas fa-box-open"></i></div>
+            <div class="step-num">4</div>
           </div>
+          <div class="step-title">{% trans "Recevez vos produits" %}</div>
+          <div class="step-desc">{% trans "Livraison à domicile ou retrait en point relais — selon votre convenance." %}</div>
         </div>
       </div>
     </div>
