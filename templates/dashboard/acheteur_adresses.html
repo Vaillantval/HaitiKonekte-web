@@ -386,16 +386,14 @@
             ${a.telephone ? _esc(a.telephone) + '<br>' : ''}
             ${_esc(a.rue)}<br>
             ${_esc(a.commune)}${a.section_communale ? ', ' + _esc(a.section_communale) : ''}, ${_esc(a.departement_display)}<br>
-            ${a.details ? '<em style="font-size:12px">{% trans "' + _esc(a.details) + '" %}</em>' : ''}
+            ${a.details ? '<em style="font-size:12px">' + _esc(a.details) + '</em>' : ''}
           </div>
           <div class="addr-actions">
-            ${!a.is_default ? `<button class="btn-icon success" onclick="setDefault(${a.id})">
-              <i class="fas fa-star"></i> {% trans "Défaut" %}
-            </button>` : ''}
+            ${!a.is_default ? '<button class="btn-icon success" onclick="setDefault(' + a.id + ')"><i class="fas fa-star"></i> Défaut</button>' : ''}
             <button class="btn-icon" onclick='openModal(JSON.parse(decodeURIComponent("${encodeURIComponent(JSON.stringify(a))}")))'>
               <i class="fas fa-edit"></i> {% trans "Modifier" %}
             </button>
-            <button class="btn-icon danger" onclick="deleteAddr(${a.id})">
+            <button class="btn-icon danger" data-addr-id="${a.id}" onclick="deleteAddr(+this.dataset.addrId)">
               <i class="fas fa-trash"></i>
             </button>
           </div>

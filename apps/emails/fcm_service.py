@@ -88,7 +88,7 @@ def unsubscribe_from_all_topics(fcm_token: str) -> None:
 
 # ── Envoi de notifications ────────────────────────────────────────────────────
 
-def send_to_token(fcm_token: str, title: str, body: str, data: dict = None) -> bool:
+def send_to_token(fcm_token: str, title: str, body: str, data: dict | None = None) -> bool:
     """Envoie une notification push à un token FCM individuel."""
     app = _get_firebase_app()
     if not app or not fcm_token:
@@ -113,7 +113,7 @@ def send_to_token(fcm_token: str, title: str, body: str, data: dict = None) -> b
         return False
 
 
-def send_to_topic(topic_key: str, title: str, body: str, data: dict = None) -> bool:
+def send_to_topic(topic_key: str, title: str, body: str, data: dict | None = None) -> bool:
     """
     Envoie une notification push à tous les abonnés d'un topic.
     topic_key : clé de rôle ('acheteur', 'producteur', etc.)
@@ -147,7 +147,7 @@ def send_to_topic(topic_key: str, title: str, body: str, data: dict = None) -> b
         return False
 
 
-def send_to_multiple_tokens(tokens: list, title: str, body: str, data: dict = None) -> dict:
+def send_to_multiple_tokens(tokens: list, title: str, body: str, data: dict | None = None) -> dict:
     """Envoie une notification à plusieurs tokens. Retourne {success: int, failure: int}."""
     app = _get_firebase_app()
     if not app or not tokens:

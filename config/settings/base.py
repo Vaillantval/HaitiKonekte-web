@@ -6,7 +6,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
 SECRET_KEY = config('SECRET_KEY')
 DEBUG = config('DEBUG', default=False, cast=bool)
-ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='localhost').split(',')
+ALLOWED_HOSTS = str(config('ALLOWED_HOSTS', default='localhost')).split(',')
 
 DJANGO_APPS = [
     'jazzmin',
@@ -156,7 +156,7 @@ PLOPPLOP_CLIENT_ID  = config('PLOPPLOP_CLIENT_ID',  default='')
 # ── Firebase / FCM ───────────────────────────────────────────────
 # JSON du service account Firebase (contenu brut en variable d'env)
 import json as _json
-_firebase_raw = config('FIREBASE_SERVICE_ACCOUNT_JSON', default='{}')
+_firebase_raw = str(config('FIREBASE_SERVICE_ACCOUNT_JSON', default='{}'))
 try:
     FIREBASE_CREDENTIALS_DICT = _json.loads(_firebase_raw) if _firebase_raw.strip() not in ('', '{}') else None
 except Exception:

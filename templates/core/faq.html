@@ -25,7 +25,7 @@
 
 
     /* Page header */
-    .page-header{background:linear-gradient(150deg, var(--primary) 0%, #1565C0 100%);padding:60px 0 48px;text-align:center;position:relative;overflow:hidden;}
+    .page-header{background:linear-gradient(145deg, #001a45 0%, var(--primary) 55%, var(--accent) 100%);padding:60px 0 48px;text-align:center;position:relative;overflow:hidden;}
     .page-header::before{content:'';position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");}
     .page-header-inner{position:relative;z-index:1;}
     .breadcrumb{display:flex;justify-content:center;gap:8px;font-size:13px;color:rgba(255,255,255,.6);margin-bottom:14px;}
@@ -247,9 +247,13 @@
     <div class="container-wide">
       <div class="footer-grid">
         <div class="footer-brand">
-          <h3>🌾 {{ site_settings.nom_site|default:"AyitiKonekte" }}</h3>
-          <p>{{ site_settings.slogan|default:"Marketplace Haïti" }}</p>
-          <p class="slogan">{% trans "« Acheter à Haiti, livré chez vous »" %}</p>
+          {% if site_settings.logo %}
+            <img src="{{ site_settings.logo.url }}" alt="{{ site_settings.nom_site }}" style="height:36px; margin-bottom:10px; filter:brightness(0) invert(1);">
+          {% else %}
+            <h3><i class="fas fa-store" style="color:var(--rouge)"></i> {{ site_settings.nom_site|default:"AyitiKonekte" }}</h3>
+          {% endif %}
+          <p>{{ site_settings.slogan|default:"La Marketplace Haïtienne" }}</p>
+          <p class="slogan">{% trans "La plateforme qui connecte acheteurs et vendeurs partout en Haïti." %}</p>
         </div>
         <div class="footer-col">
           <h4>{% trans "Navigation" %}</h4>
@@ -264,20 +268,23 @@
         <div class="footer-col">
           <h4>{% trans "Plateforme" %}</h4>
           <ul>
+            <li><a href="{% url 'home:login' %}">{% trans "Se connecter" %}</a></li>
+            <li><a href="{% url 'home:register' %}">{% trans "Créer un compte" %}</a></li>
             <li><a href="/admin/">{% trans "Administration" %}</a></li>
-            <li><a href="/analytics/dashboard/">{% trans "Dashboard BI" %}</a></li>
           </ul>
         </div>
         <div class="footer-col">
           <h4>{% trans "Contact" %}</h4>
           <ul>
             <li><a href="mailto:{{ site_settings.email_contact|default:'info@ayitikonekte.ht' }}"><i class="fas fa-envelope"></i> {{ site_settings.email_contact|default:"info@ayitikonekte.ht" }}</a></li>
-            {% if site_settings.telephone %}<li><i class="fas fa-phone"></i> {{ site_settings.telephone }}</li>{% endif %}
+            {% if site_settings.telephone %}<li><a href="tel:{{ site_settings.telephone }}"><i class="fas fa-phone"></i> {{ site_settings.telephone }}</a></li>{% endif %}
+            {% if site_settings.whatsapp %}<li><a href="https://wa.me/{{ site_settings.whatsapp|cut:' '|cut:'+' }}" target="_blank"><i class="fab fa-whatsapp"></i> WhatsApp</a></li>{% endif %}
           </ul>
         </div>
       </div>
       <div class="footer-bottom">
         <span>© {% now "Y" %} {{ site_settings.copyright_texte|default:"AyitiKonekte Haiti. Tous droits réservés." }}</span>
+        <span><i class="fas fa-map-marker-alt"></i> Haïti &nbsp;·&nbsp; <i class="fas fa-lock"></i> {% trans "Paiements sécurisés" %}</span>
       </div>
     </div>
   </footer>

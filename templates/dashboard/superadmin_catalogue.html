@@ -145,6 +145,11 @@
         <input type="number" id="f-quantite_min_commande" min="1" value="1">
       </div>
       <div class="field">
+        <label>{% trans "Stock disponible *" %}</label>
+        <input type="number" id="f-stock_disponible" min="0" value="0">
+        <span class="field-error" id="err-stock_disponible"></span>
+      </div>
+      <div class="field">
         <label>{% trans "Seuil d'alerte stock" %}</label>
         <input type="number" id="f-seuil_alerte" min="0" value="10">
       </div>
@@ -314,7 +319,7 @@ function debouncedSearch() { clearTimeout(_debounce); _debounce = setTimeout(loa
 
 function resetForm() {
   ['f-nom','f-description','f-variete','f-prix_unitaire','f-prix_gros','f-quantite_min_commande',
-   'f-seuil_alerte','f-origine','f-saison','f-certifications','f-image'].forEach(id => {
+   'f-stock_disponible','f-seuil_alerte','f-origine','f-saison','f-certifications','f-image'].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.value = el.type === 'number' && id === 'f-quantite_min_commande' ? '1'
                       : el.type === 'number' && id === 'f-seuil_alerte' ? '10' : '';
@@ -332,7 +337,7 @@ async function openCreate() {
   _editId = null;
   resetForm();
   document.getElementById('drawer-title').textContent = 'Nouveau produit';
-  document.getElementById('btn-submit').innerHTML = '<i class="fas fa-plus"></i> {% trans "Créer le produit';" %}
+  document.getElementById('btn-submit').innerHTML = '<i class="fas fa-plus"></i> Créer le produit';
   document.getElementById('drawer-overlay').classList.add('open');
   document.getElementById('drawer').classList.add('open');
 }
@@ -340,7 +345,7 @@ async function openCreate() {
 async function openEdit(id) {
   _editId = id;
   document.getElementById('drawer-title').textContent = 'Éditer le produit';
-  document.getElementById('btn-submit').innerHTML = '<i class="fas fa-save"></i> {% trans "Enregistrer';" %}
+  document.getElementById('btn-submit').innerHTML = '<i class="fas fa-save"></i> Enregistrer';
   document.getElementById('drawer-overlay').classList.add('open');
   document.getElementById('drawer').classList.add('open');
 
@@ -355,6 +360,7 @@ async function openEdit(id) {
   document.getElementById('f-prix_gros').value = p.prix_gros || '';
   document.getElementById('f-unite_vente').value = p.unite_vente;
   document.getElementById('f-quantite_min_commande').value = p.quantite_min_commande;
+  document.getElementById('f-stock_disponible').value = p.stock_disponible;
   document.getElementById('f-seuil_alerte').value = p.seuil_alerte;
   document.getElementById('f-origine').value = p.origine;
   document.getElementById('f-saison').value = p.saison;
@@ -401,6 +407,7 @@ async function submitForm(e) {
   fd.append('prix_gros',            document.getElementById('f-prix_gros').value);
   fd.append('unite_vente',          document.getElementById('f-unite_vente').value);
   fd.append('quantite_min_commande',document.getElementById('f-quantite_min_commande').value);
+  fd.append('stock_disponible',     document.getElementById('f-stock_disponible').value);
   fd.append('seuil_alerte',         document.getElementById('f-seuil_alerte').value);
   fd.append('origine',              document.getElementById('f-origine').value);
   fd.append('saison',               document.getElementById('f-saison').value);
@@ -408,6 +415,7 @@ async function submitForm(e) {
   fd.append('statut',               document.getElementById('f-statut').value);
   fd.append('is_active',            document.getElementById('f-is_active').checked ? 'true' : 'false');
   fd.append('is_featured',          document.getElementById('f-is_featured').checked ? 'true' : 'false');
+  fd.append('categorie',            document.getElementById('f-categorie').value);
 
   const imgFile = document.getElementById('f-image').files[0];
   if (imgFile) fd.append('image_principale', imgFile);
@@ -418,12 +426,8 @@ async function submitForm(e) {
     method = 'PATCH';
   } else {
     fd.append('producteur_id', document.getElementById('f-producteur').value);
-    fd.append('categorie_id',  document.getElementById('f-categorie').value);
     url = '/api/admin/catalogue/create/';
     method = 'POST';
-  }
-  if (_editId) {
-    fd.append('categorie_id', document.getElementById('f-categorie').value);
   }
 
   const authH = { 'Authorization': 'Bearer ' + localStorage.getItem('mp_access') };

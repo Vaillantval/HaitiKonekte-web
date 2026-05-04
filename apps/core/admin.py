@@ -76,7 +76,7 @@ class SiteSettingsAdmin(admin.ModelAdmin):
     def has_delete_permission(self, request, obj=None):
         return False
 
-    def changelist_view(self, request, extra_context=None):
+    def changelist_view(self, request, extra_context=None):  # type: ignore[override]
         """Redirige directement vers la page d'édition."""
         obj = SiteSettings.get_solo()
         from django.shortcuts import redirect
@@ -84,6 +84,7 @@ class SiteSettingsAdmin(admin.ModelAdmin):
             f'/admin/core/sitesettings/{obj.pk}/change/'
         )
 
+    @admin.display(description='Aperçu logo')
     def logo_preview(self, obj):
         if obj.logo:
             return format_html(
@@ -91,7 +92,6 @@ class SiteSettingsAdmin(admin.ModelAdmin):
                 obj.logo.url
             )
         return '—'
-    logo_preview.short_description = 'Aperçu logo'
 
 
 # ── FAQ ──────────────────────────────────────────────────────────────────────
@@ -109,6 +109,7 @@ class FAQCategorieAdmin(admin.ModelAdmin):
     list_editable = ('ordre', 'is_active')
     inlines       = [FAQItemInline]
 
+    @admin.display(description='Questions actives')
     def nb_questions(self, obj):
         n = obj.items.filter(is_active=True).count()
         return format_html(
@@ -117,7 +118,6 @@ class FAQCategorieAdmin(admin.ModelAdmin):
             '{} question{}</span>',
             n, 's' if n > 1 else ''
         )
-    nb_questions.short_description = 'Questions actives'
 
 
 @admin.register(FAQItem)
@@ -128,9 +128,9 @@ class FAQItemAdmin(admin.ModelAdmin):
     search_fields = ('question', 'reponse')
     ordering      = ('categorie__ordre', 'ordre')
 
+    @admin.display(description='Question')
     def question_courte(self, obj):
         return obj.question[:80] + ('…' if len(obj.question) > 80 else '')
-    question_courte.short_description = 'Question'
 
 
 # ── Messages de contact ──────────────────────────────────────────────────────
@@ -155,10 +155,11 @@ class ContactMessageAdmin(admin.ModelAdmin):
         }),
     ]
 
+    @admin.display(description='Sujet')
     def sujet_court(self, obj):
         return obj.sujet[:60] + ('…' if len(obj.sujet) > 60 else '')
-    sujet_court.short_description = 'Sujet'
 
+    @admin.display(description='Statut')
     def badge_lu(self, obj):
         if obj.est_lu:
             return format_html(
@@ -169,7 +170,6 @@ class ContactMessageAdmin(admin.ModelAdmin):
             '<span style="background:#fef9e7; color:#e67e22; '
             'padding:2px 10px; border-radius:12px; font-weight:600">Non lu</span>'
         )
-    badge_lu.short_description = 'Statut'
 
     def has_add_permission(self, request):
         return False

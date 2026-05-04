@@ -216,13 +216,13 @@
 
   function statutBadge(statut, label) {
     const s = STATUT_STYLES[statut] || { bg: '#eee', color: '#888', icon: 'fa-circle' };
-    return `<span class="statut-badge" style="background:${s.bg};color:${s.color}">
-      <i class="fas ${s.icon}" style="font-size:9px"></i> ${label}
-    </span>`;
+    return '<span class="statut-badge" style="background:' + s.bg + ';color:' + s.color + '">'
+         + '<i class="fas ' + s.icon + '" style="font-size:9px"></i> ' + label
+         + '</span>';
   }
   function paiementBadge(statut, label) {
     const s = PAIEMENT_STYLES[statut] || { bg: '#eee', color: '#888' };
-    return `<span class="paiement-badge" style="background:${s.bg};color:${s.color}">{% trans "${label}" %}</span>`;
+    return '<span class="paiement-badge" style="background:' + s.bg + ';color:' + s.color + '">' + label + '</span>';
   }
   function formatDate(iso) {
     return new Date(iso).toLocaleDateString('fr-FR', { day:'2-digit', month:'short', year:'numeric' });
