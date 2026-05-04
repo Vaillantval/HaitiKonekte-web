@@ -32,19 +32,6 @@
     img { max-width:100%; display:block; }
     .container { max-width:1200px; margin:0 auto; padding:0 24px; }
 
-    /* Navbar helpers reused from index */
-    .navbar-search { flex:1; max-width:400px; margin:0 32px; }
-    .navbar-search form { display:flex; background:rgba(255,255,255,.12); border:1px solid rgba(255,255,255,.2); border-radius:50px; overflow:hidden; }
-    .navbar-search input { flex:1; padding:10px 18px; background:transparent; border:none; outline:none; color:var(--blanc); font-size:14px; font-family:'DM Sans',sans-serif; }
-    .navbar-search input::placeholder { color:rgba(255,255,255,.6); }
-    .navbar-search button { padding:10px 18px; background:var(--rouge); border:none; cursor:pointer; color:var(--blanc); font-size:14px; }
-    .navbar-actions { display:flex; align-items:center; gap:12px; }
-    .btn-nav { padding:9px 20px; border-radius:50px; font-size:13px; font-weight:600; cursor:pointer; transition:all .2s; border:none; font-family:'DM Sans',sans-serif; }
-    .btn-nav-outline { background:transparent; border:1.5px solid rgba(255,255,255,.5); color:var(--blanc); }
-    .btn-nav-outline:hover { background:rgba(255,255,255,.1); }
-    .btn-nav-primary { background:var(--rouge); color:var(--blanc); }
-    .btn-nav-primary:hover { background:#BF360C; }
-
     /* ── Page header ─────────────────────────────────────────── */
     .page-header {
       background: linear-gradient(145deg, #001a45 0%, var(--primary) 55%, var(--accent) 100%);
@@ -264,82 +251,11 @@
     }
     .btn-cta-outline:hover { border-color: var(--blanc); background: rgba(255,255,255,.1); }
 
-    /* ── Footer ──────────────────────────────────────────────── */
-    .footer { color: rgba(255,255,255,.7); }
-    .footer-cta-strip {
-      background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
-      padding: 40px 0;
-    }
-    .footer-cta-inner {
-      display: flex; align-items: center; justify-content: space-between;
-      gap: 24px; flex-wrap: wrap;
-    }
-    .footer-cta-text h3 { color: #fff; font-size: 20px; font-weight: 700; margin-bottom: 4px; }
-    .footer-cta-text p { color: rgba(255,255,255,.75); font-size: 14px; }
-    .footer-cta-btns { display: flex; gap: 12px; flex-wrap: wrap; }
-    .footer-cta-btn {
-      display: inline-flex; align-items: center; gap: 8px;
-      padding: 11px 22px; border-radius: 8px;
-      font-size: 14px; font-weight: 600; text-decoration: none; transition: all .2s;
-    }
-    .footer-cta-btn.primary { background: #fff; color: var(--primary); }
-    .footer-cta-btn.primary:hover { background: #f0f4ff; }
-    .footer-cta-btn.outline { border: 2px solid rgba(255,255,255,.55); color: #fff; }
-    .footer-cta-btn.outline:hover { background: rgba(255,255,255,.12); }
-
-    .footer-body { background: var(--noir); padding: 56px 0 40px; }
-    .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 40px; }
-    .footer-logo { margin-bottom: 12px; }
-    .footer-logo-text { font-size: 22px; font-weight: 800; color: #fff; display: flex; align-items: center; gap: 8px; }
-    .footer-logo-text i { color: var(--rouge); }
-    .footer-tagline { font-size: 13px; font-weight: 600; color: rgba(255,255,255,.85); margin-bottom: 8px; }
-    .footer-desc { font-size: 13px; line-height: 1.8; color: rgba(255,255,255,.45); margin-bottom: 20px; }
-    .footer-socials { display: flex; gap: 10px; }
-    .footer-social-btn {
-      width: 36px; height: 36px; border-radius: 8px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 14px; color: #fff; background: rgba(255,255,255,.1);
-      transition: background .2s, transform .15s; text-decoration: none;
-    }
-    .footer-social-btn:hover { transform: translateY(-2px); }
-    .footer-social-btn.fb:hover { background: #1877f2; }
-    .footer-social-btn.ig:hover { background: #e1306c; }
-    .footer-social-btn.tw:hover { background: #1da1f2; }
-    .footer-social-btn.yt:hover { background: #ff0000; }
-    .footer-col-title {
-      font-size: 11px; font-weight: 700; color: var(--blanc);
-      text-transform: uppercase; letter-spacing: 1.2px;
-      margin-bottom: 18px; padding-bottom: 10px;
-      border-bottom: 1px solid rgba(255,255,255,.08);
-    }
-    .footer-links { list-style: none; }
-    .footer-links li { margin-bottom: 10px; font-size: 13px; }
-    .footer-links a {
-      color: rgba(255,255,255,.5); transition: color .2s, padding-left .15s;
-      display: flex; align-items: center; gap: 8px; text-decoration: none;
-    }
-    .footer-links a i { font-size: 11px; color: rgba(255,255,255,.25); }
-    .footer-links a:hover { color: var(--rouge); padding-left: 4px; }
-    .footer-links a:hover i { color: var(--rouge); }
-    .footer-bottom { background: rgba(0,0,0,.35); padding: 16px 0; }
-    .footer-bottom-inner {
-      display: flex; justify-content: space-between; align-items: center;
-      font-size: 12px; color: rgba(255,255,255,.3); flex-wrap: wrap; gap: 8px;
-    }
-    .footer-bottom-badge { display: flex; align-items: center; gap: 4px; flex-wrap: wrap; }
-    .footer-bottom-badge i { color: rgba(255,255,255,.4); }
-
     /* ── Responsive ──────────────────────────────────────────── */
-    @media (max-width: 1024px) {
-      .footer-grid { grid-template-columns: 1fr 1fr; }
-      .footer-cta-inner { flex-direction: column; align-items: flex-start; }
-    }
     @media (max-width: 768px) {
       .apropos-grid, .mv-grid { grid-template-columns: 1fr; }
       .stats-strip { grid-template-columns: repeat(2, 1fr); }
       .valeurs-grid { grid-template-columns: 1fr 1fr; }
-      .navbar-search { display: none; }
-      .footer-grid { grid-template-columns: 1fr 1fr; }
       .page-title { font-size: 36px; }
       .apropos-visual { height: 300px; }
       .section-title { font-size: 30px; }
@@ -350,10 +266,6 @@
       .stat-item { border-right: none; border-bottom: 1px solid rgba(0,0,0,.06); }
       .stat-item:last-child { border-bottom: none; }
       .page-title { font-size: 28px; }
-      .btn-nav { padding: 7px 12px; font-size: 12px; }
-      .footer-grid { grid-template-columns: 1fr; }
-      .footer-cta-btns { flex-direction: column; width: 100%; }
-      .footer-cta-btn { justify-content: center; }
     }
   </style>
 </head>
@@ -579,80 +491,7 @@
     </div>
   </section>
 
-  <!-- ══ FOOTER ═══════════════════════════════════════════════ -->
-  <footer class="footer">
-    <div class="footer-cta-strip">
-      <div class="container footer-cta-inner">
-        <div class="footer-cta-text">
-          <h3>{% trans "Prêt à rejoindre la marketplace ?" %}</h3>
-          <p>{% trans "Achetez, vendez et connectez-vous avec toute Haïti." %}</p>
-        </div>
-        <div class="footer-cta-btns">
-          <a href="{% url 'home:register' %}" class="footer-cta-btn primary"><i class="fas fa-user-plus"></i> {% trans "S'inscrire gratuitement" %}</a>
-          <a href="/#catalogue" class="footer-cta-btn outline"><i class="fas fa-store"></i> {% trans "Voir le catalogue" %}</a>
-        </div>
-      </div>
-    </div>
-    <div class="footer-body">
-      <div class="container">
-        <div class="footer-grid">
-          <div class="footer-brand">
-            <div class="footer-logo">
-              {% if site_settings.logo %}
-                <img src="{{ site_settings.logo.url }}" alt="{{ site_settings.nom_site }}" style="height:38px; filter:brightness(0) invert(1);">
-              {% else %}
-                <span class="footer-logo-text"><i class="fas fa-store"></i> {{ site_settings.nom_site|default:"AyitiKonekte" }}</span>
-              {% endif %}
-            </div>
-            <p class="footer-tagline">{{ site_settings.slogan|default:"La Marketplace Haïtienne" }}</p>
-            <p class="footer-desc">{% trans "La plateforme qui connecte acheteurs et vendeurs partout en Haïti." %}</p>
-          </div>
-          <div class="footer-col">
-            <h4 class="footer-col-title">{% trans "Navigation" %}</h4>
-            <ul class="footer-links">
-              <li><a href="/"><i class="fas fa-home"></i> {% trans "Accueil" %}</a></li>
-              <li><a href="/#catalogue"><i class="fas fa-th-large"></i> {% trans "Catalogue" %}</a></li>
-              <li><a href="{% url 'core:apropos' %}"><i class="fas fa-info-circle"></i> {% trans "À propos" %}</a></li>
-              <li><a href="{% url 'core:faq' %}"><i class="fas fa-question-circle"></i> {% trans "FAQ" %}</a></li>
-              <li><a href="{% url 'core:contact' %}"><i class="fas fa-envelope"></i> {% trans "Contact" %}</a></li>
-            </ul>
-          </div>
-          <div class="footer-col">
-            <h4 class="footer-col-title">{% trans "Plateforme" %}</h4>
-            <ul class="footer-links">
-              <li><a href="{% url 'home:login' %}"><i class="fas fa-sign-in-alt"></i> {% trans "Se connecter" %}</a></li>
-              <li><a href="{% url 'home:register' %}"><i class="fas fa-user-plus"></i> {% trans "Créer un compte" %}</a></li>
-              <li><a href="/admin/"><i class="fas fa-cog"></i> {% trans "Administration" %}</a></li>
-            </ul>
-          </div>
-          <div class="footer-col">
-            <h4 class="footer-col-title">{% trans "Nous contacter" %}</h4>
-            <ul class="footer-links">
-              {% if site_settings.email_contact %}
-              <li><a href="mailto:{{ site_settings.email_contact }}"><i class="fas fa-envelope"></i> {{ site_settings.email_contact }}</a></li>
-              {% endif %}
-              {% if site_settings.telephone %}
-              <li><a href="tel:{{ site_settings.telephone }}"><i class="fas fa-phone"></i> {{ site_settings.telephone }}</a></li>
-              {% endif %}
-              {% if site_settings.whatsapp %}
-              <li><a href="https://wa.me/{{ site_settings.whatsapp|cut:' '|cut:'+' }}" target="_blank"><i class="fab fa-whatsapp"></i> WhatsApp</a></li>
-              {% endif %}
-            </ul>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="footer-bottom">
-      <div class="container footer-bottom-inner">
-        <span>© {% now "Y" %} {{ site_settings.copyright_texte|default:"AyitiKonekte Haiti. Tous droits réservés." }}</span>
-        <span class="footer-bottom-badge">
-          <i class="fas fa-map-marker-alt"></i> {% trans "Haïti" %} &nbsp;·&nbsp;
-          <i class="fas fa-lock"></i> {% trans "Paiements sécurisés" %} &nbsp;·&nbsp;
-          <i class="fas fa-headset"></i> {% trans "Support local" %}
-        </span>
-      </div>
-    </div>
-  </footer>
+  {% include 'partials/footer.html' %}
 
 </body>
 </html>
