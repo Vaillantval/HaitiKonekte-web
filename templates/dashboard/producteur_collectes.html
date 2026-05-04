@@ -1,4 +1,4 @@
-{% extends 'dashboard/base.html' %}
+﻿{% extends 'dashboard/base.html' %}
 {% load i18n %}
 
 {% block title %}Mes collectes — Producteur{% endblock %}
@@ -554,7 +554,7 @@
     if (!_confirmId) return;
     const btn = document.getElementById('modal-confirm-btn');
     btn.disabled = true;
-    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> {% trans "Envoi...';" %}
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Envoi...';
 
     const body = {
       quantite_prevue: parseInt(document.getElementById('modal-quantite').value) || 0,
@@ -590,7 +590,7 @@
       showToast('Erreur réseau.', 'error');
     } finally {
       btn.disabled = false;
-      btn.innerHTML = '<i class="fas fa-check"></i> {% trans "Confirmer';" %}
+      btn.innerHTML = '<i class="fas fa-check"></i> Confirmer';
     }
   }
 

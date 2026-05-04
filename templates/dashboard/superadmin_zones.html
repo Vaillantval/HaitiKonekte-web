@@ -1,4 +1,4 @@
-{% extends 'dashboard/base.html' %}
+﻿{% extends 'dashboard/base.html' %}
 {% load i18n %}
 {% block title %}Zones & Points de collecte — Superadmin{% endblock %}
 {% block sidebar_nav %}{% include 'dashboard/superadmin_sidebar.html' with active='zones' %}{% endblock %}
@@ -279,7 +279,7 @@ async function loadZones() {
 function openZoneCreate() {
   _zEditId = null;
   document.getElementById('zone-modal-title').textContent = 'Nouvelle zone de collecte';
-  document.getElementById('z-submit').innerHTML = '<i class="fas fa-plus"></i> {% trans "Créer';" %}
+  document.getElementById('z-submit').innerHTML = '<i class="fas fa-plus"></i> Créer';
   ['z-nom','z-description'].forEach(id => document.getElementById(id).value='');
   document.getElementById('z-dept').value = '';
   document.getElementById('z-active').checked = true;
@@ -292,7 +292,7 @@ async function openZoneEdit(id) {
   if (!r.ok) return;
   const z = (await r.json()).data;
   document.getElementById('zone-modal-title').textContent = 'Modifier zone';
-  document.getElementById('z-submit').innerHTML = '<i class="fas fa-save"></i> {% trans "Enregistrer';" %}
+  document.getElementById('z-submit').innerHTML = '<i class="fas fa-save"></i> Enregistrer';
   document.getElementById('z-nom').value         = z.nom;
   document.getElementById('z-dept').value        = z.departement;
   document.getElementById('z-description').value = z.description;
@@ -370,7 +370,7 @@ async function loadPoints() {
 function openPointCreate() {
   _ptEditId = null;
   document.getElementById('point-modal-title').textContent = 'Nouveau point de collecte';
-  document.getElementById('pt-submit').innerHTML = '<i class="fas fa-plus"></i> {% trans "Créer';" %}
+  document.getElementById('pt-submit').innerHTML = '<i class="fas fa-plus"></i> Créer';
   ['pt-nom','pt-commune','pt-adresse','pt-responsable','pt-telephone'].forEach(id => document.getElementById(id).value='');
   document.getElementById('pt-zone').value = '';
   document.getElementById('pt-active').checked = true;
@@ -385,7 +385,7 @@ async function openPointEdit(id) {
   const p = pts.find(x => x.id === id);
   if (!p) return;
   document.getElementById('point-modal-title').textContent = 'Modifier point';
-  document.getElementById('pt-submit').innerHTML = '<i class="fas fa-save"></i> {% trans "Enregistrer';" %}
+  document.getElementById('pt-submit').innerHTML = '<i class="fas fa-save"></i> Enregistrer';
   document.getElementById('pt-zone').value       = p.zone_id;
   document.getElementById('pt-nom').value        = p.nom;
   document.getElementById('pt-commune').value    = p.commune;

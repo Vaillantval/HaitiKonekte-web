@@ -322,7 +322,7 @@
     // Bloquer le bouton save pendant le chargement des données géo
     const saveBtn = document.getElementById('save-btn');
     saveBtn.disabled = true;
-    saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> {% trans "Chargement…';" %}
+    saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Chargement…';
 
     await _geoAddr.prefill({
       deptSlug:   addr?.departement       || '',
@@ -331,7 +331,7 @@
     });
 
     saveBtn.disabled = false;
-    saveBtn.innerHTML = '<i class="fas fa-save"></i> {% trans "Enregistrer';" %}
+    saveBtn.innerHTML = '<i class="fas fa-save"></i> Enregistrer';
   }
 
   function closeModal() { document.getElementById('modal-overlay').classList.remove('open'); }
@@ -440,7 +440,7 @@
     }
 
     saveBtn.disabled = true;
-    saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> {% trans "Enregistrement…';" %}
+    saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enregistrement…';
 
     const url    = editingId ? `/api/auth/adresses/${editingId}/` : '/api/auth/adresses/';
     const method = editingId ? 'PUT' : 'POST';
@@ -475,7 +475,7 @@
       errEl.style.display = 'block';
     } finally {
       saveBtn.disabled = false;
-      saveBtn.innerHTML = '<i class="fas fa-save"></i> {% trans "Enregistrer';" %}
+      saveBtn.innerHTML = '<i class="fas fa-save"></i> Enregistrer';
     }
   });
 

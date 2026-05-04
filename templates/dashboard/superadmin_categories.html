@@ -1,4 +1,4 @@
-{% extends 'dashboard/base.html' %}
+﻿{% extends 'dashboard/base.html' %}
 {% load i18n %}
 {% block title %}Catégories — Superadmin{% endblock %}
 {% block sidebar_nav %}{% include 'dashboard/superadmin_sidebar.html' with active='categories' %}{% endblock %}
@@ -205,7 +205,7 @@ async function load() {
 function openCreate() {
   _editId = null;
   document.getElementById('modal-title').textContent = 'Nouvelle catégorie';
-  document.getElementById('submit-btn').innerHTML = '<i class="fas fa-plus"></i> {% trans "Créer';" %}
+  document.getElementById('submit-btn').innerHTML = '<i class="fas fa-plus"></i> Créer';
   document.getElementById('f-nom').value = '';
   document.getElementById('f-icone').value = 'fas fa-leaf';
   document.getElementById('f-ordre').value = '0';
@@ -223,7 +223,7 @@ async function openEdit(id) {
   if (!r.ok) { showToast('Erreur', 'error'); return; }
   const c = (await r.json()).data;
   document.getElementById('modal-title').textContent = 'Modifier catégorie';
-  document.getElementById('submit-btn').innerHTML = '<i class="fas fa-save"></i> {% trans "Enregistrer';" %}
+  document.getElementById('submit-btn').innerHTML = '<i class="fas fa-save"></i> Enregistrer';
   document.getElementById('f-nom').value    = c.nom;
   document.getElementById('f-icone').value  = c.icone||'';
   document.getElementById('f-ordre').value  = c.ordre;

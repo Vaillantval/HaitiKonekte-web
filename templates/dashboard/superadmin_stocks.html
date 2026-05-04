@@ -1,4 +1,4 @@
-{% extends 'dashboard/base.html' %}
+﻿{% extends 'dashboard/base.html' %}
 {% load i18n %}
 {% block title %}Stocks — Superadmin{% endblock %}
 {% block sidebar_nav %}{% include 'dashboard/superadmin_sidebar.html' with active='stocks' %}{% endblock %}
@@ -379,7 +379,7 @@ function debouncedLots() { clearTimeout(_lotsDebounce); _lotsDebounce = setTimeo
 function openLotCreate() {
   _editLotId = null;
   document.getElementById('modal-title').textContent = 'Nouveau lot de stock';
-  document.getElementById('lot-submit-btn').innerHTML = '<i class="fas fa-plus"></i> {% trans "Créer le lot';" %}
+  document.getElementById('lot-submit-btn').innerHTML = '<i class="fas fa-plus"></i> Créer le lot';
   ['f-qte-init','f-date-recolte','f-date-expiration','f-lieu','f-lot-notes'].forEach(id => document.getElementById(id).value = '');
   document.getElementById('f-lot-statut').value = 'disponible';
   document.getElementById('f-qte-actuelle-wrap').style.display = 'none';
@@ -391,7 +391,7 @@ function openLotCreate() {
 async function openLotEdit(id) {
   _editLotId = id;
   document.getElementById('modal-title').textContent = 'Éditer le lot';
-  document.getElementById('lot-submit-btn').innerHTML = '<i class="fas fa-save"></i> {% trans "Enregistrer';" %}
+  document.getElementById('lot-submit-btn').innerHTML = '<i class="fas fa-save"></i> Enregistrer';
   document.getElementById('lot-modal').classList.add('open');
 
   const r = await fetch(`/api/admin/stocks/lots/${id}/`, { headers: H });

@@ -1,4 +1,4 @@
-{% extends 'dashboard/base.html' %}
+﻿{% extends 'dashboard/base.html' %}
 {% load i18n %}
 {% load static %}
 {% block title %}Carte des Utilisateurs — Superadmin{% endblock %}
@@ -316,7 +316,7 @@ function updateDonut(stats) {
 async function chargerDonnees(params = {}) {
   const qs = new URLSearchParams(params).toString();
   const url = `/api/admin/users/carte/${qs ? '?' + qs : ''}`;
-  document.getElementById('mapCounter').innerHTML = '<i class="fas fa-spinner fa-spin"></i> {% trans "Chargement...';" %}
+  document.getElementById('mapCounter').innerHTML = '<i class="fas fa-spinner fa-spin"></i> Chargement...';
   try {
     const res  = await fetch(url, { headers: _carteH });
     const json = await res.json();

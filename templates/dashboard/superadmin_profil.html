@@ -1,4 +1,4 @@
-{% extends 'dashboard/base.html' %}
+﻿{% extends 'dashboard/base.html' %}
 {% load i18n %}
 {% block title %}Mon profil — Superadmin{% endblock %}
 {% block sidebar_nav %}{% include 'dashboard/superadmin_sidebar.html' with active='profil' %}{% endblock %}
@@ -301,7 +301,7 @@ function checkPwdStrength(pwd) {
 async function saveInfo() {
   const btn = document.getElementById('btn-save-info');
   btn.disabled = true;
-  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> {% trans "Enregistrement…';" %}
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enregistrement…';
   const payload = {
     first_name: document.getElementById('f-first-name').value.trim(),
     last_name:  document.getElementById('f-last-name').value.trim(),
@@ -328,7 +328,7 @@ async function saveInfo() {
   } catch { showToast('Erreur réseau.', 'error'); }
   finally {
     btn.disabled = false;
-    btn.innerHTML = '<i class="fas fa-save"></i> {% trans "Enregistrer';" %}
+    btn.innerHTML = '<i class="fas fa-save"></i> Enregistrer';
   }
 }
 
@@ -341,7 +341,7 @@ async function savePassword() {
   if (newPwd !== confirm) { showToast('Les mots de passe ne correspondent pas.', 'error'); return; }
   const btn = document.getElementById('btn-save-pwd');
   btn.disabled = true;
-  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> {% trans "Mise à jour…';" %}
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Mise à jour…';
   try {
     const r = await fetch('/api/auth/change-password/', {
       method: 'POST',
@@ -359,7 +359,7 @@ async function savePassword() {
   } catch { showToast('Erreur réseau.', 'error'); }
   finally {
     btn.disabled = false;
-    btn.innerHTML = '<i class="fas fa-key"></i> {% trans "Changer le mot de passe';" %}
+    btn.innerHTML = '<i class="fas fa-key"></i> Changer le mot de passe';
   }
 }
 

@@ -1,4 +1,4 @@
-{% extends 'dashboard/base.html' %}
+﻿{% extends 'dashboard/base.html' %}
 {% load i18n %}
 
 {% block title %}Mon profil — Producteur{% endblock %}
@@ -484,7 +484,7 @@
 
   async function saveInfo() {
     const btn = document.getElementById('btn-save-info');
-    btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> {% trans "Enregistrement…';" %}
+    btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enregistrement…';
     const payload = {
       first_name: document.getElementById('f-first-name').value.trim(),
       last_name:  document.getElementById('f-last-name').value.trim(),
@@ -510,12 +510,12 @@
         showToast((typeof err === 'object' ? Object.values(err).flat().join(' ') : err) || 'Erreur.', 'error');
       }
     } catch { showToast('Erreur réseau.', 'error'); }
-    btn.disabled = false; btn.innerHTML = '<i class="fas fa-save"></i> {% trans "Enregistrer';" %}
+    btn.disabled = false; btn.innerHTML = '<i class="fas fa-save"></i> Enregistrer';
   }
 
   async function saveExploitation() {
     const btn = document.getElementById('btn-save-exploitation');
-    btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> {% trans "Enregistrement…';" %}
+    btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enregistrement…';
     const payload = {
       departement:      document.getElementById('f-departement').value,
       commune:          document.getElementById('f-commune').value.trim(),
@@ -541,7 +541,7 @@
         showToast((typeof err === 'object' ? Object.values(err).flat().join(' ') : err) || 'Erreur.', 'error');
       }
     } catch { showToast('Erreur réseau.', 'error'); }
-    btn.disabled = false; btn.innerHTML = '<i class="fas fa-save"></i> {% trans "Enregistrer';" %}
+    btn.disabled = false; btn.innerHTML = '<i class="fas fa-save"></i> Enregistrer';
   }
 
   async function savePassword() {
@@ -552,7 +552,7 @@
     if (newPwd.length < 8) { showToast('Au moins 8 caractères requis.', 'error'); return; }
     if (newPwd !== confirm) { showToast('Les mots de passe ne correspondent pas.', 'error'); return; }
     const btn = document.getElementById('btn-save-pwd');
-    btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> {% trans "Mise à jour…';" %}
+    btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Mise à jour…';
     try {
       const r = await fetch('/api/auth/change-password/', {
         method: 'POST',
@@ -569,7 +569,7 @@
         showToast((typeof err === 'object' ? Object.values(err).flat().join(' ') : err) || 'Erreur.', 'error');
       }
     } catch { showToast('Erreur réseau.', 'error'); }
-    btn.disabled = false; btn.innerHTML = '<i class="fas fa-key"></i> {% trans "Changer le mot de passe';" %}
+    btn.disabled = false; btn.innerHTML = '<i class="fas fa-key"></i> Changer le mot de passe';
   }
 
   async function uploadAvatar(input) {

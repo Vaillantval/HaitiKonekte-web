@@ -1,4 +1,4 @@
-{% extends 'dashboard/base.html' %}
+﻿{% extends 'dashboard/base.html' %}
 {% load i18n %}
 {% block title %}Vouchers — Superadmin{% endblock %}
 {% block sidebar_nav %}{% include 'dashboard/superadmin_sidebar.html' with active='vouchers' %}{% endblock %}
@@ -375,7 +375,7 @@ async function loadProgrammes() {
 function openProgCreate() {
   _progEditId = null;
   document.getElementById('prog-modal-title').textContent = 'Nouveau programme';
-  document.getElementById('prog-submit-btn').innerHTML = '<i class="fas fa-plus"></i> {% trans "Créer';" %}
+  document.getElementById('prog-submit-btn').innerHTML = '<i class="fas fa-plus"></i> Créer';
   ['p-nom','p-description','p-contact-nom','p-contact-email','p-contact-tel'].forEach(id => document.getElementById(id).value='');
   document.getElementById('p-budget').value = '0';
   document.getElementById('p-debut').value = '';
@@ -390,7 +390,7 @@ async function openProgEdit(id) {
   if (!r.ok) return;
   const p = (await r.json()).data;
   document.getElementById('prog-modal-title').textContent = 'Modifier programme';
-  document.getElementById('prog-submit-btn').innerHTML = '<i class="fas fa-save"></i> {% trans "Enregistrer';" %}
+  document.getElementById('prog-submit-btn').innerHTML = '<i class="fas fa-save"></i> Enregistrer';
   document.getElementById('p-nom').value          = p.nom;
   document.getElementById('p-type').value         = p.type_programme;
   document.getElementById('p-budget').value       = p.budget_total;

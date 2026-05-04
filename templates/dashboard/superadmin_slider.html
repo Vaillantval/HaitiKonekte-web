@@ -1,4 +1,4 @@
-{% extends 'dashboard/base.html' %}
+﻿{% extends 'dashboard/base.html' %}
 {% load i18n %}
 {% block title %}Slider accueil — Superadmin{% endblock %}
 {% block sidebar_nav %}{% include 'dashboard/superadmin_sidebar.html' with active='slider' %}{% endblock %}
@@ -270,7 +270,7 @@ function startAuto() {
 function openCreate() {
   _editId = null;
   document.getElementById('modal-title').textContent = 'Nouveau slide';
-  document.getElementById('btn-save').innerHTML = '<i class="fas fa-plus"></i> {% trans "Créer';" %}
+  document.getElementById('btn-save').innerHTML = '<i class="fas fa-plus"></i> Créer';
   document.getElementById('f-titre').value        = '';
   document.getElementById('f-sous_titre').value   = '';
   document.getElementById('f-texte_bouton').value = 'Découvrir';
@@ -288,7 +288,7 @@ function openEdit(id) {
   if (!s) return;
   _editId = id;
   document.getElementById('modal-title').textContent = 'Modifier le slide';
-  document.getElementById('btn-save').innerHTML = '<i class="fas fa-save"></i> {% trans "Enregistrer';" %}
+  document.getElementById('btn-save').innerHTML = '<i class="fas fa-save"></i> Enregistrer';
   document.getElementById('f-titre').value        = s.titre;
   document.getElementById('f-sous_titre').value   = s.sous_titre;
   document.getElementById('f-texte_bouton').value = s.texte_bouton;

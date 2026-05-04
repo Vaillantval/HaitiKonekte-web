@@ -1,4 +1,4 @@
-{% extends 'dashboard/base.html' %}
+﻿{% extends 'dashboard/base.html' %}
 {% load i18n %}
 {% block title %}Utilisateurs — Superadmin{% endblock %}
 {% block sidebar_nav %}{% include 'dashboard/superadmin_sidebar.html' with active='users' %}{% endblock %}
@@ -284,7 +284,7 @@ function toggleProdFields() {
 function openCreate() {
   _editUserId = null;
   document.getElementById('modal-title').textContent = 'Nouvel utilisateur';
-  document.getElementById('user-submit-btn').innerHTML = '<i class="fas fa-plus"></i> {% trans "Créer';" %}
+  document.getElementById('user-submit-btn').innerHTML = '<i class="fas fa-plus"></i> Créer';
   ['f-username','f-first_name','f-last_name','f-email','f-telephone','f-password','f-password2'].forEach(id => document.getElementById(id).value='');
   document.getElementById('f-role').value = 'acheteur';
   document.getElementById('f-is_active').checked = true;
@@ -299,7 +299,7 @@ function openCreate() {
 async function openEdit(id) {
   _editUserId = id;
   document.getElementById('modal-title').textContent = 'Éditer l\'utilisateur';
-  document.getElementById('user-submit-btn').innerHTML = '<i class="fas fa-save"></i> {% trans "Enregistrer';" %}
+  document.getElementById('user-submit-btn').innerHTML = '<i class="fas fa-save"></i> Enregistrer';
   document.getElementById('username-field').style.display = 'none';
   document.getElementById('password-field').querySelector('label').textContent = 'Nouveau mot de passe';
   document.getElementById('password-field').querySelector('input').required = false;
