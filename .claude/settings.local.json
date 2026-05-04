@@ -89,7 +89,10 @@
       "PowerShell(Start-Sleep -Seconds 4; try { $r = Invoke-WebRequest -Uri \"http://127.0.0.1:8000/health/\" -TimeoutSec 5 -UseBasicParsing; \"Status: $\\($r.StatusCode\\)\" } catch { $_.Exception.Message })",
       "Bash(git add *)",
       "Bash(git commit -m ' *)",
-      "Bash(git push *)"
+      "Bash(git push *)",
+      "Bash(Select-String -Path \"C:\\\\Users\\\\louis_ijaxevn\\\\OneDrive - Université d'Etat d'Haïti\\\\Desktop\\\\Ing_Vaillant\\\\web_Haitikonekte\\\\MAKET-PYIZAN-Transversal\\\\templates\\\\home\\\\index.html\" -Pattern \"</style>|<nav class=|initNavbar|openNavDrawer|closeNavDrawer|_navbarLogout|partials/navbar\")",
+      "Bash(Select-Object LineNumber, Line)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:8000/)"
     ]
   }
 }
