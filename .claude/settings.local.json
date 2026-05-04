@@ -78,7 +78,18 @@
       "Bash(venv/Scripts/python.exe manage.py runserver 8003 --noreload)",
       "Bash(curl -s http://localhost:8003/)",
       "Bash(xargs sed *)",
-      "Bash(venv\\\\Scripts\\\\python.exe manage.py runserver --settings=config.settings.development)"
+      "Bash(venv\\\\Scripts\\\\python.exe manage.py runserver --settings=config.settings.development)",
+      "Bash(Get-ChildItem -Path \"C:\\\\Users\\\\louis_ijaxevn\\\\OneDrive - Université d'Etat d'Haïti\\\\Desktop\\\\Ing_Vaillant\\\\web_Haitikonekte\\\\MAKET-PYIZAN-Transversal\" -Directory)",
+      "Bash(Select-Object Name)",
+      "Bash(find static/ -name \"geo_selector.js\")",
+      "Bash(ls static/js/)",
+      "PowerShell(& \"C:\\\\Users\\\\louis_ijaxevn\\\\OneDrive - Université d'Etat d'Haïti\\\\Desktop\\\\Ing_Vaillant\\\\web_Haitikonekte\\\\MAKET-PYIZAN-Transversal\\\\venv\\\\Scripts\\\\pip.exe\" show firebase-admin 2>&1)",
+      "PowerShell(try { $r = Invoke-WebRequest -Uri \"http://127.0.0.1:8000/health/\" -TimeoutSec 5 -UseBasicParsing; \"Status: $\\($r.StatusCode\\)\" } catch { $_.Exception.Message })",
+      "PowerShell(Get-Process *)",
+      "PowerShell(Start-Sleep -Seconds 4; try { $r = Invoke-WebRequest -Uri \"http://127.0.0.1:8000/health/\" -TimeoutSec 5 -UseBasicParsing; \"Status: $\\($r.StatusCode\\)\" } catch { $_.Exception.Message })",
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)",
+      "Bash(git push *)"
     ]
   }
 }
